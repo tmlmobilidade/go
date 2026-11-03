@@ -3,7 +3,7 @@ package utils
 import (
 	"strings"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules/algorithm"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
 )
 
 // Pending lists rules not yet ordered by Build, for dependency-cycle errors.

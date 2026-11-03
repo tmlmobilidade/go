@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
+	loggerTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/logger"
 )
 
 // ProgressTracker counts finished rows. Complete is required after all checks
@@ -87,10 +88,7 @@ func (p *ProgressTracker) GetProcessedCount() int {
 }
 func (p *ProgressTracker) GetTotalCount() int { return p.totalCount }
 
-// TableCounter keeps this helper independent of GTFS storage and import code.
-type TableCounter interface{ GetTableCount(string) (int, error) }
-
-func (l *Logger) CreateProgressTracker(source TableCounter, table string, rowThreshold int) *ProgressTracker {
+func (l *Logger) CreateProgressTracker(source loggerTypes.TableCounter, table string, rowThreshold int) *ProgressTracker {
 	total, err := source.GetTableCount(table)
 	if err != nil {
 		l.Debug(telemetry.LogEntry{Message: "Could not get table count for " + table, Error: err, Attributes: map[string]any{"table": table}})

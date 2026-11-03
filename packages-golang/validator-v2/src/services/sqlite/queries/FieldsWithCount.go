@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
 	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // FieldWithCount reads a field and counts equal values in this table in one query.

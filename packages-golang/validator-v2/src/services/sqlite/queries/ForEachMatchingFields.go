@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
 	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // ForEachMatchingFields streams the requested values with their source row in

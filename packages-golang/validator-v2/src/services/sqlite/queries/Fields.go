@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // Fields requests only the named fields in one query. Missing columns and SQL

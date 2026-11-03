@@ -1,6 +1,6 @@
 package utils
 
-import types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
+import types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 
 // At selects a row by zero-based index.
 func At(t *types.SQLiteTable, row int) *types.SQLiteRow {

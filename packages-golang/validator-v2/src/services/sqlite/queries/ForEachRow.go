@@ -2,8 +2,8 @@ package queries
 
 import (
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
 	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // ForEachRow reads row IDs only. Callbacks may query fields through the row context.
@@ -28,7 +28,7 @@ func ForEachRow(t *types.SQLiteTable, fn func(*types.SQLiteRow) error) error {
 		if err := rows.Scan(&rowID); err != nil {
 			return err
 		}
-		if err := fn(utils.At(t, rowID - 1)); err != nil {
+		if err := fn(utils.At(t, rowID-1)); err != nil {
 			return err
 		}
 	}

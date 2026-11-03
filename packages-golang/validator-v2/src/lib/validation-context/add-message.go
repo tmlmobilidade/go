@@ -1,19 +1,18 @@
 package validationcontext
 
 import (
-	messageseverity "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/severity"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context/types"
 	messages "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validation-context"
 )
 
 // AddMessage reports a finding using configured severity unless an explicit override is supplied.
 // A nonempty override takes precedence over configuration; ignore suppresses the finding.
 func AddMessage(context *types.ValidationContext, message string, severityOverride ...rules.Severities) {
 	//
-	// 1. Resolve configuration, then apply the optional severity override
+	// 1. Use this rule context's severity, then apply an optional override
 
-	severity := messageseverity.ResolveMessageSeverity(context.FileName, context.RuleID, context.Field, context.Severity)
+	severity := context.Config.Severity
 	if len(severityOverride) > 0 && severityOverride[0] != "" {
 		severity = severityOverride[0]
 	}
@@ -38,10 +37,14 @@ func AddMessage(context *types.ValidationContext, message string, severityOverri
 	//
 	// 4. Send the resolved severity so the collector does not apply configuration again
 
+	rows := []int{}
+	if context.Row >= 0 {
+		rows = []int{context.Row}
+	}
 	context.MessageAdder.AddMessage(messages.Message{
 		Field:            context.Field,
 		FileName:         context.FileName,
-		Rows:             []int{context.Row},
+		Rows:             rows,
 		Message:          message,
 		Severity:         severity,
 		RuleID:           context.RuleID,

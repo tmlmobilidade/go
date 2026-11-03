@@ -1,6 +1,6 @@
 package queries
 
-import types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
+import types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 
 // Field reads a field from the current row.
 func Field(r *types.SQLiteRow, field string) (string, error) {

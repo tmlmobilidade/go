@@ -1,33 +1,44 @@
 package validationcontext
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context/types"
+	"slices"
+
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validation-context"
 )
 
-// NewValidationContext prepares one check's location, receiver, and configured severity.
-// Supplying ruleContext sets the default severity; AddMessage may explicitly override it.
-func NewValidationContext(field, fileName, ruleID string, row int, messageAdder messages.MessageAdder, ruleContext ...*rules.RuleContext) *types.ValidationContext {
+// ValidationContext is the single input supplied to an executable rule.
+type ValidationContext = types.ValidationContext
+
+// NewRuleContext creates a private context while its rule waits in the graph.
+// Kahn invokes the callback only when its configured dependencies have passed.
+func NewRuleContext(ruleID string, tables *sqliteTypes.SQLiteTables, config rules.RuleContext, adder messages.MessageAdder) *ValidationContext {
 	//
 
 	//
-	// 1. Resolve the configured severity, defaulting to ignore
+	// 1. Copy mutable settings and resolve an omitted severity to ignore
 
-	severity := rules.SEVERITY_IGNORE
-	if len(ruleContext) > 0 && ruleContext[0] != nil && ruleContext[0].Severity != "" {
-		severity = ruleContext[0].Severity
+	config = cloneConfig(config)
+	if config.Severity == "" {
+		config.Severity = rules.SEVERITY_IGNORE
 	}
 
 	//
-	// 2. Return the context for this check invocation
+	// 2. Attach the rule identity, shared tables, and synchronized message receiver
 
-	return &types.ValidationContext{
-		Field:        field,
-		FileName:     fileName,
-		RuleID:       ruleID,
-		Row:          row,
-		Severity:     severity,
-		MessageAdder: messageAdder,
+	return &ValidationContext{RuleID: ruleID, Tables: tables, Config: config, MessageAdder: adder, Row: -1}
+}
+
+func cloneConfig(config rules.RuleContext) rules.RuleContext {
+	if config.Options != nil {
+		options := slices.Clone(*config.Options)
+		config.Options = &options
 	}
+	if config.Compare != nil {
+		compare := slices.Clone(*config.Compare)
+		config.Compare = &compare
+	}
+	return config
 }

@@ -2,7 +2,7 @@ package utils
 
 import (
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // column returns SQL NULL for an absent CSV header, so required-field rules can

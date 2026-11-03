@@ -2,8 +2,8 @@ package queries
 
 import (
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
 	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // ForEachMatching selects source rows whose field equals the supplied value.
@@ -33,7 +33,7 @@ func ForEachMatching(t *types.SQLiteTable, field, value string, fn func(*types.S
 		if err := rows.Scan(&rowID); err != nil {
 			return err
 		}
-		if err := fn(utils.At(t, rowID - 1)); err != nil {
+		if err := fn(utils.At(t, rowID-1)); err != nil {
 			return err
 		}
 	}

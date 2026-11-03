@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // LoadSQLiteTables discovers imported tables and shares their metadata between checks.

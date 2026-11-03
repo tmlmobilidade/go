@@ -1,12 +1,12 @@
 package validationcontext
 
 import (
-	algorithmtypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm/types"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context/types"
+	algorithmtypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validation-context"
 )
 
-// Status returns Failed after any info, warning, or error finding was emitted.
-// Otherwise it returns Passed; the scheduler separately decides whether to skip a rule.
+// Status returns the rule context outcome after its callback finishes.
+// Missing inputs mark it Skipped; findings or operational failures mark it Failed.
 func Status(context *types.ValidationContext) types.RuleStatus {
 	//
 
@@ -15,6 +15,9 @@ func Status(context *types.ValidationContext) types.RuleStatus {
 
 	if context.Failed {
 		return algorithmtypes.Failed
+	}
+	if context.Skipped {
+		return algorithmtypes.Skipped
 	}
 
 	return algorithmtypes.Passed

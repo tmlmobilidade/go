@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // LoadSQLiteTable loads metadata for an existing SQLite table without fetching row values.

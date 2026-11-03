@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // Table selects any imported table. It does not fetch or cache field values.

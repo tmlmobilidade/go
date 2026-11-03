@@ -1,8 +1,8 @@
 package validationcontext
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validation-context/types"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validation-context"
 )
 
 // GetSeverityMessage selects required, recommended, or informational wording.
@@ -12,10 +12,10 @@ func GetSeverityMessage(context *types.ValidationContext, requiredKey, recommend
 	//
 	// 1. Select the translated message for the configured severity
 
-	if context.Severity == rules.SEVERITY_ERROR {
+	if context.Config.Severity == rules.SEVERITY_ERROR {
 		return GetTranslatedMessage(context, requiredKey)
 	}
-	if context.Severity == rules.SEVERITY_WARNING {
+	if context.Config.Severity == rules.SEVERITY_WARNING {
 		return GetTranslatedMessage(context, recommendedKey)
 	}
 	return GetTranslatedMessage(context, informationalKey)
