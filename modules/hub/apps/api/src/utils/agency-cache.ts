@@ -6,7 +6,7 @@ import { type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
-export type AgencyCacheSuffix = `alerts:${string}` | `network:${string}` | `realtime:eta:${string}` | `realtime:vehicles:${string}`;
+export type AgencyCacheSuffix = `agencies:${string}` | `alerts:${string}` | `network:${string}` | `plans:${string}` | `realtime:eta:${string}` | `realtime:vehicles:${string}`;
 
 /** Read agency keys only, unwrapping entries written with setNew. */
 export async function readAgencyCache<T>(agencyIds: string[], suffix: AgencyCacheSuffix): Promise<{ data: T, timestamp?: UnixMilliseconds }[]> {
