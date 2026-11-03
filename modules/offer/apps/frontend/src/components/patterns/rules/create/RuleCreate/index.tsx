@@ -8,6 +8,7 @@ import { RulePreviewCalendar } from '@/components/patterns/rules/create/RulePrev
 import { RulePreviewSummary } from '@/components/patterns/rules/create/RulePreviewSummary';
 import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
 import { CalendarAffectedDaysCount, CloseButton, Spacer, Surface, Tag } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -19,6 +20,7 @@ export function RuleCreate() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
 
 	//
@@ -60,7 +62,7 @@ export function RuleCreate() {
 					<div className={`${styles.drawer} ${styles.drawerOpen}`}>
 						<div className={styles.drawerHeader}>
 							<CloseButton onClick={() => createRuleContext.actions.closeDrawer()} type="close" />
-							<Tag label="Validação da regra" variant="muted" />
+							<Tag label={t('default:scheduling.copy.validationTitle')} variant="muted" />
 							<Spacer />
 							<CalendarAffectedDaysCount count={createRuleContext.data.ruleImpact?.count ?? 0} layout="inline" />
 						</div>

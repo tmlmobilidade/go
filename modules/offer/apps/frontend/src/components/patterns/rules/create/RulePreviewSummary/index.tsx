@@ -1,5 +1,8 @@
+'use client';
+
 import { IconClock } from '@tabler/icons-react';
 import { Section, Surface, Tag, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -18,7 +21,8 @@ export function RulePreviewSummary({ summary, timepointCount }: RulePreviewSumma
 	//
 	// A. Setup variables
 
-	const timepointLabel = `${timepointCount} ${timepointCount === 1 ? 'horário' : 'horários'}`;
+	const { t } = useTranslation();
+	const timepointLabel = t('default:scheduling.copy.timepointCount', '', { count: timepointCount });
 
 	//
 	// B. Render components
@@ -28,7 +32,7 @@ export function RulePreviewSummary({ summary, timepointCount }: RulePreviewSumma
 			<Section>
 				<div className={styles.summaryHeader}>
 					<Section gap="xs" padding="none">
-						<Text c="dimmed" size="xs" weight="extra-bold">RESUMO DA REGRA</Text>
+						<Text c="dimmed" size="xs" weight="extra-bold">{t('default:scheduling.copy.ruleSummary')}</Text>
 						<Text size="lg" weight="semibold">{summary}</Text>
 					</Section>
 					<Tag icon={<IconClock size={16} />} label={timepointLabel} variant="muted" />

@@ -8,8 +8,9 @@ import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { buildRuleSummary, getManualRuleAffectedDates } from '@tmlmobilidade/go-utils-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { type StandardFormContextValue, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useLocaleContext, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { closeCreateRuleModal } from './RuleCreate.modal';
 
@@ -60,6 +61,9 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
+	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 	const holidaysContext = useHolidaysContext();
 	const eventsContext = useEventsContext();
@@ -90,9 +94,11 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 
 	const ruleSummary = useMemo(() => buildRuleSummary(values, {
 		events: eventsContext.data.raw,
+		locale,
 		periods: periodsContext.data.raw,
+		t,
 	}),
-	[eventsContext.data.raw, values, periodsContext.data.raw]);
+	[eventsContext.data.raw, values, periodsContext.data.raw, locale, t]);
 
 	const ruleImpact = useMemo(() => {
 		const startDate = toCalendarDate(`${previewYear}-01-01`);

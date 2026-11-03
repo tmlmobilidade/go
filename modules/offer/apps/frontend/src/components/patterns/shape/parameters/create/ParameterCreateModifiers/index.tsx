@@ -6,6 +6,7 @@ import { useParameterCreateContext } from '@/components/patterns/shape/parameter
 import { IconChevronDown, IconChevronUp, IconClockPause, IconCopy, IconGauge, IconPercentage } from '@tabler/icons-react';
 import { Button, Collapse, NumberInput, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -17,6 +18,7 @@ export function ParameterCreateModifiers() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const ctx = useParameterCreateContext();
 	const isOverride = ctx.data.values.kind === 'override';
 	const [open, setOpen] = useState(false);
@@ -31,11 +33,11 @@ export function ParameterCreateModifiers() {
 		<div className={styles.container}>
 			<div className={styles.header}>
 				<div className={styles.headerText}>
-					<Text size="lg" weight="semibold">Ações rápidas</Text>
-					<Text c="var(--color-system-text-200)" size="xs">Aplica valores em lote aos tempos desta configuração.</Text>
+					<Text size="lg" weight="semibold">{t('default:scheduling.copy.quickActions')}</Text>
+					<Text c="var(--color-system-text-200)" size="xs">{t('default:scheduling.copy.batchHint')}</Text>
 				</div>
 				<Button
-					label={open ? 'Fechar' : 'Abrir'}
+					label={open ? t('default:scheduling.copy.close') : t('default:scheduling.copy.open')}
 					onClick={() => setOpen(v => !v)}
 					rightSection={open ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
 					size="xs"
@@ -53,13 +55,13 @@ export function ParameterCreateModifiers() {
 								<IconCopy size={18} />
 							</div>
 							<div className={styles.actionContent}>
-								<Text size="sm" weight="semibold">Copiar configuração padrão</Text>
-								<Text c="var(--color-system-text-200)" size="xs">Substitui velocidades e tempos de paragem pelos valores da configuração padrão.</Text>
+								<Text size="sm" weight="semibold">{t('default:scheduling.copy.copyDefault')}</Text>
+								<Text c="var(--color-system-text-200)" size="xs">{t('default:scheduling.copy.copyDefaultHint')}</Text>
 							</div>
 							<div className={styles.actionControls}>
 								<Button
 									disabled={!ctx.data.defaultParameter}
-									label="Copiar"
+									label={t('default:scheduling.copy.copy')}
 									onClick={() => ctx.actions.applyDefaultSpeeds()}
 									size="xs"
 									variant="secondary"
@@ -74,8 +76,8 @@ export function ParameterCreateModifiers() {
 							<IconGauge size={18} />
 						</div>
 						<div className={styles.actionContent}>
-							<Text size="sm" weight="semibold">Velocidade fixa</Text>
-							<Text c="var(--color-system-text-200)" size="xs">Define a mesma velocidade média em todos os segmentos.</Text>
+							<Text size="sm" weight="semibold">{t('default:scheduling.copy.fixedSpeed')}</Text>
+							<Text c="var(--color-system-text-200)" size="xs">{t('default:scheduling.copy.fixedSpeedHint')}</Text>
 						</div>
 						<div className={styles.actionControls}>
 							<NumberInput
@@ -89,7 +91,7 @@ export function ParameterCreateModifiers() {
 								value={fixedSpeed}
 							/>
 							<Button
-								label="Aplicar"
+								label={t('default:scheduling.copy.apply')}
 								onClick={() => ctx.actions.applyFixedSpeed(fixedSpeed)}
 								size="xs"
 								variant="secondary"
@@ -103,8 +105,8 @@ export function ParameterCreateModifiers() {
 							<IconClockPause size={18} />
 						</div>
 						<div className={styles.actionContent}>
-							<Text size="sm" weight="semibold">Tempo de paragem fixo</Text>
-							<Text c="var(--color-system-text-200)" size="xs">Define o mesmo tempo de paragem em todas as paragens.</Text>
+							<Text size="sm" weight="semibold">{t('default:scheduling.copy.fixedDwell')}</Text>
+							<Text c="var(--color-system-text-200)" size="xs">{t('default:scheduling.copy.fixedDwellHint')}</Text>
 						</div>
 						<div className={styles.actionControls}>
 							<NumberInput
@@ -119,7 +121,7 @@ export function ParameterCreateModifiers() {
 								value={fixedDwellTime}
 							/>
 							<Button
-								label="Aplicar"
+								label={t('default:scheduling.copy.apply')}
 								onClick={() => ctx.actions.applyFixedDwellTime(fixedDwellTime)}
 								size="xs"
 								variant="secondary"
@@ -133,8 +135,8 @@ export function ParameterCreateModifiers() {
 							<IconPercentage size={18} />
 						</div>
 						<div className={styles.actionContent}>
-							<Text size="sm" weight="semibold">Ajustar velocidades</Text>
-							<Text c="var(--color-system-text-200)" size="xs">Multiplica as velocidades atuais pelo fator indicado.</Text>
+							<Text size="sm" weight="semibold">{t('default:scheduling.copy.adjustSpeeds')}</Text>
+							<Text c="var(--color-system-text-200)" size="xs">{t('default:scheduling.copy.adjustSpeedsHint')}</Text>
 						</div>
 						<div className={styles.actionControls}>
 							<NumberInput
@@ -149,7 +151,7 @@ export function ParameterCreateModifiers() {
 								value={speedFactor}
 							/>
 							<Button
-								label="Aplicar"
+								label={t('default:scheduling.copy.apply')}
 								onClick={() => ctx.actions.applySpeedFactor(speedFactor)}
 								size="xs"
 								variant="secondary"

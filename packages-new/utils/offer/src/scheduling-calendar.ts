@@ -1,8 +1,7 @@
+import { type CalendarDate, type IsoWeekday, OperationalDateIntSchema, type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
 /* * */
 
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
-import { type IsoWeekday } from '@tmlmobilidade/go-types-offer';
-import { type CalendarDate, OperationalDateIntSchema, type TimezoneIdentified } from '@tmlmobilidade/go-types-shared';
 import { calendarKey, Dates, DEFAULT_CAL_TZ } from '@tmlmobilidade/go-utils-dates';
 
 /* * */

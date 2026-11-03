@@ -1,4 +1,4 @@
-import type { IsoWeekday } from '@tmlmobilidade/go-types-offer';
+import type { IsoWeekday } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Represents the result of applying rules to a specific date.

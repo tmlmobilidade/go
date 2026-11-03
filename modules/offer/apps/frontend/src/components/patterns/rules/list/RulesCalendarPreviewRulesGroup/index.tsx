@@ -1,3 +1,5 @@
+'use client';
+
 /* * */
 
 import { useEventsContext } from '@/contexts/Events.context';
@@ -5,7 +7,8 @@ import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarCheck } from '@tabler/icons-react';
 import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { buildRuleSummary, DayRuleDetail } from '@tmlmobilidade/go-utils-offer';
-import { DayPeriodsTimepoints, Section, Text, TimeChip } from '@tmlmobilidade/ui';
+import { DayPeriodsTimepoints, Section, Text, TimeChip, useLocaleContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -28,6 +31,8 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 	const eventsContext = useEventsContext();
 
@@ -43,7 +48,9 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 			{rules.map(({ allTimePoints, rule }) => {
 				const summary = buildRuleSummary(rule, {
 					events: eventsContext.data.raw,
+					locale,
 					periods: periodsContext.data.raw,
+					t,
 				});
 				const isExclude = kind === 'exclude';
 				const isReplacement = kind === 'replacement';
@@ -73,7 +80,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 									<IconCalendarCheck color="var(--color-primary)" size={20} />
 									<Text size="lg">{summary.short} ·</Text>
 									<Text className={styles.timesCount}>
-										{timePointsCount} {timePointsCount > 1 ? 'horários' : 'horário'}
+										{t('default:scheduling.copy.timepointCount', '', { count: timePointsCount })}
 									</Text>
 								</Section>
 								<Text c="dimmed">
@@ -87,8 +94,8 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 				// For event restrictions (exclude), show description instead of timepoints
 				if (isEventRestriction) {
 					const restrictionText = rule.all_day
-						? 'Oferta excluída todo o dia'
-						: `Oferta excluída das ${rule.start_time} às ${rule.end_time}`;
+						? t('default:scheduling.copy.excludedAllDay')
+						: t('default:scheduling.copy.excludedWindow', '', { end: rule.end_time, start: rule.start_time });
 
 					return (
 						<div key={rule._id} className={styles.container}>
@@ -112,7 +119,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 								{!isExclude && !isReplacement && <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />}
 								<Text size="lg">{summary.short} ·</Text>
 								<Text className={styles.timesCount}>
-									{allTimePoints?.length || 0} {(allTimePoints?.length || 0) > 1 ? 'horários' : 'horário'}
+									{t('default:scheduling.copy.timepointCount', '', { count: allTimePoints?.length ?? 0 })}
 								</Text>
 							</Section>
 
@@ -122,7 +129,7 @@ export function RulesGroup({ excludedTimePoints, includeRules, kind, rules }: Ru
 									const excludedByRule = (kind === 'include' || kind === 'replacement') && excludedTimePoints?.get(time);
 									const isRemoved = isExclude || !!excludedByRule;
 									const tooltip = excludedByRule
-										? `Excluído por: ${excludedByRule.name || (excludedByRule.kind === 'event_restriction' && 'event' in excludedByRule ? excludedByRule.event?.title : 'Regra sem nome')}`
+										? t('default:scheduling.copy.excludedBy', '', { name: excludedByRule.name || (excludedByRule.kind === 'event_restriction' ? excludedByRule.event.title : t('default:scheduling.copy.unnamedRule')) })
 										: undefined;
 
 									return (

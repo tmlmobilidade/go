@@ -1,7 +1,5 @@
 import { HHMMSchema } from '@/dates/common.js';
-import { MONTHS } from '@/dates/months.js';
-import { WEEKDAYS } from '@/dates/weekdays.js';
-import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { MONTHS, OperationalDateIntSchema, WEEKDAYS } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */

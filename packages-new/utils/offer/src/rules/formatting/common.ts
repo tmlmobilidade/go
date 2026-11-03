@@ -1,170 +1,86 @@
-import { DAY_PERIOD_LABELS, EventReplacementRule, IsoWeekday, ManualRule, MONTH_OPTIONS, StopsParameterOverride, WEEKDAY_OPTIONS, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type EventReplacementRule, type ManualRule, type StopsParameterOverride, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { getMonthOptions, getWeekdayOptions } from '@tmlmobilidade/go-utils-dates';
+import { type TFunction } from 'i18next';
 
-/**
- * Builds the period portion of a rule summary.
- *
- * Handles smart formatting:
- * - All periods selected: "Todos os períodos" / "Em todos os períodos"
- * - Single period: Shows period name
- * - Multiple periods: "N períodos" (short) or "Durante os períodos de X e Y" (long)
- */
+import { getDayPeriodLabels } from '../../day-period-labels.js';
+import { schedulingList, schedulingMessage } from './messages.js';
+
+/* * */
+
+type SchedulingConditions = EventReplacementRule | ManualRule | StopsParameterOverride;
+interface SummaryFormat { locale: string, mode: 'long' | 'short', omitIfAll?: boolean, t: TFunction }
+
+/** Format selected Period names. All-period detection uses the caller's relevant Period set. */
 export function buildYearPeriodsPart(
-	rule: EventReplacementRule | ManualRule | StopsParameterOverride,
-	options: { periods?: YearPeriod[] },
-	cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long', omitIfAll: false },
+	rule: SchedulingConditions,
+	options: { locale: string, periods?: YearPeriod[], t: TFunction },
+	cfg: { mode: 'long' | 'short', omitIfAll?: boolean },
 ): string {
-	const allPeriodIds = options?.periods?.map(p => p._id) ?? [];
-	const selectedPeriodIds = rule.year_period_ids || [];
+	const { locale, t } = options;
+	const allPeriodIds = options.periods?.map(period => period._id) ?? [];
+	const selectedPeriodIds = [...new Set(rule.year_period_ids ?? [])];
 	const isAll = allPeriodIds.length > 0 && selectedPeriodIds.length === allPeriodIds.length && allPeriodIds.every(id => selectedPeriodIds.includes(id));
 
 	if (!selectedPeriodIds.length || isAll) {
 		if (cfg.omitIfAll) return '';
-		return cfg.mode === 'short' ? 'Todos os períodos' : 'Em todos os períodos';
+		return schedulingMessage(t, cfg.mode === 'short' ? 'allPeriods' : 'inAllPeriods');
 	}
 
-	const labels = selectedPeriodIds.map(
-		id => options?.periods?.find(p => p._id === id)?.name ?? 'período desconhecido',
-	);
-
-	if (cfg.mode === 'short') {
-		if (labels.length === 1) return labels[0];
-		return `${labels.length} períodos`;
-	}
-
-	if (labels.length === 1) return `Durante o ${labels[0]}`;
-	return `Durante os períodos de ${labels.join(' e ')}`;
+	const labels = selectedPeriodIds.map(id => options.periods?.find(period => period._id === id)?.name ?? schedulingMessage(t, 'unknownPeriod'));
+	if (cfg.mode === 'short') return labels.length === 1 ? labels[0] : schedulingMessage(t, 'periodCount', { count: labels.length });
+	return schedulingMessage(t, labels.length === 1 ? 'duringPeriod' : 'duringPeriods', { names: schedulingList(locale, labels) });
 }
 
-/**
- * Builds the weekday portion of a rule summary.
- *
- * Handles smart grouping:
- * - All 7 days: "Todos os dias"
- * - Mon-Fri only: "Dias úteis"
- * - Sat-Sun only: "Fim de semana"
- * - Mon-Fri + extras: "Dias úteis + Sábado"
- * - Weekend + extras: "Fim de semana + Segunda-feira"
- * - Other combinations: Lists individual days
- *
- * @param rule - Rule with weekdays array
- * @param cfg - Format mode (short or long)
- * @returns Formatted weekday string in Portuguese
- */
-export function buildWeekdaysPart(
-	rule: EventReplacementRule | ManualRule | StopsParameterOverride,
-	cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long' },
-): string {
-	if (!rule.weekdays || rule.weekdays.length === 0 || rule.weekdays.length === 7) {
+/** Scheduling Sunday includes holidays; the underlying ISO weekday model remains generic. */
+export function getSchedulingWeekdayOptions(locale: string, t: TFunction) {
+	return getWeekdayOptions(locale).map(option => ({
+		...option,
+		label: option.value === 7 ? schedulingMessage(t, 'sundayAndHolidays', { day: option.label }) : option.label,
+	}));
+}
+
+/** Retains the existing weekday/weekend grouping without changing holiday scheduling policy. */
+export function buildWeekdaysPart(rule: SchedulingConditions, cfg: SummaryFormat): string {
+	const days = [...new Set(rule.weekdays ?? [])].sort((a, b) => a - b);
+	const { locale, t } = cfg;
+	if (!days.length || days.length === 7) {
 		if (cfg.omitIfAll) return '';
-		return cfg.mode === 'short' ? 'Todos os dias' : 'em todos os dias';
+		return schedulingMessage(t, cfg.mode === 'short' ? 'allDays' : 'onAllDays');
 	}
 
-	const weekdaySet = new Set<IsoWeekday>(rule.weekdays as IsoWeekday[]);
-	const hasMonFri = ([1, 2, 3, 4, 5] as IsoWeekday[]).every(d => weekdaySet.has(d));
-	const hasWeekend = weekdaySet.has(6) && weekdaySet.has(7);
-
-	const getDayLabel = (value: IsoWeekday) =>
-		WEEKDAY_OPTIONS.find(opt => opt.value === value)?.label ?? '?';
-
-	const getSingleDayLongLabel = (value: IsoWeekday) => {
-		if (value === 6) {
-			return `ao ${getDayLabel(value)}`;
-		}
-		if (value === 7) {
-			return `aos ${getDayLabel(value)}`;
-		}
-
-		return `à ${getDayLabel(value)}`;
-	};
-
-	if (hasMonFri && hasWeekend) return cfg.mode === 'short' ? 'Todos os dias' : 'em todos os dias';
-
-	if (hasMonFri) {
-		const extraDays = (rule.weekdays as IsoWeekday[])
-			.filter(d => d < 1 || d > 5)
-			.sort((a, b) => a - b);
-
-		if (extraDays.length === 0) {
-			return cfg.mode === 'short' ? 'Dias úteis' : 'nos dias úteis';
-		}
-
-		const extraLabels = extraDays.map(getDayLabel);
-
-		return cfg.mode === 'short'
-			? `Dias úteis + ${extraLabels.join(', ')}`
-			: `nos dias úteis e ${extraLabels.join(', ')}`;
+	const options = getSchedulingWeekdayOptions(locale, t);
+	const label = (day: number) => options.find(option => option.value === day)?.label ?? String(day);
+	const hasBusinessDays = [1, 2, 3, 4, 5].every(day => days.some(selected => selected === day));
+	const hasWeekend = days.includes(6) && days.includes(7);
+	if (hasBusinessDays || hasWeekend) {
+		const group = hasBusinessDays ? [1, 2, 3, 4, 5] : [6, 7];
+		const extras = days.filter(day => !group.includes(day)).map(label);
+		const key = hasBusinessDays
+			? (cfg.mode === 'short' ? 'businessDays' : 'onBusinessDays')
+			: (cfg.mode === 'short' ? 'weekend' : 'onWeekend');
+		const base = schedulingMessage(t, key);
+		return extras.length ? `${base} + ${schedulingList(locale, extras)}` : base;
 	}
 
-	if (hasWeekend && rule.weekdays.length === 2) {
-		return cfg.mode === 'short' ? 'Fim de semana' : 'no fim de semana';
-	}
-
-	if (hasWeekend) {
-		const extraDays = (rule.weekdays as IsoWeekday[])
-			.filter(d => d !== 6 && d !== 7)
-			.sort((a, b) => a - b);
-
-		const extraLabels = extraDays.map(getDayLabel);
-
-		return cfg.mode === 'short'
-			? `Fim de semana + ${extraLabels.join(', ')}`
-			: `no fim de semana e ${extraLabels.join(', ')}`;
-	}
-
-	const sortedDays = [...(rule.weekdays as IsoWeekday[])].sort((a, b) => a - b);
-	const dayLabels = sortedDays.map(getDayLabel);
-
-	if (cfg.mode === 'short') {
-		return dayLabels.join(', ');
-	}
-
-	if (sortedDays.length === 1) {
-		return getSingleDayLongLabel(sortedDays[0]);
-	}
-
-	return `à ${dayLabels.join(', ')}`;
+	const names = schedulingList(locale, days.map(label));
+	return cfg.mode === 'short' ? names : schedulingMessage(t, 'onDays', { names });
 }
 
-export function buildDayPeriodsPart(
-	parameter: StopsParameterOverride,
-	cfg: { mode: 'long' | 'short' },
-): string {
-	const selected = (parameter.day_periods ?? []);
-	if (!selected.length) return 'Todo o dia';
-
-	const labels = selected.map(p => DAY_PERIOD_LABELS[p]?.[cfg.mode] ?? p.toUpperCase());
-
+export function buildDayPeriodsPart(parameter: StopsParameterOverride, cfg: SummaryFormat): string {
+	const selected = parameter.day_periods ?? [];
+	if (!selected.length) return schedulingMessage(cfg.t, 'allDay');
+	const dayPeriodLabels = getDayPeriodLabels(cfg.t);
+	const labels = selected.map(period => dayPeriodLabels[period][cfg.mode]);
 	if (cfg.mode === 'short') return labels.join(' · ');
-	if (labels.length === 1) return `Durante ${labels[0]}`;
-	return `Durante ${labels.join(' e ')}`;
+	return schedulingMessage(cfg.t, 'duringDayPeriods', { names: schedulingList(cfg.locale, labels) });
 }
 
-/**
- * Builds the months portion of a rule summary.
- *
- * Handles smart formatting:
- * - No months or all 12 selected: "Todos os meses" / "em todos os meses"
- * - Single month: Shows month label
- * - Multiple months: "N meses" (short) or lists them (long)
- */
-export function buildMonthsPart(
-	rule: Pick<ManualRule, 'months'>,
-	cfg: { mode: 'long' | 'short', omitIfAll?: boolean } = { mode: 'long' },
-): string {
-	if (!rule.months?.length || rule.months.length === 12) {
+export function buildMonthsPart(rule: Pick<ManualRule, 'months'>, cfg: SummaryFormat): string {
+	if (!rule.months?.length || new Set(rule.months).size === 12) {
 		if (cfg.omitIfAll) return '';
-		return cfg.mode === 'short' ? 'Todos os meses' : 'em todos os meses';
+		return schedulingMessage(cfg.t, cfg.mode === 'short' ? 'allMonths' : 'inAllMonths');
 	}
-
-	const labels = MONTH_OPTIONS
-		.filter(o => (rule.months as number[]).includes(o.value))
-		.map(o => o.label);
-
-	if (cfg.mode === 'short') {
-		return labels.length === 1 ? labels[0] : `${labels.length} meses`;
-	}
-
-	if (labels.length === 1) return labels[0];
-	if (labels.length === 2) return `${labels[0]} e ${labels[1]}`;
-	return labels.join(', ');
+	const labels = getMonthOptions(cfg.locale).filter(option => rule.months?.includes(option.value)).map(option => option.label);
+	if (cfg.mode === 'short') return labels.length === 1 ? labels[0] : schedulingMessage(cfg.t, 'monthCount', { count: labels.length });
+	return schedulingList(cfg.locale, labels);
 }

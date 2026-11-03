@@ -13,6 +13,7 @@ import { buildAffectedDaysDetails } from '@tmlmobilidade/go-utils-offer';
 import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, ScheduleEventData, Section, Surface, Text } from '@tmlmobilidade/ui';
 import { useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -34,6 +35,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const localeContext = useLocaleContext();
 	const annotationsContext = useAnnotationsContext();
 	const eventsContext = useEventsContext();
@@ -134,7 +136,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 						<AlertMessage
 							key="calendar-hint"
 							icon={<IconHandClick size={20} />}
-							title="Clique num dia afetado para consultar os horários e regras aplicáveis."
+							title={t('default:scheduling.copy.dayDetailsHint')}
 							variant="muted"
 						/>,
 					]}
@@ -168,10 +170,10 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 					{selectedDayDetails ? (
 						<>
 							{/* Time Points Summary */}
-							<Surface style={{ flexShrink: 0 }}>
+							<Surface className={styles.daySummary}>
 								<Section gap="sm">
 									<Text size="lg" weight="semibold">
-										{selectedDayDetails.finalTimePoints.length} horários ativos
+										{t('default:scheduling.copy.activeTimepointCount', '', { count: selectedDayDetails.finalTimePoints.length })}
 									</Text>
 									<Divider />
 									<DayPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints as HHMM[]} />
@@ -181,7 +183,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 							{/* Applied Rules Details */}
 							<Surface overflow="auto">
 								<Section gap="sm">
-									<Text size="lg" weight="semibold">Regras Aplicadas</Text>
+									<Text size="lg" weight="semibold">{t('default:scheduling.copy.appliedRules')}</Text>
 									<Divider />
 
 									{selectedDayDetails.replacementRules.length > 0 && (
@@ -211,7 +213,7 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 						</>
 					) : (
 						<div className={styles.emptyState}>
-							<Text c="muted">Selecione um dia no calendário</Text>
+							<Text c="muted">{t('default:scheduling.copy.selectDay')}</Text>
 						</div>
 					)}
 				</div>

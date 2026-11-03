@@ -3,6 +3,7 @@
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -27,6 +28,7 @@ export function RuleCreatePeriods() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
 	const { data: periodsData } = usePeriodsContext();
 
@@ -59,8 +61,8 @@ export function RuleCreatePeriods() {
 	return (
 		<Section gap="md">
 			<Section gap="xs" padding="none">
-				<Text>Períodos</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">Se não selecionar, aplica-se a todos os períodos do evento</Text>}
+				<Text>{t('default:scheduling.copy.periods')}</Text>
+				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">{t('default:scheduling.copy.eventPeriodsHint')}</Text>}
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -68,7 +70,7 @@ export function RuleCreatePeriods() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
+					{ label: t('default:scheduling.copy.all'), value: 'all' },
 				]}
 			/>
 
@@ -85,7 +87,7 @@ export function RuleCreatePeriods() {
 			/>
 			{createRuleContext.form.formState.errors.year_period_ids?.message && (
 				<Text c="var(--color-status-danger-primary)">
-					{createRuleContext.form.formState.errors.year_period_ids.message}
+					{t('default:scheduling.copy.selectPeriod')}
 				</Text>
 			)}
 

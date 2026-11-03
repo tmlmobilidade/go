@@ -5,6 +5,7 @@ import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { IconArrowRight } from '@tabler/icons-react';
 import { StopsParameter } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -22,6 +23,7 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	//
@@ -53,12 +55,12 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 				( ) Aplicar fator de ajuste */}
 
 				<Section gap="xs" padding="none">
-					<Text size="lg">{parameter?.name || 'Regra sem nome'}</Text>
-					{parameter?.kind === 'default' && <Text c="var(--color-system-text-200)">Usada por defeito quando nenhuma configuração específica se aplica.</Text>}
+					<Text size="lg">{parameter?.name || t('default:scheduling.copy.unnamedRule')}</Text>
+					{parameter?.kind === 'default' && <Text c="var(--color-system-text-200)">{t('default:scheduling.copy.defaultConfigurationHint')}</Text>}
 				</Section>
 
 				<Section gap="xs" padding="none">
-					{parameter?.travelTimes && <Text size="sm" style={{ fontFamily: 'monospace' }}>Duração total: {parameter?.travelTimes?.totalTripSecondsWithStops?.formatted}</Text>}
+					{parameter?.travelTimes && <Text className={styles.duration} size="sm">{t('default:scheduling.copy.totalDurationLabel')}{parameter?.travelTimes?.totalTripSecondsWithStops?.formatted}</Text>}
 				</Section>
 			</Section>
 

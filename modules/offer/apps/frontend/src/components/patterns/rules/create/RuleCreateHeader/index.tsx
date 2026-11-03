@@ -4,6 +4,7 @@ import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCre
 import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { IconCopy } from '@tabler/icons-react';
 import { CloseButton, DeleteButton, IconButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,6 +14,7 @@ export function RuleCreateHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const ruleCreateContext = useRuleCreateContext();
 
 	//
@@ -21,7 +23,7 @@ export function RuleCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateRuleModal} type="close" />
-			<Tag label={ruleCreateContext.data.ruleSummary.short || 'Nova Regra'} variant="muted" />
+			<Tag label={ruleCreateContext.data.ruleSummary.short || t('default:scheduling.copy.newRule')} variant="muted" />
 
 			<Spacer />
 
@@ -29,14 +31,14 @@ export function RuleCreateHeader() {
 				<IconButton
 					icon={<IconCopy size={20} />}
 					onClick={ruleCreateContext.actions.duplicateRule}
-					tooltip="Duplicar"
+					tooltip={t('default:scheduling.copy.duplicate')}
 				/>
 			)}
 
 			{ruleCreateContext.flags.isEditing && ruleCreateContext.actions.deleteRule && (
 				<DeleteButton
-					confirmMessage="Tem a certeza que deseja apagar esta regra? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Regra"
+					confirmMessage={t('default:scheduling.copy.deleteRuleWarning')}
+					confirmTitle={t('default:scheduling.copy.deleteRuleTitle')}
 					onDelete={ruleCreateContext.actions.deleteRule}
 					showConfirmation
 				/>

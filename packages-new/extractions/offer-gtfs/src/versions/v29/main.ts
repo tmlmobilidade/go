@@ -6,6 +6,7 @@ import { rewriteServiceIds, rewriteTripIds } from '@/versions/v29/utils/rewrite-
 import { ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { createOfferTranslator } from '@tmlmobilidade/go-utils-offer';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
@@ -118,6 +119,10 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 		Logger.success('Exported feed_info.txt');
 
 		const agenciesMap = new Map(allAgenciesData.map(a => [a._id, a]));
+		const agencyTranslators = new Map(await Promise.all(allAgenciesData.map(async agency => [
+			agency._id,
+			await createOfferTranslator(agency.primary_language),
+		] as const)));
 
 		//
 		// 2.
@@ -258,18 +263,23 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 						}
 					}
 
+					const translator = agencyTranslators.get(lineAgencyData._id);
+					if (!translator) throw new Error(`No scheduling translator for agency ${lineAgencyData._id}`);
+
 					// Export trips for this pattern (will deduplicate serviceIds across patterns)
 					const tripSchedules = await exportTripsForPattern(
 						routeData,
 						patternData,
 						shapeId,
-						Array.from(allPeriodsMap.values()),
+						Array.from(allPeriodsMap.values()).filter(period => period.agency_ids.includes(lineAgencyData._id)),
 						Array.from(allHolidaysMap.values()),
 						Array.from(allEventsMap.values()),
 						exportStartDate,
 						exportEndDate,
 						serviceRegistry,
 						exportConfig,
+						lineAgencyData.primary_language,
+						translator,
 					);
 
 					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, lineData.agency_id);

@@ -5,6 +5,7 @@
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -29,6 +30,7 @@ export function ParameterCreateYearPeriods() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createParameterContext = useParameterCreateContext();
 	const { data: yearPeriodsData } = usePeriodsContext();
 
@@ -64,7 +66,7 @@ export function ParameterCreateYearPeriods() {
 	return (
 		<Section gap="md">
 			<Section gap="xs" padding="none">
-				<Text>Períodos</Text>
+				<Text>{t('default:scheduling.copy.periods')}</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -72,7 +74,7 @@ export function ParameterCreateYearPeriods() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
+					{ label: t('default:scheduling.copy.all'), value: 'all' },
 				]}
 			/>
 

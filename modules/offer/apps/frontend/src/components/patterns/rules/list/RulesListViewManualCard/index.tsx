@@ -7,6 +7,7 @@ import { type ManualRule, type ScheduleRule } from '@tmlmobilidade/go-types-offe
 import { DayPeriodsTimepoints, Menu, MenuDivider, MenuItem, openConfirmModal, Section, Tag, Text, Tooltip } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -24,12 +25,13 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	const isOffTime = rule.kind === 'manual' && rule.operating_mode === 'exclude';
 	const isEventRule = rule.kind === 'manual' && rule.event_id !== undefined;
 	const times = rule?.timepoints ?? [];
-	const name = rule?.name || 'Regra sem nome';
+	const name = rule?.name || t('default:scheduling.copy.unnamedRule');
 
 	//
 	// B. Handle actions
@@ -49,16 +51,16 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 
 		openConfirmModal({
 			centered: true,
-			children: <Text>{`Tem a certeza que pretende eliminar a regra "${name}"?`}</Text>,
+			children: <Text>{t('default:scheduling.copy.deleteNamedRule', '', { name })}</Text>,
 			closeOnClickOutside: true,
 			confirmProps: { variant: 'danger' },
-			labels: { cancel: 'Cancelar', confirm: 'Eliminar' },
+			labels: { cancel: t('default:scheduling.copy.cancel'), confirm: t('default:scheduling.copy.delete') },
 			onConfirm: () => {
 				if (!patternDetailContext.capabilities.editEnabled || !rule._id) return;
 
 				patternDetailContext.actions.deleteRule(rule._id);
 			},
-			title: <Text size="xl">Eliminar regra</Text>,
+			title: <Text size="xl">{t('default:scheduling.copy.deleteRule')}</Text>,
 			w: 500,
 		});
 	};
@@ -80,11 +82,11 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 						: <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />}
 
 					{isEventRule && (
-						<Tag label="Evento" variant="muted" />
+						<Tag label={t('default:scheduling.copy.event')} variant="muted" />
 					)}
 
 					{isEventRule ? (
-						<Tooltip label="Ir para detalhes do evento" position="bottom" withArrow>
+						<Tooltip label={t('default:scheduling.copy.eventDetails')} position="bottom" withArrow>
 							<Link
 								className={styles.eventName}
 								href={PAGE_ROUTES.offer.EVENTS_DETAIL(rule.event_id)}
@@ -101,7 +103,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 
 					<Text>·</Text>
 
-					<Text className={styles.timesCount}>{times.length} {times.length > 1 ? 'horários' : 'horário'}</Text>
+					<Text className={styles.timesCount}>{t('default:scheduling.copy.timepointCount', '', { count: times.length })}</Text>
 				</Section>
 
 				<DayPeriodsTimepoints timepoints={times} variant="compact" />
@@ -109,23 +111,23 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 
 			{patternDetailContext.capabilities.editEnabled && (
 				<div className={styles.actions} onClick={handleActionsClick}>
-					<Menu icon={IconDots} label="Ações da regra" menuPosition="bottom-end">
+					<Menu icon={IconDots} label={t('default:scheduling.copy.ruleActions')} menuPosition="bottom-end">
 						<MenuItem
 							leftSection={<IconPencil size={20} />}
 							onClick={handleOpen}
-							title="Abrir"
+							title={t('default:scheduling.copy.open')}
 						/>
 						<MenuItem
 							leftSection={<IconCopy size={20} />}
 							onClick={handleDuplicate}
-							title="Duplicar"
+							title={t('default:scheduling.copy.duplicate')}
 						/>
 						<MenuDivider />
 						<MenuItem
 							color="var(--color-status-danger-primary)"
 							leftSection={<IconTrash size={20} />}
 							onClick={handleDelete}
-							title="Eliminar"
+							title={t('default:scheduling.copy.delete')}
 						/>
 					</Menu>
 				</div>

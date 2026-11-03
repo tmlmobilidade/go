@@ -3,10 +3,11 @@
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { IconCalendarCancel, IconCalendarRepeat, IconEye } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { EventReplacementRule, EventRestrictionRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/go-types-offer';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { IconButton, Section, Text } from '@tmlmobilidade/ui';
+import { EventReplacementRule, EventRestrictionRule } from '@tmlmobilidade/go-types-offer';
+import { buildRuleSummary } from '@tmlmobilidade/go-utils-offer';
+import { IconButton, Section, Text, useLocaleContext } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -24,41 +25,16 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const router = useRouter();
+	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 
 	const isRestriction = rule.kind === 'event_restriction';
 	const isReplacement = rule.kind === 'event_replacement';
-	const name = rule?.name || 'Regra sem nome';
+	const name = rule?.name || t('default:scheduling.copy.unnamedRule');
 
-	const eventDates
-		= rule?.dates?.map(d =>
-			Dates.fromOperationalDateInt(d, 'Europe/Lisbon')
-				.toLocaleString('short', 'pt-PT'),
-		).join(', ') ?? '';
-
-	const eventDatesSuffix
-		= rule && eventDates
-			? (rule.dates.length > 1 ? `(nos dias ${eventDates})` : `(no dia ${eventDates})`)
-			: '';
-
-	// For replacement rules, build description of what they replace with
-	let replacementDescription = '';
-	if (isReplacement && rule.kind === 'event_replacement') {
-		const weekdayLabels = rule.weekdays?.map(wd =>
-			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
-		).filter(Boolean).join(', ') ?? '';
-
-		const periodNames = rule.year_period_ids?.map((yearPeriodId) => {
-			const period = periodsContext.data.raw.find(p => p._id === yearPeriodId);
-			return period?.name || yearPeriodId;
-		}).join(', ') || '';
-
-		const parts: string[] = [];
-		if (weekdayLabels) parts.push(weekdayLabels);
-		if (periodNames) parts.push(periodNames);
-		replacementDescription = parts.join(' · ');
-	}
+	const summary = buildRuleSummary(rule, { locale, periods: periodsContext.data.raw, t });
 
 	//
 	// B. Handle actions
@@ -84,42 +60,20 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 					<Text size="lg">{name} ·</Text>
 					{(isRestriction || isReplacement) && (
 						<Text className={styles.timesCount}>
-							{rule.dates.length} {rule.dates.length > 1 ? 'dias' : 'dia'}
+							{t('default:scheduling.copy.dayCount', '', { count: rule.dates.length })}
 						</Text>
 					)}
 				</Section>
 
-				{/* Restriction event */}
-				{rule.kind === 'event_restriction' && (
-					<>
-						<Text>
-							Oferta será excluída {eventDates && !rule.all_day
-								? `das ${rule.start_time} às ${rule.end_time}`
-								: `todo o dia`}
-						</Text>
-						<Text size="sm" style={{ fontFamily: 'monospace' }}>
-							{eventDatesSuffix}
-						</Text>
-					</>
-				)}
-
-				{/* Replacement event */}
-				{isReplacement && (
-					<>
-						<Text>Funcionará como {replacementDescription}</Text>
-						<Text size="sm" style={{ fontFamily: 'monospace' }}>
-							{eventDatesSuffix}
-						</Text>
-					</>
-
-				)}
+				{/* Localized restriction/replacement details share the summary contract. */}
+				<Text>{summary.tooltip}</Text>
 
 			</Section>
 
 			<IconButton
 				icon={<IconEye size={20} />}
 				onClick={handleClickEventRule}
-				tooltip="Ir para detalhes do evento"
+				tooltip={t('default:scheduling.copy.eventDetails')}
 			/>
 		</div>
 	);

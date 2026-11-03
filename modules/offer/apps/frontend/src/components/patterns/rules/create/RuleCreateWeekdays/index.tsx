@@ -1,8 +1,9 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
-import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
+import { WEEKDAYS } from '@tmlmobilidade/go-types-shared';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -39,6 +40,7 @@ export function RuleCreateWeekdays() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
 
 	//
@@ -63,8 +65,8 @@ export function RuleCreateWeekdays() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>Dias da Semana {createRuleContext.flags.isEventExceptionEnabled ? 'do evento' : ''}</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">Se não selecionar, aplica-se a todos os dias do evento</Text>}
+				<Text>{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:scheduling.copy.eventWeekdays' : 'default:scheduling.copy.weekdays')}</Text>
+				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">{t('default:scheduling.copy.eventWeekdaysHint')}</Text>}
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -72,9 +74,9 @@ export function RuleCreateWeekdays() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
-					{ label: 'Dias úteis', value: 'business' },
-					{ label: 'Fim de semana', value: 'weekend' },
+					{ label: t('default:scheduling.copy.all'), value: 'all' },
+					{ label: t('default:scheduling.copy.businessDays'), value: 'business' },
+					{ label: t('default:scheduling.copy.weekend'), value: 'weekend' },
 				]}
 			/>
 
@@ -87,7 +89,7 @@ export function RuleCreateWeekdays() {
 
 			{createRuleContext.form.formState.errors.weekdays?.message && (
 				<Text c="var(--color-status-danger-primary)">
-					{createRuleContext.form.formState.errors.weekdays.message}
+					{t('default:scheduling.copy.selectWeekday')}
 				</Text>
 			)}
 

@@ -27,3 +27,7 @@
 .container[data-read-only]:hover {
 	background-color: var(--color-system-background-100);
 }
+
+.duration {
+	font-family: monospace;
+}

@@ -1,9 +1,11 @@
 'use client';
 
+import { WEEKDAYS } from '@tmlmobilidade/go-types-shared';
+import { useTranslation } from 'react-i18next';
+
 /* * */
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
-import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 
 /* * */
@@ -41,6 +43,7 @@ export function ParameterCreateWeekdays() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createParameterContext = useParameterCreateContext();
 
 	//
@@ -67,7 +70,7 @@ export function ParameterCreateWeekdays() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>Dias da Semana</Text>
+				<Text>{t('default:scheduling.copy.weekdays')}</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -75,9 +78,9 @@ export function ParameterCreateWeekdays() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
-					{ label: 'Dias úteis', value: 'business' },
-					{ label: 'Fim de semana', value: 'weekend' },
+					{ label: t('default:scheduling.copy.all'), value: 'all' },
+					{ label: t('default:scheduling.copy.businessDays'), value: 'business' },
+					{ label: t('default:scheduling.copy.weekend'), value: 'weekend' },
 				]}
 			/>
 

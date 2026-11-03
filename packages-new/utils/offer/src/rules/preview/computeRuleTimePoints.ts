@@ -1,8 +1,8 @@
-import type { Event, IsoWeekday, ScheduleRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
-import type { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import type { Event, ScheduleRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
 
 import { calendarWeekday } from '@/scheduling-calendar.js';
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
+import { type IsoWeekday, type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { buildOperationalDateRange, calendarKey, Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { computeActiveRules } from '../calculation/index.js';

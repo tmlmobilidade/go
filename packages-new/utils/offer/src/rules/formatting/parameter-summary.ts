@@ -1,6 +1,8 @@
 import { StopsParameter, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type TFunction } from 'i18next';
 
 import { buildDayPeriodsPart, buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
+import { schedulingMessage } from './messages.js';
 
 /**
  * Human-readable summary for a stops parameter.
@@ -14,12 +16,14 @@ export interface StopsParameterSummary {
 
 /**
  * Builds human-readable summaries of a stops parameter.
- * Currently uses only day periods (day_periods).
+ * Formats year periods, weekdays and day periods in the viewer locale.
  */
 export function buildParameterSummary(
 	parameter: StopsParameter,
 	options: {
+		locale: string
 		periods?: YearPeriod[]
+		t: TFunction
 	},
 ): StopsParameterSummary {
 	return {
@@ -38,22 +42,22 @@ export function buildParameterSummary(
  */
 function buildParameterSummaryShort(
 	parameter: StopsParameter,
-	options: { periods?: YearPeriod[] },
+	options: { locale: string, periods?: YearPeriod[], t: TFunction },
 ): string {
 	// manual
 	const parts: string[] = [];
 
 	if (parameter.kind === 'default') {
-		return 'Configuração padrão';
+		return schedulingMessage(options.t, 'defaultConfiguration');
 	}
 
-	const dayPeriodsPart = buildDayPeriodsPart(parameter, { mode: 'short' });
+	const dayPeriodsPart = buildDayPeriodsPart(parameter, { locale: options.locale, mode: 'short', t: options.t });
 	if (dayPeriodsPart) parts.push(dayPeriodsPart);
 
 	const periodPart = buildYearPeriodsPart(parameter, options, { mode: 'short' });
 	if (periodPart) parts.push(periodPart);
 
-	const weekdayPart = buildWeekdaysPart(parameter, { mode: 'short' });
+	const weekdayPart = buildWeekdaysPart(parameter, { locale: options.locale, mode: 'short', t: options.t });
 	if (weekdayPart) parts.push(weekdayPart);
 
 	return parts.join(' · ');
@@ -63,21 +67,21 @@ function buildParameterSummaryShort(
  * Builds the long summary format for a parameter.
  *
  * Event parameters: Returns event title
- * Manual parameters: Returns "During [period], on [weekdays]" format in Portuguese
+ * Override parameters: Formats conditions in the explicitly supplied viewer locale.
  */
 function buildParameterSummaryLong(
 	parameter: StopsParameter,
-	options: { periods?: YearPeriod[] },
+	options: { locale: string, periods?: YearPeriod[], t: TFunction },
 ): string {
 	if (parameter.kind === 'default') {
-		return 'Configuração padrão';
+		return schedulingMessage(options.t, 'defaultConfiguration');
 	}
 
-	const dayPeriodsPart = buildDayPeriodsPart(parameter, { mode: 'long' });
+	const dayPeriodsPart = buildDayPeriodsPart(parameter, { locale: options.locale, mode: 'long', t: options.t });
 
 	const periodPart = buildYearPeriodsPart(parameter, options, { mode: 'short' });
 
-	const weekdayPart = buildWeekdaysPart(parameter, { mode: 'short' });
+	const weekdayPart = buildWeekdaysPart(parameter, { locale: options.locale, mode: 'short', t: options.t });
 
 	return `${dayPeriodsPart}, ${periodPart} · ${weekdayPart}`;
 }

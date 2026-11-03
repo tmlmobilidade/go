@@ -115,3 +115,7 @@
     overflow-y: auto;
     gap: var(--size-spacing-md);
 }
+
+.daySummary {
+	flex-shrink: 0;
+}

@@ -2,9 +2,10 @@ import { EventReplacementSchema, ManualRuleBaseSchema } from '@tmlmobilidade/go-
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
+import { createOfferTranslator } from '../src/i18n/create-translator.js';
 import { manualRuleMatchesContext } from '../src/rules/calculation/matchers.js';
 import { type CanonicalDateCache, resolveCanonicalDatesForRule } from '../src/rules/export-attribution/trip-row-dates.js';
-import { buildRuleSummaryGtfs } from '../src/rules/formatting/rule-summary.js';
+import { buildRuleSummaryGtfs } from '../src/rules/formatting/gtfs-rule-name.js';
 
 /* * */
 
@@ -30,8 +31,9 @@ test('unnamed replacement rules do not share a canonical date cache entry', () =
 	assert.equal(cache.size, 0);
 });
 
-test('GTFS summaries fall back to the parent identity when optional metadata is missing', () => {
-	assert.equal(buildRuleSummaryGtfs(replacement('20261028'), {}), 'event');
+test('GTFS summaries fall back to the parent identity when optional metadata is missing', async () => {
+	const t = await createOfferTranslator('pt');
+	assert.equal(buildRuleSummaryGtfs(replacement('20261028'), { locale: 'pt', t }), 'event');
 });
 
 test('an incomplete stored ordinary rule does not match a weekday context', () => {

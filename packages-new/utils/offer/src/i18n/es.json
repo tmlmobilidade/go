@@ -1,0 +1,56 @@
+{
+	"dayPeriods": {
+		"PPT": {
+			"long": "Hora punta de la tarde",
+			"short": "HPT"
+		},
+		"CD": {
+			"long": "Periodo diurno",
+			"short": "PD"
+		},
+		"M": {
+			"long": "Madrugada",
+			"short": "M"
+		},
+		"PPM": {
+			"long": "Hora punta de la mañana",
+			"short": "HPM"
+		},
+		"N": {
+			"long": "Noche",
+			"short": "N"
+		}
+	},
+	"gtfs": {
+		"businessDays": "LAB"
+	},
+	"summaries": {
+		"allDay": "Todo el día",
+		"allDays": "Todos los días",
+		"allMonths": "Todos los meses",
+		"allPeriods": "Todos los periodos",
+		"applicable": "Aplicable {dates}",
+		"businessDays": "Días laborables",
+		"defaultConfiguration": "Configuración predeterminada",
+		"duringDayPeriods": "Durante {names}",
+		"duringPeriod": "Durante {names}",
+		"duringPeriods": "Durante los periodos {names}",
+		"excluded": "Servicio excluido {dates}",
+		"inAllMonths": "en todos los meses",
+		"inAllPeriods": "En todos los periodos",
+		"monthCount": "{count, plural, one {# mes} other {# meses}}",
+		"moreDates": "{dates} y {count} más",
+		"onAllDays": "todos los días",
+		"onBusinessDays": "en días laborables",
+		"onDates": "los días {dates}",
+		"onDays": "los días {names}",
+		"onWeekend": "los fines de semana",
+		"periodCount": "{count, plural, one {# periodo} other {# periodos}}",
+		"replacement": "Funcionará como {replacement}, {dates}",
+		"sameWeekday": "mismo día de la semana",
+		"sundayAndHolidays": "{day} y festivos",
+		"timeWindow": "entre las {start} y las {end}",
+		"unknownPeriod": "periodo desconocido",
+		"weekend": "Fin de semana"
+	}
+}

@@ -1,0 +1,56 @@
+{
+	"dayPeriods": {
+		"PPT": {
+			"long": "Afternoon peak",
+			"short": "PM"
+		},
+		"CD": {
+			"long": "Daytime",
+			"short": "DAY"
+		},
+		"M": {
+			"long": "Early morning",
+			"short": "EARLY"
+		},
+		"PPM": {
+			"long": "Morning peak",
+			"short": "AM"
+		},
+		"N": {
+			"long": "Night",
+			"short": "NIGHT"
+		}
+	},
+	"gtfs": {
+		"businessDays": "WD"
+	},
+	"summaries": {
+		"allDay": "All day",
+		"allDays": "Every day",
+		"allMonths": "All months",
+		"allPeriods": "All periods",
+		"applicable": "Applies {dates}",
+		"businessDays": "Weekdays",
+		"defaultConfiguration": "Default configuration",
+		"duringDayPeriods": "During {names}",
+		"duringPeriod": "During {names}",
+		"duringPeriods": "During the periods {names}",
+		"excluded": "Service excluded {dates}",
+		"inAllMonths": "in all months",
+		"inAllPeriods": "In all periods",
+		"monthCount": "{count, plural, one {# month} other {# months}}",
+		"moreDates": "{dates} and {count} more",
+		"onAllDays": "every day",
+		"onBusinessDays": "on weekdays",
+		"onDates": "on {dates}",
+		"onDays": "on {names}",
+		"onWeekend": "on weekends",
+		"periodCount": "{count, plural, one {# period} other {# periods}}",
+		"replacement": "Runs as {replacement}, {dates}",
+		"sameWeekday": "same weekday",
+		"sundayAndHolidays": "{day} and holidays",
+		"timeWindow": "between {start} and {end}",
+		"unknownPeriod": "unknown period",
+		"weekend": "Weekend"
+	}
+}

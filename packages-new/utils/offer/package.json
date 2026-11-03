@@ -41,7 +41,9 @@
 		"@tmlmobilidade/go-types-dates": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-utils-dates": "*"
+		"@tmlmobilidade/go-utils-dates": "*",
+		"i18next": "26.4.2",
+		"i18next-icu": "2.6.1"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

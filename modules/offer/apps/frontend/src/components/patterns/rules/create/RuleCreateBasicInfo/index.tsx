@@ -8,6 +8,7 @@ import { RuleCreateSchedule } from '@/components/patterns/rules/create/RuleCreat
 import { RuleCreateWeekdays } from '@/components/patterns/rules/create/RuleCreateWeekdays';
 import { hhmm } from '@tmlmobilidade/go-types-offer';
 import { Divider, Section, StandardFormController, Switch, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -19,6 +20,7 @@ export function RuleCreateBasicInfo() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
 
 	//
@@ -29,7 +31,7 @@ export function RuleCreateBasicInfo() {
 
 			{/* Rule Type */}
 			<div className={styles.sectionWrapper}>
-				<Text size="lg">1. O que acontece com estes horários?</Text>
+				<Text size="lg">{t('default:scheduling.copy.ruleQuestion')}</Text>
 				<Section>
 					<StandardFormController
 						control={createRuleContext.form.control}
@@ -37,8 +39,8 @@ export function RuleCreateBasicInfo() {
 						render={({ field }) => (
 							<Switch
 								checked={field.value === 'include'}
-								description="Define se esta regra ativa ou desativa os horários quando as condições abaixo se verificam."
-								label={field.value === 'exclude' ? 'Horários não operam nestes dias' : 'Horários operam nestes dias'}
+								description={t('default:scheduling.copy.operatingHint')}
+								label={field.value === 'exclude' ? t('default:scheduling.copy.excludedDays') : t('default:scheduling.copy.includedDays')}
 								onChange={event => field.onChange(event.currentTarget.checked ? 'include' : 'exclude')}
 							/>
 						)}
@@ -51,15 +53,15 @@ export function RuleCreateBasicInfo() {
 
 			{/* Schedule */}
 			<div className={styles.sectionWrapper}>
-				<Text size="lg">2. Que horários esta regra afeta?</Text>
-				<Text c="dimmed" size="sm">Também pode colar ou arrastar vários horários de uma folha de cálculo. Ex: 10:00 13:00 15:00 ou 1000 1300 1500</Text>
+				<Text size="lg">{t('default:scheduling.copy.timepointsQuestion')}</Text>
+				<Text c="dimmed" size="sm">{t('default:scheduling.copy.pasteHint')}</Text>
 
 				<StandardFormController
 					control={createRuleContext.form.control}
 					name="timepoints"
 					render={({ field, fieldState }) => (
 						<RuleCreateSchedule
-							error={fieldState.error?.message}
+							error={fieldState.error ? t('default:scheduling.copy.checkTimepoints') : undefined}
 							onChange={newTimes => field.onChange(newTimes.map(time => hhmm(time)))}
 							value={field.value ?? []}
 						/>
@@ -72,8 +74,8 @@ export function RuleCreateBasicInfo() {
 
 			{/* Rule Conditions */}
 			<div className={styles.sectionWrapper}>
-				<Text size="lg">3. Quando devem estes horários aplicar-se?</Text>
-				<Text c="dimmed" size="sm">Estes horários aplicam-se quando TODAS as condições abaixo se verificam</Text>
+				<Text size="lg">{t('default:scheduling.copy.conditionsQuestion')}</Text>
+				<Text c="dimmed" size="sm">{t('default:scheduling.copy.conditionsHint')}</Text>
 
 				<RuleCreateEvents />
 

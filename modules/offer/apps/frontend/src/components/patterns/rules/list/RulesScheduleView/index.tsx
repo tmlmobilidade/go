@@ -1,14 +1,16 @@
+'use client';
+
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { Badge } from '@mantine/core';
 import { IconCancel, IconCheck, IconSwitchHorizontal } from '@tabler/icons-react';
 import { buildRuleSummary, computeRuleTimePoints } from '@tmlmobilidade/go-utils-offer';
-import { Section, Text, Tooltip } from '@tmlmobilidade/ui';
+import { Section, Text, Tooltip, useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -29,6 +31,9 @@ interface RuleLegendItem {
 /* * */
 
 export function RulesScheduleView() {
+	const { t } = useTranslation();
+
+	const { data: { locale } } = useLocaleContext();
 	const patternDetailContext = usePatternDetailContext();
 	const periodsContext = usePeriodsContext();
 	const holidaysContext = useHolidaysContext();
@@ -60,7 +65,7 @@ export function RulesScheduleView() {
 
 		for (const rule of allRules) {
 			if (!uniqueRules.has(rule._id)) {
-				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, periods });
+				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, locale, periods, t });
 				const isReplacement = rule.kind === 'event_replacement';
 				const isExclude = (rule.kind === 'manual' && rule.operating_mode === 'exclude') || rule.kind === 'event_restriction';
 				uniqueRules.set(rule._id, {
@@ -77,7 +82,7 @@ export function RulesScheduleView() {
 			}
 		}
 
-		const sorted = Array.from(uniqueRules.values()).sort((a, b) => a.short.localeCompare(b.short));
+		const sorted = Array.from(uniqueRules.values()).sort((a, b) => a.short.localeCompare(b.short, locale));
 		const pillCount = getPillCount(8);
 
 		return sorted.map((item, idx) => ({
@@ -85,7 +90,7 @@ export function RulesScheduleView() {
 			label: String.fromCharCode(65 + idx), // A, B, C, ...
 			slot: (idx % pillCount) + 1,
 		}));
-	}, [allRules, eventsContext.data.raw, periods]);
+	}, [allRules, eventsContext.data.raw, periods, locale, t]);
 
 	const timeColumns = useMemo(() => {
 		const allTimes = new Set<string>();
@@ -106,7 +111,7 @@ export function RulesScheduleView() {
 	if (!legendItems.length) {
 		return (
 			<Section padding="none">
-				<Text className={styles.empty}>Sem horários para mostrar.</Text>
+				<Text className={styles.empty}>{t('default:scheduling.copy.noTimepoints')}</Text>
 			</Section>
 		);
 	}
@@ -140,16 +145,18 @@ export function RulesScheduleView() {
 			<div className={styles.legend}>
 				{legendItems.map(item => (
 					<Tooltip key={item.ruleId} label={item.long} withArrow>
-						<Badge
+						<button
+							aria-pressed={selectedRuleIds.size === 0 || selectedRuleIds.has(item.ruleId)}
 							className={styles.legendPill}
 							data-selected={selectedRuleIds.size === 0 || selectedRuleIds.has(item.ruleId) ? 'true' : 'false'}
 							onClick={() => handlePillClick(item.ruleId)}
 							onMouseEnter={() => setHoveredRuleId(item.ruleId)}
 							onMouseLeave={() => setHoveredRuleId(null)}
 							style={pillStyle(item.slot)}
+							type="button"
 						>
 							{item.label} {item.short}
-						</Badge>
+						</button>
 					</Tooltip>
 				))}
 			</div>
@@ -161,7 +168,7 @@ export function RulesScheduleView() {
 						<thead>
 							<tr>
 								{/* sticky left header cell */}
-								<th className={styles.headerRuleSticky}>Regra</th>
+								<th className={styles.headerRuleSticky}>{t('default:scheduling.copy.rule')}</th>
 
 								{timeColumns.map(time => (
 									<th key={time} className={styles.headerTimeCol}>

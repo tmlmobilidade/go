@@ -6,6 +6,7 @@ import { useParameterCreateContext } from '@/components/patterns/shape/parameter
 import { IconArrowNarrowDown, IconClockPause, IconGauge } from '@tabler/icons-react';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { Divider, NumberInput, StandardFormController, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -28,6 +29,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const ctx = useParameterCreateContext();
 
 	//
@@ -58,7 +60,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 					render={({ field, fieldState }) => (
 						<NumberInput
 							aria-label={`Tempo de paragem para a sequência ${index + 1}`}
-							error={fieldState.error?.message}
+							error={fieldState.error ? t('default:scheduling.copy.validNonnegativeNumber') : undefined}
 							leftSection={<IconClockPause size={14} />}
 							max={900}
 							min={0}
@@ -78,7 +80,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 			<div className={styles.segmentRow}>
 				{isLast
 					? (
-						<Text c="var(--color-system-text-200)" size="sm">Fim da viagem</Text>
+						<Text c="var(--color-system-text-200)" size="sm">{t('default:scheduling.copy.tripEnd')}</Text>
 					)
 					: (
 						<>
@@ -86,7 +88,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 								<div className={styles.segmentDestination}>
 									<IconArrowNarrowDown size={14} />
 									<Text size="sm">
-										{`Até ${nextPathItem?.stop?.name ?? `Paragem ${nextPathItem?.stop_id}`}`}
+										{t('default:scheduling.copy.toStop', '', { stop: nextPathItem?.stop?.name ?? t('default:scheduling.copy.stopFallback', '', { id: nextPathItem?.stop_id ?? '' }) })}
 									</Text>
 								</div>
 								<Text c="var(--color-system-text-200)" size="xs">
@@ -98,8 +100,8 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 								name={`path.${index + 1}.avg_speed`}
 								render={({ field, fieldState }) => (
 									<NumberInput
-										aria-label={`Velocidade média do segmento ${index + 1}`}
-										error={fieldState.error?.message}
+										aria-label={t('default:scheduling.copy.segmentSpeed', '', { sequence: index + 1 })}
+										error={fieldState.error ? t('default:scheduling.copy.validNonnegativeNumber') : undefined}
 										leftSection={<IconGauge size={14} />}
 										min={0}
 										placeholder="km/h"

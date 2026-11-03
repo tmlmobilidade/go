@@ -18,10 +18,11 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/go-utils-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useLocaleContext, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { getPatternsDetailFormValues } from './patterns-detail-form-values';
 import { usePatternsDetailData } from './use-patterns-detail-data';
@@ -82,6 +83,9 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
+	const { data: { locale } } = useLocaleContext();
 	const router = useRouter();
 	const { lineId, patternId } = usePatternsDetailPatternId();
 	const { data: me, error: meError, isLoading: meLoading } = useMeData();
@@ -183,11 +187,11 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 
 			// Enhance each rule with generated name and short name
 			return allRules.map((rule) => {
-				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, periods });
+				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, locale, periods, t });
 				return { ...rule, name: long, shortName: short, tooltip };
 			});
 		},
-		[eventsContext.data.raw, values.rules, derivedRules, periodsContext.data.raw],
+		[eventsContext.data.raw, values.rules, derivedRules, periodsContext.data.raw, locale, t],
 	);
 
 	// parameters used for UI + preview
@@ -197,7 +201,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 		const basePath = editablePath;
 
 		return allParameters.map((parameter) => {
-			const { long, short } = buildParameterSummary(parameter, { periods });
+			const { long, short } = buildParameterSummary(parameter, { locale, periods, t });
 
 			const mergedPath = getMergedPath(basePath, parameter.path || []);
 			const parameterTravelTimes = computeSegmentTravelTimes(mergedPath);
@@ -209,7 +213,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 				travelTimes: parameterTravelTimes,
 			};
 		});
-	}, [values.parameters, periodsContext.data.raw, editablePath]);
+	}, [values.parameters, periodsContext.data.raw, editablePath, locale, t]);
 
 	//
 	// E. Handle Schedule RULES actions

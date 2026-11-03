@@ -10,6 +10,7 @@ import { ParameterCreateVehicleType } from '@/components/patterns/shape/paramete
 import { ParameterCreateWeekdays } from '@/components/patterns/shape/parameters/create/ParameterCreateWeekdays';
 import { ParameterCreateYearPeriods } from '@/components/patterns/shape/parameters/create/ParameterCreateYearPeriods';
 import { Collapsible, Divider, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -19,6 +20,7 @@ export function ParameterCreateBasicInfo() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createParameterContext = useParameterCreateContext();
 
 	const isDefaultRule = createParameterContext.data.values.kind === 'default';
@@ -32,8 +34,8 @@ export function ParameterCreateBasicInfo() {
 			{/* Parameter Conditions */}
 			{!isDefaultRule && (
 				<Collapsible
-					description="Estes parâmetros aplicam-se quando TODAS as condições abaixo se verificam"
-					title="1. Quando se aplica esta configuração?"
+					description={t('default:scheduling.copy.parameterConditionsHint')}
+					title={t('default:scheduling.copy.parameterConditionsQuestion')}
 					defaultOpen
 				>
 					<ParameterCreateYearPeriods />
@@ -57,7 +59,7 @@ export function ParameterCreateBasicInfo() {
 
 			{/* Vehicle Type */}
 			<Collapsible
-				title={`${isDefaultRule ? '2' : '3'}. Que tipo de veículo deve realizar esta viagem?`}
+				title={t('default:scheduling.copy.vehicleQuestion', '', { step: isDefaultRule ? 2 : 3 })}
 				defaultOpen
 			>
 				<ParameterCreateVehicleType />

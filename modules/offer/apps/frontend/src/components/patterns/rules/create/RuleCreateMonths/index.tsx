@@ -1,8 +1,9 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
-import { MONTH_OPTIONS } from '@tmlmobilidade/go-types-offer';
-import { Section, SegmentedMultiSelect, Text } from '@tmlmobilidade/ui';
+import { getMonthOptions } from '@tmlmobilidade/go-utils-dates';
+import { Section, SegmentedMultiSelect, Text, useLocaleContext } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -12,7 +13,9 @@ export function RuleCreateMonths() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
+	const { data: { locale } } = useLocaleContext();
 
 	//
 	// B. Render components
@@ -21,8 +24,8 @@ export function RuleCreateMonths() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>Meses {createRuleContext.flags.isEventExceptionEnabled ? 'do evento' : ''}</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">Se não selecionar, aplica-se a todos os meses do evento</Text>}
+				<Text>{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:scheduling.months.eventTitle' : 'default:scheduling.months.title')}</Text>
+				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">{t('default:scheduling.months.eventHint')}</Text>}
 			</Section>
 
 			<SegmentedMultiSelect
@@ -30,7 +33,7 @@ export function RuleCreateMonths() {
 				onChange={(selectedDays) => {
 					createRuleContext.form.setValue('months', selectedDays.length > 0 ? selectedDays : undefined, { shouldDirty: true, shouldValidate: true });
 				}}
-				options={MONTH_OPTIONS.map(o => ({
+				options={getMonthOptions(locale).map(o => ({
 					ariaLabel: o.label,
 					label: o.label,
 					value: o.value,

@@ -5,8 +5,9 @@ import { copyDefaultStopParameters, StopsParameterExtended } from '@/utils/stops
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Path, StopsParameter, StopsParameterSchema } from '@tmlmobilidade/go-types-offer';
 import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/go-utils-offer';
-import { type StandardFormContextValue, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useLocaleContext, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { closeCreateParameterModal } from './ParameterCreate.modal';
 
@@ -71,6 +72,9 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
+	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 
 	//
@@ -100,7 +104,7 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 	const parameterForUI = useMemo(() => {
 		const periods = periodsContext.data.raw || [];
 		const travelTimes = computeSegmentTravelTimes(mergedPath || []);
-		const { long, short } = buildParameterSummary(values, { periods });
+		const { long, short } = buildParameterSummary(values, { locale, periods, t });
 
 		const totalDistance = (mergedPath || []).reduce((sum, item) => sum + (item.distance_delta ?? 0), 0);
 		const totalTripSeconds = travelTimes.totalTripSecondsWithStops.raw;
@@ -108,7 +112,7 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 		const avgCommercialSpeed = totalTripSeconds > 0 ? Math.round((totalDistance / 1000) / (totalTripSeconds / 3600) * 10) / 10 : null;
 
 		return { ...values, avgCommercialSpeed, name: long, pureDwellSeconds, shortName: short, totalDistance, travelTimes };
-	}, [values, mergedPath, periodsContext.data.raw]);
+	}, [values, mergedPath, periodsContext.data.raw, locale, t]);
 
 	//
 	// D. Handle actions

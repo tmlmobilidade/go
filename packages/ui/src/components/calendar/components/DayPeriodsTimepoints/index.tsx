@@ -1,9 +1,10 @@
 'use client';
 
 import { IconMoon, IconSun, IconSunset } from '@tabler/icons-react';
-import { DAY_PERIOD_LABELS, DayPeriod, HHMM } from '@tmlmobilidade/go-types-offer';
-import { groupTimesByDayPeriod } from '@tmlmobilidade/go-utils-offer';
-import React, { JSX } from 'react';
+import { type DayPeriod, type HHMM } from '@tmlmobilidade/go-types-offer';
+import { getDayPeriodLabels, groupTimesByDayPeriod } from '@tmlmobilidade/go-utils-offer';
+import React, { type JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -16,15 +17,14 @@ import { TimeChip } from '../TimeChip';
 interface DayPeriodType {
 	icon: JSX.Element
 	key: DayPeriod
-	title: string
 }
 
 const DAY_PERIODS: DayPeriodType[] = [
-	{ icon: <IconSun size={14} />, key: 'PPM', title: DAY_PERIOD_LABELS.PPM.long_with_time },
-	{ icon: <IconSun size={14} style={{ opacity: 0.7 }} />, key: 'CD', title: DAY_PERIOD_LABELS.CD.long_with_time },
-	{ icon: <IconSunset size={14} style={{ opacity: 0.7 }} />, key: 'PPT', title: DAY_PERIOD_LABELS.PPT.long_with_time },
-	{ icon: <IconMoon size={14} />, key: 'N', title: DAY_PERIOD_LABELS.N.long_with_time },
-	{ icon: <IconMoon size={14} style={{ opacity: 0.7 }} />, key: 'M', title: DAY_PERIOD_LABELS.M.long_with_time },
+	{ icon: <IconSun size={14} />, key: 'PPM' },
+	{ icon: <IconSun className={styles.mutedIcon} size={14} />, key: 'CD' },
+	{ icon: <IconSunset className={styles.mutedIcon} size={14} />, key: 'PPT' },
+	{ icon: <IconMoon size={14} />, key: 'N' },
+	{ icon: <IconMoon className={styles.mutedIcon} size={14} />, key: 'M' },
 ];
 
 /* * */
@@ -44,7 +44,11 @@ export function DayPeriodsTimepoints({ children, onRemove, timepoints = [], vari
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const groupedTimePoints = groupTimesByDayPeriod(timepoints);
+	const labels = getDayPeriodLabels(t);
+
+	const getDayPeriodTitle = (period: DayPeriod) => labels[period].long_with_time;
 
 	//
 	// B. Render components
@@ -55,12 +59,12 @@ export function DayPeriodsTimepoints({ children, onRemove, timepoints = [], vari
 				{DAY_PERIODS.map(period => (
 					<Section key={period.key} alignItems="flex-start" gap="sm" padding="none">
 						<Text c="var(--color-system-text-200)" className={styles.longTitle} size="xs">
-							{period.icon} {period.title}
+							{period.icon} {getDayPeriodTitle(period.key)}
 						</Text>
 						<Section flexDirection="row" flexWrap="wrap" gap="xs" padding="none">
 							{groupedTimePoints[period.key].length === 0 && (
 								<Text c="var(--color-system-text-300)" size="xs">
-									Sem horários
+									{t('shared:components.calendar.noTimepoints')}
 								</Text>
 							)}
 							{groupedTimePoints[period.key].map(time => (
@@ -80,7 +84,7 @@ export function DayPeriodsTimepoints({ children, onRemove, timepoints = [], vari
 			{DAY_PERIODS.filter(p => groupedTimePoints[p.key].length > 0).map(period => (
 				<Section key={period.key} alignItems="flex-start" flexDirection="row" gap="xs" padding="none">
 					<Text className={styles.compactTitle} size="xs">
-						{period.icon} {period.key}
+						{period.icon} {labels[period.key].short}
 					</Text>
 					<Section flexDirection="row" flexWrap="wrap" gap="xs" padding="none">
 						{groupedTimePoints[period.key].map(time => (
