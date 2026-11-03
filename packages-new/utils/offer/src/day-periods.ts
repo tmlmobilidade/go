@@ -19,7 +19,7 @@ function isWithinRange(time: number, start: number, end: number): boolean {
 }
 
 /**
- * Resolves a day period (M, PPM, CD, PPT, N) from a timepoint (HH:mm).
+ * Resolves a canonical Offer day period from a timepoint (HH:mm).
  *
  * If the time is past 24:00, it is folded back into the civil-day clock
  * by repeatedly subtracting 24h, so:
@@ -39,16 +39,16 @@ export function resolveDayPeriod(timepoint: string): DayPeriod {
 		}
 	}
 
-	return 'N';
+	return 'night';
 }
 
 export function groupTimesByDayPeriod(times: string[]): Record<DayPeriod, string[]> {
 	const result: Record<DayPeriod, string[]> = {
-		CD: [],
-		M: [],
-		N: [],
-		PPM: [],
-		PPT: [],
+		afternoon_peak: [],
+		daytime: [],
+		early_morning: [],
+		morning_peak: [],
+		night: [],
 	};
 
 	if (!times?.length) return result;

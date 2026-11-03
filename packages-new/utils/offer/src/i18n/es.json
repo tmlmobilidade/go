@@ -1,22 +1,22 @@
 {
 	"dayPeriods": {
-		"PPT": {
+		"afternoon_peak": {
 			"long": "Hora punta de la tarde",
 			"short": "HPT"
 		},
-		"CD": {
+		"daytime": {
 			"long": "Periodo diurno",
 			"short": "PD"
 		},
-		"M": {
+		"early_morning": {
 			"long": "Madrugada",
 			"short": "M"
 		},
-		"PPM": {
+		"morning_peak": {
 			"long": "Hora punta de la mañana",
 			"short": "HPM"
 		},
-		"N": {
+		"night": {
 			"long": "Noche",
 			"short": "N"
 		}

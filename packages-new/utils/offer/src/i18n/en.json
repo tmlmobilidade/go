@@ -1,22 +1,22 @@
 {
 	"dayPeriods": {
-		"PPT": {
+		"afternoon_peak": {
 			"long": "Afternoon peak",
 			"short": "PM"
 		},
-		"CD": {
+		"daytime": {
 			"long": "Daytime",
 			"short": "DAY"
 		},
-		"M": {
+		"early_morning": {
 			"long": "Early morning",
 			"short": "EARLY"
 		},
-		"PPM": {
+		"morning_peak": {
 			"long": "Morning peak",
 			"short": "AM"
 		},
-		"N": {
+		"night": {
 			"long": "Night",
 			"short": "NIGHT"
 		}
