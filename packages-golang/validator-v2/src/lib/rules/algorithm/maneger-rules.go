@@ -5,8 +5,8 @@ import (
 	"slices"
 	"sort"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm/types"
 	ruletypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules/algorithm"
 )
 
 /*

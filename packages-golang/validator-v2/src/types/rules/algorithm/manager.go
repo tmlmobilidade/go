@@ -1,4 +1,4 @@
-package types
+package algorithm_types
 
 // Manager stores registered rules and their validated dependency order.
 // Use algorithm.NewManager or algorithm.Build before reading the order or running rows.

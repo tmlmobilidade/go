@@ -1,4 +1,4 @@
-package types
+package algorithm_types
 
 // Rule is a validation node in the dependency graph.
 // ID should match the rule key used in rules.json (e.g. "agency_id_unique").
