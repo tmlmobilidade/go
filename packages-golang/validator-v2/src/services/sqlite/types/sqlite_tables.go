@@ -7,6 +7,6 @@ import (
 // SQLiteTables is an immutable collection prepared before concurrent validations.
 // It shares table metadata and the connection pool, never row values.
 type SQLiteTables struct {
-	db     *sql.DB
+	DB     *sql.DB
 	Tables map[string]*SQLiteTable
 }

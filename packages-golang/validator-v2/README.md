@@ -108,9 +108,12 @@ ZIP input is no longer supported by the validator.
 `services/sqlite.ReadGTFSSQLite()` opens an existing regular file with `mode=rw`,
 checks its SQLite schema, and returns a database connection. Missing paths are
 rejected without creating a database. Imported rows remain on disk: query helpers
-preserve TEXT values and expose NULL cells as empty strings. Table preparation
-and validation indexes belong to the later preparation step. The input must be
-writable and is retained after validation; only the connection is closed.
+preserve TEXT values and expose NULL cells as empty strings. Preparation is
+separate: `queries.LoadSQLiteTables(db)` loads shared table and
+column metadata, then `queries.PrepareSQLiteIndexes(tables)` creates lookup
+indexes in one transaction before concurrent checks start. Missing tables and
+columns are left for GTFS validation rules to report. The input must be writable
+and is retained after validation; only the connection is closed.
 
 The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 
