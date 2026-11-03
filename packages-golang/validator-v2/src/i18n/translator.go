@@ -102,6 +102,3 @@ func flattenJSON(prefix string, data map[string]interface{}, flatMap map[string]
 		}
 	}
 }
-
-// Global translator instance - defaults to English
-var AppTranslator = NewTranslator("en")

@@ -1,7 +1,6 @@
 package cli
 
-// displayVersion is configured by the validator entrypoint before parsing flags.
-var displayVersion string
+import "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 
 // SetDisplayVersion sets the display version
-func SetDisplayVersion(v string) { displayVersion = v }
+func SetDisplayVersion(v string) { variables.DisplayVersion = v }

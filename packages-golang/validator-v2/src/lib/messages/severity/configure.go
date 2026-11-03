@@ -1,8 +1,8 @@
 package severity
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/consts"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 )
 
 // ConfigureMessageSeverities prepares message overrides for a validation run.
@@ -15,7 +15,7 @@ func ConfigureMessageSeverities(config map[string]rules.RuleConfig) {
 	// 1. Clear overrides when no configuration is supplied
 
 	if config == nil {
-		consts.MessageSeverities.Store(nil)
+		variables.MessageSeverities.Store(nil)
 		return
 	}
 
@@ -37,5 +37,5 @@ func ConfigureMessageSeverities(config map[string]rules.RuleConfig) {
 	//
 	// 3. Publish the completed snapshot atomically
 
-	consts.MessageSeverities.Store(&values)
+	variables.MessageSeverities.Store(&values)
 }

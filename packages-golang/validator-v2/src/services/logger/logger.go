@@ -15,11 +15,11 @@ func NewLogger(renderer telemetry.LogRenderer) *Logger {
 	return &Logger{LoggerApi: telemetry.CreateLogger(renderer)}
 }
 
-// AppLogger reserves stdout for the validator's JSON result, in both environments.
-var AppLogger = NewLogger(func(record telemetry.LogRecord) {
+// RenderLogRecord routes severity logs to stderr so stdout can contain result JSON.
+func RenderLogRecord(record telemetry.LogRecord) {
 	if os.Getenv("ENVIRONMENT") == "dev" {
 		render.RenderDevTo(record, os.Stderr, os.Stderr)
 	} else {
 		render.RenderStructuredTo(record, os.Stderr, os.Stderr)
 	}
-})
+}

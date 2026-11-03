@@ -1,6 +1,6 @@
-package rules
+package variables
 
-// GtfsRuleFiles lists the tables supported by validation, independently of configuration.
+// GtfsRuleFiles lists the supported validation tables independently of configuration.
 var GtfsRuleFiles = []string{
 	"agency",
 	"calendar",

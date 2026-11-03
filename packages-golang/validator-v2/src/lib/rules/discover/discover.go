@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 )
 
 // DiscoverRuleIDs collects validation and runtime IDs without executing checks.
@@ -23,7 +23,7 @@ func DiscoverRuleIDs(source fs.FS) ([]string, error) {
 	for _, id := range []string{"file_validation", "file_not_found_in_rules"} {
 		found[id] = true
 	}
-	for _, file := range rules.GtfsRuleFiles {
+	for _, file := range variables.GtfsRuleFiles {
 		found[file+"_file_missing"] = true
 	}
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/logger"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
 	messageTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	ruleTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"

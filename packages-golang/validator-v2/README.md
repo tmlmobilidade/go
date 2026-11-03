@@ -36,6 +36,12 @@ The GTFS Validator follows a modular, concurrent architecture designed for effic
 5. **Message Service** - Collects and aggregates validation results
 6. **Validation Context** - Provides common utilities for validation functions
 
+Shared runtime variables live under `src/types/variables`: registry state,
+severity settings, supported tables and codes, compiled regexes, string escaping,
+and version values. Logger and translator instances live in its `logger` and
+`i18n` subpackages to avoid import cycles. Per-call state remains local. The two
+`go:embed` declarations stay beside the source files they embed.
+
 ### High-Level Flow
 
 ```

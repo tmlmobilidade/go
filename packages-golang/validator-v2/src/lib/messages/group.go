@@ -4,9 +4,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/i18n"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/i18n"
 )
 
 // groupedMessages collapses the messages into one entry per rule, so the output has
@@ -54,7 +54,7 @@ func groupedMessages(messages []types.Message) []types.RuleMessage {
 			rowsByKey[key][row] = true
 		}
 
-		if rules.SeverityRank[message.Severity] > rules.SeverityRank[group.Severity] {
+		if variables.SeverityRank[message.Severity] > variables.SeverityRank[group.Severity] {
 			group.Severity = message.Severity
 		}
 	}

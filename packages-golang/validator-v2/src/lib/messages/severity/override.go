@@ -1,8 +1,8 @@
 package severity
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/consts"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 )
 
 // MessageSeverityOverride returns the configured severity for the emitted rule ID.
@@ -13,7 +13,7 @@ func MessageSeverityOverride(_ string, id, _ string) (rules.Severities, bool) {
 	//
 	// 1. Read the current immutable configuration snapshot
 
-	values := consts.MessageSeverities.Load()
+	values := variables.MessageSeverities.Load()
 	if values == nil {
 		return "", false
 	}

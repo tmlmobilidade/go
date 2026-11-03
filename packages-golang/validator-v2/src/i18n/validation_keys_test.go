@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 )
 
 func TestGenericMessagesDescribeFindings(t *testing.T) {
@@ -39,7 +39,7 @@ func TestGenericMessagesDescribeFindings(t *testing.T) {
 func TestMissingFileTranslations(t *testing.T) {
 	for _, language := range []string{"en", "pt", "es"} {
 		translator := NewTranslator(language)
-		for _, table := range rules.GtfsRuleFiles {
+		for _, table := range variables.GtfsRuleFiles {
 			t.Run(language+"/"+table, func(t *testing.T) {
 				message := translator.Get("file_missing.message", table+".txt")
 				if message == "file_missing.message" || !strings.Contains(message, table+".txt") || strings.Contains(message, "%!") {

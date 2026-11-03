@@ -4,13 +4,13 @@ import (
 	"os"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/i18n"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/severity"
 	rulevalidate "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/validate"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/cli"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/logger"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/i18n"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
 )
 
 func main() {
