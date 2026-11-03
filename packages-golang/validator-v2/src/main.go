@@ -10,6 +10,7 @@ import (
 	rulevalidate "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/validate"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/cli"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/logger"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
 )
 
 func main() {
@@ -64,7 +65,7 @@ func main() {
 	messageService := messages.NewMessageService()
 	tracker := logger.AppLogger.StartPerformanceTracker("Reading GTFS")
 
-	gtfs, err := services.ReadGTFSSQLite(options.InputPath)
+	db, err := sqlite.ReadGTFSSQLite(options.InputPath)
 	tracker.End(err)
 	if err != nil {
 		logger.AppLogger.Critical(telemetry.LogEntry{Message: "Error reading GTFS", Error: err})
@@ -75,7 +76,7 @@ func main() {
 	// 7. Close the database when validation finishes
 
 	defer func() {
-		if err := gtfs.Close(); err != nil {
+		if err := db.Close(); err != nil {
 			logger.AppLogger.Error(telemetry.LogEntry{Message: "Error closing database", Error: err})
 		}
 	}()
@@ -84,7 +85,7 @@ func main() {
 	// 8. Execute the configured rules when GTFS loading produced no errors
 
 	if messageService.TotalErrors() == 0 {
-		runValidations(gtfs, rules, messageService)
+		runValidations(db, rules, messageService)
 	}
 
 	//

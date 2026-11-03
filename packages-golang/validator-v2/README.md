@@ -105,10 +105,12 @@ The validator uses shared `telemetry` timing. Its integration test uses `import-
 to verify that the producer output can be loaded and prepared for validation.
 ZIP input is no longer supported by the validator.
 
-`ReadGTFSSQLite()` opens the database without creating missing files, rebuilds the
-validator's `id_map`, and loads ID lookups into memory. Validation then prepares
-its indexes and derived tables. The input must be writable and is retained after
-validation; only the connection is closed. Repeated validation rebuilds the ID map.
+`services/sqlite.ReadGTFSSQLite()` opens an existing regular file with `mode=rw`,
+checks its SQLite schema, and returns a database connection. Missing paths are
+rejected without creating a database. Imported rows remain on disk: query helpers
+preserve TEXT values and expose NULL cells as empty strings. Table preparation
+and validation indexes belong to the later preparation step. The input must be
+writable and is retained after validation; only the connection is closed.
 
 The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 

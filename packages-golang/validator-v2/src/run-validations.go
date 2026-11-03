@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages"
@@ -10,14 +11,14 @@ import (
 )
 
 // runValidations coordinates database preparation and rule execution for the CLI.
-func runValidations(gtfs types.Gtfs, rules map[string]ruleTypes.RuleConfig, messageService *messages.MessageService) {
+func runValidations(db *sql.DB, rules map[string]ruleTypes.RuleConfig, messageService *messages.MessageService) {
 	//
 
 	//
 	// 1. Prepare the SQLite validation tables and indexes
 
 	preparation := logger.AppLogger.StartPerformanceTracker("Preparing SQLite validation tables and indexes")
-	tables, err := services.PrepareSQLiteTables(gtfs.DB())
+	tables, err := services.PrepareSQLiteTables(db)
 	preparation.End(err)
 	if err != nil {
 		messageService.AddMessage(messageTypes.Message{
@@ -31,7 +32,7 @@ func runValidations(gtfs types.Gtfs, rules map[string]ruleTypes.RuleConfig, mess
 	// 2. Execute the configured rules and record the validation duration
 
 	tracker := logger.AppLogger.StartPerformanceTracker("Validating GTFS rules")
-	_, err = validations.Run(gtfs, rules, tables)
+	_, err = validations.Run(db, rules, tables)
 	tracker.End(err)
 	if err != nil {
 		messageService.AddMessage(messageTypes.Message{
