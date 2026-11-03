@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
+
+	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/logger"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/i18n"
 	services "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services"
@@ -10,13 +13,23 @@ import (
 )
 
 func init() {
+	//
+
+	//
+	// 1. Set the version displayed by the CLI
+
 	services.SetDisplayVersion("1.0.0")
 }
 
 func runValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
-	preparation := lib.AppLogger.StartPerformanceTracker("Preparing SQLite validation tables and indexes")
+	//
+
+	//
+	// 1. Prepare the SQLite validation tables and indexes
+
+	preparation := logger.AppLogger.StartPerformanceTracker("Preparing SQLite validation tables and indexes")
 	tables, err := services.PrepareSQLiteTables(gtfs.DB())
-	preparation.End()
+	preparation.End(err)
 	if err != nil {
 		services.AppMessageService.AddMessage(types.Message{
 			FileName: "N/A", Field: "N/A", RuleID: "file_validation",
@@ -24,9 +37,14 @@ func runValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 		})
 		return
 	}
-	tracker := lib.AppLogger.StartPerformanceTracker("Validating GTFS rules")
-	defer tracker.End()
-	if _, err := validations.Run(gtfs, rules, tables); err != nil {
+
+	//
+	// 2. Execute the configured rules and record the validation duration
+
+	tracker := logger.AppLogger.StartPerformanceTracker("Validating GTFS rules")
+	_, err = validations.Run(gtfs, rules, tables)
+	tracker.End(err)
+	if err != nil {
 		services.AppMessageService.AddMessage(types.Message{
 			FileName: "N/A", Field: "N/A", RuleID: "file_validation",
 			Severity: types.SEVERITY_ERROR, Message: fmt.Sprintf("Error validating GTFS: %v", err),
@@ -35,69 +53,97 @@ func runValidations(gtfs types.Gtfs, rules *types.GtfsRules) {
 }
 
 func outputSummary() {
+	//
+
+	//
+	// 1. Write the summary to the configured output file
+
 	if services.AppCLI.Options.OutputPath != "" {
 		if err := services.AppMessageService.WriteToFile(services.AppCLI.Options.OutputPath); err != nil {
-			log.Fatalf("Error writing validation summary: %v", err)
+			logger.AppLogger.Critical(telemetry.LogEntry{Message: "Error writing validation summary", Error: err})
+			os.Exit(1)
 		}
-		lib.AppLogger.Info("Summary written to: " + services.AppCLI.Options.OutputPath)
+		logger.AppLogger.Info("Summary written to: " + services.AppCLI.Options.OutputPath)
 		return
 	}
+
+	//
+	// 2. Print the summary to stdout when no output file is configured
 
 	services.AppMessageService.PrintJSON()
 }
 
 func main() {
+	//
 
 	//
-	// 0.1 Initialize CLI
-	services.AppCLI.Run()
-	lib.AppLogger.SetLogLevel(services.AppCLI.Options.LogLevel)
+	// 1. Read the CLI options and configure the log level
 
-	// 0.2 Initialize Translator
+	services.AppCLI.Run()
+	if err := logger.AppLogger.SetLogLevel(services.AppCLI.Options.LogLevel); err != nil {
+		logger.AppLogger.Critical(err)
+		os.Exit(1)
+	}
+
+	//
+	// 2. Select the validation message language
+
 	if services.AppCLI.Options.RulesLang != "" {
 		i18n.AppTranslator.SetLanguage(services.AppCLI.Options.RulesLang)
 	}
 
-	// 0.3 Parse Rules
+	//
+	// 3. Parse the rules and configure finding severities
+
 	rules, err := services.NewRulesParser(services.AppCLI.Options.RulesPath, validations.RuleIDs()...).ParseRules()
 	if err != nil {
-		log.Fatalf("Error parsing rules: %v", err)
+		logger.AppLogger.Critical(telemetry.LogEntry{Message: "Error parsing rules", Error: err})
+		os.Exit(1)
 	}
 
 	ruleset.ConfigureMessageSeverities(rules)
 
 	//
-	// lib.AppLogger.Clear()
-	lib.AppLogger.Divider("GTFS Validator v1.0.0")
+	// 4. Log the validator version
+
+	logger.AppLogger.Info("GTFS Validator v1.0.0")
 
 	//
-	// 0.4 Start Performance Tracker
-	tracker := lib.AppLogger.StartPerformanceTracker("Reading GTFS")
+	// 5. Open the existing GTFS SQLite database and record the loading duration
 
-	//
-	// 1. Open the existing GTFS SQLite database
+	tracker := logger.AppLogger.StartPerformanceTracker("Reading GTFS")
+
 	gtfs, err := services.ReadGTFSSQLite(services.AppCLI.Options.InputPath)
-	tracker.End()
+	tracker.End(err)
 	if err != nil {
-		log.Fatalf("Error reading GTFS: %v", err)
+		logger.AppLogger.Critical(telemetry.LogEntry{Message: "Error reading GTFS", Error: err})
+		os.Exit(1)
 	}
+
+	//
+	// 6. Close the database when validation finishes
+
 	defer func() {
 		if err := gtfs.Close(); err != nil {
-			lib.AppLogger.Error(fmt.Sprintf("Error closing database: %v", err))
+			logger.AppLogger.Error(telemetry.LogEntry{Message: "Error closing database", Error: err})
 		}
 	}()
 
-	// If there are errors in the GTFS, print the errors and exit
+	//
+	// 7. Output existing GTFS errors before running validation rules
+
 	if services.AppMessageService.TotalErrors() > 0 {
 		outputSummary()
 		return
 	}
 
 	//
-	// 2. Execute every configured rule in the global dependency graph.
+	// 8. Execute the configured rules in the global dependency graph
+
 	runValidations(gtfs, rules)
 
 	//
-	// 3. Output Summary
+	// 9. Output the validation summary
+
 	outputSummary()
 }

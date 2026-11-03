@@ -112,6 +112,27 @@ validation; only the connection is closed. Repeated validation rebuilds the ID m
 
 The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 
+## Logging
+
+`src/services/logger` composes the shared telemetry logger with validator row
+progress. `AppLogger` supports all telemetry severity methods, log-level filtering,
+and performance trackers. Severity logs go to stderr so stdout can contain the
+JSON result. `ENVIRONMENT=dev` selects readable logs; other environments use
+structured JSON with timestamps and attributes. Shared presentation methods such
+as `Divider` still write to stdout; the entrypoint uses `Info` for its banner.
+
+```go
+progress := logger.AppLogger.NewProgressTracker("trips", totalRows, 1000)
+// Call after each processed row:
+progress.Track()
+// Call only after all table checks finish successfully:
+progress.Complete()
+```
+
+Progress includes the table, processed rows, total rows, and completion status.
+Reaching the final row does not report 100% until `Complete` is called. Progress
+trackers accept concurrent row updates and normalize a zero row threshold to one.
+
 ## Validation Processing
 
 The validation system uses a registry pattern that allows validation functions to be registered and discovered automatically.
