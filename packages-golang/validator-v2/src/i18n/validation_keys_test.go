@@ -52,6 +52,53 @@ func TestMissingFileTranslations(t *testing.T) {
 
 // Check the actual call sites, including contexts for several rules in one file.
 func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
+	// Resolve each imported callback to the rule ID in the central registry.
+	registrations, err := parser.ParseFile(token.NewFileSet(), "../validations/registry-rules.go", nil, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	packages := map[string]string{}
+	for _, spec := range registrations.Imports {
+		importPath, err := strconv.Unquote(spec.Path.Value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		directory, local := strings.CutPrefix(importPath, "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/")
+		if !local {
+			continue
+		}
+		alias := filepath.Base(directory)
+		if spec.Name != nil {
+			alias = spec.Name.Name
+		}
+		packages[alias] = filepath.Join("..", filepath.FromSlash(directory))
+	}
+	functionRules := map[string]string{}
+	ast.Inspect(registrations, func(node ast.Node) bool {
+		call, ok := node.(*ast.CallExpr)
+		if !ok {
+			return true
+		}
+		selector, ok := call.Fun.(*ast.SelectorExpr)
+		if !ok || selector.Sel.Name != "Register" || len(call.Args) != 2 {
+			return true
+		}
+		id, validID := resolveString(call.Args[0])
+		function, validFunction := call.Args[1].(*ast.SelectorExpr)
+		if !validID || !validFunction {
+			t.Fatal("registration must identify a rule ID and imported validation function")
+		}
+		alias, ok := function.X.(*ast.Ident)
+		if !ok || packages[alias.Name] == "" {
+			t.Fatalf("cannot resolve validation package for %s", id)
+		}
+		functionRules[filepath.Join(packages[alias.Name], function.Sel.Name)] = id
+		return true
+	})
+	if len(functionRules) == 0 {
+		t.Fatal("no registered validations found")
+	}
+
 	translators := []*Translator{NewTranslator("en"), NewTranslator("es"), NewTranslator("pt")}
 	check := func(key string, position token.Position) {
 		for _, translator := range translators {
@@ -60,7 +107,7 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 			}
 		}
 	}
-	err := filepath.WalkDir("..", func(path string, entry fs.DirEntry, err error) error {
+	err = filepath.WalkDir("..", func(path string, entry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -71,6 +118,15 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 		file, err := parser.ParseFile(positions, path, nil, 0)
 		if err != nil {
 			return err
+		}
+		ruleForPosition := func(position token.Pos) (string, bool) {
+			for _, declaration := range file.Decls {
+				if function, ok := declaration.(*ast.FuncDecl); ok && function.Body != nil && position >= function.Body.Pos() && position <= function.Body.End() {
+					id, exists := functionRules[filepath.Join(filepath.Dir(path), function.Name.Name)]
+					return id, exists
+				}
+			}
+			return "", false
 		}
 		ast.Inspect(file, func(node ast.Node) bool {
 			call, ok := node.(*ast.CallExpr)
@@ -96,7 +152,7 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 			if method.Sel.Name != "GetTranslatedMessage" && method.Sel.Name != "GetRequiredMessage" && method.Sel.Name != "GetSeverityMessage" {
 				return true
 			}
-			// Shared helpers forward contexts; only validations construct rule contexts.
+			// Resolve rule-specific detail keys inside registered validations.
 			if !strings.HasPrefix(filepath.ToSlash(path), "../validations/") {
 				return true
 			}
@@ -104,24 +160,9 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 				t.Errorf("%s: missing validation context", positions.Position(call.Pos()))
 				return true
 			}
-			context, ok := call.Args[0].(*ast.Ident)
-			if !ok || context.Obj == nil {
-				t.Errorf("%s: cannot resolve validation context", positions.Position(call.Pos()))
-				return true
-			}
-			assignment, ok := context.Obj.Decl.(*ast.AssignStmt)
-			if !ok || len(assignment.Rhs) != 1 {
-				t.Errorf("%s: cannot resolve context declaration", positions.Position(call.Pos()))
-				return true
-			}
-			constructor, ok := assignment.Rhs[0].(*ast.CallExpr)
-			if !ok || len(constructor.Args) < 3 {
-				t.Errorf("%s: cannot resolve context constructor", positions.Position(call.Pos()))
-				return true
-			}
-			ruleID, ok := resolveString(constructor.Args[2])
+			ruleID, ok := ruleForPosition(call.Pos())
 			if !ok {
-				t.Errorf("%s: cannot resolve context rule ID", positions.Position(call.Pos()))
+				t.Errorf("%s: cannot resolve the registered rule ID", positions.Position(call.Pos()))
 				return true
 			}
 			count := 1
