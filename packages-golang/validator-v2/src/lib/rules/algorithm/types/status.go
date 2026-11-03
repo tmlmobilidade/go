@@ -1,6 +1,6 @@
 package types
 
-// Status is the final outcome of a single rule for a single row.
+// Status is the final outcome of one rule invocation, including a whole-table scan.
 // The scheduler uses prerequisite outcomes to decide whether dependent rules can run.
 type Status int
 
