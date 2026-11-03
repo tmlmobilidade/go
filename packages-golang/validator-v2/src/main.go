@@ -6,6 +6,8 @@ import (
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/i18n"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/severity"
+	rulevalidate "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/validate"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/cli"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/logger"
 )
@@ -14,9 +16,13 @@ func main() {
 	//
 
 	//
-	// 1. Set the version, read the CLI options, and configure the log level
+	// 1. Set the version
 
 	cli.SetDisplayVersion("1.0.0")
+
+	//
+	// 2. Read the CLI options and configure the log level
+
 	appCLI := cli.NewCLI("GTFS Validator")
 	if err := cli.Run(appCLI); err != nil {
 		logger.AppLogger.Critical(telemetry.LogEntry{Message: "Invalid CLI options", Error: err})
@@ -30,30 +36,30 @@ func main() {
 	}
 
 	//
-	// 2. Select the validation message language
+	// 3. Select the validation message language
 
 	if options.RulesLang != "" {
 		i18n.AppTranslator.SetLanguage(options.RulesLang)
 	}
 
 	//
-	// 3. Parse the rules and configure finding severities
+	// 4. Validate rules.json and configure finding severities
 
-	rules, err := services.NewRulesParser(options.RulesPath, validations.RuleIDs()...).ParseRules()
+	rules, err := rulevalidate.ValidateRulesJSON(options.RulesPath)
 	if err != nil {
-		logger.AppLogger.Critical(telemetry.LogEntry{Message: "Error parsing rules", Error: err})
+		logger.AppLogger.Critical(telemetry.LogEntry{Message: "Invalid rules configuration", Error: err})
 		os.Exit(1)
 	}
 
-	ruleset.ConfigureMessageSeverities(rules)
+	severity.ConfigureMessageSeverities(rules)
 
 	//
-	// 4. Log the validator version
+	// 5. Log the validator version
 
 	logger.AppLogger.Info("GTFS Validator v1.0.0")
 
 	//
-	// 5. Open the existing GTFS SQLite database and record the loading duration
+	// 6. Open the existing GTFS SQLite database and record the loading duration
 
 	messageService := messages.NewMessageService()
 	tracker := logger.AppLogger.StartPerformanceTracker("Reading GTFS")
@@ -66,7 +72,7 @@ func main() {
 	}
 
 	//
-	// 6. Close the database when validation finishes
+	// 7. Close the database when validation finishes
 
 	defer func() {
 		if err := gtfs.Close(); err != nil {
@@ -75,14 +81,14 @@ func main() {
 	}()
 
 	//
-	// 7. Execute the configured rules when GTFS loading produced no errors
+	// 8. Execute the configured rules when GTFS loading produced no errors
 
 	if messageService.TotalErrors() == 0 {
 		runValidations(gtfs, rules, messageService)
 	}
 
 	//
-	// 8. Output the validation summary
+	// 9. Output the validation summary
 
 	if err := messageService.OutputSummary(options.OutputPath); err != nil {
 		logger.AppLogger.Critical(telemetry.LogEntry{Message: "Error writing validation summary", Error: err})

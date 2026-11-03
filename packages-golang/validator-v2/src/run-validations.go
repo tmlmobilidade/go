@@ -10,7 +10,7 @@ import (
 )
 
 // runValidations coordinates database preparation and rule execution for the CLI.
-func runValidations(gtfs types.Gtfs, rules *types.GtfsRules, messageService *messages.MessageService) {
+func runValidations(gtfs types.Gtfs, rules map[string]ruleTypes.RuleConfig, messageService *messages.MessageService) {
 	//
 
 	//

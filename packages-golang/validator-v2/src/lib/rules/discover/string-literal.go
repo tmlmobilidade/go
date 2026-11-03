@@ -1,4 +1,4 @@
-package utils
+package discover
 
 import (
 	"go/ast"
@@ -6,9 +6,9 @@ import (
 	"strconv"
 )
 
-// StringLiteral resolves a string literal or a chain of local value declarations.
+// stringLiteral resolves a string literal or a chain of local value declarations.
 // Unsupported expressions and cyclic references return an empty string.
-func StringLiteral(expression ast.Expr) string {
+func stringLiteral(expression ast.Expr) string {
 	//
 
 	//
