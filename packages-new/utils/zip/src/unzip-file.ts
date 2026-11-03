@@ -49,6 +49,8 @@ export async function unzipFile(zipFilePath: string, outputDir: string, dirPermi
 
 		const filePath = path.join(outputDir, entry.fileName);
 
+		fs.mkdirSync(path.dirname(filePath), { recursive: true });
+
 		await pipeline(readStream, fs.createWriteStream(filePath));
 	}
 

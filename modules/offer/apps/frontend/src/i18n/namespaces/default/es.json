@@ -20,7 +20,7 @@
 				"label": "Operadores afectados"
 			},
 			"code": {
-				"description": "Solo letras mayúsculas, números y guiones bajos. Máximo de {{max}} caracteres.",
+				"description": "Solo letras mayúsculas, números y guiones bajos. Máximo de {max} caracteres.",
 				"label": "Código",
 				"placeholder": "Ej.: MARAT_LIS"
 			},
@@ -43,18 +43,16 @@
 			"title": "Eventos"
 		},
 		"ruleCard": {
-			"allDay": "Todo el día {{dates}}",
+			"allDay": "Todo el día {dates}",
 			"allLines": "Todas las líneas",
-			"days_one": "día",
-			"days_other": "días",
-			"exceptLines": "Todas excepto {{lines}}",
-			"lines_one": "{{count}} línea",
-			"lines_other": "{{count}} líneas",
-			"namedLines": "Líneas {{lines}}",
+			"days": "{count, plural, one {día} other {días}}",
+			"exceptLines": "Todas excepto {lines}",
+			"lines": "{count, plural, one {# línea} other {# líneas}}",
+			"namedLines": "Líneas {lines}",
 			"noLines": "Ninguna línea",
-			"onDates": "(en las fechas {{dates}})",
-			"operateAs": "Funcionará como {{replacement}}",
-			"timeWindow": "{{start}} a {{end}} {{dates}}"
+			"onDates": "(en las fechas {dates})",
+			"operateAs": "Funcionará como {replacement}",
+			"timeWindow": "{start} a {end} {dates}"
 		},
 		"ruleEditor": {
 			"affectedDates": "2. ¿Qué días afecta esta regla?",

@@ -16,6 +16,7 @@ import { ListFilterOptions } from '../ListFilterOptions';
 interface ListFilterProps {
 	active?: boolean
 	disabled?: boolean
+	isLoading?: boolean
 	isMultiple?: boolean
 	label: string
 	onChange?: (values: string[]) => void
@@ -27,7 +28,7 @@ interface ListFilterProps {
 
 /* * */
 
-export function ListFilter({ active, disabled, isMultiple = true, label, onChange, onClose, options = [], withSearch = true, withToggleAll }: ListFilterProps) {
+export function ListFilter({ active, disabled, isLoading, isMultiple = true, label, onChange, onClose, options = [], withSearch = true, withToggleAll }: ListFilterProps) {
 	//
 
 	//
@@ -74,7 +75,14 @@ export function ListFilter({ active, disabled, isMultiple = true, label, onChang
 	// D. Render components
 
 	return (
-		<FilterWrapper ref={filterWrapperRef} active={active} disabled={disabled} label={label} onClose={handleClose}>
+		<FilterWrapper
+			ref={filterWrapperRef}
+			active={active}
+			disabled={disabled}
+			label={label}
+			loading={isLoading}
+			onClose={handleClose}
+		>
 
 			{(withSearch || withToggleAll) && (
 				<>

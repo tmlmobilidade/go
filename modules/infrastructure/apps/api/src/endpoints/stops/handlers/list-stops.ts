@@ -75,10 +75,7 @@ export async function listStopsHandler(request: FastifyRequest<{ Body: StopsList
 	// Parse and return the result
 
 	if (!aggregationResult?.length) {
-		return sendErrorApiResponse(reply, {
-			error: 'No stops found matching the filters',
-			status_code: '404',
-		});
+		return sendSuccessApiResponse(reply, [], { status_code: '201' });
 	}
 
 	return sendSuccessApiResponse(reply, aggregationResult);

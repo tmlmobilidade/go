@@ -5,6 +5,8 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
 
+import { getUserExtractions } from '../utils/get-user-extractions.js';
+
 /**
  * Lock an extraction for the current user.
  * @param request The request object
@@ -46,9 +48,9 @@ export async function lockExtractionHandler(request: FastifyRequest<{ Params: { 
 	await goDb.core.extractions.updateOne({ _id: request.params.id }, { is_locked: !foundExtraction.is_locked });
 
 	//
-	// Retrieve all extractions for the current user
+	// Retrieve extractions for the current user and environment
 
-	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
+	const foundExtractions = await getUserExtractions(request.me._id);
 
 	sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

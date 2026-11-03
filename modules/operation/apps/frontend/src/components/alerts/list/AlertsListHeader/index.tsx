@@ -1,8 +1,9 @@
-/* * */
+'use client';
 
 import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { AlertsListHeaderMenu } from '../AlertsListHeaderMenu';
 import { AlertsListFilterSearch } from '../filters/AlertsListFilterSearch';
 import { useAlertsListData } from '../use-alerts-list-data';
 
@@ -23,6 +24,7 @@ export function AlertsListHeader() {
 
 	return (
 		<ListHeader
+			actions={<AlertsListHeaderMenu />}
 			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
 			count={data?.length}
 			search={<AlertsListFilterSearch />}

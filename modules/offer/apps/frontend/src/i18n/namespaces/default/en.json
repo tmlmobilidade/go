@@ -20,7 +20,7 @@
 				"label": "Affected operators"
 			},
 			"code": {
-				"description": "Uppercase letters, numbers and underscores only. Maximum {{max}} characters.",
+				"description": "Uppercase letters, numbers and underscores only. Maximum {max} characters.",
 				"label": "Code",
 				"placeholder": "E.g. MARAT_LIS"
 			},
@@ -43,18 +43,16 @@
 			"title": "Events"
 		},
 		"ruleCard": {
-			"allDay": "All day {{dates}}",
+			"allDay": "All day {dates}",
 			"allLines": "All lines",
-			"days_one": "day",
-			"days_other": "days",
-			"exceptLines": "All except {{lines}}",
-			"lines_one": "{{count}} line",
-			"lines_other": "{{count}} lines",
-			"namedLines": "Lines {{lines}}",
+			"days": "{count, plural, one {day} other {days}}",
+			"exceptLines": "All except {lines}",
+			"lines": "{count, plural, one {# line} other {# lines}}",
+			"namedLines": "Lines {lines}",
 			"noLines": "No lines",
-			"onDates": "(on {{dates}})",
-			"operateAs": "Operates as {{replacement}}",
-			"timeWindow": "{{start}} to {{end}} {{dates}}"
+			"onDates": "(on {dates})",
+			"operateAs": "Operates as {replacement}",
+			"timeWindow": "{start} to {end} {dates}"
 		},
 		"ruleEditor": {
 			"affectedDates": "2. Which dates does this rule affect?",

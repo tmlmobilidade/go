@@ -48,7 +48,10 @@
 				"label": "Descrição"
 			},
 			"generate_text": {
-				"label": "Gerar Texto Automático"
+				"accept_proposal": "Aceitar proposta",
+				"label": "Gerar Texto Automático",
+				"loading": "A gerar texto automático...",
+				"title": "Proposta"
 			},
 			"info_url": {
 				"description": "Opcionalmente inclua o URL de um website onde é possivel obter mais informação",
@@ -70,6 +73,62 @@
 					"label": "Imagem"
 				}
 			}
+		}
+	},
+	"extract": {
+		"AlertsExtract": {
+			"action": {
+				"error_title": "Erro ao solicitar a exportação",
+				"success_title": "Exportação solicitada"
+			}
+		},
+		"AlertsExtractFooter": {
+			"button": {
+				"label": "Exportar"
+			}
+		},
+		"AlertsExtractHeader": {
+			"title": "Exportar alertas"
+		},
+		"AlertsExtractProperties": {
+			"date_placeholder": "Selecione uma data...",
+			"fields": {
+				"active_period_filter_end": {
+					"label": "Validade até"
+				},
+				"active_period_filter_start": {
+					"label": "Validade desde"
+				},
+				"agency_ids": {
+					"label": "Operador"
+				},
+				"causes": {
+					"label": "Causa"
+				},
+				"effects": {
+					"label": "Efeito"
+				},
+				"publish_date_filter_end": {
+					"label": "Publicação até"
+				},
+				"publish_date_filter_start": {
+					"label": "Publicação desde"
+				},
+				"publish_status": {
+					"label": "Estado"
+				},
+				"reference_type": {
+					"label": "Referência"
+				},
+				"search": {
+					"label": "Pesquisa"
+				},
+				"version": {
+					"label": "Versão"
+				}
+			},
+			"no_filter": "Sem filtro",
+			"placeholder": "Selecione uma ou mais opções..."
 		}
 	},
 	"list": {
@@ -105,6 +164,11 @@
 			}
 		},
 		"AlertsListHeader": {
+			"actions": {
+				"extract": {
+					"label": "Exportar alertas"
+				}
+			},
 			"title": "Alertas"
 		},
 		"filters": {

@@ -2,6 +2,7 @@
 
 import { getModuleConfig } from '@tmlmobilidade/consts';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { registerPrometheusMetrics } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -16,6 +17,11 @@ import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 	fastifyService.server.addHook('onRequest', async (request, reply) => {
 		reply.header('access-control-allow-origin', '*');
+		reply.removeHeader('access-control-allow-credentials');
+	});
+
+	await registerPrometheusMetrics(fastifyService.server, {
+		name: 'hub_api',
 	});
 
 	await fastifyService.start();

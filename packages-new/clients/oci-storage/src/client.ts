@@ -8,6 +8,7 @@ import { Readable } from 'node:stream';
 import { OciError, Region, SimpleAuthenticationDetailsProvider } from 'oci-common';
 import { ObjectStorageClient, UploadManager } from 'oci-objectstorage';
 import { CreatePreauthenticatedRequestDetails } from 'oci-objectstorage/lib/model/create-preauthenticated-request-details.js';
+import { WorkRequest } from 'oci-objectstorage/lib/model/work-request.js';
 
 import { BlobStoreError, NotFoundError } from './storage-error.js';
 
@@ -53,12 +54,13 @@ export class OCIStorageClientWrapper {
 
 	/**
 	 * Copies a file from one object key to another within the same bucket.
+	 * Resolves once the asynchronous OCI copy has completed successfully.
 	 * @param source - The source object key.
 	 * @param destination - The destination object key.
 	 */
 	async copyFile(source: string, destination: string): Promise<void> {
 		try {
-			await withRetry(() => this.entry.client.copyObject({
+			const copyResponse = await withRetry(() => this.entry.client.copyObject({
 				bucketName: this.entry.bucketName,
 				copyObjectDetails: {
 					destinationBucket: this.entry.bucketName,
@@ -69,6 +71,11 @@ export class OCIStorageClientWrapper {
 				},
 				namespaceName: this.entry.namespace,
 			}));
+
+			const result = await this.entry.client.createWaiters().forWorkRequest({ workRequestId: copyResponse.opcWorkRequestId });
+			if (result.workRequest.status !== WorkRequest.Status.Completed) {
+				throw new Error(`Copy work request ${copyResponse.opcWorkRequestId} ended with status ${result.workRequest.status}`);
+			}
 		} catch (error) {
 			this.throwBlobStoreError(error, { destination, source });
 		}

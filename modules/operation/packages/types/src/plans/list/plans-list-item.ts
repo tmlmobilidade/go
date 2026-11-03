@@ -7,6 +7,7 @@ import { z } from 'zod';
 /* * */
 
 export const PlansListItemSchema = PlanSchema.extend({
+	has_overlapping_plans: z.boolean(),
 	temporal_status: TemporalStatusSchema,
 });
 

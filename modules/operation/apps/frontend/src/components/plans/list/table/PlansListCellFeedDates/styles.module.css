@@ -9,3 +9,21 @@
 	align-items: center;
 	justify-content: flex-start;
 }
+
+/* * */
+/* ARROW */
+
+.arrow {
+	flex-shrink: 0;
+	color: var(--color-system-text-200);
+}
+
+
+/* * */
+/* WARNING */
+
+.warning {
+	margin-left: 8px;
+	cursor: help;
+	color: var(--color-status-danger-primary);
+}

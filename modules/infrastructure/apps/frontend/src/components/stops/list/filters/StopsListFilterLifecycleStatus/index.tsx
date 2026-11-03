@@ -23,7 +23,7 @@ export function StopsListFilterLifecycleStatus() {
 	return (
 		<ListFilter
 			active={filterLifecycleStatus.isActive}
-			label={t('default:stops.list.FilterLifecycleStatus.label')}
+			label={t('stops:list.StopsListFilterLifecycleStatus.label')}
 			onChange={filterLifecycleStatus.set}
 			options={filterLifecycleStatus.options}
 			withToggleAll

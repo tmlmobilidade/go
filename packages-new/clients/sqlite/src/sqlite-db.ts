@@ -112,7 +112,7 @@ export class SQLiteTableInstance<T> {
 
 		// Create table
 		this.databaseInstance
-			.prepare(`CREATE TABLE IF NOT EXISTS ${this.tableName} (${params.columns.map(c => `"${c.name}" ${c.type}`).join(', ')})`)
+			.prepare(`CREATE TABLE IF NOT EXISTS ${this.tableName} (${params.columns.map(c => `"${c.name.replaceAll('"', '""')}" ${c.type}`).join(', ')})`)
 			.run();
 
 		// Create indexes
@@ -126,7 +126,7 @@ export class SQLiteTableInstance<T> {
 		// Prepare insert statement
 
 		const placeholders = this.columns.map(() => '?').join(', ');
-		const insertSQL = `INSERT INTO ${this.tableName} (${this.columns.map(c => `"${c.name}"`).join(', ')}) VALUES (${placeholders})`;
+		const insertSQL = `INSERT INTO ${this.tableName} (${this.columns.map(c => `"${c.name.replaceAll('"', '""')}"`).join(', ')}) VALUES (${placeholders})`;
 		this.insertStatement = this.databaseInstance.prepare(insertSQL);
 	}
 
@@ -229,15 +229,9 @@ export class SQLiteTableInstance<T> {
 		const iterator = this.databaseInstance
 			.prepare(`SELECT * FROM ${this.tableName} ${whereClause}`)
 			.iterate(...params);
-		// Return a Readable stream in object mode
-		return new Readable({
-			objectMode: true,
-			read() {
-				const next = iterator.next();
-				if (next.done) this.push(null); // end of stream
-				else this.push(next.value as T);
-			},
-		});
+		// Readable.from closes the iterator when a consumer exits early,
+		// releasing the active SQLite query before database cleanup.
+		return Readable.from(iterator, { objectMode: true });
 	}
 
 	/**

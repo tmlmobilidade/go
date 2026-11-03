@@ -1,9 +1,8 @@
 /* * */
 
+import { AuthenticatedRedirect } from '@/components/auth/AuthenticatedRedirect';
 import { NonAuthenticatedWrapper } from '@/components/background/NonAuthenticatedWrapper';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
 
 /* * */
@@ -21,9 +20,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 	// B. Handle actions
 
 	if (sessionToken) {
-		// Redirect to the main page
-		// if the user is already logged in.
-		redirect(PAGE_ROUTES.core.HOME_LIST);
+		return <AuthenticatedRedirect />;
 	}
 
 	//

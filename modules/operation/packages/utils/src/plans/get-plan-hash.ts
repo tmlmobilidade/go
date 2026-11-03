@@ -62,7 +62,7 @@ export async function getPlanHash({ activeFrom, activeUntil, operationGtfsAttach
 		operationGtfsNormalizedAttachmentData = await storageProvider.findById(operationGtfsNormalizedAttachmentId);
 	}
 
-	if (!operationGtfsNormalizedAttachmentData?.url) {
+	if (operationGtfsNormalizedAttachmentId && !operationGtfsNormalizedAttachmentData?.url) {
 		Logger.error({ attributes: { operationGtfsNormalizedAttachmentId, planId }, message: 'Operation GTFS normalized attachment not found in Storage' });
 	}
 
