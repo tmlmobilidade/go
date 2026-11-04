@@ -302,7 +302,7 @@
 				},
 				"coordinates": {
 					"description": "Latitude, longitude herdadas do filtro da lista. Raio fixo de 100 m.",
-					"label": "Coordenadas (100 m)"
+					"label": "Coordenadas"
 				},
 				"lifecycle_statuses": {
 					"label": "Estado",
