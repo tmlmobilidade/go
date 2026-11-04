@@ -1,17 +1,7 @@
 {
 	"detail": {
 		"PlanDetailSectionStatistics": {
-			"cost_status": {
-				"invalid_configuration": "The agency's price per kilometer is invalid.",
-				"missing_configuration": "The agency's price per kilometer is not configured.",
-				"ready": "Available",
-				"statistics_unavailable": "Cost is unavailable until plan statistics are available."
-			},
-			"description": "Scheduled service over the plan's full validity period (inclusive dates):",
-			"estimated_cost": "Estimated total cost",
-			"kilometers": "Total kilometers",
-			"lines": "Line count",
-			"rate": "Current agency price",
+			"description": "Trip records in the plan's GTFS trips.txt, without multiplying by service days.",
 			"status": {
 				"error": "Statistics unavailable: plan processing failed.",
 				"processing": "Waiting for plan processing to finish.",

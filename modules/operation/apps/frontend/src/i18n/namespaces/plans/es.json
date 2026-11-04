@@ -1,17 +1,7 @@
 {
 	"detail": {
 		"PlanDetailSectionStatistics": {
-			"cost_status": {
-				"invalid_configuration": "El precio por kilómetro del operador no es válido.",
-				"missing_configuration": "El precio por kilómetro del operador no está configurado.",
-				"ready": "Disponible",
-				"statistics_unavailable": "El coste no está disponible hasta que lo estén las estadísticas del plan."
-			},
-			"description": "Servicio programado durante toda la vigencia del plan (fechas inclusive):",
-			"estimated_cost": "Coste total estimado",
-			"kilometers": "Kilómetros totales",
-			"lines": "Número de líneas",
-			"rate": "Precio actual del operador",
+			"description": "Registros de viajes en trips.txt del GTFS del plan, sin multiplicar por los días de servicio.",
 			"status": {
 				"error": "Estadísticas no disponibles: error al procesar el plan.",
 				"processing": "Esperando a que termine el procesamiento del plan.",

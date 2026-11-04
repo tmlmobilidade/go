@@ -45,13 +45,8 @@ export async function getPlanHandler(request: FastifyRequest<{ Params: { id: str
 		});
 	}
 
-	//
-	// Read only this plan's agency rate, after checking access to the plan.
-
-	const agencyData = await goDb.core.agencies.findById(planData.agency_id, { projection: { 'financials.price_per_km': 1 } });
-
 	return sendSuccessApiResponse(reply, {
 		...planData,
-		summary: getPlanSummary(planData, agencyData?.financials?.price_per_km),
+		summary: getPlanSummary(planData),
 	});
 }

@@ -2,10 +2,14 @@
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type PlanStatistics } from '@tmlmobilidade/go-types-operation';
+import { PLAN_STATISTICS_VERSION, type PlanStatistics } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { type GtfsStrictV30SQLTables, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+import { unzipFile } from '@tmlmobilidade/go-utils-zip';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { pipeline } from 'node:stream/promises';
 
 import { calculatePlanStatistics } from '../utils/calculate-plan-statistics.js';
 
@@ -17,7 +21,10 @@ export async function updatePlanStatisticsTask() {
 	const plans = await goDb.operation.plans.findMany({
 		'$expr': { $and: [
 			{ $eq: ['$hash', '$apps.organizer.last_hash'] },
-			{ $ne: ['$hash', { $ifNull: ['$apps.plans_statistics.last_hash', null] }] },
+			{ $or: [
+				{ $ne: ['$hash', { $ifNull: ['$apps.plans_statistics.last_hash', null] }] },
+				{ $ne: [{ $ifNull: ['$apps.plans_statistics.version', null] }, PLAN_STATISTICS_VERSION] },
+			] },
 		] },
 		'apps.organizer.status': 'complete',
 		'attachments.operation_gtfs_normalized': { $ne: null },
@@ -42,28 +49,31 @@ export async function updatePlanStatisticsTask() {
 				'apps.plans_statistics': {
 					last_hash: null, message: null, statistics: null, status: 'processing',
 					timestamp: Dates.now('utc').unix_milliseconds,
+					version: PLAN_STATISTICS_VERSION,
 				},
 			} });
 			if (!started.matchedCount) continue;
 
-			const url = await storageProvider.getSignedUrl({ fileId });
-			const gtfs = await importGtfsToDatabase<GtfsStrictV30SQLTables>({
-				source: { url },
-				sqlite_config: { memory: true },
-				time_range: { date_range: { end: plan.active_until, start: plan.active_from } },
-			});
-
+			const temporaryDirectory = fs.mkdtempDisposableSync(path.join(os.tmpdir(), 'plan-statistics-'));
 			let statistics: PlanStatistics;
 			try {
-				statistics = calculatePlanStatistics(gtfs);
+				const zipPath = path.join(temporaryDirectory.path, 'gtfs.zip');
+				const extractedPath = path.join(temporaryDirectory.path, 'extracted');
+				const url = await storageProvider.getSignedUrl({ fileId });
+				const response = await fetch(url);
+				if (!response.ok || !response.body) throw new Error(`Failed to download plan GTFS: HTTP ${response.status}.`);
+				await pipeline(response.body, fs.createWriteStream(zipPath));
+				await unzipFile(zipPath, extractedPath);
+				statistics = await calculatePlanStatistics(path.join(extractedPath, 'trips.txt'));
 			} finally {
-				gtfs._db.cleanup();
+				temporaryDirectory.remove();
 			}
 
 			await collection.updateOne(source, { $set: {
 				'apps.plans_statistics': {
 					last_hash: plan.hash, message: null, statistics, status: 'complete',
 					timestamp: Dates.now('utc').unix_milliseconds,
+					version: PLAN_STATISTICS_VERSION,
 				},
 			} });
 		} catch (error) {
@@ -75,6 +85,7 @@ export async function updatePlanStatisticsTask() {
 					statistics: null,
 					status: 'error',
 					timestamp: Dates.now('utc').unix_milliseconds,
+					version: PLAN_STATISTICS_VERSION,
 				},
 			} });
 		}
