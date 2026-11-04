@@ -9,13 +9,22 @@ import { type Plan, PLAN_STATISTICS_VERSION, PlanStatisticsSchema } from '@tmlmo
 export function getPlanSummary(plan: Plan): PlansDetailSummary {
 	const organizer = plan.apps?.organizer;
 	const statisticsApp = plan.apps?.plans_statistics;
-	const hasError = organizer?.status === 'error' || statisticsApp?.status === 'error';
-	const isCurrent = !!plan.hash && statisticsApp?.version === PLAN_STATISTICS_VERSION && [organizer, statisticsApp].every(app => app?.status === 'complete' && app.last_hash === plan.hash);
-	const parsedStatistics = PlanStatisticsSchema.safeParse(isCurrent ? statisticsApp?.statistics : null);
-	const statistics = parsedStatistics.success ? parsedStatistics.data : null;
+	if (organizer?.status === 'error' || statisticsApp?.status === 'error') {
+		return { status: 'error', trip_count: null };
+	}
 
-	return {
-		status: hasError ? 'error' : statistics ? 'ready' : isCurrent ? 'unavailable' : 'processing',
-		trip_count: statistics?.trip_count ?? null,
-	};
+	const isOrganizerCurrent = organizer?.status === 'complete' && organizer.last_hash === plan.hash;
+	const isStatisticsCurrent = statisticsApp?.status === 'complete' && statisticsApp.last_hash === plan.hash;
+
+	if (!plan.hash || !isOrganizerCurrent || !isStatisticsCurrent || statisticsApp?.version !== PLAN_STATISTICS_VERSION) {
+		return { status: 'processing', trip_count: null };
+	}
+
+	const parsedStatistics = PlanStatisticsSchema.safeParse(statisticsApp.statistics);
+
+	if (!parsedStatistics.success) {
+		return { status: 'unavailable', trip_count: null };
+	}
+
+	return { status: 'ready', trip_count: parsedStatistics.data.trip_count };
 }

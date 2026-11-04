@@ -12,15 +12,15 @@ export function PlanDetailSectionStatistics() {
 
 	const { i18n, t } = useTranslation();
 	const { data, flags } = usePlanDetailContext();
-	const plan = data.plan;
-	const summary = plan?.summary;
+	const summary = data.plan?.summary;
 	const locale = i18n.resolvedLanguage || 'pt-PT';
 	const numberFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
 
 	//
 	// B. Transform data
 
-	const unavailable = t(`plans:detail.PlanDetailSectionStatistics.status.${summary?.status ?? 'unavailable'}`);
+	const statusLabel = t(`plans:detail.PlanDetailSectionStatistics.status.${summary?.status ?? 'unavailable'}`);
+	const tripCountLabel = summary?.trip_count != null ? numberFormatter.format(summary.trip_count) : statusLabel;
 
 	//
 	// C. Render components
@@ -35,7 +35,7 @@ export function PlanDetailSectionStatistics() {
 				<ValueDisplay
 					isLoading={flags.isLoading}
 					label={t('plans:detail.PlanDetailSectionStatistics.trips')}
-					value={summary?.trip_count != null ? numberFormatter.format(summary.trip_count) : unavailable}
+					value={tripCountLabel}
 				/>
 			</Section>
 		</Collapsible>
