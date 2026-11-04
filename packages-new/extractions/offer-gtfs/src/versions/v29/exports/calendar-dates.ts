@@ -4,7 +4,8 @@ import { ExportedCalendarDatesRow, GtfsV29ExportConfig } from '@/versions/v29/ty
 import { getDayType } from '@/versions/v29/utils/calendar-helpers.js';
 import { createV29PeriodResolver } from '@/versions/v29/utils/period-mapping.js';
 import { type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
-import { type Holiday, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
+import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { isHoliday } from '@tmlmobilidade/go-utils-offer';

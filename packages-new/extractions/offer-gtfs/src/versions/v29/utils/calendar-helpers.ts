@@ -1,6 +1,6 @@
 /* * */
 
-import { type Holiday } from '@tmlmobilidade/go-types-offer';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { calendarWeekday } from '@tmlmobilidade/go-utils-offer';

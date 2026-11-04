@@ -1,9 +1,8 @@
+import { CreateAnnotationSchema, CreateHolidaySchema, UpdateAnnotationSchema, UpdateHolidaySchema } from '@tmlmobilidade/go-types-dates';
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 
-import { CreateAnnotationSchema, UpdateAnnotationSchema } from '../src/dates/annotation.js';
 import { CreateEventSchema, UpdateEventSchema } from '../src/dates/event.js';
-import { CreateHolidaySchema, UpdateHolidaySchema } from '../src/dates/holiday.js';
 import { CreateYearPeriodSchema, UpdateYearPeriodSchema } from '../src/dates/year-period.js';
 import { CreateFareSchema, UpdateFareSchema } from '../src/network/fare.js';
 import { CreateTypologySchema, UpdateTypologySchema } from '../src/network/typology.js';

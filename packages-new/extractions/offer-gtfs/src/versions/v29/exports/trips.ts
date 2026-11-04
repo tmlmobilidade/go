@@ -1,7 +1,8 @@
 import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { type ServiceId, type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { DayPeriod, type Event, type HHMM, hhmm, type Holiday, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { DayPeriod, type Event, type HHMM, hhmm, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type IsoWeekday, type OperationalDateInt, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
 import { buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, getActivePeriodId, getTimepointsRemovedByEventRestriction, type OfferSchedulingTranslator, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap } from '@tmlmobilidade/go-utils-offer';
