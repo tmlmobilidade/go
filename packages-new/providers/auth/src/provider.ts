@@ -2,7 +2,7 @@
 
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreateUserDto, type LoginDto, type Organization, type Session, type User } from '@tmlmobilidade/go-types-core';
+import { type CreateUserDto, CreateUserSchema, type LoginDto, type Organization, type Session, type User } from '@tmlmobilidade/go-types-core';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { generateRandomToken } from '@tmlmobilidade/strings';
@@ -129,7 +129,9 @@ class AuthProviderClass {
 	 * @returns The verification token for email verification.
 	 */
 	async register(createUserDto: CreateUserDto): Promise<string> {
-		const insertNewUserResult = await goDb.core.users.insertOne(createUserDto as any);
+		// Apply the public creation schema before persistence to exclude backend-managed replay authorization.
+		const validatedUser = CreateUserSchema.parse(createUserDto);
+		const insertNewUserResult = await goDb.core.users.insertOne(validatedUser);
 
 		const verificationToken = generateRandomToken();
 		await goDb.core.verificationTokens.insertOne({

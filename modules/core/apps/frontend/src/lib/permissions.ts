@@ -124,6 +124,7 @@ const userActions: PermissionConfig = {
 		{ action: 'read', description: 'Permite ver utilizadores', label: 'Ver' },
 		{ action: 'create', description: 'Permite criar um utilizador', label: 'Criar' },
 		{ action: 'update', description: 'Permite editar um utilizador', label: 'Editar' },
+		{ action: PermissionCatalog.all.users.actions.manage_session_replay, description: 'Permite autorizar e cancelar capturas de Session Replay para um utilizador', label: 'Gerir Session Replay' },
 		{ action: 'lock', description: 'Permite bloquear um utilizador', label: 'Bloquear' },
 		{ action: 'delete', description: 'Permite eliminar um utilizador', label: 'Eliminar' },
 	],

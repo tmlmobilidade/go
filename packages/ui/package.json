@@ -16,6 +16,10 @@
 		"./i18n": {
 			"types": "./src/i18n/index.ts",
 			"default": "./src/i18n/index.ts"
+		},
+		"./server": {
+			"types": "./server.ts",
+			"default": "./server.ts"
 		}
 	},
 	"scripts": {
@@ -54,6 +58,7 @@
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-ui-analytics": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",

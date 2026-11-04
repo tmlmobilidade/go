@@ -8,5 +8,6 @@ export interface GoDbCollectionContext<T extends Document> {
 	collectionName: string
 	database: Db
 	indexDescription: null | SimplifiedMongoIndex<T>[]
+	protectedUpdateFields?: (keyof T)[]
 	schema: null | z.ZodSchema
 };

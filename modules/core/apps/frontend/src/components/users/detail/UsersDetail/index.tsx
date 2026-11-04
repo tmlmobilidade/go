@@ -1,12 +1,13 @@
 'use client';
 
 import { PermissionSection } from '@/components/permissions/PermissionSection';
+import { UsersDetailAmplitude } from '@/components/users/detail/UsersDetailAmplitude';
 import { UsersDetailBasicInfo } from '@/components/users/detail/UsersDetailBasicInfo';
 import { UsersDetailHeader } from '@/components/users/detail/UsersDetailHeader';
 import { UsersDetailOrganizationAndRoles } from '@/components/users/detail/UsersDetailOrganizationAndRoles';
 import { permissionsConfig } from '@/lib/permissions';
-import { type Permission, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { type Permission, PermissionCatalog, PermissionSchema } from '@tmlmobilidade/go-types-permissions';
+import { HasPermission, Pane, useStandardFormWatch } from '@tmlmobilidade/ui';
 
 import { useUsersAgenciesData } from '../../shared/use-users-agencies-data';
 import { useUsersLocationsData } from '../../shared/use-users-locations-data';
@@ -76,6 +77,12 @@ export function UsersDetail() {
 		<Pane header={[<UsersDetailHeader key="header" />]} isLoading={isLoading}>
 			<UsersDetailBasicInfo />
 			<UsersDetailOrganizationAndRoles />
+			<HasPermission
+				action={PermissionCatalog.all.users.actions.manage_session_replay}
+				scope={PermissionCatalog.all.users.scope}
+			>
+				<UsersDetailAmplitude />
+			</HasPermission>
 			{permissionsConfig.map(item => (
 				<PermissionSection
 					key={item.scope}

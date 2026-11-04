@@ -53,24 +53,24 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useMeData();
+	const { data: meData, error: meError, isAuthenticated, isLoading: meLoading, mutate: meMutate } = useMeData();
 
 	//
 	// C. Handle actions
 
-	const isUnauthorized = meError;
-	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meData);
+	const isUnauthorized = isAuthenticated === false;
+	const isRedirectingToLogin = isLoggingOut || isUnauthorized;
 
 	useEffect(() => {
 		// Skip if data is still loading or logout is already redirecting
 		if (meLoading || isLoggingOut) return;
 		// Redirect to login when the session is missing or expired
-		if (!meData || isUnauthorized) {
+		if (isUnauthorized) {
 			const loginUrl = new URL(PAGE_ROUTES.core.LOGIN_LIST, window.location.origin);
 			loginUrl.searchParams.set('redirect', `${window.location.pathname}${window.location.search}`);
 			window.location.href = loginUrl.href;
 		}
-	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
+	}, [meLoading, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
 		if (!meData?.permissions) return false;
@@ -154,9 +154,10 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		return <LoadingOverlay size="lg" fullscreen />;
 	}
 
-	if (meError) {
+	if (meError && !meData) {
 		return <ErrorDisplay message={meError} />;
 	}
+	if (!meData) return <LoadingOverlay size="lg" fullscreen />;
 
 	return (
 		<MeContext.Provider value={contextValue}>
