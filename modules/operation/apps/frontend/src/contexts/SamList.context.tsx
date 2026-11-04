@@ -5,7 +5,7 @@ import { getSamSystemStatus } from '@/lib/sam-status';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Sam } from '@tmlmobilidade/go-types-operation';
 import { type SystemStatus, SystemStatusValues, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -125,8 +125,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 		})),
 	[]);
 
-	const groupedAgencyOptions = useAgencyFilterOptions(agencyOptions);
-	const filterAgency = useFilterStateList('agency_id', [], groupedAgencyOptions);
+	const filterAgency = useFilterStateList('agency_id', [], agencyOptions);
 
 	//
 
