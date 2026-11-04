@@ -40,6 +40,10 @@ export async function publishAgencies(agencyIds: string[]) {
 	//
 	// Save the result in API Cache
 
+	for (const agencyId of agencyIds) {
+		await cacheDb.setNew(`hub:v1:${agencyId}:agencies:json`, parsedAgencies.filter(agency => agency._id === agencyId));
+	}
+
 	await cacheDb.setNew('hub:v1:agencies:json', parsedAgencies);
 	Logger.success({ message: `Finished publishing ${parsedAgencies.length} agencies JSON feed. (${globalTimer.get()})` });
 };
