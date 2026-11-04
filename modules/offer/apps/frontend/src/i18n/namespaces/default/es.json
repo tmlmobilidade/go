@@ -65,7 +65,6 @@
 			"excludeLinesDescription": "Se verán afectadas todas las líneas excepto estas.",
 			"includeLines": "Solo estas líneas",
 			"includeLinesDescription": "Solo se verán afectadas estas líneas.",
-			"newRule": "Nueva regla",
 			"noPatterns": "Sin patrones asociados",
 			"operateAs": "Los días seleccionados funcionarán como:",
 			"patterns": "Patrones asociados",

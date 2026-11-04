@@ -11,13 +11,14 @@ import styles from './styles.module.css';
 
 interface RuleEventEffectProps {
 	conditions: string
+	inline?: boolean
 	rule: EventReplacementRule | EventRestrictionRule | EventRule
 }
 
 /* * */
 
 /** Shared event effect for rule lists and single-day calendar previews. */
-export function RuleEventEffect({ conditions, rule }: RuleEventEffectProps) {
+export function RuleEventEffect({ conditions, inline = false, rule }: RuleEventEffectProps) {
 	//
 	// A. Setup variables
 
@@ -27,7 +28,7 @@ export function RuleEventEffect({ conditions, rule }: RuleEventEffectProps) {
 	// B. Render components
 
 	return (
-		<div className={styles.root}>
+		<div className={styles.root} data-inline={inline || undefined}>
 			{rule.kind === 'event_replacement' ? (
 				<>
 					<Text>{t('default:shared.RuleEventEffect.replacement')}</Text>

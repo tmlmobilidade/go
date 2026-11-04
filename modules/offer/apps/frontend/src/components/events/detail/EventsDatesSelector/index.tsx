@@ -2,7 +2,8 @@
 
 import { useEventsDetailFormContext } from '@/components/events/detail/EventsDetailForm.context';
 import { type OperationalDateInt, OperationalDateIntSchema, toCalendarDate } from '@tmlmobilidade/go-types-shared';
-import { Button, MiniCalendar, Section, Text, TimeChip, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { formatOperationalDateWeekday } from '@tmlmobilidade/go-utils-offer';
+import { Button, MiniCalendar, Section, Text, TimeChip, useLocaleContext, useStandardFormWatch } from '@tmlmobilidade/ui';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +19,8 @@ export function EventsDatesSelector() {
 	// A. Setup variables
 
 	const eventsDetailContext = useEventsDetailFormContext();
-	const { i18n, t } = useTranslation();
+	const { data: { locale } } = useLocaleContext();
+	const { t } = useTranslation();
 	const isDisabled = !eventsDetailContext.capabilities.editEnabled;
 	const formDates = useStandardFormWatch({ control: eventsDetailContext.form.control, name: 'dates' });
 	const dates = useMemo(() => formDates ?? [], [formDates]);
@@ -140,7 +142,7 @@ export function EventsDatesSelector() {
 						{Array.from(groupedByMonth.entries()).map(([monthKey, monthDates]) => {
 							const [yyyy, mm] = monthKey.split('-');
 							const monthLabel = new Date(Number(yyyy), Number(mm) - 1, 1)
-								.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' });
+								.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
 
 							const removeMonth = () => {
 								setDates(dates.filter(d => !monthDates.includes(d)));
@@ -162,14 +164,12 @@ export function EventsDatesSelector() {
 									</div>
 									<div className={styles.days}>
 										{monthDates.map((date) => {
-											const jsDate = dayjs(toCalendarDate(date)).toDate();
-											const day = jsDate.getDate();
-											const weekdayShort = jsDate.toLocaleDateString(i18n.language, { weekday: 'short' }).slice(0, 3);
+											const day = Number(String(date).slice(6, 8));
 											return (
 												<TimeChip
 													key={date}
 													onRemove={!isDisabled ? () => handleRemove(date) : undefined}
-													time={`${day} (${weekdayShort})`}
+													time={`${day} (${formatOperationalDateWeekday(date, locale)})`}
 												/>
 											);
 										})}

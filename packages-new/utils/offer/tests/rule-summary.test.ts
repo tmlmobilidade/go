@@ -4,7 +4,7 @@ import { test } from 'node:test';
 
 import { createOfferTranslator } from '../src/i18n/create-translator.js';
 import { buildRuleSummaryGtfs } from '../src/rules/formatting/gtfs-rule-name.js';
-import { buildRuleSummary } from '../src/rules/formatting/rule-summary.js';
+import { buildRuleSummary, formatDateWithWeekday, formatOperationalDateWeekday } from '../src/rules/formatting/rule-summary.js';
 
 /* * */
 
@@ -98,6 +98,19 @@ test('distinguishes full-day, extended-hour windows and explicit-timepoint restr
 	assert.equal(buildRuleSummary(restriction, options).conditions, 'Todo o dia');
 	assert.equal(buildRuleSummary(EventRestrictionSchema.parse({ ...restriction, all_day: false, end_time: '27:59', start_time: '22:46' }), options).conditions, '22:46–27:59');
 	assert.equal(buildRuleSummary(EventRestrictionSchema.parse({ ...restriction, all_day: false, timepoints: ['12:00', '08:00'] }), options).conditions, '08:00, 12:00');
+});
+
+test('formats operational dates with timezone-stable compact weekdays', () => {
+	assert.equal(formatOperationalDateWeekday(20260205, 'pt-PT'), 'Qui');
+	assert.equal(formatOperationalDateWeekday(20260207, 'pt-PT'), 'Sáb');
+	assert.equal(formatOperationalDateWeekday(20260205, 'es-ES'), 'Jue');
+	assert.equal(formatOperationalDateWeekday(20260207, 'es-ES'), 'Sáb');
+	assert.equal(formatOperationalDateWeekday(20260205, 'en-GB'), 'Thu');
+	assert.equal(formatOperationalDateWeekday(20260207, 'en-GB'), 'Sat');
+	assert.equal(formatDateWithWeekday(20260205, 'pt'), '05/02/2026 (Qui)');
+	assert.equal(formatDateWithWeekday(20260205, 'pt-PT'), '05/02/26 (Qui)');
+	assert.equal(formatDateWithWeekday(20260205, 'es-ES'), '5/2/26 (Jue)');
+	assert.equal(formatDateWithWeekday(20260205, 'en-GB'), '05/02/2026 (Thu)');
 });
 
 test('formats stored event definitions consistently without requiring derived parent metadata', async () => {

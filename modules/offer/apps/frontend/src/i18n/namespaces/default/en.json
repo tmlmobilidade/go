@@ -65,7 +65,6 @@
 			"excludeLinesDescription": "All lines except these will be affected.",
 			"includeLines": "Only these lines",
 			"includeLinesDescription": "Only these lines will be affected.",
-			"newRule": "New rule",
 			"noPatterns": "No associated patterns",
 			"operateAs": "The selected dates will operate as:",
 			"patterns": "Associated patterns",

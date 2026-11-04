@@ -153,12 +153,16 @@ function dateAsUtc(date: OperationalDateInt): Date {
 	return new Date(Date.UTC(Number(text.slice(0, 4)), Number(text.slice(4, 6)) - 1, Number(text.slice(6, 8))));
 }
 
-function formatDateWithWeekday(date: OperationalDateInt, locale: string): string {
-	const civilDate = dateAsUtc(date);
-	const formattedDate = new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeZone: 'UTC' }).format(civilDate);
-	const isoWeekday = civilDate.getUTCDay() || 7;
-	const weekday = getCompactWeekdayOptions(locale).find(option => option.value === isoWeekday)?.label ?? '';
-	return `${formattedDate} (${weekday})`;
+/** Compact weekday for a calendar date, stable in any browser timezone. Example: "Sáb". */
+export function formatOperationalDateWeekday(date: OperationalDateInt, locale: string): string {
+	const isoWeekday = dateAsUtc(date).getUTCDay() || 7;
+	return getCompactWeekdayOptions(locale).find(option => option.value === isoWeekday)?.label ?? '';
+}
+
+/** Short calendar date plus compact weekday. Example: "05/02/2026 (Qui)". */
+export function formatDateWithWeekday(date: OperationalDateInt, locale: string): string {
+	const formattedDate = new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeZone: 'UTC' }).format(dateAsUtc(date));
+	return `${formattedDate} (${formatOperationalDateWeekday(date, locale)})`;
 }
 
 /** Date-only detail for event day-count tooltips, without rule-effect copy. */
