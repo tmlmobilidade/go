@@ -10,6 +10,13 @@ import path from 'node:path';
 
 /* * */
 
+interface PlanStatics {
+	line_count: number
+	plan_cost: number
+	trip_count: number
+	vkm_count: number
+}
+
 /** Imports each normalized plan GTFS into a local SQLite file, without calculating statistics. */
 export async function importPlansTask() {
 	//
@@ -49,6 +56,7 @@ export async function importPlansTask() {
 			// Close the connection directly: cleanup() would also delete the database file.
 			gtfs._db.databaseInstance.close();
 			Logger.success(`Imported plan "${plan._id}" to ${databasePath}.`);
+			break;
 		} catch (error) {
 			// An import failure must not prevent the remaining plans from being processed.
 			Logger.error({ error, message: `Error importing plan "${plan._id}".` });
