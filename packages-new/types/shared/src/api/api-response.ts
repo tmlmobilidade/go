@@ -31,7 +31,13 @@ export const ApiResponseErrorSchema = z.object({
 		'401', // Unauthorized
 		'403', // Forbidden
 		'404', // Not Found
+		'409', // Conflict
+		'415', // Unsupported Media Type
+		'429', // Too Many Requests
 		'500', // Internal Server Error
+		'502', // Bad Gateway
+		'503', // Service Unavailable
+		'504', // Gateway Timeout
 	]),
 	timestamp: UnixMillisecondsSchema,
 });

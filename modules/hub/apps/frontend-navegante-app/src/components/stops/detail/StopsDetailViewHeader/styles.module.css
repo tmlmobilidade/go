@@ -1,0 +1,26 @@
+.section[data-padding] {
+	padding-top: 0;
+}
+
+.directionsButton {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 44px;
+	padding: 0 12px;
+	font: inherit;
+	font-size: 14px;
+	font-weight: 800;
+	color: var(--color-route-on-accent);
+	cursor: pointer;
+	background-color: var(--color-route-status-info);
+	border: 1px solid var(--color-route-status-info);
+	border-radius: 999px;
+}
+
+.directionsButton:focus-visible {
+	outline: 2px solid var(--color-system-text-100);
+	outline-offset: 2px;
+}

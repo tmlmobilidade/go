@@ -342,7 +342,7 @@
 				"placeholder": "Pesquisar por nome, número..."
 			},
 			"found_items_counter": {
-				"all": "{{count}}"
+				"all": "{count}"
 			},
 			"heading": "Pesquisar Paragens"
 		},

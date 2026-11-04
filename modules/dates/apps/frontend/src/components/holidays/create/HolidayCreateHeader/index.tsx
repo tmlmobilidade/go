@@ -1,9 +1,11 @@
 'use client';
 
-import { useHolidayCreateContext } from '@/components/holidays/create/HolidayCreate.context';
-import { closeCreateHolidayModal } from '@/components/holidays/create/HolidayCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, CreateButton, HasPermission, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { closeCreateHolidayModal } from '../HolidayCreate.modal';
+import { useHolidaysCreateFormContext } from '../HolidaysCreateForm.context';
 
 /* * */
 
@@ -13,7 +15,9 @@ export function HolidayCreateHeader() {
 	//
 	// A. Setup variables
 
-	const holidayCreateContext = useHolidayCreateContext();
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useHolidaysCreateFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'title' });
 
 	//
 	// B. Render components
@@ -21,17 +25,12 @@ export function HolidayCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateHolidayModal} type="close" />
-			<Tag label="Novo Feriado" variant="muted" />
-			<Label size="lg" singleLine>{holidayCreateContext.data.form.values.title}</Label>
+			<Tag label={t('default:holidays.create.title')} variant="muted" />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-			<Button
-				disabled={!holidayCreateContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Publicar"
-				loading={holidayCreateContext.flags.isSaving}
-				onClick={holidayCreateContext.actions.createHoliday}
-				variant="primary"
-			/>
+			<HasPermission action={PermissionCatalog.all.holidays.actions.create} scope={PermissionCatalog.all.holidays.scope}>
+				<CreateButton isDisabled={!capabilities.createEnabled} isLoading={status.isCreating} onClick={actions.create} />
+			</HasPermission>
 		</Toolbar>
 	);
 

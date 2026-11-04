@@ -1,0 +1,34 @@
+.dateTimeField {
+	display: grid;
+	gap: 6px;
+}
+
+.dateTimeLabel {
+	display: grid;
+	gap: 6px;
+}
+
+.dateTimeFieldLabel {
+	font-size: 13px;
+	font-weight: 800;
+	color: var(--color-system-text-200);
+}
+
+.dateTimeError {
+	margin: 0;
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--color-route-status-error-text);
+}
+
+.timeInput {
+	width: 100%;
+	height: 48px;
+	padding: 0 10px;
+	font-size: 16px;
+	font-weight: 750;
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 9px;
+}

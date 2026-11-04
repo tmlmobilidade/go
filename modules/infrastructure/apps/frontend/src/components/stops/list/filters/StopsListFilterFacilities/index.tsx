@@ -23,7 +23,7 @@ export function StopsListFilterFacilities() {
 	return (
 		<ListFilter
 			active={filterFacilities.isActive}
-			label={t('default:stops.list.FilterFacilities.label')}
+			label={t('stops:list.StopsListFilterFacilities.label')}
 			onChange={filterFacilities.set}
 			options={filterFacilities.options}
 			withToggleAll

@@ -1,12 +1,10 @@
-/* * */
+'use client';
 
-import { useTypologyDetailContext } from '@/components/typologies/detail/TypologyDetail.context';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Fare, FARE_PAYMENT_METHOD } from '@tmlmobilidade/go-types-offer';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, fetchApiData, MultiSelect, Section, Select } from '@tmlmobilidade/ui';
-import { useMemo } from 'react';
-import useSWR from 'swr';
+import { Collapsible, ErrorDisplay, MultiSelect, Section, Select, StandardFormController } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useTypologiesFaresData } from '../../shared/use-typologies-fares-data';
+import { useTypologiesDetailFormContext } from '../TypologiesDetailForm.context';
 
 /* * */
 
@@ -16,53 +14,52 @@ export function TypologyDetailSectionFares() {
 	//
 	// A. Setup variables
 
-	const typologyDetailContext = useTypologyDetailContext();
-	const { data: faresData } = useSWR<ApiResponse<Fare[]>>(API_ROUTES.offer.FARES_LIST, {
-		fetcher: async url => await fetchApiData<Fare[]>({ url }),
-	});
-
-	const prepaidFaresOptions = useMemo(() => {
-		return faresData?.data?.filter(f => f.payment_method === FARE_PAYMENT_METHOD.PREPAID).map(fare => ({
-			label: fare.name,
-			value: fare._id,
-		})) ?? [];
-	}, [faresData?.data]);
-
-	const onboardFaresOptions = useMemo(() => {
-		return faresData?.data?.filter(f => f.payment_method === FARE_PAYMENT_METHOD.ONBOARD).map(fare => ({
-			label: fare.name,
-			value: fare._id,
-		})) ?? [];
-	}, [faresData]);
+	const { t } = useTranslation();
+	const { capabilities, form } = useTypologiesDetailFormContext();
+	const { error, isLoading, onboardOptions, prepaidOptions } = useTypologiesFaresData();
 
 	//
 	// B. Render components
 
 	return (
-		<Collapsible title="Tarifas associadas">
+		<Collapsible title={t('default:typologies.sections.fares')}>
 			<Section gap="md">
-				<Select
-					key={typologyDetailContext.data.form.key('default_prepaid_fare_id')}
-					data={prepaidFaresOptions}
-					description="navegante® pré-pago"
-					disabled={typologyDetailContext.flags.isReadOnly}
-					label="Tarifa Pré-paga por defeito"
-					w="100%"
-					{...typologyDetailContext.data.form.getInputProps('default_prepaid_fare_id')}
+				{error && <ErrorDisplay message={error} />}
+
+				<StandardFormController
+					control={form.control}
+					name="default_prepaid_fare_id"
+					render={({ field, fieldState }) => (
+						<Select
+							data={prepaidOptions}
+							disabled={!capabilities.editEnabled || isLoading || !!error}
+							error={fieldState.error?.message}
+							label={t('default:typologies.fields.default_prepaid_fare_id.label')}
+							onChange={field.onChange}
+							value={field.value ?? null}
+							w="100%"
+							clearable
+						/>
+					)}
 				/>
 
-				<MultiSelect
-					key={typologyDetailContext.data.form.key('default_onboard_fare_ids')}
-					data={onboardFaresOptions}
-					description="navegante® a bordo"
-					disabled={typologyDetailContext.flags.isReadOnly}
-					label="Tarifa de Bordo por defeito"
-					w="100%"
-					{...typologyDetailContext.data.form.getInputProps('default_onboard_fare_ids')}
+				<StandardFormController
+					control={form.control}
+					name="default_onboard_fare_ids"
+					render={({ field, fieldState }) => (
+						<MultiSelect
+							data={onboardOptions}
+							disabled={!capabilities.editEnabled || isLoading || !!error}
+							error={fieldState.error?.message}
+							label={t('default:typologies.fields.default_onboard_fare_ids.label')}
+							onChange={field.onChange}
+							value={field.value ?? []}
+							w="100%"
+
+						/>
+					)}
 				/>
 			</Section>
 		</Collapsible>
 	);
-
-	//
 }

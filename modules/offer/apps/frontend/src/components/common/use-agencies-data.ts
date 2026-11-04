@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type SelectDataItem } from '@tmlmobilidade/ui';
+import { fetchApiData, type SelectDataItem, toAgencySelectItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -35,7 +35,7 @@ export function useAgenciesData(): UseAgenciesDataReturnType {
 	}, [data?.data]);
 
 	const options = useMemo(() => {
-		return data?.data?.map(agency => ({ label: agency.name, value: agency._id })) ?? [];
+		return data?.data?.map(toAgencySelectItem) ?? [];
 	}, [data?.data]);
 
 	return useMemo(() => ({
@@ -47,5 +47,5 @@ export function useAgenciesData(): UseAgenciesDataReturnType {
 		mutate,
 		options,
 		timestamp: data?.timestamp,
-	}), [data?.data, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [data?.data, data?.timestamp, error, ids, isLoading, isValidating, mutate, options]);
 };

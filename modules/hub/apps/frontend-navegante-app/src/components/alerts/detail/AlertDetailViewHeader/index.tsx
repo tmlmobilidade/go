@@ -1,32 +1,40 @@
 'use client';
 
 import { AlertEffectIcon } from '@/components/alerts/common/AlertEffectIcon';
+import { getAgencyDisplayInfo, getAgencyLogo } from '@/lib/agency-catalog';
 import { GtfsRtEffect } from '@tmlmobilidade/go-types-gtfs-rt';
 import { Section, Surface } from '@tmlmobilidade/ui';
+import Image from 'next/image';
 
 import styles from './styles.module.css';
 
 interface AlertDetailViewHeaderProps {
+	agencyId: string
 	effect: GtfsRtEffect
 	title: string
 }
 
 /* * */
 
-export function AlertDetailViewHeader({ effect, title }: AlertDetailViewHeaderProps) {
+export function AlertDetailViewHeader({ agencyId, effect, title }: AlertDetailViewHeaderProps) {
 	//
 
-	//
-	// B. Render componentss
+	// A. Setup variables
+
+	const agency = getAgencyDisplayInfo(agencyId);
+	const agencyLogo = getAgencyLogo(agencyId, '180x120', 'light');
+
+	// B. Render components
 
 	return (
-		<Surface variant="plain">
-			<Section gap="sm">
+		<Surface variant="transparent">
+			<Section className={styles.section} gap="sm">
 				<div className={styles.row}>
 					<AlertEffectIcon effect={effect} />
-					<h1 className={styles.alertTitle}>
+					<p className={styles.alertTitle}>
 						{title}
-					</h1>
+					</p>
+					{agencyLogo && <Image alt={agency?.fullName ?? ''} className={styles.agencyLogo} height={40} src={agencyLogo} width={60} />}
 				</div>
 			</Section>
 		</Surface>

@@ -1,6 +1,8 @@
-/* * */
+'use client';
 
-import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
+import { AgencyTagGroup } from '@tmlmobilidade/ui';
+
+import { useZonesAgenciesData } from '../../shared/use-zones-agencies-data';
 
 /* * */
 
@@ -14,14 +16,16 @@ export function ZonesListCellAgencies({ agencyIds }: ZonesListCellAgenciesProps)
 	//
 
 	//
-	// A. Transform data
+	// A. Fetch data
 
-	const preparedTags = agencyIds.map((item): TagProps => ({ label: item, variant: 'muted' }));
+	const { data } = useZonesAgenciesData();
 
 	//
 	// B. Render components
 
-	return <TagGroup limit={4} tags={preparedTags} />;
+	return (
+		<AgencyTagGroup agencyIds={agencyIds} data={data} />
+	);
 
 	//
 }

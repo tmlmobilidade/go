@@ -1,7 +1,7 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { MapOverlayPatternShape, type MapOverlayPatternShapeLineData, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
 
@@ -27,7 +27,7 @@ export function ShapeEditorContent() {
 		const legs = stopsEditorContext.data.routeData?.legs ?? stopsEditorContext.data.shape?.legs;
 		const routePreviewLegSegments = new Map(
 			buildRoutePreviewModel(
-				stopsEditorContext.data.path as PopulatedPath[],
+				stopsEditorContext.data.path as PatternsDetailPathItem[],
 				stopsEditorContext.data.anchors,
 			).legSegments.map(segment => [
 				`${segment.leg_from_index}:${segment.leg_to_index}`,
@@ -85,7 +85,7 @@ export function ShapeEditorContent() {
 	]);
 
 	const stopsData = useMemo(() => ({
-		features: (stopsEditorContext.data.path as PopulatedPath[])
+		features: (stopsEditorContext.data.path as PatternsDetailPathItem[])
 			.filter(pathItem => pathItem.stop)
 			.map((pathItem, index) => ({
 				geometry: {
@@ -152,7 +152,7 @@ export function ShapeEditorContent() {
 			const nextAnchors = anchors.map(a =>
 				a._id === draggingAnchorId ? { ...a, lat: anchor.lat, lon: anchor.lon } : a,
 			);
-			await stopsEditorContext.actions.previewRoute(path as PopulatedPath[], nextAnchors);
+			await stopsEditorContext.actions.previewRoute(path as PatternsDetailPathItem[], nextAnchors);
 		} else if (anchor.segment?.from_index !== undefined && anchor.segment?.to_index !== undefined) {
 			// Dropping a new anchor — build a temporary anchor for preview
 			const afterPathItem = path[anchor.segment.from_index];
@@ -172,7 +172,7 @@ export function ShapeEditorContent() {
 				type: 'via' as const,
 			};
 
-			await stopsEditorContext.actions.previewRoute(path as PopulatedPath[], [...anchors, tempAnchor]);
+			await stopsEditorContext.actions.previewRoute(path as PatternsDetailPathItem[], [...anchors, tempAnchor]);
 		}
 	}, [stopsEditorContext.actions, stopsEditorContext.data]);
 

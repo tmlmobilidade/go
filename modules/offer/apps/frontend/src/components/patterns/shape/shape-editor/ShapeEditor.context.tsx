@@ -5,8 +5,9 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { buildRoutePreviewModel, buildRoutePreviewRecalculationPlan, composeRoutePreviewResponse, mergeRoutePreviewRange, type RoutePreviewAnchor, type RoutePreviewPoint, type RoutePreviewResponse } from '@/utils/route-preview';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { Path, PopulatedPath, Shape } from '@tmlmobilidade/go-types-offer';
+import { Path, Shape } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
@@ -17,7 +18,7 @@ import { createContext, PropsWithChildren, useCallback, useContext, useEffect, u
 type ShapeAnchor = RoutePreviewAnchor;
 
 interface HistoryEntry {
-	path: PopulatedPath[]
+	path: PatternsDetailPathItem[]
 	shape: Shape | undefined
 }
 
@@ -76,7 +77,7 @@ export function useStopsEditorContext() {
 
 /* * */
 
-function createPathItemFromStop(stop: Stop): PopulatedPath {
+function createPathItemFromStop(stop: Stop): PatternsDetailPathItem {
 	return {
 		_id: generateRandomString({ length: 5 }),
 		allow_drop_off: true,
@@ -89,7 +90,7 @@ function createPathItemFromStop(stop: Stop): PopulatedPath {
 	};
 }
 
-function applyRouteToPath(path: PopulatedPath[], routeData: RoutePreviewResponse, points: RoutePreviewPoint[]): PopulatedPath[] {
+function applyRouteToPath(path: PatternsDetailPathItem[], routeData: RoutePreviewResponse, points: RoutePreviewPoint[]): PatternsDetailPathItem[] {
 	const breakIndices = points
 		.map((p, i) => (p.type === 'break' ? i : -1))
 		.filter(i => i !== -1);
@@ -149,21 +150,21 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	formRef.current = patternDetailContext.data.form;
 
 	// Local intermediate state — only written back to the pattern form on submit
-	const [initialPath] = useState<PopulatedPath[]>(() => {
+	const [initialPath] = useState<PatternsDetailPathItem[]>(() => {
 		const populatedPath = patternDetailContext.data.pattern?.path ?? [];
 		const path = patternDetailContext.data.form.values.path ?? populatedPath;
 		const stopsById = new Map(populatedPath.map(pathItem => [pathItem.stop_id, pathItem.stop]));
 
 		return path.map(pathItem => ({
 			...pathItem,
-			stop: (pathItem as Partial<PopulatedPath>).stop ?? stopsById.get(pathItem.stop_id) ?? null,
+			stop: (pathItem as Partial<PatternsDetailPathItem>).stop ?? stopsById.get(pathItem.stop_id) ?? null,
 		}));
 	});
 	const [initialShape] = useState<Shape | undefined>(() =>
 		patternDetailContext.data.form.values.shape,
 	);
 
-	const [localPath, setLocalPath] = useState<PopulatedPath[]>(initialPath);
+	const [localPath, setLocalPath] = useState<PatternsDetailPathItem[]>(initialPath);
 	const [localShape, setLocalShape] = useState<Shape | undefined>(initialShape);
 
 	// Keep a ref so recomputeRoute can read the latest shape without stale closures
@@ -182,7 +183,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 	const canUndo = historyMeta.index > 0;
 	const canRedo = historyMeta.index < historyMeta.length - 1;
 
-	const pushToHistory = useCallback((newPath: PopulatedPath[], newShape: Shape | undefined) => {
+	const pushToHistory = useCallback((newPath: PatternsDetailPathItem[], newShape: Shape | undefined) => {
 		const newStack = historyRef.current.slice(0, historyIndexRef.current + 1);
 		newStack.push({ path: newPath, shape: newShape });
 		historyRef.current = newStack;
@@ -234,7 +235,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		JSON.stringify(localPath) !== JSON.stringify(initialPath),
 	[localPath, initialPath]);
 
-	const recomputeRoute = useCallback(async (nextPath: PopulatedPath[], nextAnchors: ShapeAnchor[] = anchors) => {
+	const recomputeRoute = useCallback(async (nextPath: PatternsDetailPathItem[], nextAnchors: ShapeAnchor[] = anchors) => {
 		try {
 			previewAbortControllerRef.current?.abort();
 			previewAbortControllerRef.current = null;
@@ -285,7 +286,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		}
 	}, [anchors, path, pushToHistory]);
 
-	const previewRoute = useCallback(async (nextPath: PopulatedPath[], nextAnchors: ShapeAnchor[] = anchors) => {
+	const previewRoute = useCallback(async (nextPath: PatternsDetailPathItem[], nextAnchors: ShapeAnchor[] = anchors) => {
 		previewAbortControllerRef.current?.abort();
 		const abortController = new AbortController();
 		previewAbortControllerRef.current = abortController;
@@ -395,7 +396,7 @@ export function StopsEditorContextProvider({ children, onClose }: PropsWithChild
 		await recomputeRoute(nextPath, nextAnchors);
 	}, [anchors, path, pushToHistory, recomputeRoute]);
 
-	const reorderStops = useCallback(async (nextPath: PopulatedPath[]) => {
+	const reorderStops = useCallback(async (nextPath: PatternsDetailPathItem[]) => {
 		if (needsMigrationRef.current) {
 			setMigrationWarningVisible(true);
 			return;

@@ -120,6 +120,7 @@ export function SamsListContextProvider({ children }: PropsWithChildren) {
 			checked: false,
 			disabled: false,
 			label: `${item._id} - ${item.name}`,
+			sortLabel: `${item.code} - ${item.name}`,
 			value: item._id,
 		})),
 	[]);

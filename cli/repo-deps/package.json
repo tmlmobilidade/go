@@ -20,10 +20,11 @@
 		"build": "tsc && resolve-tspaths",
 		"lint": "eslint . --fix && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
+		"prepack": "npm run build && chmod +x dist/index.js",
 		"start": "tsc && resolve-tspaths && node dist/index.js"
 	},
 	"devDependencies": {
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
 		"typescript": "6.0.3"
 	}

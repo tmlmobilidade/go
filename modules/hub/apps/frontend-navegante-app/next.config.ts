@@ -5,6 +5,7 @@ import { type NextConfig } from 'next';
 /* * */
 
 const nextConfig: NextConfig = {
+	agentRules: false,
 	basePath: '/hub/navegante-app',
 	devIndicators: false,
 	env: {

@@ -21,6 +21,7 @@ export function ActionBarButton({ badgeCount, icon, label, onClick, variant = 'd
 			className={styles.button}
 			data-variant={variant}
 			onClick={onClick}
+			type="button"
 		>
 			{badgeCount && <div className={styles.badge}>{badgeCount}</div>}
 			{icon}

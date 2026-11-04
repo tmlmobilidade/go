@@ -8,6 +8,7 @@ import useSWR from 'swr';
 
 import { SelectDataItem } from '../components/inputs/Select';
 import { fetchApiData } from '../fetch/fetch-api-data';
+import { toAgencySelectItem } from '../filters/list/to-agency-select-item';
 
 /* * */
 
@@ -57,7 +58,7 @@ export const AgenciesContextProvider = ({ children }: PropsWithChildren) => {
 	const asOptionsData: SelectDataItem[] = useMemo(() => {
 		if (!allAgenciesData) return [];
 		return allAgenciesData
-			.map(item => ({ label: `${item._id} - ${item.name}`, value: item._id }))
+			.map(toAgencySelectItem)
 			.sort((a, b) => Number(a.value) - Number(b.value));
 	}, [allAgenciesData]);
 

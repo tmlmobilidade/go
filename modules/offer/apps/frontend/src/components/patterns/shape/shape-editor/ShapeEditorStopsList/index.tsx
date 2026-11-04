@@ -3,8 +3,8 @@
 /* * */
 
 import { ShapeEditorStopsItem } from '@/components/patterns/shape/shape-editor/ShapeEditorStopsItem';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
 import { DraggableList, Section, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 
@@ -26,12 +26,12 @@ export function StopsList() {
 	const [addStopIndex, setAddStopIndex] = useState<null | number>(null);
 	const [highlightedStopId, setHighlightedStopId] = useState<null | string>(null);
 
-	const path = stopsEditorContext.data.path as PopulatedPath[];
+	const path = stopsEditorContext.data.path as PatternsDetailPathItem[];
 
 	//
 	// B. Handle actions
 
-	const handleReorder = (newPath: PopulatedPath[], event: { newIndex: number, oldIndex: number }) => {
+	const handleReorder = (newPath: PatternsDetailPathItem[], event: { newIndex: number, oldIndex: number }) => {
 		const moved = path[event.oldIndex];
 		if (moved) {
 			setHighlightedStopId(moved._id);

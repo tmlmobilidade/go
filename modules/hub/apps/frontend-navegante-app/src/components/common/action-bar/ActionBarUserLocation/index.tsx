@@ -1,8 +1,8 @@
 'use client';
 
 import { ActionBarButton } from '@/components/common/action-bar/ActionBarButton';
-import { useMapContext } from '@/components/map/Map.context';
-import { useUserLocation } from '@/components/map/use-user-location';
+import { useMapContext } from '@/contexts/Map.context';
+import { useUserLocation } from '@/contexts/UserLocation.context';
 import { IconCurrentLocation, IconCurrentLocationFilled, IconLocationOff, IconNavigationTop } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,44 +15,39 @@ export function ActionBarUserLocation() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-
 	const mapContext = useMapContext();
-
-	const { availableUserLocationTrackingModes, setUserLocationTrackingMode, userLocation, userLocationTrackingMode } = useUserLocation();
+	const userLocationContext = useUserLocation();
 
 	//
 	// B. Handle actions
 
-	const handleIdleOrFollowBearingClick = () => {
-		// If the next tracking mode is not available, do nothing
-		if (!availableUserLocationTrackingModes.includes('follow')) return;
-		// Move the map to the user location and update the tracking mode to follow
-		mapContext.actions.moveMap({ isUserInitiated: true, latitude: userLocation?.latitude, longitude: userLocation?.longitude });
-		setUserLocationTrackingMode('follow');
+	const handleIdleOrFollowBearingClick = async () => {
+		const location = await userLocationContext.actions.followUserLocation();
+		if (!location) return;
+		mapContext.actions.moveMap({ isUserInitiated: true, latitude: location.latitude, longitude: location.longitude });
 	};
 
-	const handleFollowClick = () => {
-		// Move the map to the user location first
-		mapContext.actions.moveMap({ isUserInitiated: true, latitude: userLocation?.latitude, longitude: userLocation?.longitude });
-		// If follow-bearing tracking mode is not available, exit early
-		if (!availableUserLocationTrackingModes.includes('follow-bearing')) return;
-		setUserLocationTrackingMode('follow-bearing');
+	const handleFollowClick = async () => {
+		const location = await userLocationContext.actions.enableBearingTracking();
+		if (!location) return;
+		mapContext.actions.moveMap({ isUserInitiated: true, latitude: location.latitude, longitude: location.longitude });
 	};
 
 	//
 	// C. Render components
 
-	if (availableUserLocationTrackingModes.length < 2) {
+	if (userLocationContext.data.available_tracking_modes.length < 2) {
 		return (
 			<ActionBarButton
 				icon={<IconLocationOff size={28} />}
 				label={t('default:action-bar.ActionBarUserLocation.disabled.label')}
+				onClick={handleIdleOrFollowBearingClick}
 				variant="disabled"
 			/>
 		);
 	}
 
-	if (userLocationTrackingMode === 'idle') {
+	if (userLocationContext.data.tracking_mode === 'idle') {
 		return (
 			<ActionBarButton
 				icon={<IconCurrentLocation size={28} />}
@@ -62,7 +57,7 @@ export function ActionBarUserLocation() {
 		);
 	}
 
-	if (userLocationTrackingMode === 'follow') {
+	if (userLocationContext.data.tracking_mode === 'follow') {
 		return (
 			<ActionBarButton
 				icon={<IconCurrentLocationFilled size={28} />}
@@ -73,7 +68,7 @@ export function ActionBarUserLocation() {
 		);
 	}
 
-	if (userLocationTrackingMode === 'follow-bearing') {
+	if (userLocationContext.data.tracking_mode === 'follow-bearing') {
 		return (
 			<ActionBarButton
 				icon={<IconNavigationTop size={32} />}

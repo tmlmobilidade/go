@@ -1,7 +1,9 @@
 'use client';
 
+import { fetchPerformanceData } from '@/utils/fetch-performance-data';
 import { DatesProvider, type DatesProviderProps } from '@mantine/dates';
 import 'dayjs/locale/pt';
+import { SWRConfig } from 'swr';
 
 /* * */
 
@@ -22,14 +24,19 @@ export function ThemeProviders({ children }: Props) {
 		locale: 'pt',
 		weekendDays: [6, 0],
 	};
+	const swrSettings = {
+		fetcher: fetchPerformanceData,
+	};
 
 	//
 	// B. Render components
 
 	return (
-		<DatesProvider settings={mantineDatesSettings}>
-			{children}
-		</DatesProvider>
+		<SWRConfig value={swrSettings}>
+			<DatesProvider settings={mantineDatesSettings}>
+				{children}
+			</DatesProvider>
+		</SWRConfig>
 	);
 
 	//

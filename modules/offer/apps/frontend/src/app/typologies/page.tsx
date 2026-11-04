@@ -1,13 +1,9 @@
-'use client';
+/* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { TypologiesListPlaceholder } from '@/components/typologies/list/TypologiesListPlaceholder';
 
 /* * */
 
-export default function Page() {
-	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione uma Tipologia" />
-		</Surface>
-	);
+export default async function Page() {
+	return <TypologiesListPlaceholder />;
 }

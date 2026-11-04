@@ -8,7 +8,7 @@ import { useHomeContext } from '@/contexts/Home.context';
 import { MetricsRoutes } from '@/routes';
 import { getMetricAgencyData } from '@/utils/agencies';
 import { IconUser } from '@tabler/icons-react';
-import { type RealtimeDemand } from '@tmlmobilidade/types';
+import { type RealtimeDemand } from '@tmlmobilidade/go-types-performance';
 import { Spacer } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';

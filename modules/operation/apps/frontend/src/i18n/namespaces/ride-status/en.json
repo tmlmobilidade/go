@@ -1,0 +1,9 @@
+{
+	"acceptance_status": {
+		"accepted": "Accepted",
+		"justification_required": "Justification required",
+		"none": "(no value)",
+		"rejected": "Rejected",
+		"under_review": "Under review"
+	}
+}

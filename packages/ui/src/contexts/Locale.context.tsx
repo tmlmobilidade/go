@@ -1,19 +1,16 @@
 'use client';
 
-import '@tmlmobilidade/ui';
-import i18next from 'i18next';
+import { type Resource } from 'i18next';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { I18nextProvider } from 'react-i18next';
 
+import { createI18nInstance } from '../i18n/config';
 import { DEFAULT_LOCALE_CODE, getBrowserLocale, getMatchingLocale } from '../i18n/locales';
-import { registerModuleTranslations } from '../i18n/utils';
 
 /* * */
 
 export interface LocaleContextProps {
-	i18n?: {
-		es?: object
-		pt?: object
-	}
+	i18n?: Resource
 };
 
 interface LocaleContextState {
@@ -46,6 +43,7 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	//
 	// A. Setup Variables
 
+	const [i18nInstance] = useState(() => createI18nInstance(i18n));
 	const [locale, setLocaleState] = useState<string>(DEFAULT_LOCALE_CODE);
 
 	useEffect(() => {
@@ -56,18 +54,8 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	// B. Transform Data
 
 	useEffect(() => {
-		i18next.changeLanguage(locale);
-	}, [locale]);
-
-	useEffect(() => {
-		if (!i18n) return;
-		for (const [localeCode, namespaces] of Object.entries(i18n)) {
-			if (!namespaces) continue;
-			for (const [namespace, value] of Object.entries(namespaces)) {
-				registerModuleTranslations(namespace, { [localeCode]: value });
-			}
-		}
-	}, [i18n]);
+		void i18nInstance.changeLanguage(locale);
+	}, [i18nInstance, locale]);
 
 	const setLocale = useCallback((localeCode: string) => {
 		const matchingLocale = getMatchingLocale(localeCode);
@@ -90,9 +78,11 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 	// D. Render components
 
 	return (
-		<LocaleContext.Provider value={contextValue}>
-			{children}
-		</LocaleContext.Provider>
+		<I18nextProvider i18n={i18nInstance}>
+			<LocaleContext.Provider value={contextValue}>
+				{children}
+			</LocaleContext.Provider>
+		</I18nextProvider>
 	);
 
 	//

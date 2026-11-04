@@ -2,8 +2,8 @@
 
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { LineName } from '@/components/lines/common/LineName';
-import { Skeleton } from '@mantine/core';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
+import { Skeleton } from '@tmlmobilidade/ui';
 
 import styles from './styles.module.css';
 

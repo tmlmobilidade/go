@@ -1,9 +1,10 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction } from '@tmlmobilidade/go-types-extractions';
+
+import { getUserExtractions } from '../utils/get-user-extractions.js';
 
 /**
  * List the extractions for the current user.
@@ -26,9 +27,9 @@ export async function listExtractionsHandler(request: FastifyRequest, reply: Fas
 	}
 
 	//
-	// Retrieve extractions for the current user
+	// Retrieve extractions for the current user and environment
 
-	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
+	const foundExtractions = await getUserExtractions(request.me._id);
 
 	sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

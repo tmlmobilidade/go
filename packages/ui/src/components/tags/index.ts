@@ -1,4 +1,5 @@
 export * from './AgencyTag';
+export * from './AgencyTagGroup';
 export * from './EnvironmentTag';
 export * from './IdTag';
 export * from './Tag';

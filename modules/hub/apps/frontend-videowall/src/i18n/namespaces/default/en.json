@@ -1,0 +1,394 @@
+{
+	"AppError": {
+		"goto_home": "Go to the home page",
+		"retry": "Reloading in {count} seconds...",
+		"subtitle": "We are working to resolve the problem.",
+		"title": "An error occurred"
+	},
+	"PasswordCheck": {
+		"error": "Invalid password",
+		"placeholder": "Enter your password...",
+		"validate": {
+			"label": "Validate"
+		}
+	},
+	"TimestampDisplay": {
+		"days": {
+			"one": "Updated 1 day ago",
+			"other": "Updated {count} days ago"
+		},
+		"hours": {
+			"one": "Updated 1 hour ago",
+			"other": "Updated {count} hours ago"
+		},
+		"minutes": {
+			"one": "Updated 1 minute ago",
+			"other": "Updated {count} minutes ago"
+		},
+		"seconds": {
+			"one": "Updated 1 second ago",
+			"other": "Updated {count} seconds ago"
+		},
+		"updating": "Updating..."
+	},
+	"action-bar": {
+		"ActionBar": {
+			"alerts": {
+				"label": "Service alerts"
+			},
+			"help": {
+				"label": "Frequently asked questions"
+			},
+			"reload": {
+				"label": "Reload"
+			},
+			"search": {
+				"label": "Search"
+			}
+		},
+		"ActionBarUserLocation": {
+			"disabled": {
+				"label": "Location disabled"
+			},
+			"follow": {
+				"label": "Orient map"
+			},
+			"follow-bearing": {
+				"label": "Centre map"
+			},
+			"idle": {
+				"label": "Centre map"
+			}
+		}
+	},
+	"agencies": {
+		"CcflDefault": {
+			"title": "CCFL / Passengers carried today, so far"
+		},
+		"CmDefault": {
+			"title": "CM / Passengers carried today, so far"
+		}
+	},
+	"alerts": {
+		"AlertActivePeriod": {
+			"start": "Start: {value, date, dayShort}"
+		},
+		"AlertsList": {
+			"title": "Service alerts"
+		},
+		"AlertsListEmpty": {
+			"action_1": "View past alerts",
+			"action_2": "View future alerts",
+			"subtitle": "Keep up with all changes to the network. Stay informed about new lines, route changes and timetable adjustments, as well as events that may affect your journey.",
+			"title": "No alerts found"
+		},
+		"AlertsListGroup": {
+			"label": "{count, plural, one {Active alert} other {Active alerts}}",
+			"titles": {
+				"future": "From {value}",
+				"past": "Since {value}",
+				"today": "From today, {value}",
+				"tomorrow": "From tomorrow, {value}",
+				"yesterday": "Since yesterday, {value}"
+			}
+		},
+		"AlertsListToolbar": {
+			"SelectLine": {
+				"label": "Search for a line by number, name, locality...",
+				"nothing_found": "No results found",
+				"placeholder": "Search for a line by number, name, locality..."
+			},
+			"SelectStop": {
+				"label": "Search for a stop by name, number, locality...",
+				"nothing_found": "No results found",
+				"placeholder": "Search for a stop by name, number, locality..."
+			},
+			"by_date": {
+				"current": "Now ({count})",
+				"future": "Upcoming ({count})",
+				"map": "Map"
+			},
+			"expand_toggle": {
+				"is_hidden": {
+					"label": "Show filters"
+				},
+				"is_visible": {
+					"label": "Hide filters"
+				}
+			},
+			"filters": {
+				"by_current_view": {
+					"list": "List",
+					"map": "Map"
+				},
+				"by_line": {
+					"label": "Filter by line",
+					"placeholder": "Filter by line"
+				},
+				"by_stop": {
+					"label": "Filter by stop",
+					"placeholder": "Filter by stop"
+				},
+				"text_search": "Search for an alert by title, description, location..."
+			},
+			"found_items_counter": "{count, plural, =0 {No alerts found.} one {# alert found:} other {# alerts found:}}",
+			"heading": "Service alerts",
+			"subheading": "Keep up with all changes to the network. Stay informed about new lines, route changes and timetable adjustments, as well as events that may affect your journey."
+		},
+		"AlertsListViewList": {
+			"no_data": "No alerts found for this search"
+		},
+		"SelectCause": {
+			"placeholder": "Filter by cause"
+		},
+		"SelectEffect": {
+			"placeholder": "Filter by effect"
+		}
+	},
+	"areas": {
+		"cards": {
+			"delays": {
+				"title": "{agency} / Trips delayed by more than 5 min"
+			},
+			"delays_average": {
+				"title": "{agency} / Average delay across all trips"
+			},
+			"sla": {
+				"secondary": "{percentage}% of {until_now} ({total})",
+				"title": "{agency} / Trips not operated today, so far"
+			},
+			"validations": {
+				"title": "{agency} / Passengers carried today, so far"
+			},
+			"vkm": {
+				"title": "{agency} / Vehicle kilometres operated today, so far"
+			}
+		}
+	},
+	"common": {
+		"BackButton": {
+			"label": "Back"
+		},
+		"IconDisplay": {
+			"connections": {
+				"bike_parking": "Near bicycle parking",
+				"boat": "Ferry connection",
+				"bus": "Connections to other buses",
+				"car_parking": "Near car parking",
+				"light_rail": "Light rail connection",
+				"subway": "Metro connection",
+				"train": "Train connection"
+			},
+			"facilities": {
+				"court": "Near a courthouse",
+				"fire_station": "Near a fire station",
+				"health_center": "Near a health centre or clinic",
+				"hospital": "Near a hospital",
+				"park": "Near a park",
+				"police_station": "Near a police station",
+				"school": "Near a school",
+				"transit_office": "Near an Espaço navegante® service centre",
+				"university": "Near a university"
+			},
+			"operators": {
+				"atlantic_ferries": "Atlantic Ferries (Tróia ferries)",
+				"ccfl": "Carris municipal",
+				"cmet": "CMET",
+				"cp": "CP Comboios de Portugal",
+				"fertagus": "Fertagus (bridge train)",
+				"metro": "Metro de Lisboa",
+				"mobi_cascais": "MobiCascais",
+				"mts": "Metro Transportes do Sul",
+				"tcb": "Transportes Colectivos do Barreiro",
+				"ttsl": "Transtejo e Soflusa"
+			}
+		}
+	},
+	"help": {
+		"HelpDetail": {
+			"no_data": "No frequently asked questions are available at the moment.",
+			"title": "Help"
+		}
+	},
+	"layout": {
+		"NoDataLabel": {
+			"no_data": "No data available"
+		}
+	},
+	"lines": {
+		"LinesDetailAlerts": {
+			"heading": "Active alerts for this line"
+		},
+		"LinesDetailPath": {
+			"no_data": "Select a route / destination",
+			"stop_details_name": "Stop {index}: {stop_name}",
+			"summary": "Line <lineNumber>{line_number}</lineNumber> towards <destinationName>{destination_name}</destinationName> on <dayName>{day_name, date, long}</dayName>. <changeDay>Change date ›</changeDay>",
+			"view_stop_details": "View stop details"
+		},
+		"LinesListGroup": {
+			"logo": {
+				"alt": "Lines operated by: {agency_name}"
+			},
+			"show_more": "View more lines from this operator..."
+		},
+		"LinesListToolbar": {
+			"by_search": {
+				"placeholder": "Search by name, number..."
+			},
+			"found_items_counter": {
+				"all": "{count, plural, =0 {No lines found.} one {# line found:} other {# lines found:}}"
+			},
+			"heading": "Search lines"
+		},
+		"LinesListViewAll": {
+			"items": {
+				"aria_label": "{index}: {tts_name}"
+			},
+			"no_data": "No lines found for this search"
+		},
+		"PathStopNextArrivals": {
+			"title": "Next departures"
+		},
+		"PathWaypointTimetable": {
+			"next_date": "This line does not operate on this day of the week. Next date with a timetable: {value, date, dayShort} {value, date, monthLong} {value, date, yearLong}",
+			"no_data": "Timetables unavailable for this date.",
+			"title": "Scheduled departures at this stop:"
+		},
+		"SelectActivePatternGroup": {
+			"placeholder": "Select route/destination..."
+		},
+		"SelectActivePatternGroupExplainer": {
+			"toggle": "What is a line's route/destination?"
+		},
+		"SelectOperationalDate": {
+			"custom_date": "Custom date",
+			"today": "Today",
+			"tomorrow": "Tomorrow"
+		},
+		"SelectPattern": {
+			"invalid_option": "Invalid route: {pattern_id}",
+			"label": "Route / destination",
+			"option_label": "Route start: {locality}",
+			"placeholder": "Select route / destination..."
+		},
+		"TimetableExceptionsLink": {
+			"schedule": "Min.",
+			"variant": "<0>{exception_id})</0> Route <1>{route_long_name}</1> towards <2>{pattern_headsign}</2>"
+		},
+		"TimetableSchedules": {
+			"hours": "Hour",
+			"minutes": "Min.",
+			"timestamp": "{hour} hours and {minute} minutes"
+		}
+	},
+	"map": {
+		"MapViewToolbar": {
+			"style": {
+				"map": "Map",
+				"satellite": "Satellite"
+			}
+		}
+	},
+	"search": {
+		"SearchDetail": {
+			"title": "Search"
+		},
+		"SearchToolbar": {
+			"types": {
+				"alerts": "Alerts",
+				"lines": "Lines",
+				"stops": "Stops"
+			}
+		}
+	},
+	"stops": {
+		"NextArrivals": {
+			"arriving": "Arriving",
+			"hours": "h",
+			"minutes": "min"
+		},
+		"StopsDetail": {
+			"title": "Stop"
+		},
+		"StopsDetailAlerts": {
+			"heading": "Active alerts",
+			"subheading": "Active alerts for this stop or for lines serving this stop."
+		},
+		"StopsDetailContentTimetableHeader": {
+			"summary": "Estimated arrivals at stop <stopName>{stop_name}</stopName> on <dayName>{day_name, date, long}</dayName>. <changeDay>Change date ›</changeDay>",
+			"trips_legend": {
+				"estimate": "Estimate",
+				"headsign": "Destination",
+				"line": "Line"
+			}
+		},
+		"StopsDetailViewTimetable": {
+			"end_of_day": "End of day",
+			"no_service": "No service on the selected day",
+			"show_past_trips_toggle": {
+				"hide": "Hide past departures",
+				"show": "Show past departures"
+			}
+		},
+		"StopsDetailViewTimetableRow": {
+			"localities": "Via: {localities}"
+		},
+		"StopsListToolbar": {
+			"by_current_view": {
+				"list": "List",
+				"map": "Map"
+			},
+			"by_search": {
+				"placeholder": "Search by name, number..."
+			},
+			"found_items_counter": {
+				"all": "{count}"
+			},
+			"heading": "Search stops"
+		},
+		"StopsListViewList": {
+			"no_data": "No stops found for this search"
+		}
+	},
+	"vehicles": {
+		"VehiclesCounter": {
+			"label": "{count, plural, zero {No vehicles in motion} one {# vehicle in motion} other {# vehicles in motion}}"
+		},
+		"VehiclesDetail": {
+			"title": "Vehicle"
+		},
+		"VehiclesDetailView": {
+			"seen_seconds_ago": "Seen {count, plural, one {# second} other {# seconds}} ago"
+		},
+		"VehiclesListDetails": {
+			"bikes_allowed": "Bicycles allowed",
+			"contactless": "Contactless payments accepted",
+			"no_bikes_allowed": "Bicycles not allowed",
+			"no_contactless": "Contactless payments not accepted",
+			"no_data": "Select a vehicle",
+			"no_wheelchair_accessible": "Not wheelchair accessible",
+			"unknown": "Unknown",
+			"wheelchair_accessible": "Wheelchair accessible"
+		}
+	},
+	"viewport": {
+		"NavigationBar": {
+			"tabs": {
+				"alerts": "Alerts",
+				"lines": "Lines",
+				"stops": "Stops"
+			}
+		},
+		"TransitModesBar": {
+			"aria_label": {
+				"bus": "Buses",
+				"ferry": "Ferry",
+				"subway": "Metro",
+				"train": "Trains"
+			}
+		},
+		"ViewportHeader": {
+			"title": "GO Videowall • CCFL"
+		}
+	}
+}

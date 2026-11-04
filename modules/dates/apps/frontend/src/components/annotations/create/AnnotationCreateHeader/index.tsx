@@ -1,9 +1,11 @@
 'use client';
 
-import { useAnnotationCreateContext } from '@/components/annotations/create/AnnotationCreate.context';
-import { closeCreateAnnotationModal } from '@/components/annotations/create/AnnotationCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, CreateButton, HasPermission, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { closeCreateAnnotationModal } from '../AnnotationCreate.modal';
+import { useAnnotationsCreateFormContext } from '../AnnotationsCreateForm.context';
 
 /* * */
 
@@ -13,7 +15,9 @@ export function AnnotationCreateHeader() {
 	//
 	// A. Setup variables
 
-	const annotationCreateContext = useAnnotationCreateContext();
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useAnnotationsCreateFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'title' });
 
 	//
 	// B. Render components
@@ -21,17 +25,12 @@ export function AnnotationCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateAnnotationModal} type="close" />
-			<Tag label="Nova Anotação" variant="muted" />
-			<Label size="lg" singleLine>{annotationCreateContext.data.form.values.title}</Label>
+			<Tag label={t('default:annotations.create.title')} variant="muted" />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-			<Button
-				disabled={!annotationCreateContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Publicar"
-				loading={annotationCreateContext.flags.isSaving}
-				onClick={annotationCreateContext.actions.createAnnotation}
-				variant="primary"
-			/>
+			<HasPermission action={PermissionCatalog.all.annotations.actions.create} scope={PermissionCatalog.all.annotations.scope}>
+				<CreateButton isDisabled={!capabilities.createEnabled} isLoading={status.isCreating} onClick={actions.create} />
+			</HasPermission>
 		</Toolbar>
 	);
 

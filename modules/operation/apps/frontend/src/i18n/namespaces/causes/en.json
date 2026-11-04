@@ -1,0 +1,19 @@
+{
+	"ABUSIVE_PARKING": "Illegal Parking",
+	"ACCIDENT": "Accident",
+	"CONSTRUCTION": "Construction",
+	"DEMONSTRATION": "Demonstration",
+	"DRIVER_ABSENCE": "Driver Absence",
+	"DRIVER_ISSUE": "Driver Issue",
+	"HIGH_PASSENGER_LOAD": "High Passenger Load",
+	"MEDICAL_EMERGENCY": "Medical Emergency",
+	"NETWORK_UPDATE": "Network Update",
+	"POLICE_ACTIVITY": "Police Activity",
+	"PUBLIC_DISORDER": "Public Disorder",
+	"ROAD_ISSUE": "Road Issue",
+	"STRIKE": "Strike",
+	"TECHNICAL_ISSUE": "Technical Issue",
+	"TRAFFIC_JAM": "Traffic Congestion",
+	"VEHICLE_ISSUE": "Vehicle Issue",
+	"WEATHER": "Weather"
+}

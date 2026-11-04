@@ -2,7 +2,7 @@
 
 import { ContainerWrapper } from '@/components/layout/ContainerWrapper';
 import { TopicDefinition, TOPICS_REGISTRY } from '@/constants';
-import { Grid } from '@tmlmobilidade/ui';
+import { Grid, keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 
 import styles from './styles.module.css';
@@ -17,7 +17,8 @@ export default function Topics() {
 	// B. Handle actions
 
 	const handleTopicClick = (topic: TopicDefinition) => {
-		router.push(`/${topic.key}`);
+		if (!topic.href) return;
+		router.push(keepUrlParams(topic.href));
 	};
 
 	// C. Render components

@@ -1,20 +1,27 @@
 'use client';
 
+import namespaceAlertsEn from '@/i18n/namespaces/alerts/en.json' with { type: 'json' };
 import namespaceAlertsEs from '@/i18n/namespaces/alerts/es.json' with { type: 'json' };
 import namespaceAlertsPt from '@/i18n/namespaces/alerts/pt.json' with { type: 'json' };
+import namespaceCausesEn from '@/i18n/namespaces/causes/en.json' with { type: 'json' };
 import namespaceCausesEs from '@/i18n/namespaces/causes/es.json' with { type: 'json' };
 import namespaceCausesPt from '@/i18n/namespaces/causes/pt.json' with { type: 'json' };
+import namespaceDefaultEn from '@/i18n/namespaces/default/en.json' with { type: 'json' };
 import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
+import namespaceEffectsEn from '@/i18n/namespaces/effects/en.json' with { type: 'json' };
 import namespaceEffectsEs from '@/i18n/namespaces/effects/es.json' with { type: 'json' };
 import namespaceEffectsPt from '@/i18n/namespaces/effects/pt.json' with { type: 'json' };
+import namespaceReferenceTypesEn from '@/i18n/namespaces/reference-types/en.json' with { type: 'json' };
 import namespaceReferenceTypesEs from '@/i18n/namespaces/reference-types/es.json' with { type: 'json' };
 import namespaceReferenceTypesPt from '@/i18n/namespaces/reference-types/pt.json' with { type: 'json' };
+import namespaceAnalysisEn from '@/i18n/namespaces/ride-analysis/en.json' with { type: 'json' };
 import namespaceAnalysisEs from '@/i18n/namespaces/ride-analysis/es.json' with { type: 'json' };
 import namespaceAnalysisPt from '@/i18n/namespaces/ride-analysis/pt.json' with { type: 'json' };
+import namespaceStatusEn from '@/i18n/namespaces/ride-status/en.json' with { type: 'json' };
 import namespaceStatusEs from '@/i18n/namespaces/ride-status/es.json' with { type: 'json' };
 import namespaceStatusPt from '@/i18n/namespaces/ride-status/pt.json' with { type: 'json' };
-import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
+import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
  * Resource keys for i18n translations in Portuguese.
@@ -46,4 +53,18 @@ export const i18nResourceKeysEs = {
 	reference_types: namespaceReferenceTypesEs,
 	ride_analysis: namespaceAnalysisEs,
 	ride_status: namespaceStatusEs,
+} as const;
+
+/**
+ * Resource keys for i18n translations in English.
+ */
+export const i18nResourceKeysEn = {
+	...i18nResourceKeysEnShared,
+	alerts: namespaceAlertsEn,
+	causes: namespaceCausesEn,
+	default: namespaceDefaultEn,
+	effects: namespaceEffectsEn,
+	reference_types: namespaceReferenceTypesEn,
+	ride_analysis: namespaceAnalysisEn,
+	ride_status: namespaceStatusEn,
 } as const;

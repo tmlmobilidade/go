@@ -1,7 +1,7 @@
 -- Live ETA per stop + refreshable MV.
 -- Depends: eta.curr_vehicle_events, eta.curr_rides, eta.curr_waypoints_snapped,
 --          eta.pred_node_etas (mv-predict-node-etas.sql),
---          infrastructure.stops (MongoDB engine; agency stop_id → GO _id via flags).
+--          infrastructure.simplified_stops (agency stop_id → GO _id via legacy_ids).
 
 CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 (
@@ -398,29 +398,31 @@ WITH
                toUInt16(ceil(assumeNotNull(eta_seconds_raw))), NULL) AS eta_seconds
         FROM eta_calc
     ),
-    -- Agency/GTFS stop_id → GO stop _id. curr_waypoints_snapped carries agency
-    -- identifiers; infrastructure.stops.flags[].stop_id is the join key.
-    -- ponytail: MongoDB engine cannot push JSON/ARRAY JOIN to Mongo; full stops
-    -- scan on ClickHouse side (~30k rows, acceptable at 30s refresh).
-    go_stop_flags AS (
+    -- Match GO IDs directly, or resolve agency IDs through legacy_ids. Legacy
+    -- IDs are shared by different operators, so prefer the stop nearest to the
+    -- original waypoint coordinates. The GO ID breaks equal-distance ties.
+    go_stop_map AS (
         SELECT
-            agency_stop_id,
-            any(go_stop_id) AS go_stop_id
-        FROM (
+            w.hashed_trip_id AS hashed_trip_id,
+            w.stop_sequence AS stop_sequence,
+            w.stop_id AS source_stop_id,
+            argMin(s.go_stop_id, tuple(
+                s.go_stop_id != w.stop_id,
+                greatCircleDistance(w.stop_lon, w.stop_lat, s.longitude, s.latitude),
+                s.go_stop_id
+            )) AS go_stop_id
+        FROM eta.curr_waypoints_snapped AS w
+        INNER JOIN (
             SELECT
-                toString(go_stops._id)             AS go_stop_id,
-                JSONExtractString(flag, 'stop_id') AS agency_stop_id
-            FROM (
-                SELECT
-                    _id,
-                    flags
-                FROM infrastructure.stops
-                SETTINGS mongodb_throw_on_unsupported_query = 0
-            ) AS go_stops
-            ARRAY JOIN JSONExtractArrayRaw(assumeNotNull(go_stops.flags)) AS flag
-        )
-        WHERE agency_stop_id != ''
-        GROUP BY agency_stop_id
+                _id AS go_stop_id,
+                latitude,
+                longitude,
+                arrayJoin(arrayDistinct(arrayConcat([_id], legacy_ids))) AS source_stop_id
+            FROM infrastructure.simplified_stops FINAL
+            WHERE NOT is_deleted
+        ) AS s ON s.source_stop_id = w.stop_id
+        WHERE w.stop_id != ''
+        GROUP BY w.hashed_trip_id, w.stop_sequence, w.stop_id
     ),
     eta_resolved AS (
         SELECT
@@ -435,15 +437,17 @@ WITH
             ec.current_node_longitude,
             ec.position_created_at,
             ec.stop_sequence,
-            coalesce(gs.go_stop_id, ec.stop_id) AS stop_id,
+            coalesce(nullIf(gs.go_stop_id, ''), ec.stop_id) AS stop_id,
             ec.stop_name,
             ec.stop_node_index,
             ec.stop_node_latitude,
             ec.stop_node_longitude,
             ec.eta_seconds
         FROM eta_clean AS ec
-        LEFT JOIN go_stop_flags AS gs
-            ON gs.agency_stop_id = ec.stop_id
+        LEFT JOIN go_stop_map AS gs
+            ON gs.hashed_trip_id = ec.hashed_trip_id
+           AND gs.stop_sequence = ec.stop_sequence
+           AND gs.source_stop_id = ec.stop_id
     )
 SELECT
     trip_id,

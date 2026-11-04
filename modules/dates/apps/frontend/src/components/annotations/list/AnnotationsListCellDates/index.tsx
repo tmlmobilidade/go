@@ -18,7 +18,7 @@ export function AnnotationsListCellDates({ dates }: AnnotationsListCellDatesProp
 	//
 	// A. Transform data
 
-	const preparedTags = dates
+	const preparedTags = [...dates]
 		.sort((a, b) => Number(a) - Number(b))
 		.map((item): TagProps => {
 			return {
@@ -32,7 +32,11 @@ export function AnnotationsListCellDates({ dates }: AnnotationsListCellDatesProp
 	//
 	// B. Render components
 
-	return <TagGroup limit={4} tags={preparedTags} />;
+	return (
+
+		<TagGroup limit={4} tags={preparedTags} />
+
+	);
 
 	//
 }

@@ -2,8 +2,8 @@
 
 import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Agency } from '@tmlmobilidade/go-types-core';
-import { type LineNormalized } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
@@ -17,8 +17,8 @@ interface LinesListContextState {
 		agencies: Agency[]
 		agencyIds: string[]
 		agencyOptions: SelectDataItem[]
-		filtered: LineNormalized[]
-		raw: LineNormalized[]
+		filtered: PopulatedLine[]
+		raw: PopulatedLine[]
 	}
 	filters: {
 		agencies: UseFilterStateListReturnType
@@ -64,15 +64,15 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// B. Fetch data
 
-	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<ApiResponse<LineNormalized[]>>(API_ROUTES.offer.LINES_LIST, {
-		fetcher: async url => await fetchApiData<LineNormalized[]>({ url }),
+	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<ApiResponse<PopulatedLine[]>>(API_ROUTES.offer.LINES_LIST, {
+		fetcher: async url => await fetchApiData<PopulatedLine[]>({ url }),
 		refreshInterval: 5000,
 	});
 
 	//
 	// C. Transform data
 
-	const searchResultsData = useSearch<LineNormalized>({
+	const searchResultsData = useSearch<PopulatedLine>({
 		accessors: ['_id', 'name', 'code', 'agency_id'],
 		data: allLinesData?.data ?? [],
 		query: filterSearch.value,
@@ -85,7 +85,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		const agencySet = new Set(filterAgencies.value);
 
 		return searchResultsData
-			.filter((item: LineNormalized) => {
+			.filter((item: PopulatedLine) => {
 				// Filter by agency - check if the line's agency matches the filter
 				if (!agencySet.has(item.agency_id)) return false;
 

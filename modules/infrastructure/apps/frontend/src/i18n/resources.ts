@@ -1,8 +1,9 @@
 'use client';
 
-import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
-import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
-import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
+import namespaceStopsEn from '@/i18n/namespaces/stops/en.json' with { type: 'json' };
+import namespaceStopsEs from '@/i18n/namespaces/stops/es.json' with { type: 'json' };
+import namespaceStopsPt from '@/i18n/namespaces/stops/pt.json' with { type: 'json' };
+import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
  * Resource keys for i18n translations in Portuguese.
@@ -13,7 +14,7 @@ import { i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilida
  */
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
-	default: namespaceDefaultPt,
+	stops: namespaceStopsPt,
 } as const;
 
 /**
@@ -21,5 +22,13 @@ export const i18nResourceKeysPt = {
  */
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
-	default: namespaceDefaultEs,
+	stops: namespaceStopsEs,
+} as const;
+
+/**
+ * Resource keys for i18n translations in English.
+ */
+export const i18nResourceKeysEn = {
+	...i18nResourceKeysEnShared,
+	stops: namespaceStopsEn,
 } as const;

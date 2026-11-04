@@ -4,9 +4,10 @@ import { FiltersBar } from '@tmlmobilidade/ui';
 
 import { StopsListFilterAgency } from '../StopsListFilterAgency';
 import { StopsListFilterConnections } from '../StopsListFilterConnections';
+import { StopsListFilterCoordinates } from '../StopsListFilterCoordinates';
 import { StopsListFilterFacilities } from '../StopsListFilterFacilities';
+import { StopsListFilterLegacyId } from '../StopsListFilterLegacyId';
 import { StopsListFilterLifecycleStatus } from '../StopsListFilterLifecycleStatus';
-import { StopsListFilterLocationNeighbourhood } from '../StopsListFilterLocationNeighberhood';
 import { StopsListFilterLocationPrimary } from '../StopsListFilterLocationPrimary';
 import { StopsListFilterLocationSecondary } from '../StopsListFilterLocationSecondary';
 import { StopsListFilterLocationTertiary } from '../StopsListFilterLocationTertiary';
@@ -17,10 +18,11 @@ export function StopsListFiltersBar() {
 	return (
 		<FiltersBar>
 			<StopsListFilterAgency />
+			<StopsListFilterCoordinates />
+			<StopsListFilterLegacyId />
 			<StopsListFilterLocationPrimary />
 			<StopsListFilterLocationSecondary />
 			<StopsListFilterLocationTertiary />
-			<StopsListFilterLocationNeighbourhood />
 			<StopsListFilterLifecycleStatus />
 			<StopsListFilterFacilities />
 			<StopsListFilterConnections />

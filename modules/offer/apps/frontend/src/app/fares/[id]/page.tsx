@@ -1,15 +1,14 @@
 /* * */
 
 import { FareDetail } from '@/components/fares/detail/FareDetail';
-import { FareDetailContextProvider } from '@/components/fares/detail/FareDetail.context';
+import { FaresDetailFormContextProvider } from '@/components/fares/detail/FaresDetailForm.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<FareDetailContextProvider fareId={id}>
+		<FaresDetailFormContextProvider>
 			<FareDetail />
-		</FareDetailContextProvider>
+		</FaresDetailFormContextProvider>
 	);
 }

@@ -10,10 +10,23 @@
 /* * */
 /* STOP NAME */
 
-.stopName{
+.stopName {
+	display: block;
+	width: 100%;
+	padding: 0;
 	font-size: 15px;
 	font-weight: var(--font-weight-bold);
-    color: var(--color-system-text-100);
+	color: var(--color-system-text-100);
+	text-align: left;
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+}
+
+.stopName:focus-visible,
+.stopId:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
 }
 
 .stopNameUrl {
@@ -47,9 +60,12 @@
 
 .stopId {
 	margin-left: var(--size-spacing-10);
+	padding: 0;
 	font-size: 12px;
 	font-weight: var(--font-weight-semibold);
 	color: var(--color-system-text-400);
+	background: transparent;
+	border: 0;
 	transform: translate(0, 1px);
 	transition: all 200ms ease;
 }

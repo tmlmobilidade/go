@@ -22,7 +22,13 @@ export const availableLocales: LocaleConfig[] = [
 		_id: 'es',
 		alias: ['es-ES', 'es_ES', 'es-MX', 'es_MX', 'es-AR', 'es_AR'],
 		enabled: true,
-		name: 'Español',
+		name: 'Castellano',
+	},
+	{
+		_id: 'en',
+		alias: ['en-US', 'en_US', 'en-GB', 'en_GB'],
+		enabled: true,
+		name: 'English',
 	},
 ];
 

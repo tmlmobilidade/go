@@ -1,14 +1,14 @@
 /* * */
 
+import { type PatternsStopSearchItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type StopId } from '@tmlmobilidade/go-types-infrastructure';
-import { type PatternStopSearchItem } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
 interface CreateStopOptionsParams {
 	excludeStopIds: StopId[]
-	results: PatternStopSearchItem[]
-	value: null | PatternStopSearchItem
+	results: PatternsStopSearchItem[]
+	value: null | PatternsStopSearchItem
 }
 
 /* * */
@@ -20,7 +20,7 @@ function normalizeStopId(stopId: StopId): string {
 export function createStopOptions({ excludeStopIds, results, value }: CreateStopOptionsParams) {
 	const excludedIds = new Set(excludeStopIds.map(normalizeStopId));
 	const seenIds = new Set<string>();
-	const items: PatternStopSearchItem[] = [];
+	const items: PatternsStopSearchItem[] = [];
 
 	for (const stop of results) {
 		const stopId = normalizeStopId(stop._id);

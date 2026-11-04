@@ -1,9 +1,9 @@
 'use client';
 
 import { NoDataLabel } from '@/components/common/display/NoDataLabel';
-import { useOperationalDate } from '@/components/common/operational-date/use-operational-date';
 import { useLinesDetailContext } from '@/components/lines/detail/LinesDetail.context';
 import { LinesDetailPathList } from '@/components/lines/detail/LinesDetailPathList';
+import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

@@ -1,5 +1,6 @@
 /* * */
 
+import { resolveOrganization } from '@/utils/organization.js';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getLineHandler } from './handlers/get-line.js';
@@ -13,7 +14,7 @@ import { getStopsHandler } from './handlers/get-stops.js';
 
 /* * */
 
-const NAMESPACE = '/v1/network';
+const NAMESPACE = '/v1/:organizationId/network';
 
 /* * */
 
@@ -23,21 +24,23 @@ server.register(
 	(instance, opts, next) => {
 		//
 
+		instance.addHook('preHandler', resolveOrganization);
+
 		instance.get('/stops', getStopsHandler);
 
-		instance.get('/stops/:id', getStopHandler);
+		instance.get('/stops/:stopId', getStopHandler);
 
 		instance.get('/lines', getLinesHandler);
 
-		instance.get('/lines/:id', getLineHandler);
+		instance.get('/lines/:lineId', getLineHandler);
 
 		instance.get('/routes', getRoutesHandler);
 
-		instance.get('/routes/:id', getRouteHandler);
+		instance.get('/routes/:routeId', getRouteHandler);
 
-		instance.get('/patterns/:id', getPatternHandler);
+		instance.get('/patterns/:patternId', getPatternHandler);
 
-		instance.get('/shapes/:id', getShapeHandler);
+		instance.get('/shapes/:shapeId', getShapeHandler);
 
 		next();
 	},

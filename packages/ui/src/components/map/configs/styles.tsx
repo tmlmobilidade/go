@@ -38,8 +38,22 @@ export const MAP_STYLES: Record<MapStyle, MapStyleConfig> = {
 					source: 'raster-tiles',
 					type: 'raster',
 				},
+				{
+					'id': 'satellite-road-snapping',
+					'paint': {
+						'line-opacity': 0,
+						'line-width': 1,
+					},
+					'source': 'openmaptiles',
+					'source-layer': 'transportation',
+					'type': 'line',
+				},
 			],
 			sources: {
+				'openmaptiles': {
+					type: 'vector',
+					url: 'https://maps.go.tmlmobilidade.pt/data/openmaptiles.json',
+				},
 				'raster-tiles': {
 					attribution: 'Map tiles by <a target="_top" rel="noopener" href="http://stamen.com">Stamen Design</a>, under <a target="_top" rel="noopener" href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a target="_top" rel="noopener" href="http://openstreetmap.org">OpenStreetMap</a>, under <a target="_top" rel="noopener" href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>',
 					tiles: ['https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],

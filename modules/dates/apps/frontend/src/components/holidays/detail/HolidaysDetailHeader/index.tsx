@@ -1,11 +1,13 @@
 'use client';
 
-import { useHolidaysDetailContext } from '@/components/holidays/detail/HolidaysDetail.context';
-import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { useHolidaysDetailFormContext } from '../HolidaysDetailForm.context';
+import { useHolidaysDetailHolidayId } from '../use-holidays-detail-holiday-id';
 
 /* * */
 
@@ -15,51 +17,31 @@ export function HolidaysDetailHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useHolidaysDetailFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'title' });
 	const router = useRouter();
-	const holidaysDetailContext = useHolidaysDetailContext();
+	const { holidayId } = useHolidaysDetailHolidayId();
+	const close = () => router.push(keepUrlParams(PAGE_ROUTES.dates.HOLIDAYS_LIST));
 
 	//
-	// B. Handle actions
-
-	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.dates.HOLIDAYS_LIST));
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-
-			<CloseButton onClick={handleClose} type="close" />
-
-			<IdTag id={holidaysDetailContext.data.holiday._id} copyOnClick />
-
+			<CloseButton onClick={close} type="close" />
+			<IdTag id={holidayId} copyOnClick />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-
-			<LockButton
-				isDisabled={!holidaysDetailContext.flags.canLock}
-				isLocked={holidaysDetailContext.data.holiday.is_locked}
-				onClick={holidaysDetailContext.actions.lock}
-			/>
-
-			<Button
-				disabled={!holidaysDetailContext.flags.canSave}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={holidaysDetailContext.flags.isSaving}
-				onClick={holidaysDetailContext.actions.save}
-				variant="primary"
-			/>
-
-			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar esta ocorrência? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Feriado"
-				isDisabled={!holidaysDetailContext.flags.canDelete}
-				onDelete={holidaysDetailContext.actions.delete}
-				showConfirmation
-			/>
-
+			<HasPermission action={PermissionCatalog.all.holidays.actions.lock} scope={PermissionCatalog.all.holidays.scope}>
+				<LockButton isDisabled={!capabilities.lockEnabled} isLoading={status.isLocking} isLocked={!!status.isLocked} onClick={actions.lock} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.holidays.actions.update} scope={PermissionCatalog.all.holidays.scope}>
+				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.holidays.actions.delete} scope={PermissionCatalog.all.holidays.scope}>
+				<DeleteButton cancelLabel={t('default:holidays.detail.cancel')} confirmLabel={t('default:holidays.detail.confirm')} confirmMessage={t('default:holidays.detail.confirmMessage')} confirmTitle={t('default:holidays.detail.confirmTitle')} isDisabled={!capabilities.deleteEnabled} isLoading={status.isDeleting} onDelete={actions.delete} showConfirmation />
+			</HasPermission>
 		</Toolbar>
 	);
 

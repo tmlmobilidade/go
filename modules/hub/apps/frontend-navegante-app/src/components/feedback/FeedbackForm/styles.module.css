@@ -1,0 +1,23 @@
+button.trigger[data-position='bottom-right'] {
+	z-index: 103;
+}
+
+.moodView {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 20px;
+}
+
+.error {
+	padding: 0 20px 20px;
+}
+
+.submitFooter {
+	position: sticky;
+	bottom: 0;
+	z-index: 1;
+	padding: 12px 20px 20px;
+	background-color: var(--color-system-background-200);
+	border-top: 1px solid var(--color-system-border-100);
+}

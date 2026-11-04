@@ -5,7 +5,6 @@ import { type StopsCreateRequest, StopsCreateRequestSchema } from '@tmlmobilidad
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +36,6 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
-	const router = useRouter();
 	const { t } = useTranslation();
 
 	const agencies = useStopsAgenciesData({
@@ -76,14 +74,14 @@ export function StopsCreateFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
 		fetchFn: async () => {
-			if (!agenciesValid) throw new Error(t('default:stops.create.StepNames.fields.agency_ids.required'));
+			if (!agenciesValid) throw new Error(t('stops:create.StopsCreateFormContextProvider.fields.agency_ids.required'));
 			return await fetchApiData<Stop>({ body: form.getValues(), method: 'POST', url: API_ROUTES.infrastructure.STOPS_CREATE });
 		},
 		onSuccess: (response) => {
 			form.reset();
 			unblock();
 			closeStopsCreateModal();
-			router.push(keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(String(response.data._id))));
+			window.location.href = keepUrlParams(PAGE_ROUTES.infrastructure.STOPS_DETAIL(response.data._id));
 		},
 	});
 

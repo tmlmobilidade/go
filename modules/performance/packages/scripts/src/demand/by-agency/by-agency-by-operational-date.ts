@@ -1,77 +1,33 @@
-/* * */
-
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
-import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { randomUUID } from 'node:crypto';
 
-/* * */
+import { executeSql, querySql } from '../../storage.js';
 
-const AVAILABLE_TIMESPANS = ['full', 'realtime', 'weekly'] as const;
-
-/**
- * Runs the demand by agency by operational date aggregation query.
- * for a given timespan (full, realtime, weekly).
- * @param timespan The timespan to run the aggregation query for.
- * @default 'realtime'
- */
-export async function runDemandByAgencyByOperationalDate(timespan: typeof AVAILABLE_TIMESPANS[number]) {
-	//
-
-	//
-	// Check if the span is valid
-
-	if (!timespan) throw new Error('Timespan is required');
-	if (!AVAILABLE_TIMESPANS.includes(timespan)) throw new Error(`Invalid timespan: ${timespan}`);
-
-	//
-	// Based on the given timespan, set the start date for the aggregation query.
-	// By default, the start date is the current operational date to avoid re-running the query for the same date.
-
-	let startDate: OperationalDateInt;
-
-	switch (timespan) {
-		case 'full':
-			startDate = OperationalDateIntSchema.parse(20010101);
-			break;
-		case 'realtime':
-			startDate = Dates
-				.now('Europe/Lisbon')
-				.minus({ days: 1 })
-				.operational_date_int;
-			break;
-		case 'weekly':
-			startDate = Dates
-				.now('Europe/Lisbon')
-				.minus({ weeks: 1 })
-				.operational_date_int;
-			break;
+/** Preserve the existing Hub output without editing its reader or exposing half-rebuilt months. */
+export async function runDemandByAgencyByOperationalDate(timespan: 'full' | 'realtime' | 'weekly') {
+	const now = Dates.now('Europe/Lisbon');
+	const previous = now.minus({ days: 7 });
+	const month = String(now.operational_date_int).slice(0, 6);
+	const previousMonth = String(previous.operational_date_int).slice(0, 6);
+	const startMonth = previousMonth < month ? previousMonth : month;
+	const params = {
+		end_date: Number(`${month}31`),
+		exclude_months: timespan === 'full' ? [month, previousMonth] : [],
+		stage: `hub_demand_${randomUUID().replaceAll('-', '')}`,
+		start_date: timespan === 'full' ? 20010101 : Number(`${startMonth}01`),
+	};
+	// Daily owns older months; realtime owns the comparison months, so they cannot race.
+	await executeSql('demand/create-stage.sql', params);
+	try {
+		await executeSql('demand/by-agency-by-operational-date.sql', params);
+		const partitions = await querySql<{ has_replacement: boolean, partition: string }>('demand/partitions.sql', params);
+		for (const partition of partitions) {
+			await executeSql(`demand/${partition.has_replacement ? 'replace-partition' : 'clear-partition'}.sql`, {
+				...params,
+				partition: Number(partition.partition),
+			});
+		}
+	} finally {
+		await executeSql('demand/drop-stage.sql', params);
 	}
-
-	//
-	// Run the aggregation query to populate the table
-
-	await labDb.performance.demandByAgencyByOperationalDate.delete('operational_date >= $1', { 1: startDate });
-
-	await labDb.performance.demandByAgencyByOperationalDate.queryFromString(
-		`
-			INSERT INTO performance.demand_by_agency_by_operational_date
-			(
-				agency_id,
-				operational_date,
-				qty,
-				updated_at
-			)
-			SELECT
-				agency_id,
-				operational_date,
-				count() AS qty,
-				now64(3) AS updated_at
-			FROM simplified_apex.validations
-			WHERE is_passenger = 1 AND operational_date >= $1
-			GROUP BY
-				agency_id,
-				operational_date;
-		`,
-		{ 1: startDate },
-	);
 }

@@ -1,6 +1,8 @@
-/* * */
+'use client';
 
-import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
+import { AgencyTagGroup } from '@tmlmobilidade/ui';
+
+import { useFaresAgenciesData } from '../../shared/use-fares-agencies-data';
 
 /* * */
 
@@ -14,14 +16,16 @@ export function FaresListCellAgencies({ agencyIds }: FaresListCellAgenciesProps)
 	//
 
 	//
-	// A. Transform data
+	// A. Fetch data
 
-	const preparedTags = agencyIds.map((item): TagProps => ({ label: item, variant: 'muted' }));
+	const { data } = useFaresAgenciesData();
 
 	//
 	// B. Render components
 
-	return <TagGroup limit={4} tags={preparedTags} />;
+	return (
+		<AgencyTagGroup agencyIds={agencyIds} data={data} />
+	);
 
 	//
 }

@@ -1,0 +1,77 @@
+{
+	"ChangePasswordForm": {
+		"description": "Enter your new password",
+		"error_message": {
+			"description": "An error occurred while changing your password",
+			"title": "Error changing password"
+		},
+		"fields": {
+			"confirm_password": {
+				"placeholder": "Confirm Password"
+			},
+			"password": {
+				"placeholder": "Password"
+			}
+		},
+		"footer": {
+			"label": "Back to login"
+		},
+		"submit": {
+			"label": "Confirm"
+		},
+		"success": {
+			"description": "Password changed successfully.",
+			"title": "Success"
+		},
+		"title": "Change password"
+	},
+	"LoginForm": {
+		"description": "We aim to simplify public transport management with reliable, intuitive digital tools.",
+		"error": {
+			"description": "An error occurred while logging in",
+			"title": "Error logging in"
+		},
+		"fields": {
+			"email": {
+				"placeholder": "Email"
+			},
+			"password": {
+				"placeholder": "Password"
+			}
+		},
+		"footer": {
+			"label": "Recover Password"
+		},
+		"submit": {
+			"label": "Login"
+		},
+		"success": {
+			"description": "Logged in successfully",
+			"title": "Success"
+		},
+		"title": "Log in to GO"
+	},
+	"SendPasswordResetEmailForm": {
+		"description": "Enter your email to recover your password",
+		"error": {
+			"description": "An error occurred while sending the email",
+			"title": "Error sending email"
+		},
+		"fields": {
+			"email": {
+				"placeholder": "Recovery Email"
+			}
+		},
+		"footer": {
+			"label": "Back to login"
+		},
+		"submit": {
+			"label": "Send email"
+		},
+		"success": {
+			"description": "Password recovery email sent successfully",
+			"title": "Success"
+		},
+		"title": "Recover Password"
+	}
+}

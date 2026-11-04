@@ -1,9 +1,6 @@
-/* * */
-
-import { node } from '@tmlmobilidade/eslint'
-
-/* * */
+import { node } from '@tmlmobilidade/eslint';
 
 export default [
-  ...node,
-]
+	...node,
+	{ files: ['tests/**/*.ts'], languageOptions: { parserOptions: { project: './tsconfig.check.json' } } },
+];

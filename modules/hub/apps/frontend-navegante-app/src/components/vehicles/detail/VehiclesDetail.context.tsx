@@ -1,14 +1,20 @@
 'use client';
 
-import { useVehiclesContext } from '@/components/vehicles/Vehicles.context';
+import { useVehiclesData } from '@/components/vehicles/use-vehicles-data';
 import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
+import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 /* * */
 
 interface VehiclesDetailContextState {
 	data: {
 		vehicle: HubV1ApiVehiclePosition | null
+	}
+	flags: {
+		has_error: boolean
+		is_loading: boolean
+		is_not_found: boolean
+		is_stale: boolean
 	}
 }
 
@@ -32,26 +38,42 @@ export const VehiclesDetailContextProvider = ({ children, vehicleId }: PropsWith
 	//
 	// A. Setup variables
 
-	const vehiclesContext = useVehiclesContext();
+	const { data: vehicles, error, isLoading } = useVehiclesData();
+	const [vehicleSnapshot, setVehicleSnapshot] = useState<HubV1ApiVehiclePosition | null>(null);
 
 	//
 	// B. Transform data
 
-	const vehicleData = useMemo(() => {
-		return vehiclesContext.data.vehicles.find(vehicle => vehicle.vehicle_id === vehicleId);
-	}, [vehicleId, vehiclesContext.data.vehicles]);
+	const liveVehicle = useMemo(() => {
+		return vehicles.find(vehicle => vehicle.vehicle_id === vehicleId) ?? null;
+	}, [vehicleId, vehicles]);
+	const vehicle = liveVehicle ?? (vehicleSnapshot?.vehicle_id === vehicleId ? vehicleSnapshot : null);
 
 	//
-	// E. Define context value
+	// C. Synchronize last known vehicle data
 
-	const contextValue: VehiclesDetailContextState = {
+	useEffect(() => {
+		if (liveVehicle) setVehicleSnapshot(liveVehicle);
+		else setVehicleSnapshot(current => current?.vehicle_id === vehicleId ? current : null);
+	}, [liveVehicle, vehicleId]);
+
+	//
+	// D. Define context value
+
+	const contextValue = useMemo<VehiclesDetailContextState>(() => ({
 		data: {
-			vehicle: vehicleData,
+			vehicle,
 		},
-	};
+		flags: {
+			has_error: Boolean(error && !vehicle),
+			is_loading: isLoading && !vehicle,
+			is_not_found: !isLoading && !error && !vehicle,
+			is_stale: Boolean(vehicle && !liveVehicle),
+		},
+	}), [error, isLoading, liveVehicle, vehicle]);
 
 	//
-	// F. Render components
+	// E. Render components
 
 	return (
 		<VehiclesDetailContext.Provider value={contextValue}>

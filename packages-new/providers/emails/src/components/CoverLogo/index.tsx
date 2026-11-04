@@ -1,8 +1,8 @@
 /* * */
 
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Column, Img, Link, Row } from 'react-email';
 
-import { GO_HOMEPAGE_URL } from '../../constants.js';
 import styles from './styles.js';
 
 /* * */
@@ -11,7 +11,7 @@ export function CoverLogo() {
 	return (
 		<Row style={styles.container}>
 			<Column>
-				<Link href={GO_HOMEPAGE_URL} target="_blank">
+				<Link href={PAGE_ROUTES.root.BASE} target="_blank">
 					<Img
 						alt="GO Logo"
 						height={40}
@@ -21,7 +21,7 @@ export function CoverLogo() {
 				</Link>
 			</Column>
 			<Column align="right">
-				<Link href={GO_HOMEPAGE_URL} target="_blank">
+				<Link href={PAGE_ROUTES.root.BASE} target="_blank">
 					<Img
 						alt="TML Logo"
 						height={40}

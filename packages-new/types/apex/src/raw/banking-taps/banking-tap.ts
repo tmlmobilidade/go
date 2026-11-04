@@ -1,12 +1,15 @@
 /* * */
 
-import { RawApexTransactionBankingTapV40Schema } from '@/raw/banking-taps/banking-tap-v40.js';
 import { z } from 'zod';
+
+import { RawApexTransactionBankingTapV40Schema } from './banking-tap-v40.js';
+import { RawApexTransactionBankingTapV70Schema } from './banking-tap-v70.js';
 
 /* * */
 
 export const RawApexTransactionBankingTapSchema = z.discriminatedUnion('version', [
 	RawApexTransactionBankingTapV40Schema,
+	RawApexTransactionBankingTapV70Schema,
 ]);
 
 /**

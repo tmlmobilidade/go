@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function ZoneCreate() {
 	return (
-		<Pane header={[<ZoneCreateHeader />]}>
+		<Pane header={[<ZoneCreateHeader key="header" />]}>
 			<ZoneCreateBasicInfo />
 		</Pane>
 	);

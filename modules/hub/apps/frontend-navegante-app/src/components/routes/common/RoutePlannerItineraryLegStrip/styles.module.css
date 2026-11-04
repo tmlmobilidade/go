@@ -1,0 +1,16 @@
+.routeStrip {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 5px;
+	align-items: center;
+	width: 100%;
+	min-width: 0;
+	padding: 0;
+	margin: 0;
+	overflow: visible;
+	list-style: none;
+}
+
+.routeStrip > li {
+	display: flex;
+}

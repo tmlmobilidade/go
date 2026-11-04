@@ -83,6 +83,23 @@ class CacheDbClass {
 	}
 
 	/**
+	 * Atomically creates or increments a numeric counter with a fixed expiry.
+	 * The expiry is only applied when the counter is first created.
+	 * @param key The key of the counter.
+	 * @param ttl Time-to-live in seconds.
+	 * @returns The incremented counter value.
+	 */
+	public async incrementWithExpiry(key: CacheDbKey, ttl: number): Promise<number> {
+		const created = await this.client.set(key as string, '1', {
+			condition: 'NX',
+			expiration: { type: 'EX', value: ttl },
+		});
+
+		if (created === 'OK') return 1;
+		return this.client.incr(key as string);
+	}
+
+	/**
 	 * Retrieves a cache entry by its key.
 	 * @param key The key of the cache entry to retrieve.
 	 * @returns A promise that resolves with the JSON parsed cache entry value,
@@ -102,7 +119,7 @@ class CacheDbClass {
 	 */
 	public async scan(pattern: string): Promise<string[]> {
 		const foundKeys = new Set<string>();
-		for await (const scanResult of this.client.scanIterator({ MATCH: pattern, TYPE: 'string' })) {
+		for await (const scanResult of this.client.scanIterator({ COUNT: 1000, MATCH: pattern, TYPE: 'string' })) {
 			// Scan result is an array of keys because Redis just goes over all keys
 			// in the database without any specific order or pagination and returns
 			// only the ones that match the requested pattern.

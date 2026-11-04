@@ -68,7 +68,7 @@ export class VkmController {
 				{ agency_ids: { $in: [payload.agency_id] } },
 				{ projection: { _id: 1, code: 1, dates: 1, name: 1 } },
 			),
-			goDb.offer.holidays.findMany(
+			goDb.dates.holidays.findMany(
 				{ agency_ids: { $in: [payload.agency_id] } },
 				{ projection: { _id: 1, agency_ids: 1, dates: 1, title: 1 } },
 			),

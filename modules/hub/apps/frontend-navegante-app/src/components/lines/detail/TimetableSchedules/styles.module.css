@@ -60,11 +60,9 @@
 	border-bottom-right-radius: 999px;
 }
 
-@media (prefers-color-scheme: dark) {
-	.hour {
-		color: var(--color-system-text-200);
-		background-color: var(--color-system-border-200);
-	}
+:root[data-mode='dark'] .hour {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-border-200);
 }
 
 /* * */
@@ -88,13 +86,14 @@
 	font-size: 14px;
 	font-weight: var(--font-weight-semibold);
 	line-height: 1;
+	color: inherit;
 	cursor: pointer;
-	transition: all 0.1s ease-in-out;
+	background: transparent;
+	border: 0;
+	transition: color 0.1s ease-in-out;
 
 	&:hover {
 		color: var(--color-system-text-200);
-		scale: 1.05;
-		translate: 0 -2px;
 	}
 }
 
@@ -123,14 +122,12 @@
 }
 
 .minute.isHighlighted {
-	margin: 2px;
 	color: var(--color-system-text-100);
-	background-color: var(--color-brand-navegante);
-	border-radius: 100%;
+	background: radial-gradient(circle 12px at center, var(--color-brand-navegante) 99%, transparent 100%);
 
 	&[data-is-dark="true"] {
 		color: var(--color-brand-navegante);
-		background-color: var(--color-system-background-100)
+		background: radial-gradient(circle 12px at center, var(--color-system-background-100) 99%, transparent 100%);
 	}
 }
 

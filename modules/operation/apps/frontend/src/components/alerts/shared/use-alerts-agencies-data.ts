@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AlertsAgencyItem, AlertsAgencyRequest } from '@tmlmobilidade/go-operation-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, SelectDataItem } from '@tmlmobilidade/ui';
+import { fetchApiData, SelectDataItem, toAgencySelectItem } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -48,12 +48,7 @@ export function useAlertsAgenciesData(query: AlertsAgencyRequest): UseAlertsAgen
 		// Skip if no data is available
 		if (!data?.data?.length) return [];
 		// Map data to SelectDataItem format
-		return data.data.map((item): SelectDataItem => ({
-			checked: false,
-			disabled: false,
-			label: `[${item._id}] ${item.code} - ${item.name}`,
-			value: item._id,
-		}));
+		return data.data.map(toAgencySelectItem);
 	}, [data?.data]);
 
 	//

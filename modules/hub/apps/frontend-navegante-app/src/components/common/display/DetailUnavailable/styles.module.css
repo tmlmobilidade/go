@@ -1,0 +1,4 @@
+.alert:focus {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 4px;
+}

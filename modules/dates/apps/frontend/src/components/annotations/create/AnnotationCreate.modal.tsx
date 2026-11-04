@@ -1,8 +1,7 @@
 'use client';
 
 import { AnnotationCreate } from '@/components/annotations/create/AnnotationCreate';
-import { AnnotationCreateContextProvider } from '@/components/annotations/create/AnnotationCreate.context';
-import { DataProviders } from '@/providers/data-providers';
+import { AnnotationsCreateFormContextProvider } from '@/components/annotations/create/AnnotationsCreateForm.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,13 +13,11 @@ const MODAL_ID = 'create-annotation-modal';
 export const openCreateAnnotationModal = () => {
 	openModal({
 		children: (
-			<DataProviders>
-				<MeContextProvider>
-					<AnnotationCreateContextProvider>
-						<AnnotationCreate />
-					</AnnotationCreateContextProvider>
-				</MeContextProvider>
-			</DataProviders>
+			<MeContextProvider>
+				<AnnotationsCreateFormContextProvider>
+					<AnnotationCreate />
+				</AnnotationsCreateFormContextProvider>
+			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,

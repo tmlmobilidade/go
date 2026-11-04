@@ -85,7 +85,7 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 						<Tooltip label="Ir para detalhes do evento" position="bottom" withArrow>
 							<Link
 								className={styles.eventName}
-								href={PAGE_ROUTES.dates.EVENTS_DETAIL(rule.event_id)}
+								href={PAGE_ROUTES.offer.EVENTS_DETAIL(rule.event_id)}
 								onClick={event => event.stopPropagation()}
 								rel="noopener noreferrer"
 								target="_blank"

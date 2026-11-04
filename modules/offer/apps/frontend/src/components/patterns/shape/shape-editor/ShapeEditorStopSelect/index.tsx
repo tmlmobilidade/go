@@ -3,8 +3,8 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
+import { type PatternsStopSearchItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
-import { type PatternStopSearchItem } from '@tmlmobilidade/go-types-offer';
 import { fetchApiData, Select, useToast } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -32,7 +32,7 @@ export function ShapeEditorStopSelect({ disabled, excludeStopIds = [], label, on
 	// A. Setup variables
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [results, setResults] = useState<PatternStopSearchItem[]>([]);
+	const [results, setResults] = useState<PatternsStopSearchItem[]>([]);
 	const [searchValue, setSearchValue] = useState('');
 
 	//
@@ -53,7 +53,7 @@ export function ShapeEditorStopSelect({ disabled, excludeStopIds = [], label, on
 			const url = new URL(API_ROUTES.offer.PATTERNS_STOPS);
 			url.searchParams.set('query', query);
 
-			void fetchApiData<PatternStopSearchItem[]>({ options: { signal: abortController.signal }, url: url.toString() }).then((response) => {
+			void fetchApiData<PatternsStopSearchItem[]>({ options: { signal: abortController.signal }, url: url.toString() }).then((response) => {
 				if (abortController.signal.aborted) return;
 				setResults(response.data ?? []);
 			}).finally(() => {

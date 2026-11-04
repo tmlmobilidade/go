@@ -1,6 +1,6 @@
 import { type TaskProps } from '@/types.js';
 import { yyyymmddToDashed } from '@/utils/dates-helper.js';
-import { metrics } from '@tmlmobilidade/interfaces';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /* Result type for affected passengers per agency per day */
 export interface PaxAffectedByFailuresResult {
@@ -31,7 +31,7 @@ interface FailedCirculationsMetric {
 export async function calculateAffectedPassengers({ context, message }: TaskProps): Promise<PaxAffectedByFailuresResult[]> {
 	message('Calculating passengers affected by failed circulations...');
 
-	const metricsCollection = await metrics.getCollection();
+	const metricsCollection = await goDb.performance.metrics.getCollection();
 
 	// Fetch only the relevant metric documents
 	message('Fetching affected passengers metrics...');

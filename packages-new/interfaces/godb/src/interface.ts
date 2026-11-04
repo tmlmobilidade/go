@@ -4,9 +4,11 @@ import { type MongoClient, MongoDatabaseClient } from '@tmlmobilidade/go-clients
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
 import { CoreDatabase } from './databases/core.js';
+import { DatesDatabase } from './databases/dates.js';
 import { InfrastructureDatabase } from './databases/infrastructure.js';
 import { OfferDatabase } from './databases/offer.js';
 import { OperationDatabase } from './databases/operation.js';
+import { PerformanceDatabase } from './databases/performance.js';
 
 /* * */
 
@@ -16,9 +18,11 @@ class GoDBClass {
 	private static _instance: GoDBClass;
 
 	public readonly core: CoreDatabase;
+	public readonly dates: DatesDatabase;
 	public readonly infrastructure: InfrastructureDatabase;
 	public readonly offer: OfferDatabase;
 	public readonly operation: OperationDatabase;
+	public readonly performance: PerformanceDatabase;
 
 	/**
 	 * Establishes a connection to the Mongo database and initializes the collection.
@@ -37,9 +41,11 @@ class GoDBClass {
 	// Constructor
 	private constructor(mongoClient: MongoClient) {
 		this.core = new CoreDatabase(mongoClient);
+		this.dates = new DatesDatabase(mongoClient);
 		this.infrastructure = new InfrastructureDatabase(mongoClient);
 		this.offer = new OfferDatabase(mongoClient);
 		this.operation = new OperationDatabase(mongoClient);
+		this.performance = new PerformanceDatabase(mongoClient);
 	}
 }
 

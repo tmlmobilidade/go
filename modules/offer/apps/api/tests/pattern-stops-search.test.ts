@@ -1,4 +1,4 @@
-import { PatternStopSearchQuerySchema } from '@tmlmobilidade/go-types-offer';
+import { PatternsStopSearchQuerySchema } from '@tmlmobilidade/go-offer-pckg-types';
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 
@@ -8,14 +8,14 @@ import { createPatternStopsSearchFilter, escapePatternStopsSearchQuery, PATTERN_
 
 describe('pattern stops search', () => {
 	test('requires at least two search characters', () => {
-		assert.equal(PatternStopSearchQuerySchema.safeParse({ query: '' }).success, false);
-		assert.equal(PatternStopSearchQuerySchema.safeParse({ query: 'a' }).success, false);
-		assert.deepEqual(PatternStopSearchQuerySchema.parse({ query: '  ab  ' }), { limit: 25, query: 'ab' });
+		assert.equal(PatternsStopSearchQuerySchema.safeParse({ query: '' }).success, false);
+		assert.equal(PatternsStopSearchQuerySchema.safeParse({ query: 'a' }).success, false);
+		assert.deepEqual(PatternsStopSearchQuerySchema.parse({ query: '  ab  ' }), { limit: 25, query: 'ab' });
 	});
 
 	test('caps the requested result count', () => {
-		assert.equal(PatternStopSearchQuerySchema.safeParse({ limit: 25, query: 'ab' }).success, true);
-		assert.equal(PatternStopSearchQuerySchema.safeParse({ limit: 26, query: 'ab' }).success, false);
+		assert.equal(PatternsStopSearchQuerySchema.safeParse({ limit: 25, query: 'ab' }).success, true);
+		assert.equal(PatternsStopSearchQuerySchema.safeParse({ limit: 26, query: 'ab' }).success, false);
 	});
 
 	test('escapes regular expression syntax', () => {

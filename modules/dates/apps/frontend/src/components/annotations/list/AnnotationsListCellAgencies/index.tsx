@@ -1,6 +1,8 @@
-/* * */
+'use client';
 
-import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
+import { AgencyTagGroup } from '@tmlmobilidade/ui';
+
+import { useAnnotationsAgenciesData } from '../../shared/use-annotations-agencies-data';
 
 /* * */
 
@@ -14,14 +16,14 @@ export function AnnotationsListCellAgencies({ agencyIds }: AnnotationsListCellAg
 	//
 
 	//
-	// A. Transform data
+	// A. Fetch data
 
-	const preparedTags = agencyIds.map((item): TagProps => ({ label: item, variant: 'muted' }));
+	const { data } = useAnnotationsAgenciesData();
 
 	//
 	// B. Render components
 
-	return <TagGroup limit={4} tags={preparedTags} />;
-
-	//
+	return (
+		<AgencyTagGroup agencyIds={agencyIds} data={data} />
+	);
 }

@@ -1,7 +1,7 @@
 /* * */
 
 import { setRidesAsWaiting } from '@tmlmobilidade/go-apex-pckg-callback';
-import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
+import { parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap, parseRawApexTransactionBankingTapV70IntoSimplifiedApexBankingTap } from '@tmlmobilidade/go-apex-pckg-parsers';
 import { labDb } from '@tmlmobilidade/go-interfaces-labdb';
 import { rawDb } from '@tmlmobilidade/go-interfaces-rawdb';
 import { type RawApexTransaction, SimplifiedApexBankingTap } from '@tmlmobilidade/go-types-apex';
@@ -112,6 +112,7 @@ export async function syncApexBankingTaps(timeChunk: PerformInTimeChunksItem) {
 			try {
 				let parseResult: null | SimplifiedApexBankingTap = null;
 				if (sourceDbDocument.version === 'banking-tap-4.0') parseResult = parseRawApexTransactionBankingTapV40IntoSimplifiedApexBankingTap(sourceDbDocument);
+				if (sourceDbDocument.version === 'banking-tap-7.0') parseResult = parseRawApexTransactionBankingTapV70IntoSimplifiedApexBankingTap(sourceDbDocument);
 				if (!parseResult) return;
 				await writer.write(parseResult, { flushCallback: setRidesAsWaiting });
 			} catch (error) {

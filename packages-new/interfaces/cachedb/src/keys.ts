@@ -4,7 +4,9 @@ const dynamicKey = () => 'use-for-dynamic-key';
 
 export const cacheDbKeyValues = [
 	'hub:v1:navegante:app-enabled',
+	`hub:v1:feedback:rate-limit:${dynamicKey()}`,
 	'hub:v1:agencies:json',
+	'hub:v1:organizations:json',
 	'hub:v1:alerts:published:json',
 	'hub:v1:alerts:published:json:cm',
 	'hub:v1:alerts:published:gtfs',
@@ -38,4 +40,4 @@ export const cacheDbKeyValues = [
 	`hub:v1:network:shapes:${dynamicKey()}`,
 ] as const;
 
-export type CacheDbKey = typeof cacheDbKeyValues[number];
+export type CacheDbKey = `hub:v1:${string}:${'agencies' | 'alerts' | 'eta' | 'metrics' | 'network' | 'plans' | 'vehicles'}:${string}` | typeof cacheDbKeyValues[number];

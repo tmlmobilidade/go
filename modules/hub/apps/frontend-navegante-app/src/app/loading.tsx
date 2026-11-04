@@ -1,9 +1,9 @@
 /* * */
 
-import { LoadingSection } from '@tmlmobilidade/ui';
+import { BusyStatus } from '@/components/common/display/BusyStatus';
 
 /* * */
 
 export default function Loading() {
-	return <LoadingSection fullHeight />;
+	return <BusyStatus fullHeight />;
 }

@@ -1,5 +1,6 @@
 /* * */
 
+import { AmiClient } from './clients/ami/index.js';
 import { CcflClient } from './clients/ccfl/index.js';
 import { CpClient } from './clients/cp/index.js';
 import { CrtmAisaClient } from './clients/crtm-aisa/index.js';
@@ -18,6 +19,7 @@ import { UnirClient } from './clients/unir/index.js';
  * of a specific transport agency. These clients offer methods to fetch
  * GTFS-RT feeds and other relevant live data where available.
  *
+ * - ami: AMI WS_TRACK API Client
  * - ccfl: Companhia dos Caminhos de Ferro de Lisboa (CCFL) AKA Carris Munícipal API Client.
  * - cp: Comboios de Portugal (CP) API Client
  * - crtmAisa: Consorcio Regional de Transportes de Madrid (AISACRTM) API Client
@@ -28,6 +30,7 @@ import { UnirClient } from './clients/unir/index.js';
  * - ttsl: Transtejo Soflusa (TTSL) API Client
  */
 export const externalClients = Object.freeze({
+	ami: AmiClient,
 	ccfl: CcflClient,
 	cp: CpClient,
 	crtmAisa: CrtmAisaClient,

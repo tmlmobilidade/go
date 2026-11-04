@@ -3,8 +3,8 @@
 import { ScrollChips } from '@/components/common/lists/ScrollChips';
 import { LineBadge } from '@/components/lines/common/LineBadge';
 import { useStopsDetailContext } from '@/components/stops/detail/StopsDetail.context';
-import { getAgencyLogo } from '@/lib/agency-logos-map';
-import { AGENCY_NAMES_MAP } from '@/lib/agency-names-map';
+import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { getAgencyDisplayInfo, getAgencyLogo, getAgencyMapOperatorId } from '@/lib/agency-catalog';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -21,6 +21,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const { push } = useBottomSheet();
 
 	const stopsDetailContext = useStopsDetailContext();
 
@@ -32,7 +33,7 @@ export function StopsDetailViewHeaderAssociatedLines() {
 		const groups: Record<string, { agency_id: string, lines: HubV1ApiLine[] }> = {};
 		stopsDetailContext.data.associated_lines?.forEach((line) => {
 			// Merge CM agencies into a single agency
-			const agencyId = ['A2L1N', 'BNA17', 'LA77N', 'YA15B'].includes(line.agency_id) ? 'CM' : line.agency_id;
+			const agencyId = getAgencyMapOperatorId(line.agency_id) ?? line.agency_id;
 			// Initialize the array for the agency ID if it doesn't exist
 			if (!groups[agencyId]) groups[agencyId] = { agency_id: agencyId, lines: [] };
 			// Add the line to the array for the agency ID
@@ -47,21 +48,33 @@ export function StopsDetailViewHeaderAssociatedLines() {
 	}, [stopsDetailContext.data.associated_lines]);
 
 	//
-	// B. Render componentss
+	// C. Render components
 
-	return linesByAgencyId.map(group => (
-		<ScrollChips key={group.agency_id}>
-			<div className={styles.row}>
-				<Image
-					alt={t(`default:lines.LinesListGroup.logo.alt`, '', { agency_name: AGENCY_NAMES_MAP[group.agency_id]?.full })}
-					height={60}
-					src={getAgencyLogo(group.agency_id, '120x120', 'light')}
-					width={60}
-				/>
-				{group.lines.map(line => (
-					<LineBadge key={line._id} lineData={line} />
-				))}
-			</div>
-		</ScrollChips>
-	));
+	return linesByAgencyId.map((group) => {
+		const agency = getAgencyDisplayInfo(group.agency_id);
+		const agencyLogo = getAgencyLogo(group.agency_id, '120x120', 'light');
+
+		return (
+			<ScrollChips key={group.agency_id}>
+				<div className={styles.row}>
+					{agency && agencyLogo && (
+						<Image
+							alt={t(`default:lines.LinesListGroup.logo.alt`, '', { agency_name: agency.fullName })}
+							height={60}
+							src={agencyLogo}
+							width={60}
+						/>
+					)}
+					{group.lines.map(line => (
+						<LineBadge
+							key={line._id}
+							ariaLabel={t('default:lines.LineBadge.open_details', '', { line: line.short_name })}
+							lineData={line}
+							onClick={() => push({ entityId: line._id, view: 'lines-detail' })}
+						/>
+					))}
+				</div>
+			</ScrollChips>
+		);
+	});
 }

@@ -1,21 +1,24 @@
 /* * */
 
-import { RawApexTransactionBankingTapV40Schema } from '@/raw/banking-taps/banking-tap-v40.js';
-import { RawApexTransactionInspectionDecisionV20Schema } from '@/raw/inspection-decisions/inspection-decision-v20.js';
-import { RawApexTransactionInspectionV20Schema } from '@/raw/inspections/inspection-v20.js';
-import { RawApexTransactionLocationV30Schema } from '@/raw/locations/location-v30.js';
-import { RawApexTransactionRefundV30Schema } from '@/raw/refunds/refund-v30.js';
-import { RawApexTransactionSaleV30Schema } from '@/raw/sales/sale-v30.js';
-import { RawApexTransactionValidationV20Schema } from '@/raw/validations/validation-v20.js';
-import { RawApexTransactionValidationV30Schema } from '@/raw/validations/validation-v30.js';
-import { RawApexTransactionValidationV40Schema } from '@/raw/validations/validation-v40.js';
-import { RawApexTransactionValidationV50Schema } from '@/raw/validations/validation-v50.js';
 import { z } from 'zod';
+
+import { RawApexTransactionBankingTapV40Schema } from './banking-taps/banking-tap-v40.js';
+import { RawApexTransactionBankingTapV70Schema } from './banking-taps/banking-tap-v70.js';
+import { RawApexTransactionInspectionDecisionV20Schema } from './inspection-decisions/inspection-decision-v20.js';
+import { RawApexTransactionInspectionV20Schema } from './inspections/inspection-v20.js';
+import { RawApexTransactionLocationV30Schema } from './locations/location-v30.js';
+import { RawApexTransactionRefundV30Schema } from './refunds/refund-v30.js';
+import { RawApexTransactionSaleV30Schema } from './sales/sale-v30.js';
+import { RawApexTransactionValidationV20Schema } from './validations/validation-v20.js';
+import { RawApexTransactionValidationV30Schema } from './validations/validation-v30.js';
+import { RawApexTransactionValidationV40Schema } from './validations/validation-v40.js';
+import { RawApexTransactionValidationV50Schema } from './validations/validation-v50.js';
 
 /* * */
 
 export const RawApexTransactionSchema = z.discriminatedUnion('version', [
 	RawApexTransactionBankingTapV40Schema,
+	RawApexTransactionBankingTapV70Schema,
 	RawApexTransactionInspectionDecisionV20Schema,
 	RawApexTransactionInspectionV20Schema,
 	RawApexTransactionLocationV30Schema,

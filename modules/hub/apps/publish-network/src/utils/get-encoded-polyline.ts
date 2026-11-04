@@ -3,11 +3,11 @@
 import { EncodedPolyline, GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
 import { HubV1GtfsShapes } from '@tmlmobilidade/go-types-hub';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
-import { type GtfsSQLTables } from '@tmlmobilidade/import-gtfs';
+import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 
 /* * */
 
-const encodedPolylineCache = new Map<string, EncodedPolyline>();
+const encodedPolylineCaches = new WeakMap<GtfsSQLTables, Map<string, EncodedPolyline>>();
 
 /**
  * Retrieves an encoded polyline from the database.
@@ -18,6 +18,11 @@ const encodedPolylineCache = new Map<string, EncodedPolyline>();
  */
 export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId: string): Promise<EncodedPolyline> {
 	//
+	let encodedPolylineCache = encodedPolylineCaches.get(importedGtfsSql);
+	if (!encodedPolylineCache) {
+		encodedPolylineCache = new Map();
+		encodedPolylineCaches.set(importedGtfsSql, encodedPolylineCache);
+	}
 
 	//
 	// Check if the encoded polyline is already cached
@@ -28,12 +33,13 @@ export async function getEncodedPolyline(importedGtfsSql: GtfsSQLTables, shapeId
 
 	//
 	// If not, fetch the encoded polyline from the database
+	// Imported GTFS sequences are TEXT, so order them numerically.
 
 	const foundShapeData = importedGtfsSql.shapes.query<HubV1GtfsShapes>(`
 		SELECT *
 		FROM shapes
 		WHERE shape_id = ?
-		ORDER BY shape_id, shape_pt_sequence;
+		ORDER BY CAST(shape_pt_sequence AS INTEGER);
 	`, [shapeId]);
 
 	//

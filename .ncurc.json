@@ -3,8 +3,7 @@
 		"prod",
 		"dev",
 		"optional",
-		"packageManager",
-		"overrides"
+		"packageManager"
 	],
 	"reject": [
 		"zod",
