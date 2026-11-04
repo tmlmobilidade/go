@@ -186,6 +186,7 @@ export const API_ROUTES = Object.freeze({
 		EXTRACTIONS_DOWNLOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/download/${encodeURIComponent(id)}`,
 		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
 		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
+		EXTRACTIONS_RELOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/reload/${encodeURIComponent(id)}`,
 
 		// HOME
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
