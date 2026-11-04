@@ -1,6 +1,7 @@
 'use client';
 
-import { type Latitude, type Longitude } from '@tmlmobilidade/go-types-geo';
+git pull --rebase origin 931-filter-stops-by-coordinates
+git pushimport { type Latitude, type Longitude } from '@tmlmobilidade/go-types-geo';
 import { CoordinatesInput, ErrorDisplay, Pane, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
