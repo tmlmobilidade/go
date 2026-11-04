@@ -11,7 +11,6 @@ import { GtfsStrictV30SQLTables, type ImportGtfsConfig, importGtfsToDatabase } f
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
-import { createPlanStatisticsAccumulator } from '../utils/plan-statistics.js';
 import { sanitizeRideId } from '../utils/sanitize-ride-id.js';
 import { toHashedShape } from '../utils/to-hashed-shape.js';
 import { toHashedTrip } from '../utils/to-hashed-trip.js';
@@ -33,11 +32,6 @@ export async function parsePlanTask(planData: Plan) {
 	if (!planData.attachments.operation_gtfs_normalized) {
 		Logger.warning({ attributes: { plan_id: planData._id }, message: 'Skip processing: No operation GTFS normalized found.' });
 		await setPlanStatus(planData._id, 'rides_feeder', 'error');
-		return;
-	}
-
-	if (planData.apps.organizer.status !== 'complete' || planData.apps.organizer.last_hash !== planData.hash) {
-		await setPlanStatus(planData._id, 'rides_feeder', 'waiting');
 		return;
 	}
 
@@ -107,7 +101,6 @@ export async function parsePlanTask(planData: Plan) {
 		const processedTripIds = new Map<string, HashedTrip[]>();
 
 		const savedRideIds = new Set<string>();
-		const statistics = createPlanStatisticsAccumulator(savedRideIds);
 		const savedHashedTripIds = new Set<string>();
 		const savedHashedShapeIds = new Set<string>();
 
@@ -159,31 +152,26 @@ export async function parsePlanTask(planData: Plan) {
 
 				if (!calendarDatesData || calendarDatesData.length === 0) {
 					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no calendar dates. Skipping...` });
-					statistics.invalidate();
 					continue;
 				}
 
 				if (!routeData) {
 					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no route data. Skipping...` });
-					statistics.invalidate();
 					continue;
 				}
 
 				if (!shapeData || shapeData.length === 0) {
 					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no shape data. Skipping...` });
-					statistics.invalidate();
 					continue;
 				}
 
 				if (!stopTimesData || stopTimesData.length === 0) {
 					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no stop_times data. Skipping...` });
-					statistics.invalidate();
 					continue;
 				}
 
 				if (!stopsData || stopsData.length === 0) {
 					Logger.error({ message: `Trip "${currentTrip.trip_id}" has no stops data. Skipping...` });
-					statistics.invalidate();
 					continue;
 				}
 
@@ -323,7 +311,7 @@ export async function parsePlanTask(planData: Plan) {
 
 					await ridesWriter.write(finalRide);
 
-					statistics.add(finalRide);
+					savedRideIds.add(finalRide._id);
 				}
 
 				//
@@ -369,18 +357,7 @@ export async function parsePlanTask(planData: Plan) {
 
 		heartbeat.stop();
 
-		// Publish the summary and processing version together. A plan edited during
-		// processing must be retried rather than receiving totals for the old dates/file.
-		const plansCollection = await goDb.operation.plans.getCollection();
-		const result = await plansCollection.updateOne({ _id: planData._id, hash: planData.hash }, {
-			$set: {
-				'apps.rides_feeder.last_hash': planData.hash,
-				'apps.rides_feeder.statistics': statistics.result(),
-				'apps.rides_feeder.status': 'complete',
-				'apps.rides_feeder.timestamp': Dates.now('utc').unix_milliseconds,
-			},
-		});
-		if (!result.matchedCount) await setPlanStatus(planData._id, 'rides_feeder', 'waiting');
+		await setPlanStatus(planData._id, 'rides_feeder', 'complete', planData.hash);
 
 		Logger.success(`Finished processing plan "${planData._id}". (${globalTimer.get()})`);
 

@@ -9,10 +9,10 @@ import { type Plan, PlanStatisticsSchema } from '@tmlmobilidade/go-types-operati
 /** Combines a current, complete service summary with the agency's current rate. */
 export function getPlanSummary(plan: Plan, pricePerKm: unknown): PlansDetailSummary {
 	const organizer = plan.apps?.organizer;
-	const feeder = plan.apps?.rides_feeder;
-	const hasError = organizer?.status === 'error' || feeder?.status === 'error';
-	const isCurrent = !!plan.hash && [organizer, feeder].every(app => app?.status === 'complete' && app.last_hash === plan.hash);
-	const parsedStatistics = PlanStatisticsSchema.safeParse(isCurrent ? feeder?.statistics : null);
+	const statisticsApp = plan.apps?.plans_statistics;
+	const hasError = organizer?.status === 'error' || statisticsApp?.status === 'error';
+	const isCurrent = !!plan.hash && [organizer, statisticsApp].every(app => app?.status === 'complete' && app.last_hash === plan.hash);
+	const parsedStatistics = PlanStatisticsSchema.safeParse(isCurrent ? statisticsApp?.statistics : null);
 	const statistics = parsedStatistics.success ? parsedStatistics.data : null;
 	const kilometers = statistics ? statistics.distance_meters / 1000 : null;
 	const priceMissing = pricePerKm == null || (typeof pricePerKm === 'string' && !pricePerKm.trim());

@@ -65,11 +65,7 @@ export async function getPlansHandler(): Promise<RidesCoordinatorPlansResponse> 
 
 		const foundWaitingPlans = await goDb.operation.plans.findMany(
 			{
-				'$expr': { $and: [
-					{ $ne: ['$hash', '$apps.rides_feeder.last_hash'] },
-					{ $eq: ['$hash', '$apps.organizer.last_hash'] },
-				] },
-				'apps.organizer.status': 'complete',
+				'$expr': { $ne: ['$hash', '$apps.rides_feeder.last_hash'] },
 				'apps.rides_feeder.status': { $nin: ['processing', 'error'] },
 				'attachments.operation_gtfs_normalized': { $ne: null },
 			},
