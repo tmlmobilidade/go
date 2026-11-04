@@ -1,9 +1,9 @@
 /* * */
 
-import { toMetersFromKilometersOrMeters } from '@tmlmobilidade/geo';
 import { GeoJsonLineStringGeometrySchema } from '@tmlmobilidade/go-types-geo';
 import { type GtfsStrictV30Shapes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { CreateHashedShapeSchema, type HashedShape, HashedShapeSchema, type Plan } from '@tmlmobilidade/go-types-operation';
+import { NonNegativeFloatSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fromGeoJsonLineStringToEncodedPolyline } from '@tmlmobilidade/go-utils-geo';
 import crypto from 'crypto';
@@ -35,10 +35,11 @@ export function toHashedShape(planData: Plan, tripData: GtfsStrictV30Trips, shap
 	//
 	// Calculate the extension in meters for the shape.
 
-	const firstShapePoint = sortedShapeData[0];
 	const lastShapePoint = sortedShapeData[sortedShapeData.length - 1];
 
-	const extensionScheduledInMeters = Math.round(toMetersFromKilometersOrMeters(lastShapePoint.shape_dist_traveled, firstShapePoint.shape_dist_traveled));
+	// Operation GTFS distances are in kilometers; stored scheduled distances are meters.
+	const distanceKilometers = NonNegativeFloatSchema.parse(lastShapePoint.shape_dist_traveled);
+	const extensionScheduledInMeters = Math.round(distanceKilometers * 1000);
 
 	//
 	// Hash the object contents and check if it already exists in the database.

@@ -2,15 +2,17 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { Plan } from '@tmlmobilidade/go-types-operation';
+import { type PlansDetailItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+
+import { getPlanSummary } from '../utils/get-plan-summary.js';
 
 /**
  * Retrieves a single plan by ID
  * @param request Fastify request containing plan ID in params
  * @param reply Fastify reply
  */
-export async function getPlanHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Plan>) {
+export async function getPlanHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<PlansDetailItem>) {
 	//
 
 	//
@@ -44,7 +46,12 @@ export async function getPlanHandler(request: FastifyRequest<{ Params: { id: str
 	}
 
 	//
-	// Return the plan data
+	// Read only this plan's agency rate, after checking access to the plan.
 
-	return sendSuccessApiResponse(reply, planData);
+	const agencyData = await goDb.core.agencies.findById(planData.agency_id, { projection: { 'financials.price_per_km': 1 } });
+
+	return sendSuccessApiResponse(reply, {
+		...planData,
+		summary: getPlanSummary(planData, agencyData?.financials?.price_per_km),
+	});
 }
