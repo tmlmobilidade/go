@@ -3,6 +3,7 @@ import { type ManualRule } from '@tmlmobilidade/go-types-offer';
 
 /* * */
 
+/** Keep writable fields in the draft; API-derived Event rules stay outside the form. */
 export function getPatternsDetailFormValues(pattern: PatternsDetail): PatternsDetailFormDto {
 	return {
 		code: pattern.code,

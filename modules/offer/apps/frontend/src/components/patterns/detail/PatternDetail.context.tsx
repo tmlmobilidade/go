@@ -2,31 +2,29 @@
 
 import { useLinesDetailData } from '@/components/lines/detail/use-lines-detail-data';
 import { closeGtfsImportModal } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsImport.modal';
-import { closeCreateRuleModal, openCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
-import { openRulesCalendarPreviewModal } from '@/components/patterns/rules/list/RulesCalendarPreview.modal';
-import { closeCreateParameterModal, openCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
+import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
+import { closeCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
 import { useRoutesDetailData } from '@/components/routes/detail/use-routes-detail-data';
 import { useEventsContext } from '@/contexts/Events.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { getBaseGeoJsonFeatureCollection } from '@tmlmobilidade/geo';
 import { PatternsDetail, PatternsDetailFormDto, PatternsDetailFormSchema, PatternsDetailPathItem, type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { EventReplacementRule, EventRestrictionRule, ManualRule, Path, Pattern, ScheduleRule, StopsParameter, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { buildParameterSummary, buildRuleSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/go-utils-offer';
-import { generateRandomString } from '@tmlmobilidade/strings';
-import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeLineDataProps, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useLocaleContext, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { getPatternsDetailFormValues } from './patterns-detail-form-values';
 import { usePatternsDetailData } from './use-patterns-detail-data';
+import { usePatternsDetailMapData } from './use-patterns-detail-map-data';
 import { usePatternsDetailPatternId } from './use-patterns-detail-pattern-id';
+import { usePatternsDetailSchedulingActions } from './use-patterns-detail-scheduling-actions';
+import { usePatternsDetailSchedulingData } from './use-patterns-detail-scheduling-data';
 
 /* * */
 
@@ -83,9 +81,6 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
-
-	const { data: { locale } } = useLocaleContext();
 	const router = useRouter();
 	const { lineId, patternId } = usePatternsDetailPatternId();
 	const { data: me, error: meError, isLoading: meLoading } = useMeData();
@@ -130,222 +125,37 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	}, [form]);
 
 	//
-	// C. Editable pattern data
+	// D. Watch editable geometry
 
 	const pathValues = useStandardFormWatch({ control: form.control, name: 'path' });
 	const editablePath = useMemo(() => pathValues ?? [], [pathValues]);
 	const editableShape = useStandardFormWatch({ control: form.control, name: 'shape' });
 
 	//
-	// D. Transform editable data to GeoJSON
+	// E. Project editable geometry onto the map
 
-	const patternLineFC: MapOverlayPatternShapeLineData | null = useMemo(() => {
-		const properties: MapOverlayPatternShapeLineDataProps = {
-			color: typologyData?.color,
-			id: pattern?._id ?? patternId,
-		};
-
-		if (editableShape?.encoded_polyline) {
-			return {
-				encoded_polyline: editableShape.encoded_polyline,
-				properties,
-			};
-		}
-
-		if (!editableShape?.geojson?.geometry?.coordinates) return null;
-
-		return {
-			geometry: {
-				coordinates: editableShape.geojson.geometry.coordinates,
-				type: 'LineString' as const,
-			},
-			properties,
-			type: 'Feature' as const,
-		};
-	}, [editableShape, typologyData?.color, pattern?._id, patternId]);
-
-	const patternStopsFC: FeatureCollection<Point, MapOverlayPatternShapeStopsDataProps> | null = useMemo(() => {
-		const featureCollection = getBaseGeoJsonFeatureCollection<Point, MapOverlayPatternShapeStopsDataProps>();
-
-		featureCollection.features = editablePath
-			.filter(pathItem => pathItem.stop)
-			.map((pathItem, index) => ({
-				geometry: {
-					coordinates: [
-						pathItem.stop.longitude,
-						pathItem.stop.latitude,
-					],
-					type: 'Point' as const,
-				},
-				properties: {
-					id: String(pathItem.stop._id),
-					name: pathItem.stop.name,
-					sequence: index + 1,
-				},
-				type: 'Feature' as const,
-			}));
-
-		return featureCollection;
-	}, [editablePath]);
-
-	// rules used for UI + preview
-	const rulesForUI = useMemo(
-		() => {
-			const allRules = [...(values.rules ?? []), ...derivedRules] as ScheduleRule[];
-			const periods = periodsContext.data.raw || [];
-
-			// Derive the compact rule label and event details for display
-			return allRules.map((rule) => {
-				const { label, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, locale, periods, t });
-				return { ...rule, name: label, tooltip };
-			});
-		},
-		[eventsContext.data.raw, values.rules, derivedRules, periodsContext.data.raw, locale, t],
-	);
-
-	// parameters used for UI + preview
-	const parametersForUI = useMemo(() => {
-		const allParameters = [...(values.parameters ?? [])] as StopsParameter[];
-		const periods = periodsContext.data.raw || [];
-		const basePath = editablePath;
-
-		return allParameters.map((parameter) => {
-			const { long, short } = buildParameterSummary(parameter, { locale, periods, t });
-
-			const mergedPath = getMergedPath(basePath, parameter.path || []);
-			const parameterTravelTimes = computeSegmentTravelTimes(mergedPath);
-
-			return {
-				...parameter,
-				name: long,
-				shortName: short,
-				travelTimes: parameterTravelTimes,
-			};
-		});
-	}, [values.parameters, periodsContext.data.raw, editablePath, locale, t]);
+	const { patternLineFC, patternStopsFC } = usePatternsDetailMapData({
+		color: typologyData?.color,
+		path: editablePath,
+		patternId: pattern?._id ?? patternId,
+		shape: editableShape,
+	});
 
 	//
-	// E. Handle Schedule RULES actions
+	// F. Derive scheduling display data and dialog actions
 
-	const handleAddRule = useCallback((rule: ManualRule) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
-		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
-		const newRules = [...currentRules, ruleWithId];
-
-		form.setValue('rules', newRules, { shouldDirty: true, shouldValidate: true });
-	}, [form, patternId]);
-
-	const handleEditRule = useCallback((rule: ManualRule) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		if (!rule._id) {
-			return;
-		}
-		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
-		const newRules = currentRules.map(r =>
-			r._id === rule._id ? rule : r,
-		);
-
-		form.setValue('rules', newRules, { shouldDirty: true, shouldValidate: true });
-	}, [form, patternId]);
-
-	const handleDeleteRule = useCallback((ruleId: string) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
-		const newRules = currentRules.filter(r => r._id !== ruleId);
-
-		form.setValue('rules', newRules, { shouldDirty: true, shouldValidate: true });
-	}, [form, patternId]);
-
-	const handleDuplicateRule = useCallback((rule: ManualRule) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
-		const manualRule = { ...rule } as ManualRule & { tooltip?: string };
-		delete manualRule.tooltip;
-		const duplicatedRule = { ...manualRule, _id: generateRandomString({ length: 5 }) };
-		const newRules = [...currentRules, duplicatedRule];
-
-		form.setValue('rules', newRules, { shouldDirty: true, shouldValidate: true });
-	}, [form, patternId]);
-
-	const handleOpenRuleModal = useCallback((rule?: ManualRule) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		const onSubmit = (validatedRule: ManualRule) => {
-			if (rule?._id) {
-				// Editing - preserve the _id
-				handleEditRule({ ...validatedRule, _id: rule._id });
-			} else {
-				// Creating new
-				handleAddRule(validatedRule);
-			}
-		};
-
-		const onDelete = rule?._id ? () => handleDeleteRule(rule._id) : undefined;
-		const onDuplicate = rule?._id ? (duplicatedRule: ManualRule) => handleDuplicateRule(duplicatedRule) : undefined;
-
-		openCreateRuleModal(line?.agency_id || '', onSubmit, rule, onDelete, onDuplicate);
-	}, [handleAddRule, handleEditRule, handleDeleteRule, handleDuplicateRule, line?.agency_id, patternId]);
-
-	const handleOpenRulesCalendarPreviewModal = useCallback(() => {
-		openRulesCalendarPreviewModal(
-			line?.agency_id || '',
-			rulesForUI,
-		);
-	}, [line?.agency_id, rulesForUI]);
+	const { parametersForUI, rulesForUI } = usePatternsDetailSchedulingData({ derivedRules, editablePath, events: eventsContext.data.raw, periods: periodsContext.data.raw, values });
+	const { handleAddRule, handleDeleteRule, handleDuplicateRule, handleEditRule, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal } = usePatternsDetailSchedulingActions({
+		accessRef,
+		agencyId: line?.agency_id,
+		form,
+		patternId,
+		persistedPath: pattern?.path,
+		rulesForUI,
+	});
 
 	//
-	// F. Handle Schedule RULES actions
-
-	const handleAddStopParameter = useCallback((rule: StopsParameter) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
-		const ruleWithId = { ...rule, _id: generateRandomString({ length: 5 }) };
-		const newRules = [...currentRules, ruleWithId];
-
-		form.setValue('parameters', newRules, { shouldDirty: true, shouldValidate: true });
-	}, [form, patternId]);
-
-	const handleEditStopParameter = useCallback((rule: StopsParameter) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		if (!rule._id) {
-			return;
-		}
-		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
-		const newRules = currentRules.map(r =>
-			r._id === rule._id ? rule : r,
-		);
-
-		form.setValue('parameters', newRules, { shouldDirty: true, shouldValidate: true });
-	}, [form, patternId]);
-
-	const handleDeleteStopParameter = useCallback((ruleId: string) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		const currentRules = (form.getValues().parameters ?? []) as StopsParameter[];
-		const newRules = currentRules.filter(r => r._id !== ruleId);
-
-		form.setValue('parameters', newRules, { shouldDirty: true, shouldValidate: true });
-	}, [form, patternId]);
-
-	const handleOpenStopsParameterModal = useCallback((rule?: StopsParameter) => {
-		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
-		const onSubmit = (validatedRule: StopsParameter) => {
-			if (rule?._id) {
-				// Editing - preserve the _id
-				handleEditStopParameter({ ...validatedRule, _id: rule._id });
-			} else {
-				// Creating new
-				handleAddStopParameter(validatedRule);
-			}
-		};
-
-		const onDelete = rule?._id ? () => handleDeleteStopParameter(rule._id) : undefined;
-
-		const defaultParameter = (form.getValues().parameters ?? []).find((p): p is StopsParameter => p.kind === 'default');
-		openCreateParameterModal(line?.agency_id || '', onSubmit, (form.getValues().path ?? pattern?.path) as PatternsDetailPathItem[], rule, onDelete, defaultParameter);
-	}, [line?.agency_id, pattern, handleEditStopParameter, handleAddStopParameter, handleDeleteStopParameter, form, patternId]);
-
-	//
-	// G. Handle comments actions
+	// G. Handle comments and API actions
 
 	const { action: addCommentRequest } = useHandleAction({
 		fetchFn: async (message: string) => await fetchApiData<Pattern>({
@@ -400,7 +210,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	});
 
 	//
-	// F. Setup permissions
+	// H. Setup permissions and guarded mutations
 
 	const permissions = PermissionCatalog.getScopePermissions({
 		actions: PermissionCatalog.all.lines.actions,
@@ -466,7 +276,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	}, [patternId]);
 
 	//
-	// G. Define context value
+	// I. Define context value
 
 	const contextValue: PatternDetailContextState = useMemo(() => ({
 		actions: {
@@ -522,7 +332,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	}), [editableShape, editablePath, isDirty, isValid, unblock, hasError, meError, lineError, routeError, applyChanges, isLoading, addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, form, patternId, lineId, rulesForUI, pattern, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC, inheritedLock, line]);
 
 	//
-	// H. Render components
+	// J. Render components
 
 	return (
 		<PatternDetailContext.Provider value={contextValue}>

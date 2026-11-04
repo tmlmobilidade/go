@@ -2,6 +2,11 @@ import type { DayContext } from './types.js';
 
 import { EventReplacementRule, ManualRule } from '@tmlmobilidade/go-types-offer';
 
+/** An omitted/empty month selection does not narrow a rule’s calendar scope. */
+export function manualRuleMatchesMonth(rule: ManualRule, month: number): boolean {
+	return !rule.months?.length || rule.months.some(value => value === month);
+}
+
 /**
  * Determines if a manual rule matches the given day context.
  *
@@ -54,8 +59,8 @@ function intersects<T>(a: readonly T[] | undefined, b: readonly T[] | undefined)
 /**
  * Determines if a manual rule intersects with an event replacement rule's targets.
  *
- * Uses OR logic via set intersection: if the rule matches ANY weekday or period
- * that the replacement targets, it's considered a match. This is used when a
+ * Requires overlap in BOTH dimensions: at least one target weekday AND at least
+ * one target period. This is used when a
  * replacement rule overrides the normal schedule for certain weekdays/periods.
  *
  * @param rule - The manual rule to check
@@ -66,7 +71,7 @@ function intersects<T>(a: readonly T[] | undefined, b: readonly T[] | undefined)
  * ```ts
  * const rule = { weekdays: [1, 2], year_period_ids: ['school'], ... };
  * const replacement = { weekdays: [1], year_period_ids: ['school', 'summer'], ... };
- * manualRuleMatchesReplacement(rule, replacement); // true (weekday 1 matches)
+ * manualRuleMatchesReplacement(rule, replacement); // true (weekday 1 and school both match)
  * ```
  */
 export function manualRuleMatchesReplacement(rule: ManualRule, replacement: EventReplacementRule): boolean {

@@ -102,11 +102,11 @@ function isTimeInRange(time: HHMM, start: HHMM, end: HHMM): boolean {
 	return timeMinutes >= startMinutes && timeMinutes < endMinutes;
 }
 
-// USED IN PreviewCalendarView
-
 /**
- * Build schedule details for all affected days in a date range.
- * Only includes days that have active timepoints or applied rules.
+ * Build display details for an inclusive range of civil service dates.
+ * Date keys remain stable across daylight-saving changes; UI language does not
+ * change membership. Callers supply agency-scoped rules, Periods, Holidays and Events.
+ * Only days with active timepoints or applied rules are included.
  */
 export function buildAffectedDaysDetails(
 	startDate: Dates,

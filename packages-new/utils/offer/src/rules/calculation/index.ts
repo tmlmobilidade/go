@@ -11,7 +11,7 @@ import { findReplacementForDate, getActivePeriodId } from '../utils/date.js';
 import { collectManualIncludes, collectReplacementManualIncludes } from './collectors.js';
 import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcludes } from './filters.js';
 import { getTimepointsRemovedByEventRestriction } from './filters.js';
-import { manualRuleMatchesContext, manualRuleMatchesReplacement } from './matchers.js';
+import { manualRuleMatchesContext, manualRuleMatchesMonth, manualRuleMatchesReplacement } from './matchers.js';
 
 /* * */
 
@@ -31,10 +31,15 @@ export interface SplitScheduleRules {
 	restrictionRules: EventRestrictionRule[]
 }
 
+/** Index the caller’s agency-scoped Events once when evaluating many dates. */
 export function buildActiveRulesEventIndex(events: Event[] = []): Map<string, Event> {
 	return new Map(events.map(event => [event._id, event]));
 }
 
+/**
+ * Resolve one civil service date: holidays count as Sunday and the first matching
+ * Period supplies the context. Callers must supply the same agency scope as the rules.
+ */
 export function buildActiveRulesDateContext(date: OperationalDateInt, periods: YearPeriod[], holidays: Holiday[]): ActiveRulesDateContext {
 	const key = calendarKey(Dates.fromOperationalDateInt(date, 'Europe/Lisbon'));
 	return {
@@ -44,6 +49,7 @@ export function buildActiveRulesDateContext(date: OperationalDateInt, periods: Y
 	};
 }
 
+/** Partition rules without mutating them; reuse the result while the source rules are unchanged. */
 export function splitScheduleRules(rules: ScheduleRule[]): SplitScheduleRules {
 	return {
 		manualRules: rules.filter((r): r is ManualRule => r.kind === 'manual'),
@@ -63,12 +69,6 @@ function filterManualRulesByEventDate(manualRules: ManualRule[], date: Operation
 		if (!event?.dates?.length) return false;
 		return event.dates.includes(date);
 	});
-}
-
-function filterManualRulesByMonth(manualRules: ManualRule[], month: number) {
-	return manualRules.filter(rule =>
-		!rule.months?.length || (rule.months as number[]).includes(month),
-	);
 }
 
 function collectManualIncludeTimepoints(manualRules: ManualRule[], ctx: DayContext): Set<HHMM> {
@@ -176,7 +176,7 @@ export function computeActiveRulesFromSplit(
 
 	// Filter out manual rules whose months list doesn't include the current month
 	const month = Number(key.slice(5, 7));
-	const monthFilteredManualRules = filterManualRulesByMonth(filteredManualRules, month);
+	const monthFilteredManualRules = filteredManualRules.filter(rule => manualRuleMatchesMonth(rule, month));
 
 	const replacement = findReplacementForDate(date, replacementRules);
 
@@ -228,7 +228,7 @@ export function computeActiveRuleCountFromSplit(
 	const key = options?.dateContext?.key ?? calendarKey(Dates.fromOperationalDateInt(date, 'Europe/Lisbon'));
 
 	const month = Number(key.slice(5, 7));
-	const monthFilteredManualRules = filterManualRulesByMonth(filteredManualRules, month);
+	const monthFilteredManualRules = filteredManualRules.filter(rule => manualRuleMatchesMonth(rule, month));
 
 	const replacement = findReplacementForDate(date, rules.replacementRules);
 
