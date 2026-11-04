@@ -21,6 +21,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-locationsdb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",

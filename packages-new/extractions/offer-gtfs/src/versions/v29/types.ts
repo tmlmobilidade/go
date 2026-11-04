@@ -6,6 +6,8 @@ import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { GtfsTMLFareAttributes, GtfsTMLFareRules } from '@tmlmobilidade/types';
 import { type CsvWriter } from '@tmlmobilidade/writers';
 
+import { type getStopsLocationFilter } from './utils/get-stops-location-filter.js';
+
 /* * */
 
 /**
@@ -62,6 +64,11 @@ export interface GtfsV29ExportConfig {
 	 * Whether to export all stops or only referenced ones
 	 */
 	stops_export_all: boolean
+
+	/**
+	 * Server-derived location permissions for the all-stops export
+	 */
+	stops_location_filter: ReturnType<typeof getStopsLocationFilter>
 
 	/**
 	 * Starting value for stop_sequence (0 or 1)

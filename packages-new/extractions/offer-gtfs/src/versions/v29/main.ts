@@ -294,24 +294,23 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 		}
 
 		//
-		// Step 4: Export referenced stops
-		// Only export stops that are actually referenced in the patterns
+		// Step 4: Export stops
+		// All stops are restricted to the requesting user's permitted locations.
 
 		await updateProgress(progress, { progress_current: 5, progress_total: 7 });
 
-		Logger.info({ message: `Processing ${allStopsData.length} stops...` });
+		const stopsToExport = exportConfig.stops_export_all
+			? await goDb.infrastructure.stops.findMany(exportConfig.stops_location_filter, { sort: { _id: 1 } })
+			: allStopsData.filter(stop => referencedStopCodes.has(String(stop._id)));
+
+		Logger.info({ message: `Processing ${stopsToExport.length} stops...` });
 
 		// Export each stop
-		for (const stopData of allStopsData) {
-			//
-
-			// Skip stops that are not referenced
-			if (!exportConfig.stops_export_all && !referencedStopCodes.has(String(stopData._id))) continue;
-
+		for (const stopData of stopsToExport) {
 			await exportStop(stopData, exportConfig);
 		}
 
-		Logger.success(`Exported ${allStopsData.length} stops to stops.txt`);
+		Logger.success(`Exported ${stopsToExport.length} stops to stops.txt`);
 
 		//
 		// Step 4.5: Export calendar_dates
