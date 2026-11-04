@@ -2,7 +2,6 @@ package validations
 
 import (
 	"database/sql"
-	"embed"
 	"fmt"
 	"slices"
 
@@ -12,24 +11,15 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/execution"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/registry"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	graph "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
+	DAG "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/i18n"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
 )
 
-// RuleSources contains the central registrations and validation implementations.
-// Embedding keeps rules.json validation independent of source files at runtime.
-//
-//go:embed registry-rules.go */checks/*.go
-var RuleSources embed.FS
-
 /*
-* RunValidations orchestrates all rules through one global Kahn dependency graph.
+* RunValidations orchestrates all rules through one global Kahn dependency DAG.
 * A node finishes after its entire source table is checked. Failed or skipped
 * prerequisites block dependents; every ready rule starts without a concurrency cap.
 * Configuration is already validated. The supplied database must remain open during the run.
@@ -46,15 +36,19 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 	if messageService == nil {
 		messageService = collector.NewMessageService()
 	}
+
 	state := &validationTypes.Execution{Messages: messageService, Failures: make(map[string]error)}
 	result := validationTypes.Result{}
+	
 	finish := func(err error) (validationTypes.Result, error) {
 		result.Summary = messageService.GetSummary()
 		return result, err
 	}
+	
 	if db == nil {
 		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("database connection is nil")))
 	}
+	
 	if err := db.Ping(); err != nil {
 		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("open validation database: %w", err)))
 	}
@@ -66,29 +60,10 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 	checks := registry.Checks()
 
 	//
-	// 3. Add file-presence control gates and diagnostic-only identifiers
+	// 3. Add tables file presence control gates and diagnostic-only identifiers
 
-	// A present file passes its gate even when the missing-file message is ignored.
-	// Only explicit depends_on entries make other nodes wait for a presence gate.
-	for _, table := range variables.GtfsRuleFiles {
-		id := table + "_file_missing"
-		checks[id] = func(ctx *context.ValidationContext) error {
-			exists, err := queries.TableExists(ctx.DB, table)
-			if err != nil {
-				return err
-			}
-			if exists {
-				return nil
-			}
-			ctx.FileName = table + ".txt"
-			ctx.Field = "N/A"
-			ctx.Failed = true // Presence is also a control outcome when its message is ignored.
-			if !context.ShouldIgnore(ctx) {
-				context.AddMessage(ctx, i18n.AppTranslator.Get("file_missing.message", ctx.FileName))
-			}
-			return nil
-		}
-	}
+	TablesFilePresence(checks)
+
 	// Runtime notices have no executable check. They stay skipped as prerequisites.
 	for _, id := range []string{"file_validation", "file_not_found_in_rules"} {
 		checks[id] = nil
@@ -103,14 +78,17 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 	}
 
 	//
-	// 4. Build the global graph using only dependencies supplied in rules.json
+	// 4. Build the global DAG using only dependencies supplied in rules.json
 
 	ids := make([]string, 0, len(checks))
 	for id := range checks {
 		ids = append(ids, id)
 	}
+
 	slices.Sort(ids)
-	nodes := make([]graph.Rule[*validationTypes.Execution], 0, len(ids))
+	
+	nodes := make([]DAG.Rule[*validationTypes.Execution], 0, len(ids))
+	
 	for _, id := range ids {
 		check := checks[id]
 		config := configuration[id]
@@ -119,19 +97,20 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 		}
 		ruleContext := context.NewRuleContext(id, db, config.RuleContext, messageService)
 		dependencies := slices.Clone(config.DependsOn)
-		nodes = append(nodes, graph.Rule[*validationTypes.Execution]{ID: ruleContext.RuleID, DependsOn: dependencies, Run: func(run *validationTypes.Execution) graph.Status {
+		nodes = append(nodes, DAG.Rule[*validationTypes.Execution]{ID: ruleContext.RuleID, DependsOn: dependencies, Run: func(run *validationTypes.Execution) DAG.Status {
 			return execution.RunRule(run, ruleContext, check)
 		}})
 	}
+	
 	manager, err := algorithm.NewManager(nodes...)
 	if err != nil {
-		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("prepare validation graph: %w", err)))
+		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("prepare validation DAG: %w", err)))
 	}
 
 	//
 	// 5. Run the global scheduler once, releasing dependents on each rule completion
 
-	logger.AppLogger.Info(telemetry.LogEntry{Message: fmt.Sprintf("Global validation graph ready: %d rules", len(nodes)), Attributes: map[string]any{"rules": len(nodes)}})
+	logger.AppLogger.Info(telemetry.LogEntry{Message: fmt.Sprintf("Global validation DAG ready: %d rules", len(nodes)), Attributes: map[string]any{"rules": len(nodes)}})
 	result.Statuses, err = algorithm.RunRules(manager, state)
 	if err != nil {
 		execution.CollectErrors(state, "", "N/A", "N/A", nil, err)
