@@ -352,7 +352,7 @@
 		"StopsListFilterCoordinates": {
 			"description": "Latitude, longitude in decimal degrees. Fixed radius of 100 m.",
 			"invalid": "Invalid coordinates. Use latitude (-90 to 90), longitude (-180 to 180), separated by a comma.",
-			"label": "Coordinates (100 m)",
+			"label": "Coordinates",
 			"placeholder": "E.g.: 38.7223, -9.1393"
 		},
 		"StopsListFilterFacilities": {
