@@ -120,6 +120,15 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	const values = useStandardFormWatch({ control: form.control });
 	const isValid = PatternsDetailFormSchema.safeParse(values).success;
 
+	useEffect(() => {
+		// These collections are edited through dialogs instead of Controllers.
+		// Register their roots so API refreshes preserve complete dirty arrays,
+		// including deleted items, rather than merging old array indices back in.
+		form.register('rules');
+		form.register('parameters');
+		form.register('path');
+	}, [form]);
+
 	//
 	// C. Editable pattern data
 
