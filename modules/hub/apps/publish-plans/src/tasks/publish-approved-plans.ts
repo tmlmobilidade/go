@@ -91,6 +91,11 @@ export async function publishApprovedPlans(agencyIds: string[]) {
 	//
 	// Save the result in API Cache
 
+	for (const agencyId of agencyIds) {
+		await cacheDb.setNew(`hub:v1:${agencyId}:plans:approved:json`, approvedPlans.filter(plan => plan.agency_id === agencyId));
+	}
+
+	// Keep the global feed available for the ETA publisher.
 	await cacheDb.set('hub:v1:plans:approved:json', JSON.stringify(approvedPlans));
 
 	Logger.success(`Finished publishing ${approvedPlans.length} approved plans JSON feed. (${globalTimer.get()})`);

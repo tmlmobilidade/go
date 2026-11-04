@@ -175,9 +175,6 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_LIST: `${getModuleConfig('core', 'api_url')}/agencies`,
 		AGENCIES_LOOKUP: `${getModuleConfig('core', 'api_url')}/platform/agencies/lookup`,
 
-		// AGENCY-ORGANIZATIONS
-		AGENCY_ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/agency-organizations`,
-
 		// APP-CONFIGS
 		APP_CONFIGS_BANNER: `${getModuleConfig('core', 'api_url')}/app-configs/banner`,
 
@@ -193,6 +190,7 @@ export const API_ROUTES = Object.freeze({
 		EXTRACTIONS_DOWNLOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/download/${encodeURIComponent(id)}`,
 		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
 		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
+		EXTRACTIONS_RELOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/reload/${encodeURIComponent(id)}`,
 
 		// HOME
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,

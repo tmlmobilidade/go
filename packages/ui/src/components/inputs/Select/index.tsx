@@ -10,7 +10,6 @@ export interface SelectDataItem {
 	checked?: boolean
 	description?: string
 	disabled?: boolean
-	group?: string
 	keywords?: string
 	label: string
 	sortLabel?: string

@@ -1,0 +1,34 @@
+{
+	"name": "@tmlmobilidade/go-tracker-pt-cimrc-sit-api-fetch",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && resolve-tspaths",
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --fix && tsc --noEmit",
+		"lint:fix": "eslint . --fix"
+	},
+	"dependencies": {
+		"@tmlmobilidade/go-interfaces-rawdb": "*",
+		"@tmlmobilidade/go-types-vehicle-events": "*",
+		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-exec": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
+		"@tmlmobilidade/gtfs-rt": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.6.5",
+		"resolve-tspaths": "0.8.23",
+		"tsx": "4.23.15",
+		"typescript": "6.0.3"
+	}
+}
