@@ -25,7 +25,7 @@ const resources = [
 for (const { create, name, update } of resources) {
 	describe(`${name} agency requirements`, () => {
 		test('creation requires at least one agency', () => {
-			const fields = { code: 'CODE', name: 'Record', title: 'Record' };
+			const fields = { code: 'CODE', name: 'Record', short_name: 'REC', title: 'Record' };
 			assert.equal(create.safeParse(fields).success, false);
 			assert.equal(create.safeParse({ ...fields, agency_ids: [] }).success, false);
 			assert.equal(create.safeParse({ ...fields, agency_ids: ['A'] }).success, true);

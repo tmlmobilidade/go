@@ -16,6 +16,7 @@ const t = (value: string) => hhmm(value);
 const ferPeriod = {
 	_id: 'fer',
 	agency_ids: [] as string[],
+	code: 'FER',
 	created_at: 1 as never,
 	created_by: 'user',
 	dates: [
@@ -32,14 +33,17 @@ const ferPeriod = {
 	],
 	is_locked: false,
 	name: 'Férias',
+	short_name: 'FER',
 	updated_at: 1 as never,
 };
 
 const escPeriod = {
 	...ferPeriod,
 	_id: 'esc',
+	code: 'ESC',
 	dates: [d('20260210'), d('20260211'), d('20261224')],
 	name: 'Escolar',
+	short_name: 'ESC',
 };
 
 const periods = [escPeriod, ferPeriod];

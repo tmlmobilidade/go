@@ -20,7 +20,7 @@ test('Events normalize parent and nested rule dates to integers', () => {
 });
 
 test('Periods normalize date fields before assignment overlap validation', () => {
-	const period = CreateYearPeriodSchema.parse({ agency_ids: ['A'], dates: ['20261028', 20261029], name: 'Period' });
+	const period = CreateYearPeriodSchema.parse({ agency_ids: ['A'], code: 'PERIOD', dates: ['20261028', 20261029], name: 'Period', short_name: 'PER' });
 	assert.deepEqual(period.dates, [20261028, 20261029]);
 	assert.equal(UpdateYearPeriodDatesSchema.safeParse({ add_dates: ['20261028'], remove_dates: [20261028] }).success, false);
 });

@@ -38,6 +38,8 @@ function testYearPeriod(overrides: Partial<YearPeriod> & Pick<YearPeriod, '_id' 
 	return {
 		...documentFields,
 		agency_ids: [],
+		code: overrides._id,
+		short_name: overrides.name,
 		...overrides,
 	};
 }

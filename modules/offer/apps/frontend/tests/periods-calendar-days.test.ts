@@ -9,7 +9,7 @@ import { getPeriodsDateCoverage } from '../src/components/year-periods/shared/pe
 /* * */
 
 const agencies = ['A1', 'A2', 'A3', 'A4'];
-const school = YearPeriodSchema.parse({ _id: 'school', agency_ids: agencies, color: '#336699', created_at: 1792368000000, created_by: 'actor', dates: [20270101], name: 'School', updated_at: 1792368000000 });
+const school = YearPeriodSchema.parse({ _id: 'school', agency_ids: agencies, code: 'SCHOOL', color: '#336699', created_at: 1792368000000, created_by: 'actor', dates: [20270101], name: 'School', short_name: 'SCH', updated_at: 1792368000000 });
 const holiday = YearPeriodSchema.parse({ ...school, _id: 'holiday', color: '#cc6633', dates: [20270102], name: 'Holiday' });
 
 /* * */

@@ -1,4 +1,5 @@
 import { EventReplacementSchema, EventRestrictionSchema, EventRuleSchema, EventSchema, ManualRuleSchema, YearPeriodSchema } from '@tmlmobilidade/go-types-offer';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
@@ -101,16 +102,18 @@ test('distinguishes full-day, extended-hour windows and explicit-timepoint restr
 });
 
 test('formats operational dates with timezone-stable compact weekdays', () => {
-	assert.equal(formatOperationalDateWeekday(20260205, 'pt-PT'), 'Qui');
-	assert.equal(formatOperationalDateWeekday(20260207, 'pt-PT'), 'Sáb');
-	assert.equal(formatOperationalDateWeekday(20260205, 'es-ES'), 'Jue');
-	assert.equal(formatOperationalDateWeekday(20260207, 'es-ES'), 'Sáb');
-	assert.equal(formatOperationalDateWeekday(20260205, 'en-GB'), 'Thu');
-	assert.equal(formatOperationalDateWeekday(20260207, 'en-GB'), 'Sat');
-	assert.equal(formatDateWithWeekday(20260205, 'pt'), '05/02/2026 (Qui)');
-	assert.equal(formatDateWithWeekday(20260205, 'pt-PT'), '05/02/26 (Qui)');
-	assert.equal(formatDateWithWeekday(20260205, 'es-ES'), '5/2/26 (Jue)');
-	assert.equal(formatDateWithWeekday(20260205, 'en-GB'), '05/02/2026 (Thu)');
+	const thursday = OperationalDateIntSchema.parse(20260205);
+	const saturday = OperationalDateIntSchema.parse(20260207);
+	assert.equal(formatOperationalDateWeekday(thursday, 'pt-PT'), 'Qui');
+	assert.equal(formatOperationalDateWeekday(saturday, 'pt-PT'), 'Sáb');
+	assert.equal(formatOperationalDateWeekday(thursday, 'es-ES'), 'Jue');
+	assert.equal(formatOperationalDateWeekday(saturday, 'es-ES'), 'Sáb');
+	assert.equal(formatOperationalDateWeekday(thursday, 'en-GB'), 'Thu');
+	assert.equal(formatOperationalDateWeekday(saturday, 'en-GB'), 'Sat');
+	assert.equal(formatDateWithWeekday(thursday, 'pt'), '05/02/2026 (Qui)');
+	assert.equal(formatDateWithWeekday(thursday, 'pt-PT'), '05/02/26 (Qui)');
+	assert.equal(formatDateWithWeekday(thursday, 'es-ES'), '5/2/26 (Jue)');
+	assert.equal(formatDateWithWeekday(thursday, 'en-GB'), '05/02/2026 (Thu)');
 });
 
 test('formats stored event definitions consistently without requiring derived parent metadata', async () => {

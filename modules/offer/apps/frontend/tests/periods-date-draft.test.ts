@@ -13,7 +13,7 @@ const second = toCalendarDate('2027-01-02');
 const third = toCalendarDate('2027-01-03');
 const initialDates = new Set([first]);
 const agencies = ['A', 'B', 'C', 'D'];
-const period = YearPeriodSchema.parse({ _id: 'school', agency_ids: agencies, created_at: 1792368000000, created_by: 'actor', dates: [20270101], name: 'School', updated_at: 1792368000000 });
+const period = YearPeriodSchema.parse({ _id: 'school', agency_ids: agencies, code: 'SCHOOL', created_at: 1792368000000, created_by: 'actor', dates: [20270101], name: 'School', short_name: 'SCH', updated_at: 1792368000000 });
 
 /* * */
 
@@ -47,7 +47,7 @@ test('combined save sends date deltas and writable settings without sending stal
 	const request = getPeriodsDetailUpdate({ ...period, is_locked: true, name: 'Renamed' }, [second], [first]);
 	assert.deepEqual(request.add_dates, [20270102]);
 	assert.deepEqual(request.remove_dates, [20270101]);
-	assert.deepEqual(request.period, { agency_ids: agencies, name: 'Renamed' });
+	assert.deepEqual(request.period, { agency_ids: agencies, code: 'SCHOOL', name: 'Renamed', short_name: 'SCH' });
 });
 
 test('review checks all operators for additions, and all remaining dates when changing operators', () => {

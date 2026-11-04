@@ -53,10 +53,12 @@ test('full schedule previews include both endpoints across spring and autumn clo
 		const period = YearPeriodSchema.parse({
 			_id: 'period',
 			agency_ids: ['A'],
+			code: 'PERIOD',
 			created_at: 1_792_368_000_000,
 			created_by: 'user',
 			dates,
 			name: 'Period',
+			short_name: 'PER',
 			updated_at: 1_792_368_000_000,
 		});
 		const schedule = ManualRuleSchema.parse({ ...rule, timepoints: ['08:00'] });

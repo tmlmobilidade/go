@@ -22,6 +22,7 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-offer-pckg-types": "*",
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-dates": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-offer": "*",
