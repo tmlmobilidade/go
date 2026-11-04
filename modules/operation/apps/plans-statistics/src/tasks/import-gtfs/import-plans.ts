@@ -6,6 +6,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import { calculateLines } from '../calculate-statistics/calculate-lines.js';
+import { calculateTrips } from '../calculate-statistics/calculate-trips.js';
 import { importPlanGtfs } from './steps/import-plan-gtfs.js';
 
 /* * */
@@ -17,7 +19,7 @@ interface PlanStatics {
 	vkm_count: number
 }
 
-/** Imports each normalized plan GTFS into a local SQLite file, without calculating statistics. */
+/** Imports normalized plan GTFS files and logs their trip and line counts. */
 export async function importPlansTask() {
 	//
 	// Only import plans whose organizer has finished processing the current hash.
@@ -44,12 +46,24 @@ export async function importPlansTask() {
 		const databasePath = path.join(directory, `${encodeURIComponent(plan._id)}.db`);
 
 		try {
-			await importPlanGtfs(fileId, databasePath);
-			Logger.success(`Imported plan "${plan._id}" to ${databasePath}.`);
+			const gtfs = await importPlanGtfs(fileId, databasePath);
+			let tripCount: number;
+			let lineCount: number;
+
+			try {
+				// Calculate totals while the imported SQLite connection is still open.
+				tripCount = calculateTrips(gtfs);
+				lineCount = calculateLines(gtfs);
+			} finally {
+				// Close without cleanup(), which would also delete the SQLite file.
+				gtfs._db.databaseInstance.close();
+			}
+
+			Logger.success(`Imported plan "${plan._id}" to ${databasePath}. Trips: ${tripCount}. Lines: ${lineCount}.`);
 			break;
 		} catch (error) {
 			// An import failure must not prevent the remaining plans from being processed.
-			Logger.error({ error, message: `Error importing plan "${plan._id}".` });
+			Logger.error({ error, message: `Error processing plan "${plan._id}".` });
 		}
 	}
 }

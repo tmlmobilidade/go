@@ -1,13 +1,13 @@
 /* * */
 
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
+import { type GtfsSQLTables, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import fs from 'node:fs';
 
 /* * */
 
-/** Imports one normalized GTFS into a fresh SQLite file and retains it after closing. */
-export async function importPlanGtfs(fileId: string, databasePath: string): Promise<void> {
+/** Imports one normalized GTFS into a fresh SQLite file. The caller must close the connection. */
+export async function importPlanGtfs(fileId: string, databasePath: string): Promise<GtfsSQLTables> {
 	//
 	// The importer downloads the GTFS using the signed storage URL.
 
@@ -18,13 +18,8 @@ export async function importPlanGtfs(fileId: string, databasePath: string): Prom
 
 	fs.rmSync(databasePath, { force: true });
 
-	const gtfs = await importGtfsToDatabase({
+	return importGtfsToDatabase({
 		source: { url },
 		sqlite_config: { instancePath: databasePath },
 	});
-
-	//
-	// Close the connection directly: cleanup() would also delete the database file.
-
-	gtfs._db.databaseInstance.close();
 }
