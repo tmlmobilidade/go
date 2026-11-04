@@ -2,7 +2,8 @@
 
 import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreateRouteDto, CreateRouteSchema, type LineNormalized, type Route } from '@tmlmobilidade/go-types-offer';
+import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { type CreateRouteDto, CreateRouteSchema, type Route } from '@tmlmobilidade/go-types-offer';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
@@ -49,8 +50,8 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	//
 	// B. Fetch data
 
-	const { mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	const { mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
 	});
 
 	//
@@ -62,7 +63,7 @@ export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildr
 	// D. Handle actions
 
 	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_LIST }),
+		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_CREATE }),
 		onSuccess: ({ data }) => {
 			form.resetDirty();
 			lineMutate();

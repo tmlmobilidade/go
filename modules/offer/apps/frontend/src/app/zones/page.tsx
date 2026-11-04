@@ -1,13 +1,9 @@
-'use client';
+/* * */
 
-import { NoDataLabel, Surface } from '@tmlmobilidade/ui';
+import { ZonesListPlaceholder } from '@/components/zones/list/ZonesListPlaceholder';
 
 /* * */
 
-export default function Page() {
-	return (
-		<Surface align="center" justify="center" variant="transparent">
-			<NoDataLabel text="Selecione uma Zona" />
-		</Surface>
-	);
+export default async function Page() {
+	return <ZonesListPlaceholder />;
 }

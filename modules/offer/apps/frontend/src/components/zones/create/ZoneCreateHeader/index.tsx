@@ -1,9 +1,11 @@
 'use client';
 
-import { useZoneCreateContext } from '@/components/zones/create/ZoneCreate.context';
-import { closeCreateZoneModal } from '@/components/zones/create/ZoneCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, CreateButton, HasPermission, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { closeCreateZoneModal } from '../ZoneCreate.modal';
+import { useZonesCreateFormContext } from '../ZonesCreateForm.context';
 
 /* * */
 
@@ -13,7 +15,9 @@ export function ZoneCreateHeader() {
 	//
 	// A. Setup variables
 
-	const zoneCreateContext = useZoneCreateContext();
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useZonesCreateFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
 	// B. Render components
@@ -21,17 +25,12 @@ export function ZoneCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateZoneModal} type="close" />
-			<Tag label="Nova Zona" variant="muted" />
-			<Label size="lg" singleLine>{zoneCreateContext.data.form.values.name}</Label>
+			<Tag label={t('default:zones.create.title')} variant="muted" />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-			<Button
-				disabled={!zoneCreateContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Publicar"
-				loading={zoneCreateContext.flags.isSaving}
-				onClick={zoneCreateContext.actions.create}
-				variant="primary"
-			/>
+			<HasPermission action={PermissionCatalog.all.zones.actions.create} scope={PermissionCatalog.all.zones.scope}>
+				<CreateButton isDisabled={!capabilities.createEnabled} isLoading={status.isCreating} onClick={actions.create} />
+			</HasPermission>
 		</Toolbar>
 	);
 

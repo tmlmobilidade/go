@@ -3,7 +3,6 @@
 import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
-import { PatternSimplifiedSchema } from './pattern.js';
 import { RoutePathType, RoutePathTypeSchema } from './route-path-type.js';
 
 /* * */
@@ -18,10 +17,9 @@ export const pathTypeOptions: { label: string, value: RoutePathType }[] = [
 
 export const RouteSchema = BaseDocumentSchema.extend({
 	code: z.string().trim().min(1).max(10),
-	line_id: z.string(),
+	line_id: z.string().min(1),
 	name: z.string().trim().min(1),
 	path_type: RoutePathTypeSchema.default('base'),
-	patterns: z.array(PatternSimplifiedSchema).optional(),
 });
 
 export const RouteSimplifiedSchema = z.object({
@@ -32,7 +30,7 @@ export const RouteSimplifiedSchema = z.object({
 
 /* * */
 
-export const CreateRouteSchema = RouteSchema.omit({ _id: true, created_at: true, created_by: true, patterns: true, updated_at: true });
+export const CreateRouteSchema = RouteSchema.omit({ _id: true, created_at: true, created_by: true, is_locked: true, updated_at: true, updated_by: true });
 
 export const UpdateRouteSchema = CreateRouteSchema.partial();
 

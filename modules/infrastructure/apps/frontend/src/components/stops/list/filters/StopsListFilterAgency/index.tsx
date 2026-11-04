@@ -23,7 +23,8 @@ export function StopsListFilterAgency() {
 	return (
 		<ListFilter
 			active={filterAgency.isActive}
-			label={t('default:stops.list.FilterAgency.label')}
+			isLoading={filterAgency.isLoading}
+			label={t('stops:list.StopsListFilterAgency.label')}
 			onChange={filterAgency.set}
 			options={filterAgency.options}
 			isMultiple

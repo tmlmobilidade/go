@@ -3,7 +3,7 @@
 /* * */
 
 import { IconArrowBarToDown, IconArrowBarUp, IconClock } from '@tabler/icons-react';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { DeleteButton, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useMemo, useRef, useState } from 'react';
 
@@ -13,7 +13,7 @@ import { useStopsEditorContext } from '../ShapeEditor.context';
 
 /* * */
 
-export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: PopulatedPath, rowIndex: number }) {
+export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: PatternsDetailPathItem, rowIndex: number }) {
 	//
 
 	//

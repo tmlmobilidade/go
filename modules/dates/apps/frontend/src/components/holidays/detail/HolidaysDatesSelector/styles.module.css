@@ -24,3 +24,27 @@
 	cursor: pointer;
 	text-decoration: underline;
 }
+
+.months {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-md);
+	min-width: 0;
+}
+
+.monthHeader {
+	align-items: center;
+	display: flex;
+	gap: 8px;
+	justify-content: space-between;
+}
+
+.monthLabel {
+	text-transform: capitalize;
+}
+
+.days {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}

@@ -19,13 +19,13 @@
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"csv-parse": "7.0.2"
+		"csv-parse": "7.0.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/eslint": "*",
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.4.0",
-		"tsx": "4.23.12",
+		"@types/node": "26.6.5",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

@@ -9,7 +9,6 @@ import { useRoutePlannerContext } from '@/components/routes/RoutePlanner.context
 import { type RoutePlannerTravelTime } from '@/types/route-planner/models';
 import { type RoutePlannerModeFilter as RoutePlannerModeFilterValue, type RoutePlannerSortMode } from '@/utils/route-planner/planning/results';
 import { IconClock, IconRoute, IconSortAscending } from '@tabler/icons-react';
-import { type TFunction } from 'i18next';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +17,8 @@ import styles from './styles.module.css';
 /* * */
 
 export type RoutePlannerOpenFilter = 'modes' | 'sort' | 'time';
+
+type TranslationFunction = ReturnType<typeof useTranslation>['t'];
 
 interface RoutePlannerResultsFiltersProps {
 	availableModes: Set<RoutePlannerModeFilterValue>
@@ -122,14 +123,14 @@ export function RoutePlannerResultsFilters({ availableModes, disabledModesCount,
 	//
 }
 
-function getFilterSheetTitle(openFilter: null | RoutePlannerOpenFilter, t: TFunction) {
+function getFilterSheetTitle(openFilter: null | RoutePlannerOpenFilter, t: TranslationFunction) {
 	if (openFilter === 'time') return t('default:routes.RoutePlannerInput.time.datetime_label');
 	if (openFilter === 'sort') return t('default:routes.RoutePlanner.results.sort.label');
 	if (openFilter === 'modes') return t('default:routes.RoutePlanner.results.modes.label');
 	return '';
 }
 
-function formatTravelTimeFilterLabel(travelTime: RoutePlannerTravelTime, t: TFunction) {
+function formatTravelTimeFilterLabel(travelTime: RoutePlannerTravelTime, t: TranslationFunction) {
 	if (travelTime.mode === 'now') return t('default:routes.RoutePlannerInput.time.now');
 
 	const time = new Intl.DateTimeFormat('pt-PT', {

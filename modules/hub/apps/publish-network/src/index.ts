@@ -1,56 +1,59 @@
 /* * */
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsHubV1ToDatabase } from '@tmlmobilidade/import-gtfs';
 
-import { syncLinesRoutesPatterns } from './tasks/sync-lines-routes-patterns.js';
-import { syncStops } from './tasks/sync-stops.js';
+import { buildNetwork } from './tasks/build-network.js';
+import { publishNetwork } from './tasks/publish-network.js';
+import { removeDisabledNetworks } from './tasks/remove-disabled-networks.js';
+import { type Network } from './types/network.js';
+import { mergeNetworks } from './utils/merge-networks.js';
+import { readCachedNetwork } from './utils/read-cached-network.js';
 
 /* * */
 
 async function main() {
 	//
-
-	//
 	// Initialize the logger
 
 	Logger.init();
+	Logger.title('Publishing network data...');
 
 	const globalTimer = new Timer();
-
-	Logger.info({ message: `Starting publish schedules process...` });
-
-	//
-	// Set up the import config
-
-	const importConfig: ImportGtfsConfig = {
-		source: {
-			url: API_ROUTES.hub.PLANS_GTFS,
-		},
-		sqlite_config: {
-			memory: true,
-		},
-	};
-
-	const importedGtfsSql = await importGtfsHubV1ToDatabase(importConfig);
+	const currentDate = Dates.now('Europe/Lisbon').operational_date_int;
 
 	//
-	// Export GTFS files from the merged dataset
+	// Get a set of agency IDs where open data is enabled in an organization
 
-	await syncStops(importedGtfsSql);
+	const organizations = await goDb.core.organizations.findMany({ 'agency_ids.0': { $exists: true }, 'open_data.enabled': true });
+	const agencyIds = Array.from(new Set(organizations.flatMap(organization => organization.agency_ids))).sort();
+	const networks: Network[] = [];
 
-	await syncLinesRoutesPatterns(importedGtfsSql);
+	for (const agencyId of agencyIds) {
+		Logger.title(`Publishing network for agency ${agencyId}...`);
 
-	importedGtfsSql._db.cleanup();
+		let network: Network;
+		try {
+			network = await buildNetwork(agencyId, currentDate);
+		} catch (error) {
+			Logger.error({ error, message: `Error building network for agency ${agencyId}. Keeping the last successful network.` });
+			networks.push(await readCachedNetwork(agencyId));
+			continue;
+		}
+
+		await publishNetwork(network, agencyId);
+		networks.push(network);
+	}
 
 	//
-	// Finalize the export process
+	// Keep global feeds available for existing consumers.
 
-	Logger.terminate(`Run took ${globalTimer.get()}`);
+	await publishNetwork(mergeNetworks(networks));
+	await removeDisabledNetworks(agencyIds);
 
-	//
+	Logger.terminate(`Publish network data completed in ${globalTimer.get()}`);
 }
 
 /* * */

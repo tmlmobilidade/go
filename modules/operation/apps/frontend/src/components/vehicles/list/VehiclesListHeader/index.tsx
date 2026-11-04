@@ -1,6 +1,6 @@
 /* * */
 
-import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { VehiclesListFilterSearch } from '../filters/VehiclesListFilterSearch';
@@ -17,18 +17,18 @@ export function VehiclesListHeader() {
 
 	const { t } = useTranslation();
 
-	const { isLoading, isValidating, timestamp } = useVehiclesListData();
+	const { data, isLoading, isValidating, timestamp } = useVehiclesListData();
 
 	//
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>{t('default:vehicles.list.VehiclesListHeader.title')}</Label>
-			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
-			<Spacer />
-			<VehiclesListFilterSearch />
-			<VehiclesListHeaderMenu />
-		</Toolbar>
+		<ListHeader
+			actions={<VehiclesListHeaderMenu />}
+			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
+			count={data?.length}
+			search={<VehiclesListFilterSearch />}
+			title={t('default:vehicles.list.VehiclesListHeader.title')}
+		/>
 	);
 }

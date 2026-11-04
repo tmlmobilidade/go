@@ -8,7 +8,7 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
  * Cleans expired verification token documents
  * from the "verification_tokens" collection.
  */
-export async function cleanExpiredVerificationTokens() {
+export async function cleanExpiredVerificationTokensTask() {
 	try {
 		const timer = new Timer();
 		Logger.info({ message: `Cleaning expired "verification_tokens" documents...` });

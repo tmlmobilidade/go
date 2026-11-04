@@ -5,7 +5,7 @@ import { TrendChip } from '@/components/layout/TrendChip';
 import { VisualizationWrapper } from '@/components/layout/VisualizationWrapper';
 import { Routes } from '@/routes';
 import { Center, Skeleton, Table, Text } from '@mantine/core';
-import { type TopLines30DayPerformance } from '@tmlmobilidade/types';
+import { type TopLines30DayPerformance } from '@tmlmobilidade/go-types-performance';
 import { Section } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';

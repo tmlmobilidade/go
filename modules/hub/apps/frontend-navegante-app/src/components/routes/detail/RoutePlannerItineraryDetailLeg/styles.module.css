@@ -103,12 +103,26 @@
 	display: flex;
 	gap: 6px;
 	align-items: center;
+	width: 100%;
 	min-width: 0;
 	padding: 7px 9px;
+	font: inherit;
 	font-size: 13px;
 	font-weight: 800;
 	line-height: 1.25;
+	text-align: left;
+	cursor: pointer;
 	border-radius: 8px;
+}
+
+.warningItem:focus-visible {
+	outline: 2px solid var(--color-brand-navegante);
+	outline-offset: 2px;
+}
+
+.warningItem svg:last-child {
+	flex-shrink: 0;
+	margin-left: auto;
 }
 
 .warningItem span {

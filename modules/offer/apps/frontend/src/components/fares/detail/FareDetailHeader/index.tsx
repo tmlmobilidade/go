@@ -1,11 +1,13 @@
 'use client';
 
-import { useFareDetailContext } from '@/components/fares/detail/FareDetail.context';
-import { IconUpload } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Button, CloseButton, DeleteButton, IdTag, LockButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
-import { keepUrlParams } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Label, LockButton, Spacer, Toolbar, UpdateButton, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+
+import { useFaresDetailFormContext } from '../FaresDetailForm.context';
+import { useFaresDetailFareId } from '../use-fares-detail-fare-id';
 
 /* * */
 
@@ -15,51 +17,31 @@ export function FareDetailHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useFaresDetailFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'name' });
 	const router = useRouter();
-	const fareDetailContext = useFareDetailContext();
+	const { fareId } = useFaresDetailFareId();
+	const close = () => router.push(keepUrlParams(PAGE_ROUTES.offer.FARES_LIST));
 
 	//
-	// B. Handle actions
-
-	const handleClose = () => {
-		router.push(keepUrlParams(PAGE_ROUTES.offer.FARES_LIST));
-	};
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Toolbar>
-
-			<CloseButton onClick={handleClose} type="close" />
-
-			<IdTag id={fareDetailContext.data.fare._id} copyOnClick />
-
+			<CloseButton onClick={close} type="close" />
+			<IdTag id={fareId} copyOnClick />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-
-			<LockButton
-				isDisabled={!fareDetailContext.flags.canLock}
-				isLocked={fareDetailContext.data.fare.is_locked}
-				onClick={fareDetailContext.actions.lock}
-			/>
-
-			<Button
-				disabled={!fareDetailContext.flags.canSave}
-				icon={<IconUpload size={28} />}
-				label="Guardar"
-				loading={fareDetailContext.flags.isSaving}
-				onClick={fareDetailContext.actions.save}
-				variant="primary"
-			/>
-
-			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar esta tarifa? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Tarifa"
-				isDisabled={!fareDetailContext.flags.canDelete}
-				onDelete={fareDetailContext.actions.delete}
-				showConfirmation
-			/>
-
+			<HasPermission action={PermissionCatalog.all.fares.actions.lock} scope={PermissionCatalog.all.fares.scope}>
+				<LockButton isDisabled={!capabilities.lockEnabled} isLoading={status.isLocking} isLocked={!!status.isLocked} onClick={actions.lock} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.fares.actions.update} scope={PermissionCatalog.all.fares.scope}>
+				<UpdateButton isDisabled={!capabilities.updateEnabled} isLoading={status.isUpdating} onClick={actions.update} />
+			</HasPermission>
+			<HasPermission action={PermissionCatalog.all.fares.actions.delete} scope={PermissionCatalog.all.fares.scope}>
+				<DeleteButton cancelLabel={t('default:fares.detail.cancel')} confirmLabel={t('default:fares.detail.confirm')} confirmMessage={t('default:fares.detail.confirmMessage')} confirmTitle={t('default:fares.detail.confirmTitle')} isDisabled={!capabilities.deleteEnabled} isLoading={status.isDeleting} onDelete={actions.delete} showConfirmation />
+			</HasPermission>
 		</Toolbar>
 	);
 

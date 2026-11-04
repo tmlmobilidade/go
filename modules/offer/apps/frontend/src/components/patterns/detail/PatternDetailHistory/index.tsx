@@ -57,9 +57,13 @@ export function PatternDetailHistory() {
 
 		return [
 			...items,
-			<CommentInput key="comment-input" onSubmit={patternDetailContext.actions.addComment} />,
+			<CommentInput
+				key="comment-input"
+				disabled={patternDetailContext.flags.isReadOnly}
+				onSubmit={patternDetailContext.actions.addComment}
+			/>,
 		];
-	}, [handleRevert, revertingIndex, patternDetailContext.actions.addComment, patternDetailContext.data.pattern.comments]);
+	}, [handleRevert, revertingIndex, patternDetailContext.actions.addComment, patternDetailContext.data.pattern.comments, patternDetailContext.flags.isReadOnly]);
 
 	//
 	// C. Render components

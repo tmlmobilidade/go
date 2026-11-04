@@ -4,7 +4,7 @@
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { ParameterCreateStopItem } from '@/components/patterns/shape/parameters/create/ParameterCreateStopItem';
-import { PopulatedPath } from '@tmlmobilidade/go-types-offer';
+import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 
 import styles from './styles.module.css';
 
@@ -13,7 +13,7 @@ import styles from './styles.module.css';
 export function ParameterCreateStopsList() {
 	const ctx = useParameterCreateContext();
 
-	const paths = (ctx.data.path as PopulatedPath[]) ?? [];
+	const paths = (ctx.data.path as PatternsDetailPathItem[]) ?? [];
 	const mergedPath = ctx.data.mergedPath ?? [];
 	const travelTimes = ctx.data.parameterForUI.travelTimes;
 

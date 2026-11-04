@@ -120,6 +120,18 @@ export const sidebarNavigationGroups = [
 				icon: <IconLayoutCollage />,
 				permissions: [{ action: 'nav', resources: { agency_ids: [] }, scope: 'zones' }],
 			},
+			{
+				_id: 'events',
+				href: PAGE_ROUTES.offer.EVENTS_LIST,
+				icon: <IconCalendarStar />,
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'events' }],
+			},
+			{
+				_id: 'year_periods',
+				href: PAGE_ROUTES.offer.YEAR_PERIODS_LIST,
+				icon: <IconClock />,
+				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'year_periods' }],
+			},
 		],
 	},
 	{
@@ -134,24 +146,14 @@ export const sidebarNavigationGroups = [
 					{ action: 'read', resources: { agency_ids: [] }, scope: 'annotations' },
 				],
 			},
-			{
-				_id: 'events',
-				href: PAGE_ROUTES.dates.EVENTS_LIST,
-				icon: <IconCalendarStar />,
-				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'events' }],
-			},
+
 			{
 				_id: 'holidays',
 				href: PAGE_ROUTES.dates.HOLIDAYS_LIST,
 				icon: <IconBeach />,
 				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'holidays' }],
 			},
-			{
-				_id: 'year_periods',
-				href: PAGE_ROUTES.dates.YEAR_PERIODS_LIST,
-				icon: <IconClock />,
-				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'year_periods' }],
-			},
+
 			{
 				_id: 'annotations',
 				href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,

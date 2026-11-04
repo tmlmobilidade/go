@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type LineNormalized, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
+import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
@@ -16,7 +17,7 @@ interface LineDetailContextState {
 	data: {
 		form: UseFormReturnType<UpdateLineDto>
 		id: string
-		line: LineNormalized | null
+		line: null | PopulatedLine
 	}
 	flags: DetailContextStateTemplate['flags']
 }
@@ -47,9 +48,9 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	//
 	// B. Fetch data
 
-	const { mutate: linesListMutate } = useSWR<LineNormalized[]>(API_ROUTES.offer.LINES_LIST);
-	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	const { mutate: linesListMutate } = useSWR<PopulatedLine[]>(API_ROUTES.offer.LINES_LIST);
+	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
 	});
 
 	//
@@ -61,7 +62,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<LineNormalized>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.LINES_DETAIL(lineId) }),
+		fetchFn: async () => await fetchApiData<PopulatedLine>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.LINES_DETAIL(lineId) }),
 		onSuccess: (data) => {
 			form.resetDirty();
 			lineMutate(data);
@@ -79,7 +80,7 @@ export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildre
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
-		fetchFn: async () => await fetchApiData<LineNormalized>({ url: API_ROUTES.offer.LINES_DETAIL_LOCK(lineId) }),
+		fetchFn: async () => await fetchApiData<PopulatedLine>({ url: API_ROUTES.offer.LINES_DETAIL_LOCK(lineId) }),
 		onSuccess: (data) => {
 			form.resetDirty();
 			lineMutate(data);

@@ -1,9 +1,11 @@
 'use client';
 
-import { useTypologyCreateContext } from '@/components/typologies/create/TypologyCreate.context';
-import { closeCreateTypologyModal } from '@/components/typologies/create/TypologyCreate.modal';
-import { IconUpload } from '@tabler/icons-react';
-import { Button, CloseButton, Label, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { CloseButton, CreateButton, HasPermission, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { useTypologiesCreateFormContext } from '../TypologiesCreateForm.context';
+import { closeCreateTypologyModal } from '../TypologyCreate.modal';
 
 /* * */
 
@@ -13,7 +15,9 @@ export function TypologyCreateHeader() {
 	//
 	// A. Setup variables
 
-	const typologyCreateContext = useTypologyCreateContext();
+	const { t } = useTranslation();
+	const { actions, capabilities, form, status } = useTypologiesCreateFormContext();
+	const title = useStandardFormWatch({ control: form.control, name: 'name' });
 
 	//
 	// B. Render components
@@ -21,17 +25,12 @@ export function TypologyCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateTypologyModal} type="close" />
-			<Tag label="Nova Tipologia" variant="muted" />
-			<Label size="lg" singleLine>{typologyCreateContext.data.form.values.name}</Label>
+			<Tag label={t('default:typologies.create.title')} variant="muted" />
+			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-			<Button
-				disabled={!typologyCreateContext.data.form.isValid()}
-				icon={<IconUpload size={28} />}
-				label="Publicar"
-				loading={typologyCreateContext.flags.isSaving}
-				onClick={typologyCreateContext.actions.create}
-				variant="primary"
-			/>
+			<HasPermission action={PermissionCatalog.all.typologies.actions.create} scope={PermissionCatalog.all.typologies.scope}>
+				<CreateButton isDisabled={!capabilities.createEnabled} isLoading={status.isCreating} onClick={actions.create} />
+			</HasPermission>
 		</Toolbar>
 	);
 

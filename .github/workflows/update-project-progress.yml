@@ -1,0 +1,72 @@
+
+name: Update Project Progress
+
+on:
+  issues:
+    types: [opened, closed, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  update-progress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set progress to Idea or Done
+        env:
+          GH_TOKEN: ${{ secrets.GO_REPO_TOKEN_ISSUES }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          ACTION: ${{ github.event.action }}
+          FIELD_ID: ${{ vars.PROGRESS_FIELD_ID }}
+          IDEA_OPTION_ID: ${{ vars.PROGRESS_IDEA_OPTION_ID }}
+          DONE_OPTION_ID: ${{ vars.PROGRESS_DONE_OPTION_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          case "$ACTION" in
+            opened|reopened)
+              OPTION_ID="$IDEA_OPTION_ID"
+              ;;
+            closed)
+              OPTION_ID="$DONE_OPTION_ID"
+              ;;
+            *)
+              echo "Unsupported issue action: $ACTION"
+              exit 0
+              ;;
+          esac
+
+          if [[ -z "$FIELD_ID" || -z "$OPTION_ID" ]]; then
+            echo "Error: Progress field ID or option ID is missing."
+            exit 1
+          fi
+
+          gh api graphql \
+            -H "GraphQL-Features: issue_fields" \
+            -f query='
+              mutation(
+                $issueId: ID!,
+                $fieldId: ID!,
+                $optionId: ID!
+              ) {
+                setIssueFieldValue(input: {
+                  issueId: $issueId
+                  issueFields: [{
+                    fieldId: $fieldId
+                    singleSelectOptionId: $optionId
+                  }]
+                }) {
+                  issue {
+                    id
+                    title
+                  }
+                }
+              }' \
+            -f issueId="$ISSUE_NODE_ID" \
+            -f fieldId="$FIELD_ID" \
+            -f optionId="$OPTION_ID"
+
+          echo "Progress updated successfully."

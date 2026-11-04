@@ -1,9 +1,11 @@
 /* * */
 
 import { IconBuildingFactory, IconBus, IconCheckupList, IconCurrencyEuro, IconLeaf, IconMapPin, IconMoodSmile, IconShieldCheck, IconUsers } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 
 export interface DashboardDefinition {
 	description?: string
+	href?: string
 	key: string
 	label: string
 	visible?: boolean
@@ -13,6 +15,7 @@ export interface TopicDefinition {
 	dashboards: DashboardDefinition[]
 	description?: string
 	filters?: string[]
+	href?: string
 	icon?: React.ComponentType
 	key: string
 	label: string
@@ -35,6 +38,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 	{
 		dashboards: [
 			{
+				href: PAGE_ROUTES.performance.DEMAND_DEMAND_BY_LIST,
 				key: 'demand-by',
 				label: 'Procura por...',
 				visible: true,
@@ -65,6 +69,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 			},
 		],
 		description: 'O tema Alinhamento oferta-procura analisa o equilíbrio entre a capacidade disponibilizada (oferta) e a utilização efetiva do serviço (procura). O objetivo é avaliar se os recursos estão a ser alocados de forma eficiente — identificando situações de excesso de oferta (veículos subutilizados) ou falta de oferta (sobrelotação e procura não satisfeita).',
+		href: PAGE_ROUTES.performance.DEMAND_LIST,
 		icon: IconUsers,
 		key: TOPICS.DEMAND,
 		label: 'Procura',
@@ -78,6 +83,7 @@ export const TOPICS_REGISTRY: TopicDefinition[] = [
 			},
 		],
 		description: 'O tema Oferta analisa o equilíbrio entre a capacidade disponibilizada (oferta) e a utilização efetiva do serviço (procura). O objetivo é avaliar se os recursos estão a ser alocados de forma eficiente — identificando situações de excesso de oferta (veículos subutilizados) ou falta de oferta (sobrelotação e procura não satisfeita).',
+		href: PAGE_ROUTES.performance.SUPPLY_LIST,
 		icon: IconBus,
 		key: TOPICS.SUPPLY,
 		label: 'Oferta',

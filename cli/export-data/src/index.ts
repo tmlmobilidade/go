@@ -23,7 +23,7 @@ import { intro, log, outro, tasks } from '@clack/prompts';
 import { ASCII_CM_SHORT } from '@tmlmobilidade/consts';
 
 // import { exportExecutiveSummary } from './tasks/executive-summary-setup/index.js';
-import { exportValidationsPMunicipalities } from './tasks/municipalities-validations/validations_p_municipalities.js';
+// import { exportValidationsPMunicipalities } from './tasks/municipalities-validations/validations_p_municipalities.js';
 
 /* * */
 
@@ -145,11 +145,11 @@ await (async function main() {
 		// 	task: async message => await exportExecutiveSummary({ context, message }),
 		// 	title: exportTypeLabels['executive-summary'],
 		// },
-		{
-			enabled: exportTypes.includes('validations-p-municipalities'),
-			task: async message => await exportValidationsPMunicipalities({ context, message }),
-			title: exportTypeLabels['validations-p-municipalities'],
-		},
+		// {
+		// 	enabled: exportTypes.includes('validations-p-municipalities'),
+		// 	task: async message => await exportValidationsPMunicipalities({ context, message }),
+		// 	title: exportTypeLabels['validations-p-municipalities'],
+		// },
 	]);
 
 	//

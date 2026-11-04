@@ -9,7 +9,7 @@ import { useAgenciesContext } from '@/contexts/Agencies.context';
 import { useDatesContext } from '@/contexts/Dates.context';
 import { Routes } from '@/routes';
 import { getMetricAgencyData } from '@/utils/agencies';
-import { TopDemandByAgencyByDayType } from '@tmlmobilidade/types';
+import { TopDemandByAgencyByDayType } from '@tmlmobilidade/go-types-performance';
 import { BarChart, Grid, MetricsSkeleton, Section, Skeleton, Surface } from '@tmlmobilidade/ui';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';

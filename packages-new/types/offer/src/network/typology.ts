@@ -18,23 +18,27 @@ export const TypologySchema = BaseDocumentSchema.extend({
 
 /* * */
 
-// Only name, code, and agency_ids are required for creation
+// Only name, code, and agency_ids are required for creation.
+// Lock state is managed exclusively through the dedicated lock endpoint.
 export const CreateTypologySchema = z.object({
 	agency_ids: TypologySchema.shape.agency_ids,
 	code: TypologySchema.shape.code,
 	name: TypologySchema.shape.name,
 }).merge(
 	TypologySchema.omit({
+		_id: true,
 		agency_ids: true,
 		code: true,
 		created_at: true,
+		created_by: true,
+		is_locked: true,
 		name: true,
 		updated_at: true,
+		updated_by: true,
 	}).partial(),
 );
 
 export const UpdateTypologySchema = CreateTypologySchema
-	.omit({ created_by: true })
 	.partial();
 
 /* * */

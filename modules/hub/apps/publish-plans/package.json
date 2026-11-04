@@ -14,12 +14,14 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix"
+		"lint:fix": "eslint ./src --fix",
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
@@ -27,9 +29,9 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/node": "26.4.0",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.12",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

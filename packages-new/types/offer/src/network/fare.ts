@@ -36,23 +36,27 @@ export const FareSchema = BaseDocumentSchema.extend({
 
 /* * */
 
-// Only name, code, and agency_ids are required for creation
+// Only name, code, and agency_ids are required for creation.
+// Lock state is managed exclusively through the dedicated lock endpoint.
 export const CreateFareSchema = z.object({
 	agency_ids: FareSchema.shape.agency_ids,
 	code: FareSchema.shape.code,
 	name: FareSchema.shape.name,
 }).merge(
 	FareSchema.omit({
+		_id: true,
 		agency_ids: true,
 		code: true,
 		created_at: true,
+		created_by: true,
+		is_locked: true,
 		name: true,
 		updated_at: true,
+		updated_by: true,
 	}).partial(),
 );
 
 export const UpdateFareSchema = CreateFareSchema
-	.omit({ created_by: true })
 	.partial();
 
 /* * */

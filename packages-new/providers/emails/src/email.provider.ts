@@ -1,7 +1,7 @@
 /* * */
 
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
-import nodemailer from 'nodemailer';
+import { createTransport, type SendMailOptions, type Transporter } from 'nodemailer';
 
 /* * */
 
@@ -22,7 +22,7 @@ export class EmailProvider {
 	private static _instance: EmailProvider;
 
 	private _refreshToken: RefreshToken = { expiresAt: undefined, token: undefined };
-	private _smtpTransporter: nodemailer.Transporter;
+	private _smtpTransporter: Transporter;
 
 	/**
 	 * Return the instance of the EmailProvider.
@@ -39,7 +39,7 @@ export class EmailProvider {
 	/**
 	 * Connect to the SMTP server and return the transporter instance.
 	 */
-	async connect(): Promise<nodemailer.Transporter> {
+	async connect(): Promise<Transporter> {
 		try {
 			// Check for required environment variables
 			if (!process.env.TML_PROVIDER_EMAIL_SERVER_HOST) throw new Error('Missing required environment variable: TML_PROVIDER_EMAIL_SERVER_HOST');
@@ -64,7 +64,7 @@ export class EmailProvider {
 	 * @param emailOptions - The email options.
 	 * @returns A promise that resolves when the email is sent.
 	 */
-	async send(sendMailOptions: nodemailer.SendMailOptions) {
+	async send(sendMailOptions: SendMailOptions) {
 		try {
 			const currentAccessToken = this._refreshToken.token;
 			const accessToken = await this.getRefreshToken();
@@ -82,20 +82,24 @@ export class EmailProvider {
 	/**
 	 * Create an SMTP transporter with the current OAuth2 access token.
 	 */
-	private createSmtpTransporter(accessToken: string): nodemailer.Transporter {
-		return nodemailer.createTransport({
-			auth: {
-				accessToken,
-				accessUrl: process.env.TML_PROVIDER_EMAIL_AUTH_ACCESS_URL,
-				clientId: process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_ID,
-				clientSecret: process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_SECRET,
-				type: 'OAuth2',
-				user: process.env.TML_PROVIDER_EMAIL_AUTH_USER,
+	private createSmtpTransporter(accessToken: string): Transporter {
+		return createTransport(
+			{
+				auth: {
+					accessToken,
+					accessUrl: process.env.TML_PROVIDER_EMAIL_AUTH_ACCESS_URL,
+					clientId: process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_ID,
+					clientSecret: process.env.TML_PROVIDER_EMAIL_AUTH_CLIENT_SECRET,
+					type: 'OAuth2',
+					user: process.env.TML_PROVIDER_EMAIL_AUTH_USER,
+				},
+				host: process.env.TML_PROVIDER_EMAIL_SERVER_HOST,
+				port: Number(process.env.TML_PROVIDER_EMAIL_SERVER_PORT),
 			},
-			from: process.env.TML_PROVIDER_EMAIL_FROM,
-			host: process.env.TML_PROVIDER_EMAIL_SERVER_HOST,
-			port: Number(process.env.TML_PROVIDER_EMAIL_SERVER_PORT),
-		});
+			{
+				from: process.env.TML_PROVIDER_EMAIL_FROM,
+			},
+		);
 	}
 
 	/**
@@ -142,5 +146,7 @@ export class EmailProvider {
 
 	//
 }
+
+/* * */
 
 export const emailProvider = asyncSingletonProxy(EmailProvider);

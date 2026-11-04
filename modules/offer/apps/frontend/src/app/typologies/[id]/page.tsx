@@ -1,15 +1,14 @@
 /* * */
 
+import { TypologiesDetailFormContextProvider } from '@/components/typologies/detail/TypologiesDetailForm.context';
 import { TypologyDetail } from '@/components/typologies/detail/TypologyDetail';
-import { TypologyDetailContextProvider } from '@/components/typologies/detail/TypologyDetail.context';
 
 /* * */
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
-	const { id } = await params;
+export default async function Page() {
 	return (
-		<TypologyDetailContextProvider typologyId={id}>
+		<TypologiesDetailFormContextProvider>
 			<TypologyDetail />
-		</TypologyDetailContextProvider>
+		</TypologiesDetailFormContextProvider>
 	);
 }

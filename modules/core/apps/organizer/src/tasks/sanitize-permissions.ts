@@ -7,7 +7,7 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 /**
  * Sanitizes permissions in both the "users" and "roles" collections.
  */
-export async function sanitizePermissions() {
+export async function sanitizePermissionsTask() {
 	try {
 		//
 

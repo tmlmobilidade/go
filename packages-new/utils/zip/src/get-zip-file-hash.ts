@@ -23,6 +23,7 @@ export async function getZipFileHash(filePath: string): Promise<string> {
 	// Initialize a new temporary directory
 
 	const temporaryDirectory = fs.mkdtempDisposableSync('get-zip-file-hash-');
+	const extractedDirectoryPath = path.join(temporaryDirectory.path, 'extracted');
 
 	try {
 		//
@@ -30,12 +31,12 @@ export async function getZipFileHash(filePath: string): Promise<string> {
 		//
 		// Extract the ZIP file into the temporary directory.
 
-		await unzipFile(filePath, temporaryDirectory.path);
+		await unzipFile(filePath, extractedDirectoryPath);
 
 		//
 		// Find all extracted files.
 
-		const sortedExtractedFilePaths = getDirectoryFiles(temporaryDirectory.path);
+		const sortedExtractedFilePaths = getDirectoryFiles(extractedDirectoryPath);
 
 		//
 		// Initialize the list of files to hash.
@@ -52,7 +53,7 @@ export async function getZipFileHash(filePath: string): Promise<string> {
 				hash.update(chunk);
 			}
 			// Add the file to the list of files to hash.
-			const relativeFilePath = path.relative(temporaryDirectory.path, absolutePath);
+			const relativeFilePath = path.relative(extractedDirectoryPath, absolutePath);
 			foundFiles.push({ hash: hash.digest('hex'), path: relativeFilePath });
 		}
 
@@ -60,11 +61,6 @@ export async function getZipFileHash(filePath: string): Promise<string> {
 		// Make the result independent of the order of entries in the zip file.
 
 		foundFiles.sort((a, b) => a.path.localeCompare(b.path));
-
-		//
-		// Clean up the temporary directory.
-
-		temporaryDirectory.remove();
 
 		//
 		// Calculate the final hash by concatenating the sorted list

@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function HolidayCreate() {
 	return (
-		<Pane header={[<HolidayCreateHeader />]}>
+		<Pane header={[<HolidayCreateHeader key="header" />]}>
 			<HolidayCreateBasicInfo />
 		</Pane>
 	);

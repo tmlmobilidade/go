@@ -1,7 +1,8 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type LineNormalized, type Route, type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
+import { type PopulatedLine, type RoutesDetail } from '@tmlmobilidade/go-offer-pckg-types';
+import { type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
@@ -16,10 +17,12 @@ interface RouteDetailContextState {
 	data: {
 		form: UseFormReturnType<UpdateRouteDto>
 		id: string
-		line: LineNormalized | null
-		route: null | Route
+		line: null | PopulatedLine
+		route: null | RoutesDetail
 	}
-	flags: DetailContextStateTemplate['flags']
+	flags: DetailContextStateTemplate['flags'] & {
+		isLockedByLine: boolean
+	}
 }
 
 /* * */
@@ -48,12 +51,13 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	//
 	// B. Fetch data
 
-	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<ApiResponse<Route>>(API_ROUTES.offer.ROUTES_DETAIL(routeId), {
-		fetcher: async url => await fetchApiData<Route>({ url }),
+	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<ApiResponse<RoutesDetail>>(API_ROUTES.offer.ROUTES_DETAIL(routeId), {
+		fetcher: async url => await fetchApiData<RoutesDetail>({ url }),
 	});
 
-	const { data: lineData, mutate: lineMutate } = useSWR<ApiResponse<LineNormalized>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<LineNormalized>({ url }),
+	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
+		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
+		refreshInterval: 10_000,
 	});
 
 	//
@@ -65,7 +69,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	// D. Handle actions
 
 	const { action: handleSave, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
+		fetchFn: async () => await fetchApiData<RoutesDetail>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
 		onSuccess: (data) => {
 			form.resetDirty();
 			routeMutate(data);
@@ -74,7 +78,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Route>({ body: routeData, method: 'DELETE', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
+		fetchFn: async () => await fetchApiData<RoutesDetail>({ body: routeData, method: 'DELETE', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
 		onSuccess: () => {
 			form.resetDirty();
 			lineMutate();
@@ -83,7 +87,7 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Route>({ url: API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId) }),
+		fetchFn: async () => await fetchApiData<RoutesDetail>({ url: API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId) }),
 		onSuccess: (data) => {
 			form.resetDirty();
 			routeMutate(data);
@@ -105,18 +109,18 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 	});
 
 	const { canDelete, canLock, canSave, isReadOnly } = useDetailState({
-		hasError: !!routeError,
+		hasError: !!routeError || !!lineError,
 		isDeleted: null,
 		isDeleting,
 		isDirty: form.isDirty(),
-		isLoading: routeLoading,
-		isLocked: routeData?.data?.is_locked,
+		isLoading: routeLoading || lineLoading || !lineData?.data,
+		isLocked: routeData?.data?.is_locked || lineData?.data?.is_locked,
 		isLocking,
 		isSaving: isSaving,
 		isValid: form.isValid(),
 		permissions: {
 			delete: permissions.delete,
-			lock: permissions.lock,
+			lock: permissions.lock && !lineData?.data?.is_locked,
 			read: permissions.read,
 			update: permissions.update,
 		},
@@ -143,19 +147,13 @@ export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsW
 			canSave,
 			error: routeError,
 			isDeleting,
-			isLoading: routeLoading,
+			isLoading: routeLoading || lineLoading || !lineData?.data,
+			isLockedByLine: !!lineData?.data?.is_locked,
 			isLocking,
 			isReadOnly,
 			isSaving: isSaving,
 		},
-	}), [
-		routeData,
-		routeError,
-		routeLoading,
-		routeId,
-		form,
-		isSaving,
-	]);
+	}), [routeData, routeError, routeLoading, routeId, form, isSaving, lineData?.data, canDelete, canLock, canSave, isDeleting, isLocking, isReadOnly, handleDelete, handleLock, handleSave, lineLoading]);
 
 	//
 	// G. Render components

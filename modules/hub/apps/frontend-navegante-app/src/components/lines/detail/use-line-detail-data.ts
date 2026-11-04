@@ -6,6 +6,7 @@ import { useRoutesData } from '@/components/lines/use-routes-data';
 import { useStopsData } from '@/components/stops/use-stops-data';
 import { useOperationalDate } from '@/hooks/transit/useOperationalDate';
 import { fetchPatterns } from '@/utils/transit/fetch-patterns';
+import { filterAlertsForLine } from '@/utils/transit/filter-entity-alerts';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HubV1ApiAlert, type HubV1ApiLine, type HubV1ApiPattern, type HubV1ApiRoute, type HubV1ApiStop } from '@tmlmobilidade/go-types-hub';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
@@ -41,7 +42,7 @@ export function useLineDetailData(lineId: null | string): UseLineDetailDataRetur
 
 	const line = useMemo(() => lines.find(item => item._id === lineId), [lineId, lines]);
 	const patternIds = line?.pattern_ids ?? [];
-	const patternsKey = line ? [API_ROUTES.hub.NETWORK_PATTERNS(line._id), ...patternIds] : null;
+	const patternsKey = line ? [API_ROUTES.hub.NETWORK_PATTERNS('0XJC9', line._id), ...patternIds] : null;
 	const { data: fetchedPatterns, error: patternsError, isLoading: isPatternsLoading } = useSWR<HubV1ApiPattern[][]>(patternsKey, async () => await fetchPatterns(patternIds));
 
 	//
@@ -49,7 +50,12 @@ export function useLineDetailData(lineId: null | string): UseLineDetailDataRetur
 
 	const allPatterns = useMemo(() => enrichPatternsWithStops(fetchedPatterns, stops), [fetchedPatterns, stops]);
 	const validPatterns = useMemo(() => selectPatternsForOperationalDate(allPatterns, selectedOperationalDate), [allPatterns, selectedOperationalDate]);
-	const activeAlerts = useMemo(() => filterAlertsForLine(alerts, line, lineId), [alerts, line, lineId]);
+	// publish-network leaves line.stop_ids empty; stop.line_ids is the filled side.
+	const stopIdsOnLine = useMemo(() => {
+		if (!line) return new Set<string>();
+		return new Set(stops.filter(stop => stop.line_ids.includes(line._id)).map(stop => String(stop._id)));
+	}, [line, stops]);
+	const activeAlerts = useMemo(() => filterAlertsForLine(alerts, line, stopIdsOnLine), [alerts, line, stopIdsOnLine]);
 	const lineRoutes = useMemo(() => routes.filter(route => line?.route_ids.includes(route._id)), [line?.route_ids, routes]);
 
 	//
@@ -111,25 +117,4 @@ function selectPatternsForOperationalDate(allPatterns: HubV1ApiPattern[][] | nul
 	}
 
 	return activePatterns.sort((a, b) => a._id.localeCompare(b._id));
-}
-
-function filterAlertsForLine(alerts: HubV1ApiAlert[], line: HubV1ApiLine | undefined, lineId: null | string): HubV1ApiAlert[] {
-	return alerts.filter((alert) => {
-		if (!alert.active_period_start_date && alert.active_period_end_date) return false;
-
-		return alert.references.some((reference) => {
-			const normalizedLineId = lineId?.trim();
-			const lineAgencyId = line?.agency_id?.trim();
-			const informedAgencyId = reference.parent_id?.trim();
-
-			if (informedAgencyId) {
-				const informedBracketAgency = informedAgencyId.match(/^\[([^\]]+)\]/)?.[1] ?? informedAgencyId;
-				if (informedBracketAgency !== lineAgencyId) return false;
-			}
-
-			if (reference.parent_id != null) return reference.parent_id.trim() === normalizedLineId;
-			if (reference.child_ids.length > 0) return line?.route_ids?.includes(reference.child_ids[0]) ?? false;
-			return true;
-		});
-	});
 }

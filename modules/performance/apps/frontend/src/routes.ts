@@ -1,7 +1,7 @@
 /* * */
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Metric } from '@tmlmobilidade/types';
+import { type Metric } from '@tmlmobilidade/go-types-performance';
 
 /* * */
 

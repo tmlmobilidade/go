@@ -7,6 +7,7 @@ import { deleteExtractionHandler } from './handlers/delete-extraction.js';
 import { downloadExtractionHandler } from './handlers/download-extraction.js';
 import { listExtractionsHandler } from './handlers/list-extractions.js';
 import { lockExtractionHandler } from './handlers/lock-extraction.js';
+import { reloadExtractionHandler } from './handlers/reload-extraction.js';
 
 /* * */
 
@@ -29,6 +30,8 @@ server.register(
 		instance.delete('/delete/:id', { preHandler: authorizationMiddleware() }, deleteExtractionHandler);
 
 		instance.get('/download/:id', { preHandler: authorizationMiddleware() }, downloadExtractionHandler);
+
+		instance.put('/reload/:id', { preHandler: authorizationMiddleware() }, reloadExtractionHandler);
 
 		next();
 	},

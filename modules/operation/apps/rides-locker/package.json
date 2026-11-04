@@ -25,10 +25,10 @@
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
-		"@types/luxon": "3.7.5",
-		"@types/node": "26.4.0",
+		"@types/luxon": "3.7.6",
+		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
-		"tsx": "4.23.12",
+		"tsx": "4.23.15",
 		"typescript": "6.0.3"
 	}
 }

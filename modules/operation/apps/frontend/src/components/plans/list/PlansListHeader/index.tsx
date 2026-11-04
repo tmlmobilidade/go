@@ -1,7 +1,7 @@
 /* * */
 
 import { PlansListFilterSearch } from '@/components/plans/list/filters/PlansListFilterSearch';
-import { Label, LoadingActivity, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
 
 import { usePlansListData } from '../use-plans-list-data';
 
@@ -13,17 +13,17 @@ export function PlansListHeader() {
 	//
 	// A. Setup variables
 
-	const { isLoading, isValidating, timestamp } = usePlansListData();
+	const { data, isLoading, isValidating, timestamp } = usePlansListData();
 
 	//
 	// B. Render components
 
 	return (
-		<Toolbar>
-			<Label size="lg" caps singleLine>Planos</Label>
-			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
-			<Spacer />
-			<PlansListFilterSearch />
-		</Toolbar>
+		<ListHeader
+			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
+			count={data?.length}
+			search={<PlansListFilterSearch />}
+			title="Planos"
+		/>
 	);
 }

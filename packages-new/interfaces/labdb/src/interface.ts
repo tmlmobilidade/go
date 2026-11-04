@@ -3,6 +3,7 @@
 import { ClickHouseClient, ClickHouseDatabaseClient, queryEachStatementFromFile, queryFromFile, queryFromString } from '@tmlmobilidade/go-clients-clickhouse';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 
+import { CoreDatabase } from './databases/core.js';
 import { HubDatabase } from './databases/hub.js';
 import { InfrastructureDatabase } from './databases/infrastructure.js';
 import { OperationDatabase } from './databases/operation.js';
@@ -16,6 +17,7 @@ class LabDbClass {
 
 	private static _instance: null | Promise<LabDbClass> = null;
 
+	public readonly core: CoreDatabase;
 	public readonly hub: HubDatabase;
 	public readonly infrastructure: InfrastructureDatabase;
 	public readonly operation: OperationDatabase;
@@ -26,6 +28,7 @@ class LabDbClass {
 
 	private constructor(client: ClickHouseClient) {
 		this.clickhouseClient = client;
+		this.core = new CoreDatabase(this.clickhouseClient);
 		this.hub = new HubDatabase(this.clickhouseClient);
 		this.infrastructure = new InfrastructureDatabase(this.clickhouseClient);
 		this.operation = new OperationDatabase(this.clickhouseClient);
@@ -74,6 +77,7 @@ class LabDbClass {
 
 	private async init() {
 		await Promise.all([
+			this.core.init(),
 			this.hub.init(),
 			this.infrastructure.init(),
 			this.operation.init(),
