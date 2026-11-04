@@ -14,7 +14,8 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix"
+		"lint:fix": "eslint ./src --fix",
+		"test": "node --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-hub-pckg-utils": "*",
@@ -34,6 +35,7 @@
 		"@tmlmobilidade/go-utils-telemetry": "*"
 	},
 	"devDependencies": {
+		"@tmlmobilidade/go-clients-sqlite": "*",
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",
