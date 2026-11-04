@@ -259,7 +259,7 @@
 				},
 				"coordinates": {
 					"description": "Latitud, longitud heredadas del filtro de la lista. Radio fijo de 100 m.",
-					"label": "Coordenadas (100 m)"
+					"label": "Coordenadas"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Localidad",

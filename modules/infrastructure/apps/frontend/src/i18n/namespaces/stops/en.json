@@ -259,7 +259,7 @@
 				},
 				"coordinates": {
 					"description": "Latitude, longitude inherited from the list filter. Fixed radius of 100 m.",
-					"label": "Coordinates (100 m)"
+					"label": "Coordinates"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Locality",
