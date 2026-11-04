@@ -3,10 +3,10 @@ package context
 import (
 	"slices"
 
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
 )
 
 // ValidationContext is the single input supplied to an executable rule.

@@ -6,6 +6,7 @@ import (
 	"os"
 	"slices"
 
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/discover"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations"
 )
@@ -29,7 +30,7 @@ func ValidateRulesJSON(path string) (map[string]rules.RuleConfig, error) {
 	//
 	// 2. Discover known rule IDs without executing their checks
 
-	ids, err := validations.RuleIDs()
+	ids, err := discover.DiscoverRuleIDs(validations.RuleSources)
 	if err != nil {
 		return nil, fmt.Errorf("discover rule IDs: %w", err)
 	}

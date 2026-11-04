@@ -7,23 +7,20 @@ import (
 )
 
 /*
-* RunRowWithConcurrency starts rules when their dependencies have all passed and
-* a worker slot is available. Failed or skipped prerequisites skip their dependents;
-* independent rules continue. Each completion can immediately unlock more work.
+* RunRules starts every rule whose dependencies have all passed, without a concurrency
+* cap. Failed or skipped prerequisites skip their dependents; independent rules
+* continue. Each completion can immediately unlock more work.
 *
 * Build the manager before calling this function and do not modify it during a run.
 * Callbacks share row and must synchronize any writes to shared state. All started
 * callbacks finish before this function returns. Scheduling state is local to a run.
  */
-func RunRowWithConcurrency[T any](m *types.Manager[T], row T, limit int) (map[string]types.Status, error) {
+func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error) {
 	//
 
 	//
-	// 1. Validate the worker limit and prepared manager
+	// 1. Validate the prepared manager before starting any callbacks
 
-	if limit < 1 {
-		return nil, fmt.Errorf("rule concurrency must be positive")
-	}
 	if m == nil || len(m.Ordered) != len(m.Rules) {
 		return nil, fmt.Errorf("build the rule manager before running rows")
 	}
@@ -89,19 +86,16 @@ func RunRowWithConcurrency[T any](m *types.Manager[T], row T, limit int) (map[st
 		index  int          // Position of the completed rule in m.Ordered
 		status types.Status // Final outcome reported by its callback
 	}
-	done := make(chan completion, min(limit, len(m.Ordered)))
+	done := make(chan completion, len(m.Ordered))
 	running := 0
 	head := 0
 	//
 	// 6. Process ready rules and completions until all started work finishes
 
 	for head < len(queue) || running > 0 {
-		// Fill free worker slots. Skipped rules do not need a worker.
+		// Start every ready rule. Skipped rules do not need a worker.
 		for head < len(queue) {
 			next := queue[head]
-			if !blocked[next] && running == limit {
-				break
-			}
 			head++
 			if blocked[next] {
 				// Propagate the skip to downstream rules without executing the check.

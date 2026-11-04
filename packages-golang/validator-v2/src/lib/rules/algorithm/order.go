@@ -4,7 +4,7 @@ import types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types
 
 /*
 * Order returns a valid dependency order for inspection. Concurrent execution
-* starts each rule when its own dependencies finish and a worker slot is available.
+* starts each rule as soon as its own dependencies have passed.
  */
 func Order[T any](m *types.Manager[T]) []string {
 	//

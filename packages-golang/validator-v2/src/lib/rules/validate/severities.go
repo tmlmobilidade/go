@@ -6,12 +6,12 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
-// ValidateSeverities rejects unsupported severity values.
+// ValidateSeverities accepts only the severities supported in rules.json.
 func ValidateSeverities(config map[string]rules.RuleConfig) error {
 	//
 
 	//
-	// 1. Accept only the severity values supported by the validator
+	// 1. Accept every severity defined by the validation rule type
 
 	for _, id := range sortedIDs(config) {
 		switch config[id].Severity {

@@ -2,53 +2,43 @@ package standard
 
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
-func ShapeIdForeign(db *sqlite.SQLiteContext, ruleContext *rules.RuleContext, messageAdder messages.MessageAdder) error {
+// ShapeIdForeign owns its source and related-table requirements.
+func ShapeIdForeign(ctx *context.ValidationContext) error {
 	//
 
 	//
-	// 1. Get the rule
+	// 1. Require the lookup table without changing graph dependencies
 
-	const ruleID = "trips_shape_id_foreign"
-
-	//
-	// 2. Create the validation context
-
-	ctx := context.NewValidationContext("shape_id", "trips.txt", ruleID, db.Row, messageAdder, ruleContext)
-
-	//
-	// 3. Get the shape_id value
-
-	value, err := queries.Field(db.Trips, "shape_id")
-	if err != nil {
-		return err
-	}
-
-	//
-	// 4. Requiredness is checked by the field rule.
-
-	if value == "" {
+	if !context.HasTable(ctx, "shapes") {
+		ctx.Skipped = true
 		return nil
 	}
 
 	//
-	// 5. Check if the shape_id exists in the shapes table
+	// 2. Read the trip shape ID after Kahn releases this rule
 
-	exists, err := queries.Exists(db.Shapes.Table, "shape_id", value)
-	if err != nil {
-		return err
-	}
-	if !exists {
-		context.AddMessage(ctx, context.GetTranslatedMessage(ctx, "not_found", value))
-	}
+	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *context.ValidationContext) error {
+		value, err := queries.Field(row.Source, "shape_id")
+		if err != nil {
+			return err
+		}
+		if value == "" {
+			return nil
+		} // Presence is handled by the field rule.
 
-	//
-	// 6. Return success
+		//
+		// 3. Check the related table and report through the same row context
 
-	return nil
+		exists, err := queries.Exists(row.Tables.Tables["shapes"], "shape_id", value)
+		if err != nil {
+			return err
+		}
+		if !exists {
+			context.AddMessage(row, context.GetTranslatedMessage(row, "not_found", value))
+		}
+		return nil
+	})
 }

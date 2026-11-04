@@ -4,3 +4,6 @@ import contextTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/sr
 
 // Check executes one complete rule. Each implementation selects its tables and fields.
 type Check func(*contextTypes.ValidationContext) error
+
+// RuleChecks maps rule IDs to the validation functions registered in one batch.
+type RuleChecks map[string]Check

@@ -75,24 +75,30 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 	}
 	functionRules := map[string]string{}
 	ast.Inspect(registrations, func(node ast.Node) bool {
-		call, ok := node.(*ast.CallExpr)
+		batch, ok := node.(*ast.CompositeLit)
 		if !ok {
 			return true
 		}
-		selector, ok := call.Fun.(*ast.SelectorExpr)
-		if !ok || selector.Sel.Name != "Register" || len(call.Args) != 2 {
+		selector, ok := batch.Type.(*ast.SelectorExpr)
+		if !ok || selector.Sel.Name != "RuleChecks" {
 			return true
 		}
-		id, validID := resolveString(call.Args[0])
-		function, validFunction := call.Args[1].(*ast.SelectorExpr)
-		if !validID || !validFunction {
-			t.Fatal("registration must identify a rule ID and imported validation function")
+		for _, element := range batch.Elts {
+			pair, ok := element.(*ast.KeyValueExpr)
+			if !ok {
+				t.Fatal("registration must map a rule ID to a validation function")
+			}
+			id, validID := resolveString(pair.Key)
+			function, validFunction := pair.Value.(*ast.SelectorExpr)
+			if !validID || !validFunction {
+				t.Fatal("registration must identify a rule ID and imported validation function")
+			}
+			alias, ok := function.X.(*ast.Ident)
+			if !ok || packages[alias.Name] == "" {
+				t.Fatalf("cannot resolve validation package for %s", id)
+			}
+			functionRules[filepath.Join(packages[alias.Name], function.Sel.Name)] = id
 		}
-		alias, ok := function.X.(*ast.Ident)
-		if !ok || packages[alias.Name] == "" {
-			t.Fatalf("cannot resolve validation package for %s", id)
-		}
-		functionRules[filepath.Join(packages[alias.Name], function.Sel.Name)] = id
 		return true
 	})
 	if len(functionRules) == 0 {

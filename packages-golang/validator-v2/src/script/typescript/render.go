@@ -3,7 +3,9 @@ package typescript
 import (
 	"bytes"
 	"fmt"
+	"os"
 
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/discover"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/script/typescript/consts"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/script/typescript/utils"
 )
@@ -16,7 +18,7 @@ func RenderTypeScript(sourceDir string) (map[string][]byte, error) {
 	//
 	// 1. Discover the unique rule IDs in deterministic order
 
-	ids, err := DiscoverRuleIDs(sourceDir)
+	ids, err := discover.DiscoverRuleIDs(os.DirFS(sourceDir))
 	if err != nil {
 		return nil, err
 	}

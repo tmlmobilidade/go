@@ -12,7 +12,7 @@ func sortedMessages(messages []types.Message) []types.Message {
 	//
 
 	//
-	// 1. Sort a copy by file, rule, severity, description, and first row
+	// 1. Sort a copy by file, rule, severity, description, field, and first row
 
 	sorted := slices.Clone(messages)
 
@@ -27,6 +27,9 @@ func sortedMessages(messages []types.Message) []types.Message {
 			return c
 		}
 		if c := cmp.Compare(a.Message, b.Message); c != 0 {
+			return c
+		}
+		if c := cmp.Compare(a.Field, b.Field); c != 0 {
 			return c
 		}
 		return cmp.Compare(firstRow(a.Rows), firstRow(b.Rows))

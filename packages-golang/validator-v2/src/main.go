@@ -82,11 +82,9 @@ func main() {
 	}()
 
 	//
-	// 8. Execute the configured rules when GTFS loading produced no errors
+	// 8. Execute the configured rules
 
-	if messageService.TotalErrors() == 0 {
-		runValidations(db, rules, messageService)
-	}
+	runValidations(db, rules, messageService)
 
 	//
 	// 9. Output the validation summary

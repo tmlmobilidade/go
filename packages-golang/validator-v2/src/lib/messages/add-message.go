@@ -4,7 +4,6 @@ import (
 	"slices"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/severity"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
@@ -18,7 +17,7 @@ func (service *MessageService) AddMessage(message types.Message) {
 	// 1. Apply configuration and suppress ignored findings
 
 	if !message.SeverityResolved {
-		message.Severity = severity.ResolveMessageSeverity(message.FileName, message.RuleID, message.Field, message.Severity)
+		message.Severity = severity.ResolveMessageSeverity(message.RuleID, message.Severity)
 	}
 	if message.Severity == rules.SEVERITY_FORBIDDEN {
 		message.Severity = rules.SEVERITY_ERROR
@@ -51,12 +50,12 @@ func (service *MessageService) AddMessage(message types.Message) {
 	// 4. Merge identical diagnostics, retaining the first 99 rows and latest row
 
 	for index, existing := range service.messages {
-		if existing.Message == message.Message && existing.FileName == message.FileName && existing.RuleID == message.RuleID && existing.Severity == message.Severity {
-			service.messages[index].Rows = utils.RetainedRows(append(existing.Rows, message.Rows...))
+		if existing.Message == message.Message && existing.FileName == message.FileName && existing.RuleID == message.RuleID && existing.Field == message.Field && existing.Severity == message.Severity {
+			service.messages[index].Rows = retainedRows(append(existing.Rows, message.Rows...))
 			return
 		}
 	}
-	message.Rows = utils.RetainedRows(message.Rows)
+	message.Rows = retainedRows(message.Rows)
 	service.messages = append(service.messages, message)
 
 	//
@@ -68,4 +67,13 @@ func (service *MessageService) AddMessage(message types.Message) {
 	case rules.SEVERITY_WARNING:
 		service.warningCount++
 	}
+}
+
+// retainedRows bounds the displayed sample while preserving the latest occurrence.
+func retainedRows(rows []int) []int {
+	if len(rows) > 100 {
+		rows[99] = rows[len(rows)-1]
+		return slices.Clone(rows[:100])
+	}
+	return rows
 }

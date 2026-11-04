@@ -2,24 +2,25 @@ package testutil
 
 import (
 	"database/sql"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	st "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/types"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	_ "modernc.org/sqlite"
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	sq "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
+	_ "modernc.org/sqlite"
 )
 
-type Check func(*sqlite.SQLiteContext, *rules.RuleContext, messages.MessageAdder) error
 type Collector struct{ Messages []messages.Message }
 
 func (c *Collector) AddMessage(m messages.Message) { c.Messages = append(c.Messages, m) }
 
 // Fixture uses imported GTFS semantics: TEXT columns, NULL cells and zero-based rows.
-func Fixture(t *testing.T, pattern, shape any, missingColumn string) (*sql.DB, *sqlite.SQLiteContext) {
+func Fixture(t *testing.T, pattern, shape any, missingColumn string) (*sql.DB, *sq.SQLiteTables) {
 	t.Helper()
 	db, err := sql.Open("sqlite", filepath.Join(t.TempDir(), "gtfs.sqlite"))
 	if err != nil {
@@ -35,25 +36,21 @@ func Fixture(t *testing.T, pattern, shape any, missingColumn string) (*sql.DB, *
 	switch missingColumn {
 	case "pattern_id":
 		exec("CREATE TABLE trips (shape_id TEXT)")
-		exec("INSERT INTO trips VALUES (?), (?)", "unused", shape)
+		exec("INSERT INTO trips(rowid,shape_id) VALUES (2,?)", shape)
 	case "shape_id":
 		exec("CREATE TABLE trips (pattern_id TEXT)")
-		exec("INSERT INTO trips VALUES (?), (?)", "unused", pattern)
+		exec("INSERT INTO trips(rowid,pattern_id) VALUES (2,?)", pattern)
 	default:
 		exec("CREATE TABLE trips (pattern_id TEXT, shape_id TEXT)")
-		exec("INSERT INTO trips VALUES (?, ?), (?, ?)", "unused", "unused", pattern, shape)
+		exec("INSERT INTO trips(rowid,pattern_id,shape_id) VALUES (2,?,?)", pattern, shape)
 	}
 	exec("CREATE TABLE shapes (shape_id TEXT)")
 	exec("INSERT INTO shapes VALUES (?), (?)", "R1_0", "R1_0")
-	trips, err := queries.LoadSQLiteTable(db, "trips")
+	tables, err := queries.LoadSQLiteTables(db)
 	if err != nil {
 		t.Fatal(err)
 	}
-	shapes, err := queries.LoadSQLiteTable(db, "shapes")
-	if err != nil {
-		t.Fatal(err)
-	}
-	return db, &sqlite.SQLiteContext{Row: 1, Trips: &st.SQLiteRow{Table: trips, Row: 1}, Shapes: &st.SQLiteRow{Table: shapes}}
+	return db, tables
 }
 func AssertMessages(t *testing.T, c *Collector, id, field string, severity rules.Severities, count int) {
 	t.Helper()
@@ -66,7 +63,7 @@ func AssertMessages(t *testing.T, c *Collector, id, field string, severity rules
 		}
 	}
 }
-func Presence(t *testing.T, field, id string, check Check) {
+func Presence(t *testing.T, field, id string, check validationTypes.Check) {
 	t.Helper()
 	for _, severity := range []rules.Severities{rules.SEVERITY_ERROR, rules.SEVERITY_WARNING, rules.SEVERITY_INFO, rules.SEVERITY_IGNORE} {
 		for _, tc := range []struct {
@@ -82,9 +79,9 @@ func Presence(t *testing.T, field, id string, check Check) {
 				if tc.missing {
 					missing = field
 				}
-				_, ctx := Fixture(t, tc.value, tc.value, missing)
+				_, tables := Fixture(t, tc.value, tc.value, missing)
 				c := &Collector{}
-				if err := check(ctx, &rules.RuleContext{Severity: severity}, c); err != nil {
+				if err := check(context.NewRuleContext(id, tables, rules.RuleContext{Severity: severity}, c)); err != nil {
 					t.Fatal(err)
 				}
 				count := tc.count
@@ -97,15 +94,15 @@ func Presence(t *testing.T, field, id string, check Check) {
 	}
 	QueryError(t, check)
 }
-func QueryError(t *testing.T, check Check) {
+func QueryError(t *testing.T, check validationTypes.Check) {
 	t.Helper()
 	t.Run("query_error", func(t *testing.T) {
-		db, ctx := Fixture(t, "P1", "R1_0", "")
+		db, tables := Fixture(t, "P1", "R1_0", "")
 		if err := db.Close(); err != nil {
 			t.Fatal(err)
 		}
 		c := &Collector{}
-		if err := check(ctx, &rules.RuleContext{Severity: rules.SEVERITY_ERROR}, c); err == nil {
+		if err := check(context.NewRuleContext("query_error", tables, rules.RuleContext{Severity: rules.SEVERITY_ERROR}, c)); err == nil {
 			t.Fatal("expected query error")
 		}
 		if len(c.Messages) != 0 {

@@ -7,7 +7,7 @@ import (
 )
 
 // ValidateRuleIDs rejects unknown IDs, including entries configured as ignore.
-// Discovery establishes that an ID exists; ManagerRules binds execution callbacks.
+// Discovery establishes that an ID exists; the validation runner binds callbacks.
 func ValidateRuleIDs(config map[string]rules.RuleConfig, known map[string]bool) error {
 	//
 

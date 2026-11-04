@@ -12,6 +12,8 @@ import (
 )
 
 // DiscoverRuleIDs collects validation and runtime IDs without executing checks.
+// Both rules.json validation and TypeScript generation call this entry point.
+// The source may be an embedded filesystem or an on-disk directory via os.DirFS.
 // Repeated references produce one ID; test files are excluded from discovery.
 func DiscoverRuleIDs(source fs.FS) ([]string, error) {
 	//
@@ -46,31 +48,21 @@ func DiscoverRuleIDs(source fs.FS) ([]string, error) {
 			return err
 		}
 		ast.Inspect(file, func(node ast.Node) bool {
-			switch node := node.(type) {
-			case *ast.CallExpr:
-				if selector, ok := node.Fun.(*ast.SelectorExpr); ok {
-					index := -1
-					switch selector.Sel.Name {
-					case "Rule":
-						index = 0
-					case "NewValidationContext":
-						index = 2
-					}
-					if index >= 0 && len(node.Args) > index {
-						if id := stringLiteral(node.Args[index]); id != "" {
-							found[id] = true
-						}
-					}
+			batch, ok := node.(*ast.CompositeLit)
+			if !ok {
+				return true
+			}
+			selector, ok := batch.Type.(*ast.SelectorExpr)
+			if !ok || selector.Sel.Name != "RuleChecks" {
+				return true
+			}
+			for _, element := range batch.Elts {
+				pair, ok := element.(*ast.KeyValueExpr)
+				if !ok {
+					continue
 				}
-			case *ast.CompositeLit:
-				if selector, ok := node.Type.(*ast.SelectorExpr); ok && selector.Sel.Name == "RuleChecks" {
-					for _, element := range node.Elts {
-						if pair, ok := element.(*ast.KeyValueExpr); ok {
-							if id := stringLiteral(pair.Key); id != "" {
-								found[id] = true
-							}
-						}
-					}
+				if id := stringLiteral(pair.Key); id != "" {
+					found[id] = true
 				}
 			}
 			return true

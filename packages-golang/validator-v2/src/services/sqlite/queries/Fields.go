@@ -34,10 +34,18 @@ func Fields(r *types.SQLiteRow, fields ...string) (map[string]string, error) {
 
 	if r.Values != nil {
 		result := make(map[string]string, len(fields))
+		allCached := true
 		for _, field := range fields {
-			result[field] = r.Values[field]
+			value, cached := r.Values[field]
+			if !cached {
+				allCached = false
+				break
+			}
+			result[field] = value
 		}
-		return result, nil
+		if allCached {
+			return result, nil
+		}
 	}
 
 	//

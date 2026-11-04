@@ -1,17 +1,24 @@
 package severity
 
-import "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+import (
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+)
 
 // ResolveMessageSeverity applies configuration and converts forbidden findings to errors.
-func ResolveMessageSeverity(file, id, field string, fallback rules.Severities) rules.Severities {
+func ResolveMessageSeverity(id string, fallback rules.Severities) rules.Severities {
 	//
 
 	//
 	// 1. Use the configured severity when an override applies
 
 	severity := fallback
-	if override, configured := MessageSeverityOverride(file, id, field); configured {
-		severity = override
+	if values := variables.MessageSeverities.Load(); values != nil {
+		if override, configured := (*values)[id]; configured {
+			severity = override
+		} else if !isTechnicalNotice(id) {
+			severity = rules.SEVERITY_IGNORE
+		}
 	}
 
 	//

@@ -6,6 +6,18 @@ import (
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 )
 
+// AllMessages returns the details from every rule group in report order.
+func AllMessages(summary types.Summary) []types.Message {
+	//
+	// 1. Flatten the grouped findings
+
+	messages := []types.Message{}
+	for _, rule := range summary.Messages {
+		messages = append(messages, rule.Messages...)
+	}
+	return messages
+}
+
 // GetSummary returns an independent snapshot, sorted and grouped by file and rule.
 func (service *MessageService) GetSummary() types.Summary {
 	//

@@ -1,10 +1,12 @@
 package standard_test
 
 import (
+	"testing"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 	standard "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/standards/checks"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/utils"
-	"testing"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/utils"
 )
 
 func TestShapeIdForeign(t *testing.T) {
@@ -20,10 +22,10 @@ func TestShapeIdForeign(t *testing.T) {
 				if tc.missing {
 					missing = "shape_id"
 				}
-				_, ctx := testutil.Fixture(t, "P1", tc.value, missing)
+				_, tables := testutil.Fixture(t, "P1", tc.value, missing)
 
 				c := &testutil.Collector{}
-				if err := standard.ShapeIdForeign(ctx, &rules.RuleContext{Severity: severity}, c); err != nil {
+				if err := standard.ShapeIdForeign(context.NewRuleContext("trips_shape_id_foreign", tables, rules.RuleContext{Severity: severity}, c)); err != nil {
 					t.Fatal(err)
 				}
 				count := tc.count
@@ -36,12 +38,12 @@ func TestShapeIdForeign(t *testing.T) {
 	}
 	testutil.QueryError(t, standard.ShapeIdForeign)
 	t.Run("lookup_error", func(t *testing.T) {
-		db, ctx := testutil.Fixture(t, "P1", "R1_0", "")
+		db, tables := testutil.Fixture(t, "P1", "R1_0", "")
 		if _, err := db.Exec("DROP TABLE shapes"); err != nil {
 			t.Fatal(err)
 		}
 		c := &testutil.Collector{}
-		if err := standard.ShapeIdForeign(ctx, &rules.RuleContext{Severity: rules.SEVERITY_ERROR}, c); err == nil {
+		if err := standard.ShapeIdForeign(context.NewRuleContext("trips_shape_id_foreign", tables, rules.RuleContext{Severity: rules.SEVERITY_ERROR}, c)); err == nil {
 			t.Fatal("expected lookup error")
 		}
 		testutil.AssertMessages(t, c, "trips_shape_id_foreign", "shape_id", rules.SEVERITY_ERROR, 0)

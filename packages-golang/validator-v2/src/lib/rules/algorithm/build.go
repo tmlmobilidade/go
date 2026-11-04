@@ -10,7 +10,7 @@ import (
 /*
 * Build sorts the rules by dependency level using Kahn's algorithm.
 * Each ready level keeps registration order. This builds a static order;
-* RunRowWithConcurrency schedules execution as dependencies finish.
+* RunRules schedules execution as dependencies finish.
  */
 func Build[T any](m *types.Manager[T]) error {
 	//

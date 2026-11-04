@@ -1,8 +1,8 @@
 package context
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
 )
 
 // ShouldIgnore reports whether the configured severity is ignore.
