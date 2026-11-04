@@ -2,7 +2,7 @@
 
 import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agencies-data';
 import { useStopsLocationsData } from '@/components/stops/shared/use-stops-locations-data';
-import { Grid, MultiSelect, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CoordinatesInput, Grid, MultiSelect, Section, StandardFormController, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useStopsExtractV1FormContext } from '../StopsExtractV1Form.context';
@@ -30,11 +30,11 @@ export function StopsExtractV1Properties() {
 		<Section gap="md">
 
 			{coordinates && (
-				<TextInput
-					description={t('stops:extract.StopsExtractV1Properties.fields.coordinates.description')}
+				<CoordinatesInput
+					disabled={!capabilities.editEnabled}
 					label={t('stops:extract.StopsExtractV1Properties.fields.coordinates.label')}
-					value={`${coordinates[1]}, ${coordinates[0]}`}
-					readOnly
+					onChange={value => form.setValue('coordinates', value ? [value[1], value[0]] : undefined, { shouldDirty: true, shouldValidate: true })}
+					value={[coordinates[1], coordinates[0]]}
 				/>
 			)}
 

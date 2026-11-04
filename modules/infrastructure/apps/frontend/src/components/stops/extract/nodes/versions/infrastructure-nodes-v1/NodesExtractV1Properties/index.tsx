@@ -3,7 +3,7 @@
 import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/filters/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
 import { useStopsAgenciesData } from '@/components/stops/shared/use-stops-agencies-data';
 import { useStopsLocationsData } from '@/components/stops/shared/use-stops-locations-data';
-import { MultiSelect, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CoordinatesInput, MultiSelect, Section, StandardFormController, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useNodesExtractV1FormContext } from '../NodesExtractV1Form.context';
@@ -32,11 +32,11 @@ export function NodesExtractV1Properties() {
 		<Section gap="md">
 
 			{coordinates && (
-				<TextInput
-					description={t('stops:extract.NodesExtractV1Properties.fields.coordinates.description')}
+				<CoordinatesInput
+					disabled={!capabilities.editEnabled}
 					label={t('stops:extract.NodesExtractV1Properties.fields.coordinates.label')}
-					value={`${coordinates[1]}, ${coordinates[0]}`}
-					readOnly
+					onChange={value => form.setValue('coordinates', value ? [value[1], value[0]] : undefined, { shouldDirty: true, shouldValidate: true })}
+					value={[coordinates[1], coordinates[0]]}
 				/>
 			)}
 
