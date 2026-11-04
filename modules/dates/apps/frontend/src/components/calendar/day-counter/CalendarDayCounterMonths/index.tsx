@@ -1,7 +1,7 @@
 'use client';
 
 import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/CalendarDayCounter.context';
-import { getMonthOptions } from '@tmlmobilidade/go-utils-dates';
+import { getCompactMonthOptions } from '@tmlmobilidade/go-utils-dates';
 import { Section, SegmentedMultiSelect, Text, useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,7 @@ export function CalendarDayCounterMonths() {
 	//
 	// B. Transform data
 
-	const monthOptions = useMemo(() => getMonthOptions(locale), [locale]);
+	const monthOptions = useMemo(() => getCompactMonthOptions(locale), [locale]);
 
 	//
 	// C. Render components

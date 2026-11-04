@@ -176,7 +176,7 @@
 	},
 	"common": {
 		"WeekdaySelector": {
-			"sundayAndHolidays": "{{day}} and holidays"
+			"sundayAndHolidays": "{day} and holidays"
 		}
 	}
 }

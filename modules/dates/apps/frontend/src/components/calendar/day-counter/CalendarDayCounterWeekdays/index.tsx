@@ -2,7 +2,7 @@
 
 import { useCalendarDayCounterContext } from '@/components/calendar/day-counter/CalendarDayCounter.context';
 import { type IsoWeekday, WEEKDAYS } from '@tmlmobilidade/go-types-shared';
-import { getWeekdayOptions } from '@tmlmobilidade/go-utils-dates';
+import { getCompactWeekdayOptions } from '@tmlmobilidade/go-utils-dates';
 import { Section, SelectChipGroup, Text, useLocaleContext, WeekdaySelector } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +42,7 @@ export function CalendarDayCounterWeekdays() {
 	// B. Transform data
 
 	const weekdayLabels = useMemo(() => {
-		return Object.fromEntries(getWeekdayOptions(locale).map(({ label, value }) => [
+		return Object.fromEntries(getCompactWeekdayOptions(locale).map(({ label, value }) => [
 			value,
 			value === WEEKDAYS.Sun ? t('default:calendar.dayCounter.sundayAndHolidays', '', { day: label }) : label,
 		]));

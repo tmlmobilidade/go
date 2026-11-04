@@ -1,7 +1,7 @@
 'use client';
 
 import { type IsoWeekday } from '@tmlmobilidade/go-types-shared';
-import { getWeekdayOptions } from '@tmlmobilidade/go-utils-dates';
+import { getCompactWeekdayOptions } from '@tmlmobilidade/go-utils-dates';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -33,14 +33,14 @@ export default function WeekdaySelector({
 	// A. Setup variables
 
 	const { data: { locale } } = useLocaleContext();
-	const { t } = useTranslation();
+	const { t } = useTranslation('shared');
 
 	//
 	// B. Transform data
 
-	const options = getWeekdayOptions(locale).map(({ label, value }) => {
+	const options = getCompactWeekdayOptions(locale).map(({ label, value }) => {
 		const defaultLabel = value === 7
-			? t('components:common.WeekdaySelector.sundayAndHolidays', '', { day: label })
+			? t('components.common.WeekdaySelector.sundayAndHolidays', { day: label, defaultValue: label })
 			: label;
 		const displayLabel = labels?.[value] ?? defaultLabel;
 
