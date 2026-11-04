@@ -5,6 +5,7 @@ import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.co
 import RouteDetailPattern from '@/components/routes/detail/RouteDetailPattern';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, Collapsible, HasPermission, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function RouteDetailSectionPatterns() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const routeDetailContext = useRouteDetailContext();
 
 	const handleAddPattern = () => {
@@ -29,7 +31,7 @@ export function RouteDetailSectionPatterns() {
 	}
 
 	return (
-		<Collapsible description="Todos os percursos desta rota. No máximo, uma rota pode ter dois percursos: o de ida e o de volta." title="Patterns" defaultOpen>
+		<Collapsible description={t('routes:detail.RouteDetailSectionPatterns.patterns_hint')} title={t('routes:detail.RouteDetailSectionPatterns.patterns')} defaultOpen>
 			<Section gap="sm">
 				<Section padding="none">
 					{routeDetailContext.data.route.patterns.toSorted((a, b) => a.code.localeCompare(b.code)).map((pattern, index) => (
@@ -43,7 +45,7 @@ export function RouteDetailSectionPatterns() {
 					scope={PermissionCatalog.all.lines.scope}
 					value={routeDetailContext.data.line.agency_id}
 				>
-					<Button disabled={routeDetailContext.status.isLocked} label="Adicionar Pattern" onClick={handleAddPattern} fullWidth />
+					<Button disabled={routeDetailContext.status.isLocked} label={t('routes:detail.RouteDetailSectionPatterns.add_pattern')} onClick={handleAddPattern} fullWidth />
 				</HasPermission>
 			</Section>
 		</Collapsible>

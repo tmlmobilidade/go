@@ -6,6 +6,7 @@ import { IconArrowBarToDown, IconArrowBarUp, IconClock } from '@tabler/icons-rea
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { DeleteButton, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -19,6 +20,7 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Pattern
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const shapeEditorContext = useShapeEditorContext();
 
 	const enterTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -103,9 +105,9 @@ export function ShapeEditorStopsItem({ pathItem, rowIndex }: { pathItem: Pattern
 							</Text>
 
 							<Section flexDirection="row" gap="sm" padding="none">
-								<Tag icon={<IconClock />} onClick={() => handleToogle('timepoint')} tooltip={`O horário ${stopItem?.timepoint ? 'é' : 'não é'} exato nesta paragem`} variant={stopItem?.timepoint ? 'muted' : 'danger'} />
-								<Tag icon={<IconArrowBarToDown />} onClick={() => handleToogle('allow_pickup')} tooltip={`O embarque ${stopItem?.allow_pickup ? 'é' : 'não é'} permitido nesta paragem`} variant={stopItem?.allow_pickup ? 'muted' : 'danger'} />
-								<Tag icon={<IconArrowBarUp />} onClick={() => handleToogle('allow_drop_off')} tooltip={`O desembarque ${stopItem?.allow_drop_off ? 'é' : 'não é'} permitido nesta paragem`} variant={stopItem?.allow_drop_off ? 'muted' : 'danger'} />
+								<Tag icon={<IconClock />} onClick={() => handleToogle('timepoint')} tooltip={t(stopItem?.timepoint ? 'patterns:shape.ShapeEditorStopsItem.timepoint_yes' : 'patterns:shape.ShapeEditorStopsItem.timepoint_no')} variant={stopItem?.timepoint ? 'muted' : 'danger'} />
+								<Tag icon={<IconArrowBarToDown />} onClick={() => handleToogle('allow_pickup')} tooltip={t(stopItem?.allow_pickup ? 'patterns:shape.ShapeEditorStopsItem.pickup_yes' : 'patterns:shape.ShapeEditorStopsItem.pickup_no')} variant={stopItem?.allow_pickup ? 'muted' : 'danger'} />
+								<Tag icon={<IconArrowBarUp />} onClick={() => handleToogle('allow_drop_off')} tooltip={t(stopItem?.allow_drop_off ? 'patterns:shape.ShapeEditorStopsItem.drop_off_yes' : 'patterns:shape.ShapeEditorStopsItem.drop_off_no')} variant={stopItem?.allow_drop_off ? 'muted' : 'danger'} />
 							</Section>
 						</div>
 					</div>

@@ -58,15 +58,15 @@ export function PatternDetailHeader() {
 			<Button
 				disabled={!patternDetailContext.capabilities.updateEnabled}
 				icon={<IconUpload size={28} />}
-				label="Guardar"
+				label={t('patterns:detail.PatternDetailHeader.save')}
 				loading={patternDetailContext.status.isUpdating}
 				onClick={patternDetailContext.actions.update}
 				variant="primary"
 			/>
 
 			<DeleteButton
-				confirmMessage="Tem a certeza que deseja apagar este Pattern? Esta ação não pode ser revertida."
-				confirmTitle="Apagar Pattern"
+				confirmMessage={t('patterns:detail.PatternDetailHeader.delete_pattern_message')}
+				confirmTitle={t('patterns:detail.PatternDetailHeader.delete_pattern')}
 				isDisabled={!patternDetailContext.capabilities.deleteEnabled}
 				onDelete={patternDetailContext.actions.delete}
 				showConfirmation

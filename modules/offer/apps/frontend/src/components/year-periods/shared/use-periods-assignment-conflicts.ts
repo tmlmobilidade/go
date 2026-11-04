@@ -5,6 +5,7 @@ import { type YearPeriodsConflictsRequest, type YearPeriodsConflictsResponse, Ye
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 /* * */
@@ -24,6 +25,7 @@ export function usePeriodsAssignmentConflicts(request: null | YearPeriodsConflic
 	//
 	// A. Fetch conflicts for this exact assignment
 
+	const { t } = useTranslation();
 	const queryKey = request ? JSON.stringify(request) : null;
 	const { data, error, isLoading, isValidating } = useSWR<ApiResponse<YearPeriodsConflictsResponse>>(request ? [API_ROUTES.offer.YEAR_PERIODS_CHECK_CONFLICTS, request] : null, {
 		fetcher: async ([url, body]: [string, YearPeriodsConflictsRequest]) => await fetchApiData<YearPeriodsConflictsResponse>({ body, method: 'POST', url }),
@@ -37,8 +39,8 @@ export function usePeriodsAssignmentConflicts(request: null | YearPeriodsConflic
 
 	return useMemo(() => ({
 		data: validated?.success ? validated.data : null,
-		error: data?.error ?? error?.message ?? (data && !validated?.success ? 'Invalid conflict response' : null),
+		error: data?.error ?? error?.message ?? (data && !validated?.success ? t('year-periods:shared.usePeriodsAssignmentConflicts.invalid_response') : null),
 		isLoading: isLoading || isValidating,
 		queryKey,
-	}), [data, error, isLoading, isValidating, queryKey, validated]);
+	}), [data, error, isLoading, isValidating, queryKey, t, validated]);
 }

@@ -27,7 +27,7 @@ interface UseShapeRoutePreviewReturnType {
 	routeData: null | RoutePreviewResponse
 }
 
-async function requestRoutePreview(patternId: string, points: RoutePreviewPoint[], signal: AbortSignal): Promise<RoutePreviewResponse> {
+async function requestRoutePreview(patternId: string, points: RoutePreviewPoint[], signal: AbortSignal, emptyResponseMessage: string): Promise<RoutePreviewResponse> {
 	const response = await fetchApiData<RoutePreviewResponse>({
 		body: ShapesRoutePreviewRequestSchema.parse({
 			costing: 'bus',
@@ -39,7 +39,7 @@ async function requestRoutePreview(patternId: string, points: RoutePreviewPoint[
 		options: { signal },
 		url: API_ROUTES.offer.SHAPES_ROUTE_PREVIEW,
 	});
-	if (response.error || !response.data) throw new Error(response.error || 'Route preview returned no data');
+	if (response.error || !response.data) throw new Error(response.error || emptyResponseMessage);
 	return RoutePreviewResponseSchema.parse(response.data);
 }
 
@@ -99,7 +99,7 @@ export function useShapeRoutePreview(options: UseShapeRoutePreviewOptions): UseS
 		const plan = buildRoutePreviewRecalculationPlan(previousPoints, points, forceFull ? [] : current.draft.shape?.legs ?? []);
 		const results = await Promise.all(plan.ranges.map(async range => ({
 			range,
-			response: await requestRoutePreview(current.patternId, points.slice(range.from_index, range.to_index + 1), signal),
+			response: await requestRoutePreview(current.patternId, points.slice(range.from_index, range.to_index + 1), signal, t('patterns:shape.useShapeRoutePreview.empty_response')),
 		})));
 		for (const { range, response } of results) mergeRoutePreviewRange(plan.legs, range, response.legs);
 		return { points, response: composeRoutePreviewResponse(plan.legs) };

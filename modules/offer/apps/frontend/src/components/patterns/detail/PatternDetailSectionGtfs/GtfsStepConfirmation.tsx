@@ -6,6 +6,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PatternsDetail, PatternsDetailSchema, PatternsImportGtfsRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
 import { Button, closeModal, Divider, fetchApiData, Grid, Section, Text, useToast } from '@tmlmobilidade/ui';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { GtfsTrip } from './GtfsImport.modal';
 
@@ -24,6 +25,8 @@ interface GtfsStepConfirmationProps {
 /* * */
 
 export function GtfsStepConfirmation({ currentShapeExtension, currentStopCount, modalId, onBack, onLoad, patternId, selectedTrip }: GtfsStepConfirmationProps) {
+	const { t } = useTranslation();
+
 	//
 
 	const [isImporting, setIsImporting] = useState(false);
@@ -54,12 +57,12 @@ export function GtfsStepConfirmation({ currentShapeExtension, currentStopCount, 
 				url: API_ROUTES.offer.PATTERNS_DETAIL_IMPORT_GTFS(patternId),
 			});
 			if (!mounted.current || controller.signal.aborted) return;
-			if (result.error || !result.data) throw new Error(result.error || 'No import preview returned');
+			if (result.error || !result.data) throw new Error(result.error || t('patterns:detail.GtfsStepConfirmation.import_error'));
 			onLoad(PatternsDetailSchema.parse(result.data));
 			closeModal(modalId);
 		} catch (error) {
 			if (mounted.current && !controller.signal.aborted) {
-				useToast.error({ message: error instanceof Error ? error.message : 'Erro ao importar percurso' });
+				useToast.error({ message: error instanceof Error ? error.message : t('patterns:detail.GtfsStepConfirmation.import_error') });
 			}
 		} finally {
 			if (request.current === controller) request.current = null;
@@ -69,23 +72,23 @@ export function GtfsStepConfirmation({ currentShapeExtension, currentStopCount, 
 
 	return (
 		<Section gap="md">
-			<Text>Tem a certeza que pretende importar este percurso?</Text>
+			<Text>{t('patterns:detail.GtfsStepConfirmation.import_confirmation')}</Text>
 			<Divider />
 			<div>
-				<Text fw={700}>COMO ESTÁ AGORA</Text>
-				<Text>Paragens: {currentStopCount}</Text>
-				<Text>Shape: {currentShapeExtension} metros</Text>
+				<Text fw={700}>{t('patterns:detail.GtfsStepConfirmation.before_import')}</Text>
+				<Text>{t('patterns:detail.GtfsStepConfirmation.stops_label')}{' '}{currentStopCount}</Text>
+				<Text>{t('patterns:detail.GtfsStepConfirmation.shape_label')}{' '}{currentShapeExtension} {t('patterns:detail.GtfsStepConfirmation.meters')}</Text>
 			</div>
 			<Divider />
 			<div>
-				<Text fw={700}>COMO VAI FICAR DEPOIS DE IMPORTAR</Text>
-				<Text>Paragens: {newStopCount}</Text>
-				<Text>Shape: {Math.round(newShapeExtension)} metros</Text>
+				<Text fw={700}>{t('patterns:detail.GtfsStepConfirmation.after_import')}</Text>
+				<Text>{t('patterns:detail.GtfsStepConfirmation.stops_label')}{' '}{newStopCount}</Text>
+				<Text>{t('patterns:detail.GtfsStepConfirmation.shape_label')}{' '}{Math.round(newShapeExtension)} {t('patterns:detail.GtfsStepConfirmation.meters')}</Text>
 			</div>
 			<Divider />
 			<Grid columns="ab" gap="sm">
-				<Button color="gray" label="Voltar" onClick={onBack} variant="danger" />
-				<Button label="Importar" loading={isImporting} onClick={handleConfirmImport} variant="primary" />
+				<Button color="gray" label={t('patterns:detail.GtfsStepConfirmation.back')} onClick={onBack} variant="danger" />
+				<Button label={t('patterns:detail.GtfsStepConfirmation.import')} loading={isImporting} onClick={handleConfirmImport} variant="primary" />
 			</Grid>
 		</Section>
 	);

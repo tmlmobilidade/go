@@ -7,6 +7,7 @@ import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { DraggableList, Section, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -21,6 +22,7 @@ export function StopsList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const shapeEditorContext = useShapeEditorContext();
 
 	const [addStopIndex, setAddStopIndex] = useState<null | number>(null);
@@ -59,7 +61,7 @@ export function StopsList() {
 
 	return (
 		<div className={styles.container}>
-			<Text size="xl" weight="semibold">Sequência de paragens</Text>
+			<Text size="xl" weight="semibold">{t('patterns:shape.StopsList.stop_sequence')}</Text>
 
 			<Section padding="none">
 				<DraggableList

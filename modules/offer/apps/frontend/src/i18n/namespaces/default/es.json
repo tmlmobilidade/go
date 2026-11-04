@@ -110,7 +110,7 @@
 			},
 			"code": {
 				"label": "Código",
-				"placeholder": "Ex: T1-BORDO"
+				"placeholder": "Ej.: T1-BORDO"
 			},
 			"currency_type": {
 				"label": "Moneda"
@@ -160,6 +160,50 @@
 		"line": "Bloqueado por la línea. Desbloquee primero la línea.",
 		"route": "Bloqueado por la ruta. Desbloquee primero la ruta."
 	},
+	"patterns": {
+		"create": {
+			"RuleCreateEvents": {
+				"select_event_first": "Seleccione un evento para definir las fechas de la regla. Después podrá limitarlas por periodo, día de la semana o mes."
+			},
+			"RuleCreateMonths": {
+				"event_optional_hint": "Opcional — limita las fechas del evento a los meses seleccionados. Sin selección, no filtra por mes.",
+				"optional_hint": "Opcional — sin selección, se aplica a todos los meses."
+			},
+			"RuleCreatePeriods": {
+				"optional_hint": "Opcional — limita las fechas del evento a los periodos seleccionados. Sin selección, no filtra por periodo.",
+				"required_hint": "Seleccione al menos un periodo. Use Todos para seleccionar todos los periodos disponibles."
+			},
+			"RuleCreateWeekdays": {
+				"optional_hint": "Opcional — limita las fechas del evento a los días de la semana seleccionados. Sin selección, no filtra por día de la semana.",
+				"required_hint": "Seleccione al menos un día de la semana. Use Todos para seleccionar todos los días."
+			}
+		},
+		"list": {
+			"RulesCalendarPreviewRulesGroup": {
+				"no_schedules_removed": "Esta regla no elimina ningún horario en este día."
+			}
+		},
+		"shapeEditor": {
+			"anchorIssuesDescription": "Algunos desvíos no identifican una única ocurrencia entre paradas. Al recalcular se eliminarán esos desvíos. Se conservarán los desvíos identificados sin ambigüedad.",
+			"anchorIssuesTitle": "Desvíos con segmentos sin identificar",
+			"apply": "Aplicar",
+			"cancel": "Cancelar",
+			"conversionHistory": "Esta conversión se guarda en el historial local y se puede deshacer antes de aplicar.",
+			"conversionWarning": "El recorrido resultante puede diferir ligeramente del original.",
+			"convert": "Convertir y editar",
+			"convertDescription": "Para editar paradas y desvíos es necesario convertir el trazado al formato editable, recalculando el recorrido.",
+			"dismiss": "Cerrar",
+			"importedDescription": "Este recorrido se ha importado directamente de GTFS y no contiene puntos intermedios calculados por nuestra plataforma.",
+			"importedTitle": "Trazado importado de GTFS",
+			"missingSegment": "segmento inexistente",
+			"missingStops": "Todas las paradas necesitan coordenadas antes de recalcular el recorrido.",
+			"recalculate": "Recalcular recorrido",
+			"redo": "Rehacer",
+			"routeErrorTitle": "Error al recalcular el recorrido",
+			"undo": "Deshacer",
+			"unknownError": "Error desconocido"
+		}
+	},
 	"periods": {
 		"assignment": {
 			"acknowledge": "Entiendo y deseo continuar",
@@ -180,29 +224,29 @@
 			"title": "Asignar fechas"
 		},
 		"calendar": {
-			"readOnly": "Solo lectura",
-			"readOnlyPermissions": "Para editar la configuración o las fechas de este período, se necesita permiso de actualización para todos los operadores asociados.",
-			"readOnlyLocked": "Este período está bloqueado y no se puede editar.",
-			"cancelSelection": "Cancelar selección (Esc)",
-			"selectEnd": "Seleccione el último día del intervalo o pulse Esc para cancelar.",
-			"discardChanges": "Descartar cambios",
-			"settingsChanged": "Cambios de configuración pendientes",
-			"title": "Calendario de períodos",
-			"settings": "Configuración del período",
-			"legend": "Períodos mostrados en el calendario",
-			"overviewHint": "Seleccione un operador. Elija un período en la lista, en la leyenda o en un día del calendario para ver y editar sus fechas.",
-			"selectAgencies": "Seleccione un operador para ver el calendario.",
-			"sharedScope": "Las fechas de este período se aplican a: {agencies}.",
-			"editDates": "Editar fechas",
-			"saveSettingsFirst": "Guarde o revierta los cambios de configuración antes de editar fechas.",
-			"editHint": "Empiece en un día asignado para quitar fechas, o en un día libre para añadirlas. Después, seleccione el último día del intervalo. Los cambios se aplican a todos los operadores de este período.",
-			"changes": "{added, plural, one {# fecha añadida} other {# fechas añadidas}} · {removed, plural, one {# fecha eliminada} other {# fechas eliminadas}}",
-			"noChanges": "Sin cambios pendientes",
-			"lastRange": "Último intervalo: {count, plural, one {# día} other {# días}}",
-			"selectRange": "Seleccione un intervalo en el calendario",
+			"backToPeriod": "Volver al período",
 			"cancelEditing": "Cancelar edición",
+			"cancelSelection": "Cancelar selección (Esc)",
+			"changes": "{added, plural, one {# fecha añadida} other {# fechas añadidas}} · {removed, plural, one {# fecha eliminada} other {# fechas eliminadas}}",
+			"discardChanges": "Descartar cambios",
+			"editDates": "Editar fechas",
+			"editHint": "Empiece en un día asignado para quitar fechas, o en un día libre para añadirlas. Después, seleccione el último día del intervalo. Los cambios se aplican a todos los operadores de este período.",
+			"lastRange": "Último intervalo: {count, plural, one {# día} other {# días}}",
+			"legend": "Períodos mostrados en el calendario",
+			"noChanges": "Sin cambios pendientes",
+			"overviewHint": "Seleccione un operador. Elija un período en la lista, en la leyenda o en un día del calendario para ver y editar sus fechas.",
+			"readOnly": "Solo lectura",
+			"readOnlyLocked": "Este período está bloqueado y no se puede editar.",
+			"readOnlyPermissions": "Para editar la configuración o las fechas de este período, se necesita permiso de actualización para todos los operadores asociados.",
 			"saveDates": "Guardar fechas",
-			"backToPeriod": "Volver al período"
+			"saveSettingsFirst": "Guarde o revierta los cambios de configuración antes de editar fechas.",
+			"selectAgencies": "Seleccione un operador para ver el calendario.",
+			"selectEnd": "Seleccione el último día del intervalo o pulse Esc para cancelar.",
+			"selectRange": "Seleccione un intervalo en el calendario",
+			"settings": "Configuración del período",
+			"settingsChanged": "Cambios de configuración pendientes",
+			"sharedScope": "Las fechas de este período se aplican a: {agencies}.",
+			"title": "Calendario de períodos"
 		},
 		"create": {
 			"title": "Nuevo período"
@@ -238,9 +282,9 @@
 				"placeholder": "Ej.: Período escolar 2025/2026"
 			},
 			"short_name": {
+				"description": "Abreviatura para identificar el periodo en nombres de servicio.",
 				"label": "Nombre corto",
-				"placeholder": "Ej.: ESC",
-				"description": "Abreviatura para identificar el periodo en nombres de servicio."
+				"placeholder": "Ej.: ESC"
 			}
 		},
 		"list": {
@@ -250,6 +294,126 @@
 				"name": "Nombre"
 			},
 			"title": "Períodos"
+		}
+	},
+	"scheduling": {
+		"copy": {
+			"activeTimepointCount": "{count, plural, one {# horario activo} other {# horarios activos}}",
+			"add": "Añadir",
+			"adjustSpeeds": "Ajustar velocidades",
+			"adjustSpeedsHint": "Multiplica las velocidades actuales por el factor indicado.",
+			"affectedDays": "{count, plural, one {Esta regla afecta # día del calendario} other {Esta regla afecta # días del calendario}}",
+			"all": "Todos",
+			"appliedRules": "Reglas aplicadas",
+			"apply": "Aplicar",
+			"averageTravelTime": "Tiempo medio de viaje",
+			"averageTravelTimeLabel": "Tiempo medio de viaje",
+			"batchHint": "Aplica valores en bloque a los tiempos de esta configuración.",
+			"businessDays": "Días laborables",
+			"cancel": "Cancelar",
+			"checkTimepoints": "Revise los horarios introducidos.",
+			"close": "Cerrar",
+			"commercialSpeed": "Vel. media comercial",
+			"conditionsHint": "Estos horarios se aplican cuando se cumplen TODAS las condiciones siguientes",
+			"conditionsQuestion": "3. ¿Cuándo deben aplicarse estos horarios?",
+			"copy": "Copiar",
+			"copyDefault": "Copiar configuración predeterminada",
+			"copyDefaultHint": "Sustituye las velocidades y los tiempos de parada por los valores de la configuración predeterminada.",
+			"create": "Crear",
+			"dayCount": "{count, plural, one {# día} other {# días}}",
+			"dayDetailsHint": "Pulse un día afectado para consultar los horarios y las reglas aplicables.",
+			"defaultConfigurationHint": "Se utiliza cuando no se aplica ninguna configuración específica.",
+			"delete": "Eliminar",
+			"deleteNamedRule": "¿Seguro que desea eliminar la regla «{name}»?",
+			"deleteRule": "Eliminar regla",
+			"deleteRuleTitle": "Eliminar regla",
+			"deleteRuleWarning": "¿Seguro que desea eliminar esta regla? Esta acción no se puede deshacer.",
+			"duplicate": "Duplicar",
+			"dwellPlaceholder": "Tiempo de parada (segundos)",
+			"dwellSequence": "Tiempo de parada para la secuencia {sequence}",
+			"dwellTime": "Tiempo de parada",
+			"dwellTimes": "Tiempo en paradas",
+			"edit": "Editar",
+			"event": "Evento",
+			"eventDetails": "Ir a los detalles del evento",
+			"eventException": "Excepción por evento",
+			"eventHint": "Si se activa, la regla se aplica al evento seleccionado. Puede limitar sus fechas mediante las condiciones siguientes.",
+			"eventWeekdays": "Días de la semana del evento",
+			"excludeService": "Excluyen servicio",
+			"excludedAllDay": "Servicio excluido todo el día",
+			"excludedBy": "Excluido por: {name}",
+			"excludedDays": "Los horarios no operan estos días",
+			"excludedWindow": "Servicio excluido de {start} a {end}",
+			"existingTimepoint": "Este horario ya existe",
+			"existingTimepoints": "Estos horarios ya existen",
+			"fixedDwell": "Tiempo de parada fijo",
+			"fixedDwellHint": "Establece el mismo tiempo de parada en todas las paradas.",
+			"fixedSpeed": "Velocidad fija",
+			"fixedSpeedHint": "Establece la misma velocidad media en todos los tramos.",
+			"includeService": "Incluyen servicio",
+			"includedDays": "Los horarios operan estos días",
+			"invalidFormat": "Formato no válido",
+			"invalidTokens": "Formato no válido: {tokens}",
+			"newConfiguration": "Nueva configuración",
+			"newRule": "Nueva regla",
+			"noExcludeRules": "No hay reglas de exclusión.",
+			"noIncludeRules": "No hay reglas de inclusión.",
+			"noTimepoints": "No hay horarios para mostrar.",
+			"open": "Abrir",
+			"operatingHint": "Define si esta regla activa o desactiva los horarios cuando se cumplen las condiciones siguientes.",
+			"parameterConditionsHint": "Estos parámetros se aplican cuando se cumplen TODAS las condiciones siguientes",
+			"parameterConditionsQuestion": "1. ¿Cuándo se aplica esta configuración?",
+			"pasteHint": "También puede pegar o arrastrar varios horarios desde una hoja de cálculo. Ej.: 10:00 13:00 15:00 o 1000 1300 1500",
+			"periods": "Periodos",
+			"previewCalendar": "Vista previa del calendario",
+			"quickActions": "Acciones rápidas",
+			"replaceService": "Sustituyen servicio",
+			"rule": "Regla",
+			"ruleActions": "Acciones de la regla",
+			"ruleQuestion": "1. ¿Qué ocurre con estos horarios?",
+			"secondsSuffix": " s",
+			"segmentSpeed": "Velocidad media del tramo {sequence}",
+			"selectDay": "Seleccione un día en el calendario",
+			"selectEvent": "Seleccione un evento.",
+			"selectPeriod": "Seleccione al menos un periodo.",
+			"selectWeekday": "Seleccione al menos un día de la semana.",
+			"sequence": "Secuencia",
+			"specificConfigurations": "Configuraciones específicas",
+			"specificConfigurationsHint": "Sustituyen la configuración predeterminada en periodos, días u horarios específicos.",
+			"speed": "Velocidad media",
+			"speedPlaceholder": "Velocidad media (km/h)",
+			"speedSequence": "Velocidad media para la secuencia {sequence}",
+			"stop": "Parada",
+			"stopFallback": "Parada {id}",
+			"timepointCount": "{count, plural, one {# horario} other {# horarios}}",
+			"timepointPlaceholder": "Ej.: 08:30 o 0830 o 830 + Intro",
+			"timepointsQuestion": "2. ¿Qué horarios afecta esta regla?",
+			"toStop": "Hasta {stop}",
+			"totalDistance": "Distancia total",
+			"totalDuration": "Duración total",
+			"totalDurationLabel": "Duración total:",
+			"travelTime": "Tiempo de viaje",
+			"travelTimeHint": "Tiempo medio de viaje calculado a partir de la distancia y de la velocidad media del tramo entre esta parada y la anterior.",
+			"tripEnd": "Fin del viaje",
+			"unnamedRule": "Regla sin nombre",
+			"validNonnegativeNumber": "Introduzca un número válido mayor o igual a cero.",
+			"vehicle": "Vehículo",
+			"vehicleQuestion": "{step}. ¿Qué tipo de vehículo debe realizar este viaje?",
+			"weekdays": "Días de la semana",
+			"weekend": "Fin de semana"
+		},
+		"dayPeriodsTitle": "Períodos del día",
+		"months": {
+			"eventTitle": "Meses del evento",
+			"title": "Meses"
+		}
+	},
+	"shared": {
+		"RuleEventEffect": {
+			"replacement": "Funcionará como",
+			"restriction_all_day": "Los horarios no operarán durante todo el día",
+			"restriction_timepoints": "Los horarios <timeRange/> no operarán",
+			"restriction_window": "Los horarios entre las <timeRange/> no operarán"
 		}
 	},
 	"typologies": {
@@ -268,7 +432,7 @@
 			},
 			"code": {
 				"label": "Código",
-				"placeholder": "Ex: LONGA"
+				"placeholder": "Ej.: LONGA"
 			},
 			"color": {
 				"label": "Color de fondo"
@@ -321,7 +485,7 @@
 			},
 			"code": {
 				"label": "Código",
-				"placeholder": "Ex: 1101"
+				"placeholder": "Ej.: 1101"
 			},
 			"geojson": {
 				"invalid": "Archivo GeoJSON no válido",
@@ -346,170 +510,6 @@
 		"sections": {
 			"basic": "Configuración básica",
 			"geometry": "Geometría"
-		}
-	},
-	"patterns": {
-		"shapeEditor": {
-			"apply": "Aplicar",
-			"anchorIssuesTitle": "Desvíos con segmentos sin identificar",
-			"anchorIssuesDescription": "Algunos desvíos no identifican una única ocurrencia entre paradas. Al recalcular se eliminarán esos desvíos. Se conservarán los desvíos identificados sin ambigüedad.",
-			"missingSegment": "segmento inexistente",
-			"recalculate": "Recalcular recorrido",
-			"cancel": "Cancelar",
-			"undo": "Deshacer",
-			"redo": "Rehacer",
-			"dismiss": "Cerrar",
-			"convert": "Convertir y editar",
-			"importedTitle": "Trazado importado de GTFS",
-			"importedDescription": "Este recorrido se ha importado directamente de GTFS y no contiene puntos intermedios calculados por nuestra plataforma.",
-			"convertDescription": "Para editar paradas y desvíos es necesario convertir el trazado al formato editable, recalculando el recorrido.",
-			"conversionWarning": "El recorrido resultante puede diferir ligeramente del original.",
-			"conversionHistory": "Esta conversión se guarda en el historial local y se puede deshacer antes de aplicar.",
-			"missingStops": "Todas las paradas necesitan coordenadas antes de recalcular el recorrido.",
-			"unknownError": "Error desconocido",
-			"routeErrorTitle": "Error al recalcular el recorrido"
-		},
-		"list": {
-			"RulesCalendarPreviewRulesGroup": {
-				"no_schedules_removed": "Esta regla no elimina ningún horario en este día."
-			}
-		},
-		"create": {
-			"RuleCreateEvents": {
-				"select_event_first": "Seleccione un evento para definir las fechas de la regla. Después podrá limitarlas por periodo, día de la semana o mes."
-			},
-			"RuleCreatePeriods": {
-				"required_hint": "Seleccione al menos un periodo. Use Todos para seleccionar todos los periodos disponibles.",
-				"optional_hint": "Opcional — limita las fechas del evento a los periodos seleccionados. Sin selección, no filtra por periodo."
-			},
-			"RuleCreateWeekdays": {
-				"required_hint": "Seleccione al menos un día de la semana. Use Todos para seleccionar todos los días.",
-				"optional_hint": "Opcional — limita las fechas del evento a los días de la semana seleccionados. Sin selección, no filtra por día de la semana."
-			},
-			"RuleCreateMonths": {
-				"optional_hint": "Opcional — sin selección, se aplica a todos los meses.",
-				"event_optional_hint": "Opcional — limita las fechas del evento a los meses seleccionados. Sin selección, no filtra por mes."
-			}
-		}
-	},
-	"scheduling": {
-		"months": {
-			"title": "Meses",
-			"eventTitle": "Meses del evento"
-		},
-		"dayPeriodsTitle": "Períodos del día",
-		"copy": {
-			"ruleQuestion": "1. ¿Qué ocurre con estos horarios?",
-			"operatingHint": "Define si esta regla activa o desactiva los horarios cuando se cumplen las condiciones siguientes.",
-			"excludedDays": "Los horarios no operan estos días",
-			"includedDays": "Los horarios operan estos días",
-			"timepointsQuestion": "2. ¿Qué horarios afecta esta regla?",
-			"pasteHint": "También puede pegar o arrastrar varios horarios desde una hoja de cálculo. Ej.: 10:00 13:00 15:00 o 1000 1300 1500",
-			"conditionsQuestion": "3. ¿Cuándo deben aplicarse estos horarios?",
-			"conditionsHint": "Estos horarios se aplican cuando se cumplen TODAS las condiciones siguientes",
-			"eventHint": "Si se activa, la regla se aplica al evento seleccionado. Puede limitar sus fechas mediante las condiciones siguientes.",
-			"eventException": "Excepción por evento",
-			"newRule": "Nueva regla",
-			"deleteRuleWarning": "¿Seguro que desea eliminar esta regla? Esta acción no se puede deshacer.",
-			"deleteRuleTitle": "Eliminar regla",
-			"periods": "Periodos",
-			"invalidFormat": "Formato no válido",
-			"existingTimepoint": "Este horario ya existe",
-			"existingTimepoints": "Estos horarios ya existen",
-			"weekdays": "Días de la semana",
-			"businessDays": "Días laborables",
-			"weekend": "Fin de semana",
-			"dayDetailsHint": "Pulse un día afectado para consultar los horarios y las reglas aplicables.",
-			"appliedRules": "Reglas aplicadas",
-			"selectDay": "Seleccione un día en el calendario",
-			"previewCalendar": "Vista previa del calendario",
-			"excludedAllDay": "Servicio excluido todo el día",
-			"unnamedRule": "Regla sin nombre",
-			"includeService": "Incluyen servicio",
-			"noIncludeRules": "No hay reglas de inclusión.",
-			"excludeService": "Excluyen servicio",
-			"noExcludeRules": "No hay reglas de exclusión.",
-			"replaceService": "Sustituyen servicio",
-			"eventDetails": "Ir a los detalles del evento",
-			"deleteRule": "Eliminar regla",
-			"ruleActions": "Acciones de la regla",
-			"noTimepoints": "No hay horarios para mostrar.",
-			"parameterConditionsHint": "Estos parámetros se aplican cuando se cumplen TODAS las condiciones siguientes",
-			"parameterConditionsQuestion": "1. ¿Cuándo se aplica esta configuración?",
-			"quickActions": "Acciones rápidas",
-			"batchHint": "Aplica valores en bloque a los tiempos de esta configuración.",
-			"copyDefault": "Copiar configuración predeterminada",
-			"copyDefaultHint": "Sustituye las velocidades y los tiempos de parada por los valores de la configuración predeterminada.",
-			"fixedSpeed": "Velocidad fija",
-			"fixedSpeedHint": "Establece la misma velocidad media en todos los tramos.",
-			"fixedDwell": "Tiempo de parada fijo",
-			"fixedDwellHint": "Establece el mismo tiempo de parada en todas las paradas.",
-			"adjustSpeeds": "Ajustar velocidades",
-			"adjustSpeedsHint": "Multiplica las velocidades actuales por el factor indicado.",
-			"tripEnd": "Fin del viaje",
-			"totalDistance": "Distancia total",
-			"totalDuration": "Duración total",
-			"travelTime": "Tiempo de viaje",
-			"dwellTimes": "Tiempo en paradas",
-			"commercialSpeed": "Vel. media comercial",
-			"sequence": "Secuencia",
-			"speed": "Velocidad media",
-			"averageTravelTime": "Tiempo medio de viaje",
-			"dwellTime": "Tiempo de parada",
-			"speedPlaceholder": "Velocidad media (km/h)",
-			"travelTimeHint": "Tiempo medio de viaje calculado a partir de la distancia y de la velocidad media del tramo entre esta parada y la anterior.",
-			"averageTravelTimeLabel": "Tiempo medio de viaje",
-			"dwellPlaceholder": "Tiempo de parada (segundos)",
-			"specificConfigurations": "Configuraciones específicas",
-			"specificConfigurationsHint": "Sustituyen la configuración predeterminada en periodos, días u horarios específicos.",
-			"newConfiguration": "Nueva configuración",
-			"defaultConfigurationHint": "Se utiliza cuando no se aplica ninguna configuración específica.",
-			"totalDurationLabel": "Duración total:",
-			"all": "Todos",
-			"add": "Añadir",
-			"cancel": "Cancelar",
-			"edit": "Editar",
-			"create": "Crear",
-			"duplicate": "Duplicar",
-			"delete": "Eliminar",
-			"open": "Abrir",
-			"event": "Evento",
-			"stop": "Parada",
-			"apply": "Aplicar",
-			"vehicle": "Vehículo",
-			"copy": "Copiar",
-			"timepointPlaceholder": "Ej.: 08:30 o 0830 o 830 + Intro",
-			"timepointCount": "{count, plural, one {# horario} other {# horarios}}",
-			"activeTimepointCount": "{count, plural, one {# horario activo} other {# horarios activos}}",
-			"dayCount": "{count, plural, one {# día} other {# días}}",
-			"affectedDays": "{count, plural, one {Esta regla afecta # día del calendario} other {Esta regla afecta # días del calendario}}",
-			"invalidTokens": "Formato no válido: {tokens}",
-			"eventWeekdays": "Días de la semana del evento",
-			"excludedWindow": "Servicio excluido de {start} a {end}",
-			"excludedBy": "Excluido por: {name}",
-			"deleteNamedRule": "¿Seguro que desea eliminar la regla «{name}»?",
-			"speedSequence": "Velocidad media para la secuencia {sequence}",
-			"dwellSequence": "Tiempo de parada para la secuencia {sequence}",
-			"segmentSpeed": "Velocidad media del tramo {sequence}",
-			"toStop": "Hasta {stop}",
-			"stopFallback": "Parada {id}",
-			"vehicleQuestion": "{step}. ¿Qué tipo de vehículo debe realizar este viaje?",
-			"secondsSuffix": " s",
-			"selectWeekday": "Seleccione al menos un día de la semana.",
-			"selectPeriod": "Seleccione al menos un periodo.",
-			"close": "Cerrar",
-			"rule": "Regla",
-			"validNonnegativeNumber": "Introduzca un número válido mayor o igual a cero.",
-			"checkTimepoints": "Revise los horarios introducidos.",
-			"selectEvent": "Seleccione un evento."
-		}
-	},
-	"shared": {
-		"RuleEventEffect": {
-			"replacement": "Funcionará como",
-			"restriction_all_day": "Los horarios no operarán durante todo el día",
-			"restriction_timepoints": "Los horarios <timeRange/> no operarán",
-			"restriction_window": "Los horarios entre las <timeRange/> no operarán"
 		}
 	}
 }

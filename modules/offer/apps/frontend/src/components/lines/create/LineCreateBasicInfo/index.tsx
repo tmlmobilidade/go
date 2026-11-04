@@ -5,6 +5,7 @@ import { useLineCreateContext } from '@/components/lines/create/LineCreate.conte
 import { LineSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function LineCreateBasicInfo() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const lineCreateContext = useLineCreateContext();
 
 	// Get agencies with create permission
@@ -31,8 +33,8 @@ export function LineCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Nome"
-						placeholder="Ex: Alfragide (Estr Seminario) - Reboleira (Estação)"
+						label={t('lines:create.LineCreateBasicInfo.name')}
+						placeholder={t('lines:create.LineCreateBasicInfo.line_example')}
 						readOnly={!lineCreateContext.capabilities.editEnabled}
 						required={!LineSchema.shape.name.isOptional()}
 						w="100%"
@@ -48,8 +50,8 @@ export function LineCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Código"
-						placeholder="Ex: 1001"
+						label={t('lines:create.LineCreateBasicInfo.code')}
+						placeholder={t('lines:create.LineCreateBasicInfo.code_example')}
 						readOnly={!lineCreateContext.capabilities.editEnabled}
 						required={!LineSchema.shape.code.isOptional()}
 						w="100%"
@@ -66,7 +68,7 @@ export function LineCreateBasicInfo() {
 					<Select
 						data={agencyOptions}
 						error={fieldState.error?.message}
-						label="Operador"
+						label={t('lines:create.LineCreateBasicInfo.agency')}
 						readOnly={!lineCreateContext.capabilities.editEnabled}
 						required={!LineSchema.shape.agency_id.isOptional()}
 						w="100%"

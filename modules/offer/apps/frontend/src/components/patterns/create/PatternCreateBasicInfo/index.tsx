@@ -3,6 +3,7 @@
 import { usePatternCreateContext } from '@/components/patterns/create/PatternCreate.context';
 import { PatternSchema } from '@tmlmobilidade/go-types-offer';
 import { Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -12,6 +13,7 @@ export function PatternCreateBasicInfo() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternCreateContext = usePatternCreateContext();
 
 	//
@@ -25,8 +27,8 @@ export function PatternCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Código"
-						placeholder="Ex: 1001_0_1"
+						label={t('patterns:create.PatternCreateBasicInfo.code')}
+						placeholder={t('patterns:create.PatternCreateBasicInfo.code_example')}
 						readOnly={!patternCreateContext.capabilities.editEnabled}
 						required={!PatternSchema.shape.code.isOptional()}
 						w="100%"
@@ -42,8 +44,8 @@ export function PatternCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Origem"
-						placeholder="Ex: Reboleira (Estação)"
+						label={t('patterns:create.PatternCreateBasicInfo.origin')}
+						placeholder={t('patterns:create.PatternCreateBasicInfo.destination_example')}
 						readOnly={!patternCreateContext.capabilities.editEnabled}
 						required={!PatternSchema.shape.origin.isOptional()}
 						w="100%"
@@ -59,8 +61,8 @@ export function PatternCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Destino"
-						placeholder="Ex: Reboleira (Estação)"
+						label={t('patterns:create.PatternCreateBasicInfo.destination')}
+						placeholder={t('patterns:create.PatternCreateBasicInfo.destination_example')}
 						readOnly={!patternCreateContext.capabilities.editEnabled}
 						required={!PatternSchema.shape.destination.isOptional()}
 						w="100%"
@@ -76,8 +78,8 @@ export function PatternCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Bandeira/Headsign"
-						placeholder="Ex: Reboleira (Estação)"
+						label={t('patterns:create.PatternCreateBasicInfo.headsign')}
+						placeholder={t('patterns:create.PatternCreateBasicInfo.destination_example')}
 						readOnly={!patternCreateContext.capabilities.editEnabled}
 						required={!PatternSchema.shape.headsign.isOptional()}
 						w="100%"

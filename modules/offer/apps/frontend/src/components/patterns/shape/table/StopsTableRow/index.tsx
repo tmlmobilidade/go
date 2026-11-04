@@ -7,6 +7,7 @@ import { PathTableColumnStop } from '@/components/patterns/shape/table/StopsTabl
 import { StopsTableTableColumnZones } from '@/components/patterns/table/StopsTableColumnZones';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { Checkbox, CheckboxProps, StandardFormController, Text, Tooltip } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from '../styles.module.css';
 
@@ -42,6 +43,7 @@ export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetail
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	//
@@ -62,7 +64,7 @@ export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetail
 					<CheckboxColumn
 						checked={field.value ?? false}
 						onChange={event => field.onChange(event.currentTarget.checked)}
-						tooltip={`O horário de passagem ${field.value ? '' : 'não'} é exato nesta paragem`}
+						tooltip={t(field.value ? 'patterns:shape.StopsTableRow.timepoint_yes' : 'patterns:shape.StopsTableRow.timepoint_no')}
 					/>
 				)}
 			/>
@@ -73,7 +75,7 @@ export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetail
 					<CheckboxColumn
 						checked={field.value ?? false}
 						onChange={event => field.onChange(event.currentTarget.checked)}
-						tooltip={`${field.value ? 'É' : 'Não é'} permitida a entrada de passageiros nesta paragem`}
+						tooltip={t(field.value ? 'patterns:shape.StopsTableRow.pickup_yes' : 'patterns:shape.StopsTableRow.pickup_no')}
 					/>
 				)}
 			/>
@@ -84,7 +86,7 @@ export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetail
 					<CheckboxColumn
 						checked={field.value ?? false}
 						onChange={event => field.onChange(event.currentTarget.checked)}
-						tooltip={`${field.value ? 'É' : 'Não é'} permitida a saída de passageiros nesta paragem`}
+						tooltip={t(field.value ? 'patterns:shape.StopsTableRow.drop_off_yes' : 'patterns:shape.StopsTableRow.drop_off_no')}
 					/>
 				)}
 			/>

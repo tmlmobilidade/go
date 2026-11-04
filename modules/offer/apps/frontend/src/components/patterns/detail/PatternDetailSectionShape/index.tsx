@@ -9,6 +9,7 @@ import { IconFileZip, IconShape } from '@tabler/icons-react';
 import { type PatternsDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { Button, Collapsible, Grid, MapOverlayPatternShape, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -18,6 +19,7 @@ export function PatternDetailSectionShape() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const linesListContext = useLinesListContext();
 	const patternDetailContext = usePatternDetailContext();
 
@@ -49,7 +51,7 @@ export function PatternDetailSectionShape() {
 	const handleLoadPattern = (pattern: PatternsDetail) => {
 		if (!patternDetailContext.capabilities.editEnabled) return;
 		patternDetailContext.actions.applyChanges({ parameters: pattern.parameters, path: pattern.path, shape: pattern.shape });
-		useToast.info({ message: 'Percurso carregado. Clique em Guardar para confirmar.' });
+		useToast.info({ message: t('patterns:detail.PatternDetailSectionShape.pattern_loaded') });
 	};
 
 	const handleOpenGtfsImportModal = () => {
@@ -75,12 +77,12 @@ export function PatternDetailSectionShape() {
 	// D. Render components
 
 	return (
-		<Collapsible title="Sequência de paragens" defaultOpen>
+		<Collapsible title={t('patterns:detail.PatternDetailSectionShape.stop_sequence')} defaultOpen>
 			{(shapeExtensionCardValue !== null || shapeCost !== null) && (
 				<Section gap="sm">
 					<Grid columns="ab" gap="sm">
-						<StatCard title="Extensão" value={shapeExtensionCardValue} />
-						<StatCard title="Custo de cada viagem" value={shapeCost} />
+						<StatCard title={t('patterns:detail.PatternDetailSectionShape.length')} value={shapeExtensionCardValue} />
+						<StatCard title={t('patterns:detail.PatternDetailSectionShape.trip_cost')} value={shapeCost} />
 					</Grid>
 				</Section>
 			)}
@@ -99,13 +101,13 @@ export function PatternDetailSectionShape() {
 				<Section flexDirection="row" gap="sm">
 					<Button
 						disabled={!patternDetailContext.capabilities.editEnabled}
-						label="Editar percurso"
+						label={t('patterns:detail.PatternDetailSectionShape.edit_pattern')}
 						leftSection={<IconShape />}
 						onClick={handleOpenEditor}
 					/>
 					<Button
 						disabled={!patternDetailContext.capabilities.editEnabled}
-						label="Importar ficheiro GTFS"
+						label={t('patterns:detail.PatternDetailSectionShape.import_gtfs')}
 						leftSection={<IconFileZip />}
 						onClick={handleOpenGtfsImportModal}
 						variant="secondary"

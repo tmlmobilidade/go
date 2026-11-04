@@ -79,7 +79,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 					className={styles.input}
 					error={inputError || error}
 					onKeyDown={handleKeyDown}
-					placeholder="Ex: 08:30 ou 0830 + Enter"
+					placeholder={t('patterns:shape.RuleCreateSchedule.timepoint_example')}
 					rightSectionWidth={80}
 					value={inputValue}
 					onChange={(e) => {

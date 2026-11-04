@@ -11,6 +11,7 @@ import { type Line } from '@tmlmobilidade/go-types-offer';
 import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, LoadingOverlay, Pane, Text } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -20,6 +21,7 @@ export function LinesList() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const router = useRouter();
 	const { lineId } = useLinesDetailLineId();
 
@@ -35,19 +37,19 @@ export function LinesList() {
 		{
 			accessor: 'code',
 			render: item => <LineTag line_id={item._id} withLabel={false} />,
-			title: 'Código',
+			title: t('lines:list.LinesList.code'),
 			width: 100,
 		},
 		{
 			accessor: 'name',
 			render: item => <Text>{item.name}</Text>,
-			title: 'Nome',
+			title: t('lines:list.LinesList.name'),
 			width: 300,
 		},
 		{
 			accessor: 'agency_id',
 			render: item => <LinesListCellAgency agencyId={item.agency_id} />,
-			title: 'Operador',
+			title: t('lines:list.LinesList.agency'),
 			width: 200,
 		},
 	];

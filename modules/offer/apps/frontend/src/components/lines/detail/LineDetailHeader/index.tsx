@@ -7,6 +7,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { CloseButton, DeleteButton, HasPermission, LockButton, Section, Toolbar, UpdateButton } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -16,6 +17,7 @@ export function LineDetailHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const router = useRouter();
 	const lineDetailContext = useLineDetailContext();
 
@@ -71,8 +73,8 @@ export function LineDetailHeader() {
 				value={lineDetailContext.data.line.agency_id}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que deseja apagar esta linha? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Linha"
+					confirmMessage={t('lines:detail.LineDetailHeader.delete_line_message')}
+					confirmTitle={t('lines:detail.LineDetailHeader.delete_line')}
 					isDisabled={!lineDetailContext.capabilities.deleteEnabled}
 					onDelete={lineDetailContext.actions.delete}
 					showConfirmation

@@ -117,7 +117,7 @@ export function ParameterCreateModifiers() {
 								placeholder="30"
 								size="xs"
 								step={10}
-								suffix=" seg"
+								suffix={t('patterns:shape.ParameterCreateModifiers.seconds')}
 								value={fixedDwellTime}
 							/>
 							<Button

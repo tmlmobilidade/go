@@ -8,6 +8,7 @@ import { GtfsStepSelection } from '@/components/patterns/detail/PatternDetailSec
 import { type PatternsDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { Trans } from 'react-i18next';
 
 /* * */
 
@@ -119,7 +120,7 @@ export function openGtfsImportModal({ currentShapeExtension, currentStopCount, o
 		),
 		modalId: MODAL_ID,
 		size: 'xl',
-		title: 'Importar ficheiro GTFS',
+		title: <Trans i18nKey="patterns:detail.GtfsImportModalContent.import_gtfs" />,
 	});
 }
 

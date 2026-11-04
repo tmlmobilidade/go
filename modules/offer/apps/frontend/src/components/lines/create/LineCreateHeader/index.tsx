@@ -4,6 +4,7 @@ import { useLineCreateContext } from '@/components/lines/create/LineCreate.conte
 import { closeCreateLineModal } from '@/components/lines/create/LineCreate.modal';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { CloseButton, CreateButton, HasPermission, Label, Spacer, Tag, Toolbar, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,6 +14,7 @@ export function LineCreateHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const lineCreateContext = useLineCreateContext();
 	const lineCreateContextValues = useStandardFormWatch({ control: lineCreateContext.form.control });
 
@@ -22,7 +24,7 @@ export function LineCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateLineModal} type="close" />
-			<Tag label="Nova Linha" variant="muted" />
+			<Tag label={t('lines:create.LineCreateHeader.new_line')} variant="muted" />
 			<Label size="lg" singleLine>{lineCreateContextValues.code}</Label>
 			<Spacer />
 			<HasPermission action={PermissionCatalog.all.lines.actions.create} scope={PermissionCatalog.all.lines.scope}>

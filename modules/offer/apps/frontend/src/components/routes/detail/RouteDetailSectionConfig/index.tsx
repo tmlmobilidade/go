@@ -1,8 +1,9 @@
 /* * */
 
 import { useRouteDetailContext } from '@/components/routes/detail/RouteDetail.context';
-import { pathTypeOptions, RouteSchema } from '@tmlmobilidade/go-types-offer';
+import { RoutePathTypeValues, RouteSchema } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -12,13 +13,14 @@ export function RouteDetailSectionConfig() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const routeDetailContext = useRouteDetailContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Collapsible title="Configuração da Rota" defaultOpen>
+		<Collapsible title={t('routes:detail.RouteDetailSectionConfig.route_config')} defaultOpen>
 			<Section gap="sm">
 				<StandardFormController
 					control={routeDetailContext.form.control}
@@ -26,8 +28,8 @@ export function RouteDetailSectionConfig() {
 					render={({ field, fieldState }) => (
 						<TextInput
 							error={fieldState.error?.message}
-							label="Código"
-							placeholder="Ex: 1234_0"
+							label={t('routes:detail.RouteDetailSectionConfig.code')}
+							placeholder={t('routes:detail.RouteDetailSectionConfig.code_example')}
 							readOnly={!routeDetailContext.capabilities.editEnabled}
 							required={!RouteSchema.shape.code.isOptional()}
 							w="100%"
@@ -43,8 +45,8 @@ export function RouteDetailSectionConfig() {
 					render={({ field, fieldState }) => (
 						<TextInput
 							error={fieldState.error?.message}
-							label="Nome"
-							placeholder="Ex: Alfragide (Estr Seminario) - Reboleira (Estação)"
+							label={t('routes:detail.RouteDetailSectionConfig.name')}
+							placeholder={t('routes:detail.RouteDetailSectionConfig.line_example')}
 							readOnly={!routeDetailContext.capabilities.editEnabled}
 							required={!RouteSchema.shape.name.isOptional()}
 							w="100%"
@@ -59,9 +61,9 @@ export function RouteDetailSectionConfig() {
 					name="path_type"
 					render={({ field, fieldState }) => (
 						<Select
-							data={pathTypeOptions}
+							data={RoutePathTypeValues.map(value => ({ label: t(`routes:detail.RouteDetailSectionConfig.path_options.${value}`), value }))}
 							error={fieldState.error?.message}
-							label="Tipo de Trajeto"
+							label={t('routes:detail.RouteDetailSectionConfig.path_type')}
 							readOnly={!routeDetailContext.capabilities.editEnabled}
 							required={!RouteSchema.shape.path_type.isOptional()}
 							w="100%"

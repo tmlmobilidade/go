@@ -9,6 +9,7 @@ import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidad
 import { fetchApiData, useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -68,6 +69,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const linesListContext = useLinesListContext();
 	const form = useForm<GtfsExportFormValues>({
 		initialValues: {
@@ -161,16 +163,16 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 				url: API_ROUTES.core.EXTRACTIONS_CREATE,
 			});
 			if (fileExport.error || !fileExport.data) {
-				throw new Error(fileExport.error ?? 'Failed to create file export');
+				throw new Error(fileExport.error ?? t('lines:export.GtfsExportModalContextProvider.export_failed'));
 			}
-			useToast.success({ message: 'A exportação GTFS foi iniciada', title: 'Sucesso' });
+			useToast.success({ message: t('lines:export.GtfsExportModalContextProvider.export_started'), title: t('lines:export.GtfsExportModalContextProvider.success') });
 			closeModal(GTFS_EXPORT_MODAL_ID);
 		} catch (error) {
-			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao iniciar a exportação GTFS', title: 'Erro' });
+			useToast.error({ message: error instanceof Error ? error.message : t('lines:export.GtfsExportModalContextProvider.export_failed'), title: t('lines:export.GtfsExportModalContextProvider.error') });
 		} finally {
 			setLoading(false);
 		}
-	}, [form]);
+	}, [form, t]);
 
 	//
 	// D. Define context value

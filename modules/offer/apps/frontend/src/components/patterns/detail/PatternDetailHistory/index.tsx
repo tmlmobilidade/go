@@ -7,6 +7,7 @@ import { type PatternsDetailFormDto } from '@tmlmobilidade/go-offer-pckg-types';
 import { CommentInput, CommentItemField, CommentItemNote, Menu } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -18,6 +19,7 @@ export function PatternDetailHistory() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	const [revertingIndex, setRevertingIndex] = useState<null | number>(null);
@@ -44,11 +46,11 @@ export function PatternDetailHistory() {
 				revertData = { ...revertData, parameters: draft.parameters, path: enrichedPath, shape: null };
 			}
 			latest.current.actions.applyChanges(revertData);
-			useToast.info({ message: 'Campos revertidos. Clique em Guardar para persistir as alterações.' });
+			useToast.info({ message: t('patterns:detail.PatternDetailHistory.fields_reverted') });
 		} finally {
 			if (mounted.current) setRevertingIndex(null);
 		}
-	}, []);
+	}, [t]);
 
 	const commentItems = useMemo(() => {
 		const allComments = (patternDetailContext.data.pattern.comments || []);
@@ -91,14 +93,14 @@ export function PatternDetailHistory() {
 	if (!patternDetailContext.data.pattern) return null;
 
 	return (
-		<Menu icon={IconHistory} label="Histórico" variant="primary" width={400}>
+		<Menu icon={IconHistory} label={t('patterns:detail.PatternDetailHistory.history')} variant="primary" width={400}>
 			{commentItems.length > 0 ? (
 				<div className={styles.comments}>
 					{commentItems}
 				</div>
 			) : (
 				<div className={styles.empty}>
-					Nenhuma atividade registrada para este pattern.
+					{t('patterns:detail.PatternDetailHistory.no_history')}
 				</div>
 			)}
 		</Menu>

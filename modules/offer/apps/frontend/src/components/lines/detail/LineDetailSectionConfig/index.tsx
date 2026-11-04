@@ -2,9 +2,10 @@
 
 import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
-import { LineSchema, transportTypeOptions } from '@tmlmobilidade/go-types-offer';
+import { LineSchema, TransportTypeValues } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 /* * */
 
 export function LineDetailSectionConfig() {
@@ -13,6 +14,7 @@ export function LineDetailSectionConfig() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const lineDetailContext = useLineDetailContext();
 	const { options: agencyOptions } = useAgenciesData({ permissions: { actions: [lineDetailContext.capabilities.editEnabled ? PermissionCatalog.all.lines.actions.update : PermissionCatalog.all.lines.actions.read], scope: PermissionCatalog.all.lines.scope } });
 
@@ -20,7 +22,7 @@ export function LineDetailSectionConfig() {
 	// B. Render components
 
 	return (
-		<Collapsible title="Configuração da Linha" defaultOpen>
+		<Collapsible title={t('lines:detail.LineDetailSectionConfig.line_config')} defaultOpen>
 			<Section gap="sm">
 				<StandardFormController
 					control={lineDetailContext.form.control}
@@ -28,8 +30,8 @@ export function LineDetailSectionConfig() {
 					render={({ field, fieldState }) => (
 						<TextInput
 							error={fieldState.error?.message}
-							label="Código"
-							placeholder="Ex: 1001"
+							label={t('lines:detail.LineDetailSectionConfig.code')}
+							placeholder={t('lines:detail.LineDetailSectionConfig.code_example')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
 							required={!LineSchema.shape.code.isOptional()}
 							w="100%"
@@ -45,8 +47,8 @@ export function LineDetailSectionConfig() {
 					render={({ field, fieldState }) => (
 						<TextInput
 							error={fieldState.error?.message}
-							label="Nome"
-							placeholder="Ex: 1001"
+							label={t('lines:detail.LineDetailSectionConfig.name')}
+							placeholder={t('lines:detail.LineDetailSectionConfig.code_example')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
 							required={!LineSchema.shape.name.isOptional()}
 							w="100%"
@@ -64,7 +66,7 @@ export function LineDetailSectionConfig() {
 							<Select
 								data={agencyOptions}
 								error={fieldState.error?.message}
-								label="Operador"
+								label={t('lines:detail.LineDetailSectionConfig.agency')}
 								readOnly={!lineDetailContext.capabilities.editEnabled}
 								required={!LineSchema.shape.agency_id.isOptional()}
 								w="100%"
@@ -79,9 +81,9 @@ export function LineDetailSectionConfig() {
 						name="transport_type"
 						render={({ field, fieldState }) => (
 							<Select
-								data={transportTypeOptions}
+								data={TransportTypeValues.map(value => ({ label: t(`lines:detail.LineDetailSectionConfig.transport_options.${value}`), value }))}
 								error={fieldState.error?.message}
-								label="Tipo de Veículo"
+								label={t('lines:detail.LineDetailSectionConfig.vehicle_type')}
 								readOnly={!lineDetailContext.capabilities.editEnabled}
 								required={!LineSchema.shape.transport_type.isOptional()}
 								w="100%"

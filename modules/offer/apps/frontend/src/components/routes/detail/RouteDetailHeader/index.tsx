@@ -78,8 +78,8 @@ export function RouteDetailHeader() {
 				value={routeDetailContext.data.line.agency_id}
 			>
 				<DeleteButton
-					confirmMessage="Tem a certeza que deseja apagar esta rota? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Rota"
+					confirmMessage={t('routes:detail.RouteDetailHeader.delete_route_message')}
+					confirmTitle={t('routes:detail.RouteDetailHeader.delete_route')}
 					isDisabled={!routeDetailContext.capabilities.deleteEnabled}
 					onDelete={routeDetailContext.actions.delete}
 					showConfirmation

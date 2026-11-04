@@ -3,6 +3,7 @@
 import { useRouteCreateContext } from '@/components/routes/create/RouteCreate.context';
 import { RouteSchema } from '@tmlmobilidade/go-types-offer';
 import { Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -12,6 +13,7 @@ export function RouteCreateBasicInfo() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const routeCreateContext = useRouteCreateContext();
 
 	//
@@ -25,8 +27,8 @@ export function RouteCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Código"
-						placeholder="Ex: 1234_0"
+						label={t('routes:create.RouteCreateBasicInfo.code')}
+						placeholder={t('routes:create.RouteCreateBasicInfo.code_example')}
 						readOnly={!routeCreateContext.capabilities.editEnabled}
 						required={!RouteSchema.shape.code.isOptional()}
 						w="100%"
@@ -42,8 +44,8 @@ export function RouteCreateBasicInfo() {
 				render={({ field, fieldState }) => (
 					<TextInput
 						error={fieldState.error?.message}
-						label="Nome"
-						placeholder="Ex: Alfragide (Estr Seminario) - Reboleira (Estação)"
+						label={t('routes:create.RouteCreateBasicInfo.name')}
+						placeholder={t('routes:create.RouteCreateBasicInfo.line_example')}
 						readOnly={!routeCreateContext.capabilities.editEnabled}
 						required={!RouteSchema.shape.name.isOptional()}
 						w="100%"

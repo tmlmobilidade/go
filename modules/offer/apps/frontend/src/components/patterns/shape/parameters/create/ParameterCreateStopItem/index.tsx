@@ -59,15 +59,15 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 					name={`path.${index}.dwell_time`}
 					render={({ field, fieldState }) => (
 						<NumberInput
-							aria-label={`Tempo de paragem para a sequência ${index + 1}`}
+							aria-label={t('patterns:shape.ParameterCreateStopItem.dwell_sequence', { sequence: index + 1 })}
 							error={fieldState.error ? t('default:scheduling.copy.validNonnegativeNumber') : undefined}
 							leftSection={<IconClockPause size={14} />}
 							max={900}
 							min={0}
-							placeholder="seg"
+							placeholder={t('patterns:shape.ParameterCreateStopItem.seconds')}
 							size="xs"
 							step={10}
-							suffix=" seg"
+							suffix={t('patterns:shape.ParameterCreateStopItem.seconds')}
 							{...field}
 							value={field.value ?? ''}
 						/>

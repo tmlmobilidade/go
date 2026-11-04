@@ -5,6 +5,7 @@ import { buildRoutePreviewModel } from '@/utils/route-preview';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { MapOverlayPatternShape, type MapOverlayPatternShapeLineData, MapView, Section, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -20,6 +21,7 @@ export function ShapeEditorContent() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 	const shapeEditorContext = useShapeEditorContext();
 
@@ -117,8 +119,8 @@ export function ShapeEditorContent() {
 	}) => {
 		if (!anchor.segment) {
 			useToast.error({
-				message: 'Este shape ainda não está preparado para desvios. Recalcule primeiro o percurso.',
-				title: 'Não foi possível adicionar desvio',
+				message: t('patterns:shape.ShapeEditorContent.not_editable_shape'),
+				title: t('patterns:shape.ShapeEditorContent.add_detour_failed'),
 			});
 			return;
 		}
@@ -128,8 +130,8 @@ export function ShapeEditorContent() {
 
 		if (!afterPathItem || !beforePathItem) {
 			useToast.error({
-				message: 'Não foi possível identificar o segmento entre paragens.',
-				title: 'Erro ao adicionar desvio',
+				message: t('patterns:shape.ShapeEditorContent.missing_segment'),
+				title: t('patterns:shape.ShapeEditorContent.detour_error'),
 			});
 			return;
 		}

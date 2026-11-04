@@ -5,6 +5,7 @@ import LineDetailRoute from '@/components/lines/detail/LineDetailRoute';
 import { openCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Button, Collapsible, HasPermission, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function LineDetailSectionRoutes() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const lineDetailContext = useLineDetailContext();
 
 	const handleAddRoute = () => {
@@ -25,7 +27,7 @@ export function LineDetailSectionRoutes() {
 	// B. Render components
 
 	return (
-		<Collapsible description="Todas as variantes desta linha, incluindo a base." title="Rotas" defaultOpen>
+		<Collapsible description={t('lines:detail.LineDetailSectionRoutes.routes_description')} title={t('lines:detail.LineDetailSectionRoutes.routes')} defaultOpen>
 			<Section gap="sm">
 				<Section padding="none">
 					{(lineDetailContext.data.line?.routes?.toSorted((a, b) => a.code.localeCompare(b.code)) ?? []).map((route, index) => (
@@ -39,7 +41,7 @@ export function LineDetailSectionRoutes() {
 					scope={PermissionCatalog.all.lines.scope}
 					value={lineDetailContext.data.line.agency_id}
 				>
-					<Button disabled={!!lineDetailContext.data.line?.is_locked} label="Adicionar Rota" onClick={handleAddRoute} fullWidth />
+					<Button disabled={!!lineDetailContext.data.line?.is_locked} label={t('lines:detail.LineDetailSectionRoutes.add_route')} onClick={handleAddRoute} fullWidth />
 				</HasPermission>
 			</Section>
 		</Collapsible>

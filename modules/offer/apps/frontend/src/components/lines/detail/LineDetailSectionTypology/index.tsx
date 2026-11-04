@@ -3,9 +3,10 @@
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
 import { useFaresContext } from '@/contexts/Fares.context';
 import { useTypologiesContext } from '@/contexts/Typologies.context';
-import { FARE_PAYMENT_METHOD, interchangeModeOptions, LineSchema } from '@tmlmobilidade/go-types-offer';
+import { FARE_PAYMENT_METHOD, INTERCHANGE_MODE, LineSchema } from '@tmlmobilidade/go-types-offer';
 import { Collapsible, MultiSelect, openConfirmModal, Section, Select, StandardFormController, Text, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -15,6 +16,7 @@ export function LineDetailSectionTypology() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const lineDetailContext = useLineDetailContext();
 	const lineDetailContextValues = useStandardFormWatch({ control: lineDetailContext.form.control });
 	const faresContext = useFaresContext();
@@ -58,9 +60,9 @@ export function LineDetailSectionTypology() {
 		openConfirmModal({
 			cancelProps: { variant: 'danger' },
 			centered: true,
-			children: <Text>Ao alterar a tipologia irá também substituir as tarifas associadas a esta linha. Isto terá impacto no preço dos bilhetes de bordo (navegante® a bordo) e pré-pagos (navegante® pré-pago). Tem a certeza que pretende continuar com a alteração de tipologia?</Text>,
+			children: <Text>{t('lines:detail.LineDetailSectionTypology.typology_confirmation')}</Text>,
 			closeOnClickOutside: true,
-			labels: { cancel: 'Cancelar', confirm: 'Confirmar' },
+			labels: { cancel: t('lines:detail.LineDetailSectionTypology.cancel'), confirm: t('lines:detail.LineDetailSectionTypology.confirm') },
 			onConfirm: () => {
 				lineDetailContext.actions.applyChanges({
 					onboard_fare_ids: selectedTypologyData.default_onboard_fare_ids || [],
@@ -68,7 +70,7 @@ export function LineDetailSectionTypology() {
 					typology: typology_id,
 				});
 			},
-			title: <Text size="xl">Alterar Tipologia</Text>,
+			title: <Text size="xl">{t('lines:detail.LineDetailSectionTypology.change_typology')}</Text>,
 			w: 500,
 		});
 	};
@@ -77,12 +79,12 @@ export function LineDetailSectionTypology() {
 	// C. Render components
 
 	return (
-		<Collapsible title="Tipologia e Tarifas">
+		<Collapsible title={t('lines:detail.LineDetailSectionTypology.typology_fares')}>
 			<Section gap="sm">
 				<Select
 					clearable={false}
 					data={typologyOptions}
-					label="Tipologia"
+					label={t('lines:detail.LineDetailSectionTypology.typology')}
 					onChange={handleTypologyChange}
 					readOnly={!lineDetailContext.capabilities.editEnabled}
 					required={!LineSchema.shape.typology.isOptional()}
@@ -95,9 +97,9 @@ export function LineDetailSectionTypology() {
 					name="interchange"
 					render={({ field, fieldState }) => (
 						<Select
-							data={interchangeModeOptions}
+							data={Object.values(INTERCHANGE_MODE).map(value => ({ label: t(`lines:detail.LineDetailSectionTypology.interchange_options.${value}`), value }))}
 							error={fieldState.error?.message}
-							label="APEX Interchange"
+							label={t('lines:detail.LineDetailSectionTypology.apex_interchange')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
 							required={!LineSchema.shape.interchange.isOptional()}
 							w="100%"
@@ -114,7 +116,7 @@ export function LineDetailSectionTypology() {
 						<Select
 							data={prepaidFareOptions}
 							error={fieldState.error?.message}
-							label="Tarifa navegante® pré-pago"
+							label={t('lines:detail.LineDetailSectionTypology.prepaid_fare')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
 							required={!LineSchema.shape.prepaid_fare_id.isOptional()}
 							w="100%"
@@ -131,7 +133,7 @@ export function LineDetailSectionTypology() {
 						<MultiSelect
 							data={onboardFareOptions}
 							error={fieldState.error?.message}
-							label="Tarifas de bordo (navegante® a bordo)"
+							label={t('lines:detail.LineDetailSectionTypology.onboard_fares')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
 							required={!LineSchema.shape.onboard_fare_ids.isOptional()}
 							w="100%"

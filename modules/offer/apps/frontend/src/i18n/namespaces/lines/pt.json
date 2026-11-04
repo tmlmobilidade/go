@@ -1,0 +1,169 @@
+{
+	"create": {
+		"LineCreateBasicInfo": {
+			"agency": "Operador",
+			"code": "Código",
+			"code_example": "Ex: 1001",
+			"line_example": "Ex: Alfragide (Estr Seminario) - Reboleira (Estação)",
+			"name": "Nome"
+		},
+		"LineCreateHeader": {
+			"new_line": "Nova Linha"
+		}
+	},
+	"detail": {
+		"LineDetailHeader": {
+			"delete_line": "Apagar Linha",
+			"delete_line_message": "Tem a certeza que deseja apagar esta linha? Esta ação não pode ser revertida."
+		},
+		"LineDetailSectionConfig": {
+			"agency": "Operador",
+			"code": "Código",
+			"code_example": "Ex: 1001",
+			"line_config": "Configuração da Linha",
+			"name": "Nome",
+			"transport_options": {
+				"aerial_lift": "Teleférico",
+				"bus": "Autocarro",
+				"cable_tram": "Elétrico",
+				"ferry": "Ferry",
+				"funicular": "Funicular",
+				"monorail": "Monocarril",
+				"rail": "Comboio",
+				"subway": "Metro",
+				"tram": "Elétrico",
+				"trolleybus": "Trolleybus"
+			},
+			"vehicle_type": "Tipo de Veículo"
+		},
+		"LineDetailSectionRoutes": {
+			"add_route": "Adicionar Rota",
+			"routes": "Rotas",
+			"routes_description": "Todas as variantes desta linha, incluindo a base."
+		},
+		"LineDetailSectionSpecs": {
+			"circular_line": "Linha Circular",
+			"line_specs": "Especificações da Linha",
+			"school_line": "Linha Escolar"
+		},
+		"LineDetailSectionTypology": {
+			"apex_interchange": "APEX Interchange",
+			"cancel": "Cancelar",
+			"change_typology": "Alterar Tipologia",
+			"confirm": "Confirmar",
+			"interchange_options": {
+				"0": "Transbordos não são permitidos",
+				"1": "Transbordos não são permitidos dentro do mesmo operador",
+				"2": "Transbordos devem ser configurados nos ficheiros APEX"
+			},
+			"onboard_fares": "Tarifas de bordo (navegante® a bordo)",
+			"prepaid_fare": "Tarifa navegante® pré-pago",
+			"typology": "Tipologia",
+			"typology_confirmation": "Ao alterar a tipologia irá também substituir as tarifas associadas a esta linha. Isto terá impacto no preço dos bilhetes de bordo (navegante® a bordo) e pré-pagos (navegante® pré-pago). Tem a certeza que pretende continuar com a alteração de tipologia?",
+			"typology_fares": "Tipologia e Tarifas"
+		}
+	},
+	"export": {
+		"GtfsExportModal": {
+			"all_lines": "Todas as linhas",
+			"all_stops": "Incluir todas as paragens",
+			"calendar_end": "Última data do calendário",
+			"calendar_end_hint": "O serviço termina nesta data, inclusive",
+			"calendar_start": "Primeira data do calendário",
+			"calendar_start_hint": "O serviço inicia nesta data, inclusive",
+			"except_lines": "Todas exceto estas",
+			"except_lines_hint": "Todas as linhas serão exportadas, exceto estas.",
+			"export": "Exportar",
+			"export_agencies_hint": "Selecione um ou mais operadores para exportar os dados correspondentes",
+			"export_gtfs": "Exportar GTFS",
+			"feed_end": "Data Feed fim",
+			"feed_end_hint": "O plano é válido até esta data",
+			"feed_start": "Data Feed início",
+			"feed_start_hint": "O plano é válido a partir desta data",
+			"numeric_codes": "Códigos de calendário numéricos",
+			"only_lines": "Apenas estas linhas",
+			"only_lines_hint": "Apenas estas linhas serão exportadas.",
+			"select_agencies": "Selecionar operadores",
+			"select_lines": "Selecionar linhas",
+			"stop_sequence_hint": "As paragens de um percurso são ordenadas sequencialmente por um número inteiro. É recomendado que se inicie a contagem com o número '1', no entanto é possível alterar (por exemplo para '0') em casos específicos.",
+			"stop_sequence_start": "Base de Contagem da Sequência de Paragens"
+		},
+		"GtfsExportModalContextProvider": {
+			"error": "Erro",
+			"export_failed": "Erro ao iniciar a exportação GTFS",
+			"export_started": "A exportação GTFS foi iniciada",
+			"success": "Sucesso"
+		}
+	},
+	"list": {
+		"LinesList": {
+			"agency": "Operador",
+			"code": "Código",
+			"name": "Nome"
+		},
+		"LinesListFilterAgencies": {
+			"agencies": "Operadores"
+		},
+		"LinesListHeader": {
+			"actions": "Ações",
+			"export_gtfs": "Exportar GTFS",
+			"lines": "Linhas",
+			"more_options": "Mais opções",
+			"new_line_action": "Nova linha",
+			"vkm": "Consultar VKM"
+		}
+	},
+	"overview": {
+		"LinesOverviewMapHover": {
+			"line_count": "{count, plural, one {# linha} other {# linhas}}",
+			"pattern_line_count": "{count, plural, one {# percurso} other {# percursos}} em {line_count, plural, one {# linha} other {# linhas}}"
+		},
+		"LinesOverviewMapStatus": {
+			"count": "{count, plural, one {# percurso} other {# percursos}}",
+			"loading": "A carregar percursos…"
+		}
+	},
+	"vkms": {
+		"VkmModal": {
+			"agency": "Operador",
+			"business_days": "Dias úteis",
+			"calculate": "Calcular",
+			"calculating": "A calcular VKM para a configuração selecionada...",
+			"calculation_method": "Método de cálculo",
+			"calculation_summary": "Resumo do cálculo",
+			"contracted_vkm": "VKM contratados/ano:",
+			"day_totals": "Totais por dia tipo",
+			"end_date": "Data final",
+			"end_hint": "Última data considerada no cálculo",
+			"estimated_cost": "Custo estimado",
+			"extension_source": "Fonte da extensão",
+			"fixed_range": "Intervalo fixo",
+			"go_description": "Usa a extensão atualmente guardada no percurso e corresponde ao equivalente da antiga opção recomendada de shape (GO v1).",
+			"go_recommended": "GO (recomendado)",
+			"method_hint": "Escolha se quer calcular um ano móvel a partir da data inicial ou um intervalo fechado.",
+			"no_periods": "Não existem períodos definidos para o intervalo selecionado.",
+			"overview": "Visão geral",
+			"period_heading": "Totais para {name}",
+			"period_total": "Total do período",
+			"period_totals": "Totais por período",
+			"price_km": "Preço por km:",
+			"relative_contract": "Face ao contratado",
+			"rolling_year": "Ano móvel",
+			"saturdays": "Sábados",
+			"select_agency": "Selecionar operador",
+			"start_date": "Data inicial",
+			"start_hint": "Primeira data considerada no cálculo",
+			"stop_times": "Stop times",
+			"stop_times_description": "Soma as distâncias entre paragens (`distance_delta`) ao longo do percurso.",
+			"sundays_holidays": "Domingos e feriados",
+			"total_distance": "Distância total",
+			"vkm": "Consultar VKM",
+			"vkm_agency_hint": "Selecione o operador para calcular os VKM da oferta planeada",
+			"vkm_empty": "Selecione um operador, ajuste os parâmetros e clique em calcular para ver os VKM."
+		},
+		"VkmModalContextProvider": {
+			"calculation_error": "Erro ao calcular VKM",
+			"error": "Erro"
+		}
+	}
+}
