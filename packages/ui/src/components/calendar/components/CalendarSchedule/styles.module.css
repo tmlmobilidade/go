@@ -208,12 +208,13 @@
 }
 
 .yearViewMonths {
-	flex: 1;
-	grid-template-columns: repeat(4, minmax(250px, 340px));
-	grid-auto-rows: minmax(300px, 1fr);
+	flex: 0 0 auto;
+	grid-template-columns: repeat(4, minmax(0, 340px));
+	grid-auto-rows: auto;
 	gap: var(--size-spacing-md);
-	justify-content: space-between;
+	justify-content: center;
 	min-height: 0;
+	padding: 0 var(--size-spacing-xl) var(--size-spacing-xl);
 }
 
 .yearViewMonths .yearViewMonth {
@@ -372,20 +373,20 @@
 
 @container (width <= 1120px) {
 	.yearViewMonths {
-		grid-template-columns: repeat(3, minmax(250px, 340px));
+		grid-template-columns: repeat(3, minmax(0, 340px));
 	}
 }
 
 @container (width <= 820px) {
 	.yearViewMonths {
-		grid-template-columns: repeat(2, minmax(250px, 340px));
+		grid-template-columns: repeat(2, minmax(0, 340px));
 	}
 }
 
 @container (width <= 560px) {
 	.yearViewMonths {
-		grid-template-columns: minmax(250px, 340px);
-		justify-content: center;
+		grid-template-columns: minmax(0, 340px);
+		padding-inline: var(--size-spacing-md);
 	}
 }
 

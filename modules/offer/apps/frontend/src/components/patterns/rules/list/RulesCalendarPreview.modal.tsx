@@ -34,7 +34,7 @@ export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleR
 		closeOnEscape: false,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: '80%',
+		size: '1500px',
 		styles: {
 			body: {
 				height: '100%',
