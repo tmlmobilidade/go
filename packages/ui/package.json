@@ -27,6 +27,7 @@
 		"i18next": "26.4.2",
 		"react": "19.x",
 		"react-dom": "19.x",
+		"react-i18next": "17.1.8",
 		"swr": "2.x"
 	},
 	"dependencies": {
@@ -69,7 +70,6 @@
 		"next": "16.4.3",
 		"nuqs": "2.10.2",
 		"react-hook-form": "7.91.0",
-		"react-i18next": "17.1.8",
 		"react-viewport-list": "7.1.2",
 		"swr": "2.x",
 		"ukkonen": "2.2.0",
