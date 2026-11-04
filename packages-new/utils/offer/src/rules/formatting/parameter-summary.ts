@@ -54,10 +54,10 @@ function buildParameterSummaryShort(
 	const dayPeriodsPart = buildDayPeriodsPart(parameter, { locale: options.locale, mode: 'short', t: options.t });
 	if (dayPeriodsPart) parts.push(dayPeriodsPart);
 
-	const periodPart = buildYearPeriodsPart(parameter, options, { mode: 'short' });
+	const periodPart = buildYearPeriodsPart(parameter, options);
 	if (periodPart) parts.push(periodPart);
 
-	const weekdayPart = buildWeekdaysPart(parameter, { locale: options.locale, mode: 'short', t: options.t });
+	const weekdayPart = buildWeekdaysPart(parameter, { locale: options.locale, t: options.t });
 	if (weekdayPart) parts.push(weekdayPart);
 
 	return parts.join(' · ');
@@ -79,9 +79,9 @@ function buildParameterSummaryLong(
 
 	const dayPeriodsPart = buildDayPeriodsPart(parameter, { locale: options.locale, mode: 'long', t: options.t });
 
-	const periodPart = buildYearPeriodsPart(parameter, options, { mode: 'short' });
+	const periodPart = buildYearPeriodsPart(parameter, options);
 
-	const weekdayPart = buildWeekdaysPart(parameter, { locale: options.locale, mode: 'short', t: options.t });
+	const weekdayPart = buildWeekdaysPart(parameter, { locale: options.locale, t: options.t });
 
 	return `${dayPeriodsPart}, ${periodPart} · ${weekdayPart}`;
 }

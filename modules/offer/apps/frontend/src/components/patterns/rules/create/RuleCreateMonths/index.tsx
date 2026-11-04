@@ -1,7 +1,7 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
-import { getMonthOptions } from '@tmlmobilidade/go-utils-dates';
+import { getCompactMonthOptions } from '@tmlmobilidade/go-utils-dates';
 import { Section, SegmentedMultiSelect, Text, useLocaleContext } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -25,7 +25,9 @@ export function RuleCreateMonths() {
 
 			<Section gap="xs" padding="none">
 				<Text>{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:scheduling.months.eventTitle' : 'default:scheduling.months.title')}</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">{t('default:scheduling.months.eventHint')}</Text>}
+				<Text c="dimmed" size="sm">
+					{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:patterns.create.RuleCreateMonths.event_optional_hint' : 'default:patterns.create.RuleCreateMonths.optional_hint')}
+				</Text>
 			</Section>
 
 			<SegmentedMultiSelect
@@ -33,7 +35,7 @@ export function RuleCreateMonths() {
 				onChange={(selectedDays) => {
 					createRuleContext.form.setValue('months', selectedDays.length > 0 ? selectedDays : undefined, { shouldDirty: true, shouldValidate: true });
 				}}
-				options={getMonthOptions(locale).map(o => ({
+				options={getCompactMonthOptions(locale).map(o => ({
 					ariaLabel: o.label,
 					label: o.label,
 					value: o.value,

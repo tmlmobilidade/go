@@ -22,7 +22,7 @@ export function PatternDetailSectionRules() {
 	// B. Render components
 
 	return (
-		<Collapsible title="Regras de funcionamento">
+		<Collapsible title="Regras de funcionamento" defaultOpen>
 			<Section gap="lg">
 				{/* View selection */}
 				<SegmentedControl

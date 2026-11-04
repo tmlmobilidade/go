@@ -194,10 +194,10 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 			const allRules = [...(values.rules ?? []), ...derivedRules] as ScheduleRule[];
 			const periods = periodsContext.data.raw || [];
 
-			// Enhance each rule with generated name and short name
+			// Derive the compact rule label and event details for display
 			return allRules.map((rule) => {
-				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, locale, periods, t });
-				return { ...rule, name: long, shortName: short, tooltip };
+				const { label, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, locale, periods, t });
+				return { ...rule, name: label, tooltip };
 			});
 		},
 		[eventsContext.data.raw, values.rules, derivedRules, periodsContext.data.raw, locale, t],
@@ -260,8 +260,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 	const handleDuplicateRule = useCallback((rule: ManualRule) => {
 		if (!accessRef.current.editEnabled || accessRef.current.patternId !== patternId) return;
 		const currentRules = (form.getValues().rules ?? []) as ManualRule[];
-		const manualRule = { ...rule } as ManualRule & { shortName?: string, tooltip?: string };
-		delete manualRule.shortName;
+		const manualRule = { ...rule } as ManualRule & { tooltip?: string };
 		delete manualRule.tooltip;
 		const duplicatedRule = { ...manualRule, _id: generateRandomString({ length: 5 }) };
 		const newRules = [...currentRules, duplicatedRule];
@@ -291,9 +290,8 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 		openRulesCalendarPreviewModal(
 			line?.agency_id || '',
 			rulesForUI,
-			pattern?.code,
 		);
-	}, [line?.agency_id, rulesForUI, pattern?.code]);
+	}, [line?.agency_id, rulesForUI]);
 
 	//
 	// F. Handle Schedule RULES actions

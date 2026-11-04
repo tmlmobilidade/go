@@ -1,12 +1,13 @@
 'use client';
 
+import { RuleEventEffect } from '@/components/shared/rules/RuleEventEffect';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { IconCalendarCancel, IconCalendarRepeat, IconEye } from '@tabler/icons-react';
+import { IconCalendar, IconCalendarCancel, IconCalendarRepeat, IconPencil } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { EventReplacementRule, EventRestrictionRule } from '@tmlmobilidade/go-types-offer';
-import { buildRuleSummary } from '@tmlmobilidade/go-utils-offer';
-import { IconButton, Section, Text, useLocaleContext } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { buildRuleSummary, formatRuleDates } from '@tmlmobilidade/go-utils-offer';
+import { IconButton, Text, useLocaleContext } from '@tmlmobilidade/ui';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -26,13 +27,12 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const router = useRouter();
 	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 
 	const isRestriction = rule.kind === 'event_restriction';
-	const isReplacement = rule.kind === 'event_replacement';
-	const name = rule?.name || t('default:scheduling.copy.unnamedRule');
+	const name = rule.event.title || t('default:scheduling.copy.unnamedRule');
+	const eventUrl = PAGE_ROUTES.offer.EVENTS_DETAIL(rule.event.id);
 
 	const summary = buildRuleSummary(rule, { locale, periods: periodsContext.data.raw, t });
 
@@ -40,7 +40,7 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	// B. Handle actions
 
 	const handleClickEventRule = () => {
-		router.push(PAGE_ROUTES.offer.EVENTS_DETAIL(rule?.event.id ?? ''));
+		window.open(eventUrl, '_blank', 'noopener,noreferrer');
 	};
 
 	//
@@ -48,33 +48,29 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 
 	return (
 		<div className={styles.container}>
-			<Section gap="md" justifyContent="space-between" padding="none">
+			<div className={styles.header}>
+				<div className={styles.title}>
+					{isRestriction
+						? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
+						: <IconCalendarRepeat color="var(--color-primary)" size={20} />}
+					<Link className={styles.eventName} href={eventUrl} rel="noopener noreferrer" target="_blank">
+						<Text weight="semibold">{name}</Text>
+					</Link>
+				</div>
+				<IconButton
+					icon={<IconPencil size={20} />}
+					onClick={handleClickEventRule}
+					tooltip={t('default:scheduling.copy.eventDetails')}
+				/>
+			</div>
 
-				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-					{isRestriction && (
-						<IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
-					)}
-					{isReplacement && (
-						<IconCalendarRepeat color="var(--color-primary)" size={20} />
-					)}
-					<Text size="lg">{name} ·</Text>
-					{(isRestriction || isReplacement) && (
-						<Text className={styles.timesCount}>
-							{t('default:scheduling.copy.dayCount', '', { count: rule.dates.length })}
-						</Text>
-					)}
-				</Section>
-
-				{/* Localized restriction/replacement details share the summary contract. */}
-				<Text>{summary.tooltip}</Text>
-
-			</Section>
-
-			<IconButton
-				icon={<IconEye size={20} />}
-				onClick={handleClickEventRule}
-				tooltip={t('default:scheduling.copy.eventDetails')}
-			/>
+			<div className={styles.content}>
+				<RuleEventEffect conditions={summary.conditions} rule={rule} />
+				<div className={styles.dates}>
+					<IconCalendar size={16} />
+					<Text c="var(--color-system-text-100)" size="sm">{formatRuleDates(rule.dates, locale)}</Text>
+				</div>
+			</div>
 		</div>
 	);
 }

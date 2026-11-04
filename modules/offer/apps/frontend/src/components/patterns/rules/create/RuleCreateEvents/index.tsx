@@ -2,8 +2,8 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { useEventsContext } from '@/contexts/Events.context';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Section, Select, StandardFormController, Switch, useLocaleContext } from '@tmlmobilidade/ui';
+import { Section, Select, StandardFormController, Switch } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -15,17 +15,36 @@ export function RuleCreateEvents() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { data: { locale } } = useLocaleContext();
 	const createRuleContext = useRuleCreateContext();
 	const { data: eventsData } = useEventsContext();
 
-	const EVENT_OPTIONS = eventsData.raw.map(event => ({
-		label: `${event.title} (${event.dates.toSorted().map(date => Dates.fromOperationalDateInt(date, 'Europe/Lisbon').toLocaleString({ day: 'numeric', month: 'long' }, locale)).join(', ')})`,
+	const eventOptions = useMemo(() => eventsData.raw.map(event => ({
+		label: `${event.title} · ${event.code || event._id} · ${t('default:scheduling.copy.dayCount', '', { count: new Set(event.dates).size })}`,
 		value: event._id,
-	}));
+	})), [eventsData.raw, t]);
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const handleEventExceptionChange = (enabled: boolean) => {
+		createRuleContext.actions.setEventExceptionEnabled(enabled);
+		if (enabled) {
+			createRuleContext.form.setValue('year_period_ids', [], { shouldDirty: true });
+			createRuleContext.form.setValue('weekdays', [], { shouldDirty: true });
+		} else {
+			createRuleContext.form.setValue('event_id', undefined, { shouldDirty: true });
+		}
+		void createRuleContext.form.trigger();
+	};
+
+	const handleEventChange = (value: null | string) => {
+		createRuleContext.form.setValue('event_id', value ?? undefined, { shouldDirty: true });
+		// Selecting/clearing the event changes whether periods and weekdays are required.
+		void createRuleContext.form.trigger();
+	};
+
+	//
+	// C. Render components
 
 	return (
 		<Section gap="md">
@@ -34,16 +53,7 @@ export function RuleCreateEvents() {
 					checked={createRuleContext.flags.isEventExceptionEnabled}
 					description={t('default:scheduling.copy.eventHint')}
 					label={t('default:scheduling.copy.eventException')}
-					onChange={(event) => {
-						const enabled = event.currentTarget.checked;
-						createRuleContext.actions.setEventExceptionEnabled(enabled);
-						if (enabled) {
-							createRuleContext.form.setValue('year_period_ids', [], { shouldDirty: true, shouldValidate: true });
-							createRuleContext.form.setValue('weekdays', [], { shouldDirty: true, shouldValidate: true });
-						} else {
-							createRuleContext.form.setValue('event_id', undefined, { shouldDirty: true, shouldValidate: true });
-						}
-					}}
+					onChange={event => handleEventExceptionChange(event.currentTarget.checked)}
 				/>
 			</Section>
 
@@ -53,11 +63,15 @@ export function RuleCreateEvents() {
 					name="event_id"
 					render={({ field, fieldState }) => (
 						<Select
-							data={EVENT_OPTIONS}
+							data={eventOptions}
+							description={!createRuleContext.data.values.event_id ? t('default:patterns.create.RuleCreateEvents.select_event_first') : undefined}
 							error={fieldState.error ? t('default:scheduling.copy.selectEvent') : undefined}
+							label={t('default:scheduling.copy.event')}
 							w="100%"
 							{...field}
+							onChange={handleEventChange}
 							value={field.value ?? null}
+							withAsterisk
 						/>
 					)}
 				/>

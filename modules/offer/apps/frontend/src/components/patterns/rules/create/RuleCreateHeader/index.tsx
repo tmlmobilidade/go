@@ -2,8 +2,10 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
+import { RuleTimepointCount } from '@/components/patterns/rules/shared/RuleTimepointCount';
+import { RuleLabelTag } from '@/components/shared/rules/RuleLabelTag';
 import { IconCopy } from '@tabler/icons-react';
-import { CloseButton, DeleteButton, IconButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, IconButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -23,9 +25,10 @@ export function RuleCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateRuleModal} type="close" />
-			<Tag label={ruleCreateContext.data.ruleSummary.short || t('default:scheduling.copy.newRule')} variant="muted" />
+			<RuleLabelTag label={ruleCreateContext.data.ruleSummary.label} />
+			<RuleTimepointCount count={ruleCreateContext.data.values.timepoints?.length ?? 0} />
 
-			<Spacer />
+			<Spacer shrink />
 
 			{ruleCreateContext.flags.isEditing && ruleCreateContext.actions.duplicateRule && (
 				<IconButton

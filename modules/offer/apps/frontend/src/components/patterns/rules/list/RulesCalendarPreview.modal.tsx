@@ -15,7 +15,7 @@ const MODAL_ID = 'rule-calendar-preview-modal';
 
 /* * */
 
-export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleRule[], patternCode: string) => {
+export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleRule[]) => {
 	openModal({
 		children: (
 			<MeContextProvider>
@@ -23,7 +23,7 @@ export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleR
 					<EventsContextProvider agencyId={agencyId}>
 						<PeriodsContextProvider agencyId={agencyId}>
 							<HolidaysContextProvider agencyId={agencyId}>
-								<RulesCalendarPreview patternCode={patternCode} rules={rules} />
+								<RulesCalendarPreview rules={rules} />
 							</HolidaysContextProvider>
 						</PeriodsContextProvider>
 					</EventsContextProvider>

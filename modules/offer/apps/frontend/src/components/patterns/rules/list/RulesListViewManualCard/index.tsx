@@ -1,10 +1,12 @@
 'use client';
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { RuleTimepointCount } from '@/components/patterns/rules/shared/RuleTimepointCount';
+import { RuleLabelTag } from '@/components/shared/rules/RuleLabelTag';
 import { IconCalendarCancel, IconCalendarCheck, IconCopy, IconDots, IconPencil, IconTrash } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type ManualRule, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
-import { DayPeriodsTimepoints, Menu, MenuDivider, MenuItem, openConfirmModal, Section, Tag, Text, Tooltip } from '@tmlmobilidade/ui';
+import { DayPeriodsTimepoints, Menu, MenuDivider, MenuItem, openConfirmModal, Section, Tag, Text } from '@tmlmobilidade/ui';
 import Link from 'next/link';
 import { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -74,19 +76,19 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 
 	return (
 		<div className={styles.container} data-read-only={!patternDetailContext.capabilities.editEnabled || undefined} onClick={!patternDetailContext.capabilities.editEnabled ? undefined : handleOpen}>
-			<Section gap="md" justifyContent="space-between" padding="none">
+			<Section justifyContent="space-between" padding="none">
 
-				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-					{isOffTime
-						? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
-						: <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />}
+				<div className={styles.header}>
+					<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm" padding="none">
+						{isOffTime
+							? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
+							: <IconCalendarCheck color="var(--color-status-success-primary)" size={20} />}
 
-					{isEventRule && (
-						<Tag label={t('default:scheduling.copy.event')} variant="muted" />
-					)}
+						{isEventRule && (
+							<Tag label={t('default:scheduling.copy.event')} variant="muted" />
+						)}
 
-					{isEventRule ? (
-						<Tooltip label={t('default:scheduling.copy.eventDetails')} position="bottom" withArrow>
+						{isEventRule ? (
 							<Link
 								className={styles.eventName}
 								href={PAGE_ROUTES.offer.EVENTS_DETAIL(rule.event_id)}
@@ -94,19 +96,19 @@ export default function RulesListViewCard({ rule }: RulesListViewCardProps) {
 								rel="noopener noreferrer"
 								target="_blank"
 							>
-								<Text size="lg">{name}</Text>
+								<RuleLabelTag label={name} tooltip={`${t('default:scheduling.copy.eventDetails')}: ${name}`} />
 							</Link>
-						</Tooltip>
-					) : (
-						<Text size="lg">{name}</Text>
-					)}
+						) : (
+							<RuleLabelTag label={name} />
+						)}
 
-					<Text>·</Text>
+						<RuleTimepointCount count={times.length} />
+					</Section>
+				</div>
 
-					<Text className={styles.timesCount}>{t('default:scheduling.copy.timepointCount', '', { count: times.length })}</Text>
-				</Section>
-
-				<DayPeriodsTimepoints timepoints={times} variant="compact" />
+				<div className={styles.schedules}>
+					<DayPeriodsTimepoints timepoints={times} variant="compact" />
+				</div>
 			</Section>
 
 			{patternDetailContext.capabilities.editEnabled && (

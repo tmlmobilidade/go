@@ -43,16 +43,10 @@
 			"title": "Events"
 		},
 		"ruleCard": {
-			"allDay": "All day {dates}",
 			"allLines": "All lines",
-			"days": "{count, plural, one {day} other {days}}",
-			"exceptLines": "All except {lines}",
-			"lines": "{count, plural, one {# line} other {# lines}}",
-			"namedLines": "Lines {lines}",
-			"noLines": "No lines",
-			"onDates": "(on {dates})",
-			"operateAs": "Operates as {replacement}",
-			"timeWindow": "{start} to {end} {dates}"
+			"exceptLines": "All lines except {lines}",
+			"namedLines": "Only lines {lines}",
+			"noLines": "No lines"
 		},
 		"ruleEditor": {
 			"affectedDates": "2. Which dates does this rule affect?",
@@ -344,6 +338,38 @@
 		"sections": {
 			"basic": "Basic configuration",
 			"geometry": "Geometry"
+		}
+	},
+	"patterns": {
+		"list": {
+			"RulesCalendarPreviewRulesGroup": {
+				"no_schedules_removed": "This rule removes no schedules on this day."
+			}
+		},
+		"create": {
+			"RuleCreateEvents": {
+				"select_event_first": "Select an event to define the rule dates. You can then narrow them by period, weekday or month."
+			},
+			"RuleCreatePeriods": {
+				"required_hint": "Select at least one period. Use All to select every available period.",
+				"optional_hint": "Optional — narrows the event dates to the selected periods. No selection means no period filter."
+			},
+			"RuleCreateWeekdays": {
+				"required_hint": "Select at least one weekday. Use All to select every day.",
+				"optional_hint": "Optional — narrows the event dates to the selected weekdays. No selection means no weekday filter."
+			},
+			"RuleCreateMonths": {
+				"optional_hint": "Optional — with no selection, applies to all months.",
+				"event_optional_hint": "Optional — narrows the event dates to the selected months. No selection means no month filter."
+			}
+		}
+	},
+	"shared": {
+		"RuleEventEffect": {
+			"replacement": "Runs as",
+			"restriction_all_day": "Schedules will not run all day",
+			"restriction_timepoints": "Schedules at <timeRange/> will not run",
+			"restriction_window": "Schedules between <timeRange/> will not run"
 		}
 	}
 }

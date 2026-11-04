@@ -22,6 +22,7 @@ export function RuleCreateBasicInfo() {
 
 	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
+	const showConditions = !createRuleContext.flags.isEventExceptionEnabled || Boolean(createRuleContext.data.values.event_id);
 
 	//
 	// B. Render components
@@ -79,14 +80,18 @@ export function RuleCreateBasicInfo() {
 
 				<RuleCreateEvents />
 
-				<Divider />
-				<RuleCreatePeriods />
+				{showConditions && (
+					<>
+						<Divider />
+						<RuleCreatePeriods />
 
-				<Divider />
-				<RuleCreateWeekdays />
+						<Divider />
+						<RuleCreateWeekdays />
 
-				<Divider />
-				<RuleCreateMonths />
+						<Divider />
+						<RuleCreateMonths />
+					</>
+				)}
 			</div>
 
 		</Section>

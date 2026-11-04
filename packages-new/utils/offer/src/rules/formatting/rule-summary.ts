@@ -1,20 +1,22 @@
-import { Event, EventReplacementRule, EventRestrictionRule, ManualRule, ScheduleRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { Event, EventRule, ManualRule, ScheduleRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { getCompactWeekdayOptions } from '@tmlmobilidade/go-utils-dates';
 import { type TFunction } from 'i18next';
 
 import { buildMonthsPart, buildWeekdaysPart, buildYearPeriodsPart } from './common.js';
-import { getSchedulingWeekdayOptions } from './common.js';
 import { schedulingMessage } from './messages.js';
+
+type SummaryRule = EventRule | ScheduleRule;
 
 /**
  * Human-readable summary of a rule in multiple formats.
  * Used for displaying rule information in UI components.
  */
 export interface RuleSummary {
-	/** Full descriptive text (e.g., "Durante o Período Escolar, nos dias úteis") */
-	long: string
-	/** Compact label (e.g., "Dias úteis · Período Escolar") */
-	short: string
+	/** Compact scheduling conditions, without the parent event's title or dates. */
+	conditions: string
+	/** Compact title used consistently in rule lists, editors and previews. */
+	label: string
 	/** Detailed tooltip with event dates/times if applicable */
 	tooltip: string
 }
@@ -22,13 +24,10 @@ export interface RuleSummary {
 /**
  * Builds human-readable summaries of a scheduling rule.
  *
- * Generates three text formats optimized for different UI contexts:
- * - **short**: Compact label for badges/pills (e.g., "Dias úteis · Período Escolar")
- * - **long**: Full description for tooltips (e.g., "Durante o Período Escolar, nos dias úteis")
- * - **tooltip**: Detailed event information with dates and times
+ * Generates a compact title and optional event details with dates and times.
  */
 export function buildRuleSummary(
-	rule: ScheduleRule,
+	rule: SummaryRule,
 	options: {
 		events?: Event[]
 		locale: string
@@ -37,8 +36,8 @@ export function buildRuleSummary(
 	},
 ): RuleSummary {
 	return {
-		long: buildRuleSummaryLong(rule, options),
-		short: buildRuleSummaryShort(rule, options),
+		conditions: buildRuleConditions(rule, options),
+		label: buildRuleLabel(rule, options),
 		tooltip: buildRuleSummaryTooltip(rule, options),
 	};
 }
@@ -46,12 +45,12 @@ export function buildRuleSummary(
 /**
  * Type guard for event restriction rules.
  */
-const isEventRestriction = (r: ScheduleRule): r is EventRestrictionRule => r.kind === 'event_restriction';
+const isEventRestriction = (r: SummaryRule): r is Extract<SummaryRule, { kind: 'event_restriction' }> => r.kind === 'event_restriction';
 
 /**
  * Type guard for event replacement rules.
  */
-const isEventReplacement = (r: ScheduleRule): r is EventReplacementRule => r.kind === 'event_replacement';
+const isEventReplacement = (r: SummaryRule): r is Extract<SummaryRule, { kind: 'event_replacement' }> => r.kind === 'event_replacement';
 
 const getEventForManualRule = (rule: ManualRule, events?: Event[]) => {
 	if (!rule.event_id) return undefined;
@@ -93,78 +92,56 @@ function dateMatchesPeriods(
  * - event-based: "Event · Period · Weekdays"
  * - normal: "Period · Weekdays"
  */
-function buildRuleSummaryShort(
-	rule: ScheduleRule,
+function buildRuleLabel(
+	rule: SummaryRule,
 	options: { events?: Event[], locale: string, periods?: YearPeriod[], t: TFunction },
 ): string {
 	if (isEventRestriction(rule)) {
-		return rule.event?.title ?? '';
+		return 'event' in rule ? rule.event.title : buildRuleConditions(rule, options);
 	}
 
 	if (isEventReplacement(rule)) {
-		return rule.event?.title ?? '';
+		return 'event' in rule ? rule.event.title : buildRuleConditions(rule, options);
 	}
 
 	if (rule.kind === 'manual' && rule.event_id) {
 		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-		const periodPart = rule.year_period_ids?.length ? buildYearPeriodsPart(rule, options, { mode: 'short', omitIfAll: true }) : '';
-		const monthsPart = buildMonthsPart(rule, { locale: options.locale, mode: 'short', omitIfAll: true, t: options.t });
-		const weekdayPart = buildWeekdaysPart(rule, { locale: options.locale, mode: 'short', omitIfAll: true, t: options.t });
+		const periodPart = rule.year_period_ids?.length ? buildYearPeriodsPart(rule, options, { omitIfAll: true }) : '';
+		const monthsPart = buildMonthsPart(rule, { locale: options.locale, omitIfAll: true, t: options.t });
+		const weekdayPart = buildWeekdaysPart(rule, { locale: options.locale, omitIfAll: true, t: options.t });
 		return [title, periodPart, monthsPart, weekdayPart].filter(Boolean).join(' · ');
 	}
 
-	// manual
+	return buildRuleConditions(rule, options);
+}
+
+/** Shared condition formatting for manual rules and inferred event rules. */
+function buildRuleConditions(
+	rule: SummaryRule,
+	options: { locale: string, periods?: YearPeriod[], t: TFunction },
+): string {
+	if (isEventRestriction(rule)) {
+		if (rule.all_day) return schedulingMessage(options.t, 'allDay');
+		if (rule.timepoints?.length) return [...new Set(rule.timepoints)].sort().join(', ');
+		return rule.start_time && rule.end_time
+			? `${rule.start_time}–${rule.end_time}`
+			: '';
+	}
+
 	const parts: string[] = [];
 
-	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'short' });
+	const periodPart = buildYearPeriodsPart(rule, options);
 	if (periodPart) parts.push(periodPart);
 
-	const monthsPart = buildMonthsPart(rule, { locale: options.locale, mode: 'short', omitIfAll: true, t: options.t });
+	const monthsPart = rule.kind === 'manual' ? buildMonthsPart(rule, { locale: options.locale, omitIfAll: true, t: options.t }) : '';
 	if (monthsPart) parts.push(monthsPart);
 
-	const weekdayPart = buildWeekdaysPart(rule, { locale: options.locale, mode: 'short', t: options.t });
+	const weekdayPart = isEventReplacement(rule) && rule.same_weekday
+		? schedulingMessage(options.t, 'sameWeekday')
+		: buildWeekdaysPart(rule, { locale: options.locale, t: options.t });
 	if (weekdayPart) parts.push(weekdayPart);
 
 	return parts.join(' · ');
-}
-
-/**
- * Builds the long summary format for a rule.
- *
- * Event restriction / replacement rules: event title
- * Manual rules:
- * - event-based: "Event, Period, Weekdays"
- * - normal: "Period, Weekdays"
- */
-function buildRuleSummaryLong(
-	rule: ScheduleRule,
-	options: { events?: Event[], locale: string, periods?: YearPeriod[], t: TFunction },
-): string {
-	if (isEventReplacement(rule) || isEventRestriction(rule)) {
-		return rule.event?.title ?? '';
-	}
-
-	if (rule.kind === 'manual' && rule.event_id) {
-		const title = getEventForManualRule(rule, options?.events)?.title ?? '';
-		const periodPart = rule.year_period_ids?.length ? buildYearPeriodsPart(rule, options, { mode: 'long', omitIfAll: true }) : '';
-		const monthsPart = buildMonthsPart(rule, { locale: options.locale, mode: 'long', omitIfAll: true, t: options.t });
-		const weekdayPart = buildWeekdaysPart(rule, { locale: options.locale, mode: 'long', omitIfAll: true, t: options.t });
-		return [title, periodPart, monthsPart, weekdayPart].filter(Boolean).join(', ');
-	}
-
-	// manual
-	const parts: string[] = [];
-
-	const periodPart = buildYearPeriodsPart(rule, options, { mode: 'long' });
-	if (periodPart) parts.push(periodPart);
-
-	const monthsPart = buildMonthsPart(rule, { locale: options.locale, mode: 'long', omitIfAll: true, t: options.t });
-	if (monthsPart) parts.push(monthsPart);
-
-	const weekdayPart = buildWeekdaysPart(rule, { locale: options.locale, mode: 'long', t: options.t });
-	if (weekdayPart) parts.push(weekdayPart);
-
-	return parts.join(', ');
 }
 
 /**
@@ -179,8 +156,14 @@ function dateAsUtc(date: OperationalDateInt): Date {
 function formatDateWithWeekday(date: OperationalDateInt, locale: string): string {
 	const civilDate = dateAsUtc(date);
 	const formattedDate = new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeZone: 'UTC' }).format(civilDate);
-	const weekday = new Intl.DateTimeFormat(locale, { timeZone: 'UTC', weekday: 'short' }).format(civilDate);
+	const isoWeekday = civilDate.getUTCDay() || 7;
+	const weekday = getCompactWeekdayOptions(locale).find(option => option.value === isoWeekday)?.label ?? '';
 	return `${formattedDate} (${weekday})`;
+}
+
+/** Date-only detail for event day-count tooltips, without rule-effect copy. */
+export function formatRuleDates(dates: OperationalDateInt[], locale: string): string {
+	return [...new Set(dates)].sort((a, b) => a - b).map(date => formatDateWithWeekday(date, locale)).join(', ');
 }
 
 function truncateDates(dates: string[], t: TFunction, max = 5): string {
@@ -196,7 +179,7 @@ function truncateDates(dates: string[], t: TFunction, max = 5): string {
  * Manual event rules: filtered event dates based on weekdays and/or periods
  */
 function buildRuleSummaryTooltip(
-	rule: ScheduleRule,
+	rule: SummaryRule,
 	options: { events?: Event[], locale: string, periods?: YearPeriod[], t: TFunction },
 ): string {
 	if (isEventRestriction(rule)) {
@@ -216,22 +199,7 @@ function buildRuleSummaryTooltip(
 		const dates = truncateDates(formattedDates, options.t);
 		const datesText = schedulingMessage(options.t, 'onDates', { dates });
 
-		const periods = rule.year_period_ids
-			?.map(id => options?.periods?.find(p => p._id === id)?.name || id)
-			.join(', ') || '';
-
-		if (rule.same_weekday) {
-			const parts = [schedulingMessage(options.t, 'sameWeekday'), periods].filter(Boolean);
-			return schedulingMessage(options.t, 'replacement', { dates: datesText, replacement: parts.join(' · ') });
-		}
-
-		const weekdays = rule.weekdays
-			?.map(wd => getSchedulingWeekdayOptions(options.locale, options.t).find(opt => opt.value === wd)?.label)
-			.filter(Boolean)
-			.join(', ') ?? '';
-
-		const parts = [weekdays, periods].filter(Boolean);
-		return schedulingMessage(options.t, 'replacement', { dates: datesText, replacement: parts.join(' · ') });
+		return schedulingMessage(options.t, 'replacement', { dates: datesText, replacement: buildRuleConditions(rule, options) });
 	}
 
 	if (rule.kind === 'manual' && rule.event_id) {

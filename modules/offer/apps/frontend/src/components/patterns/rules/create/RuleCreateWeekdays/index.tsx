@@ -5,6 +5,8 @@ import { WEEKDAYS } from '@tmlmobilidade/go-types-shared';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { RuleAsteriskField } from '../../shared/RuleAsteriskField';
+
 /* * */
 
 const WEEKDAY_PRESETS = {
@@ -65,8 +67,12 @@ export function RuleCreateWeekdays() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:scheduling.copy.eventWeekdays' : 'default:scheduling.copy.weekdays')}</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">{t('default:scheduling.copy.eventWeekdaysHint')}</Text>}
+				<RuleAsteriskField withAsterisk={!createRuleContext.flags.isEventExceptionEnabled}>
+					{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:scheduling.copy.eventWeekdays' : 'default:scheduling.copy.weekdays')}
+				</RuleAsteriskField>
+				<Text c="dimmed" size="sm">
+					{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:patterns.create.RuleCreateWeekdays.optional_hint' : 'default:patterns.create.RuleCreateWeekdays.required_hint')}
+				</Text>
 			</Section>
 
 			{/* Quick Select Tags */}

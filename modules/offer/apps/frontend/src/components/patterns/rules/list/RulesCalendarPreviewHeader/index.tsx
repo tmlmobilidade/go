@@ -1,22 +1,26 @@
 'use client';
 
-import { CalendarAffectedDaysCount, CloseButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { IconHandClick } from '@tabler/icons-react';
+import { CalendarAffectedDaysCount, CloseButton, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 import { closeRulesCalendarPreviewModal } from '../RulesCalendarPreview.modal';
 
 /* * */
 
-export function RulesCalendarPreviewHeader({ affectedDayCount, patternCode }: { affectedDayCount: number, patternCode: string }) {
+export function RulesCalendarPreviewHeader({ affectedDayCount }: { affectedDayCount: number }) {
 	const { t } = useTranslation();
 
 	return (
-		<Toolbar>
+		<div className={styles.header}>
 			<CloseButton onClick={closeRulesCalendarPreviewModal} type="close" />
-			<Tag label={t('default:scheduling.copy.previewCalendar')} variant="muted" />
-			<Tag label={patternCode} variant="muted" />
-			<Spacer />
+			<div className={styles.hint}>
+				<IconHandClick size={20} />
+				<Text c="dimmed" size="sm">{t('default:scheduling.copy.dayDetailsHint')}</Text>
+			</div>
 			<CalendarAffectedDaysCount count={affectedDayCount} layout="inline" />
-		</Toolbar>
+		</div>
 	);
 }

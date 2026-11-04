@@ -43,16 +43,10 @@
 			"title": "Eventos"
 		},
 		"ruleCard": {
-			"allDay": "Todo o dia {dates}",
 			"allLines": "Todas as linhas",
-			"days": "{count, plural, one {dia} other {dias}}",
-			"exceptLines": "Todas exceto {lines}",
-			"lines": "{count, plural, one {# linha} other {# linhas}}",
-			"namedLines": "Linhas {lines}",
-			"noLines": "Nenhuma linha",
-			"onDates": "(nos dias {dates})",
-			"operateAs": "Funcionará como {replacement}",
-			"timeWindow": "{start} às {end} {dates}"
+			"exceptLines": "Todas as linhas exceto {lines}",
+			"namedLines": "Apenas as linhas {lines}",
+			"noLines": "Nenhuma linha"
 		},
 		"ruleEditor": {
 			"affectedDates": "2. Que dias serão afetados por esta regra?",
@@ -375,17 +369,37 @@
 			"missingStops": "Todas as paragens precisam de coordenadas antes de recalcular o percurso.",
 			"unknownError": "Erro desconhecido",
 			"routeErrorTitle": "Erro ao recalcular percurso"
+		},
+		"list": {
+			"RulesCalendarPreviewRulesGroup": {
+				"no_schedules_removed": "Esta regra não remove nenhum horário neste dia."
+			}
+		},
+		"create": {
+			"RuleCreateEvents": {
+				"select_event_first": "Selecione um evento para definir as datas da regra. Depois poderá limitá-las por período, dia da semana ou mês."
+			},
+			"RuleCreatePeriods": {
+				"required_hint": "Selecione pelo menos um período. Use Todos para selecionar todos os períodos disponíveis.",
+				"optional_hint": "Opcional — limita as datas do evento aos períodos selecionados. Sem seleção, não filtra por período."
+			},
+			"RuleCreateWeekdays": {
+				"required_hint": "Selecione pelo menos um dia da semana. Use Todos para selecionar todos os dias.",
+				"optional_hint": "Opcional — limita as datas do evento aos dias da semana selecionados. Sem seleção, não filtra por dia da semana."
+			},
+			"RuleCreateMonths": {
+				"optional_hint": "Opcional — sem seleção, aplica-se a todos os meses.",
+				"event_optional_hint": "Opcional — limita as datas do evento aos meses selecionados. Sem seleção, não filtra por mês."
+			}
 		}
 	},
 	"scheduling": {
 		"months": {
 			"title": "Meses",
-			"eventTitle": "Meses do evento",
-			"eventHint": "Se não selecionar, aplica-se a todos os meses do evento"
+			"eventTitle": "Meses do evento"
 		},
 		"dayPeriodsTitle": "Períodos do dia",
 		"copy": {
-			"validationTitle": "Validação da regra",
 			"ruleQuestion": "1. O que acontece com estes horários?",
 			"operatingHint": "Define se esta regra ativa ou desativa os horários quando as condições abaixo se verificam.",
 			"excludedDays": "Horários não operam nestes dias",
@@ -400,15 +414,12 @@
 			"deleteRuleWarning": "Tem a certeza que deseja apagar esta regra? Esta ação não pode ser revertida.",
 			"deleteRuleTitle": "Apagar Regra",
 			"periods": "Períodos",
-			"eventPeriodsHint": "Se não selecionar, aplica-se a todos os períodos do evento",
 			"invalidFormat": "Formato inválido",
 			"existingTimepoint": "Este horário já existe",
 			"existingTimepoints": "Estes horários já existem",
 			"weekdays": "Dias da Semana",
-			"eventWeekdaysHint": "Se não selecionar, aplica-se a todos os dias do evento",
 			"businessDays": "Dias úteis",
 			"weekend": "Fim de semana",
-			"ruleSummary": "RESUMO DA REGRA",
 			"dayDetailsHint": "Clique num dia afetado para consultar os horários e regras aplicáveis.",
 			"appliedRules": "Regras Aplicadas",
 			"selectDay": "Selecione um dia no calendário",
@@ -492,6 +503,14 @@
 			"validNonnegativeNumber": "Introduza um número válido igual ou superior a zero.",
 			"checkTimepoints": "Verifique os horários introduzidos.",
 			"selectEvent": "Selecione um evento."
+		}
+	},
+	"shared": {
+		"RuleEventEffect": {
+			"replacement": "Funcionará como",
+			"restriction_all_day": "Horários não irão acontecer durante todo o dia",
+			"restriction_timepoints": "Os horários <timeRange/> não irão acontecer",
+			"restriction_window": "Horários entre as <timeRange/> não irão acontecer"
 		}
 	}
 }

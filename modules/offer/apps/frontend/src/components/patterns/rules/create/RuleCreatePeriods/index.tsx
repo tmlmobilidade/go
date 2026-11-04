@@ -5,6 +5,8 @@ import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { RuleAsteriskField } from '../../shared/RuleAsteriskField';
+
 /* * */
 
 type PeriodPresetKey = 'all';
@@ -61,8 +63,12 @@ export function RuleCreatePeriods() {
 	return (
 		<Section gap="md">
 			<Section gap="xs" padding="none">
-				<Text>{t('default:scheduling.copy.periods')}</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">{t('default:scheduling.copy.eventPeriodsHint')}</Text>}
+				<RuleAsteriskField withAsterisk={!createRuleContext.flags.isEventExceptionEnabled}>
+					{t('default:scheduling.copy.periods')}
+				</RuleAsteriskField>
+				<Text c="dimmed" size="sm">
+					{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:patterns.create.RuleCreatePeriods.optional_hint' : 'default:patterns.create.RuleCreatePeriods.required_hint')}
+				</Text>
 			</Section>
 
 			{/* Quick Select Tags */}

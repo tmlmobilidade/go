@@ -1,16 +1,16 @@
 'use client';
 
+import { RulesDrawerLayout } from '@/components/patterns/rules/shared/RulesDrawerLayout';
 import { useAnnotationsContext } from '@/contexts/Annotations.context';
 import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { IconArrowBarToLeft, IconArrowBarToRight, IconHandClick } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
 import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Dates, datesFromCalendarKey } from '@tmlmobilidade/go-utils-dates';
 import { buildAffectedDaysDetails } from '@tmlmobilidade/go-utils-offer';
-import { AlertMessage, buildCalendarScheduleRuleImpactEvents, CalendarSchedule, CalendarScheduleSources, CloseButton, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, ScheduleEventData, Section, Surface, Text } from '@tmlmobilidade/ui';
+import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, CalendarScheduleSources, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, ScheduleEventData, Section, Surface, Text } from '@tmlmobilidade/ui';
 import { useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,13 +23,12 @@ import { RulesGroup } from '../RulesCalendarPreviewRulesGroup';
 /* * */
 
 interface RulesCalendarPreviewProps {
-	patternCode: string
 	rules: ScheduleRule[]
 }
 
 /* * */
 
-export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPreviewProps) {
+export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 	//
 
 	//
@@ -79,14 +78,21 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	const formattedSelectedDate = useMemo(() => {
 		if (!selectedDate) return '';
 		const date = datesFromCalendarKey(selectedDate);
-		return date.toLocaleString({ day: 'numeric', month: 'long', weekday: 'long', year: 'numeric' }, localeContext.data.locale);
+		const locale = localeContext.data.locale;
+		const label = date.toLocaleString({ day: 'numeric', month: 'long', weekday: 'long', year: 'numeric' }, locale);
+		return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1);
 	}, [localeContext.data.locale, selectedDate]);
 
 	//
 	// C. Handle actions
 
 	const handleVisibleDateChange = (value: string) => {
-		setVisibleDate(toCalendarDate(value.slice(0, 10)));
+		const date = toCalendarDate(value.slice(0, 10));
+		if (date.slice(0, 4) !== visibleDate.slice(0, 4)) {
+			setSelectedDate(null);
+			setIsDrawerOpen(false);
+		}
+		setVisibleDate(date);
 	};
 
 	const handleDayClick = (value: string) => {
@@ -114,110 +120,86 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 
 	const handleCloseDrawer = () => {
 		setIsDrawerOpen(false);
+		setSelectedDate(null);
 	};
 
 	//
 	// D. Render components
 
 	return (
-		<div className={styles.container}>
-			{/* Sidebar Toggle */}
-			<div className={styles.sidebar} onClick={() => isDrawerOpen ? handleCloseDrawer() : setIsDrawerOpen(true)}>
-				<div className={styles.sidebarContent}>
-					{isDrawerOpen ? <IconArrowBarToRight /> : <IconArrowBarToLeft />}
-				</div>
-			</div>
+		<RulesDrawerLayout
+			drawerHeader={<Text weight="semibold">{formattedSelectedDate}</Text>}
+			drawerSize="compact"
+			isAvailable={Boolean(selectedDayDetails)}
+			isOpen={isDrawerOpen}
+			onClose={handleCloseDrawer}
+			onOpen={() => setIsDrawerOpen(true)}
+			toggleLabel={formattedSelectedDate}
+			drawerContent={selectedDayDetails && (
+				<>
+					{/* Time Points Summary */}
+					<Surface className={styles.daySummary}>
+						<Section gap="sm">
+							<Text size="lg" weight="semibold">
+								{t('default:scheduling.copy.activeTimepointCount', '', { count: selectedDayDetails.finalTimePoints.length })}
+							</Text>
+							<Divider />
+							<DayPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints as HHMM[]} />
+						</Section>
+					</Surface>
 
-			{/* Main Content */}
-			<div className={styles.mainContent}>
-				<Pane
-					header={[
-						<RulesCalendarPreviewHeader key="header" affectedDayCount={affectedDaysMap.size} patternCode={patternCode} />,
-						<AlertMessage
-							key="calendar-hint"
-							icon={<IconHandClick size={20} />}
-							title={t('default:scheduling.copy.dayDetailsHint')}
-							variant="muted"
-						/>,
-					]}
-				>
-					<CalendarSchedule
-						date={visibleDate}
-						events={ruleImpactEvents}
-						locale={localeContext.data.locale}
-						onDateChange={handleVisibleDateChange}
-						onDayClick={handleDayClick}
-						onEventClick={handleEventClick}
-						sources={sources}
-						view="year"
-						yearPeriodDisplay="muted"
-						yearViewProps={{ viewSelectProps: { views: ['year'] } }}
-					/>
-				</Pane>
-			</div>
+					{/* Applied Rules Details */}
+					<Surface overflow="visible">
+						<Section gap="sm">
+							<Text size="lg" weight="semibold">{t('default:scheduling.copy.appliedRules')}</Text>
+							<Divider />
 
-			{/* Backdrop Overlay */}
-			{isDrawerOpen && <div className={styles.backdrop} onClick={handleCloseDrawer} />}
+							{selectedDayDetails.replacementRules.length > 0 && (
+								<RulesGroup
+									excludedTimePoints={selectedDayDetails.excludedTimePoints}
+									includeRules={selectedDayDetails.includeRules}
+									kind="replacement"
+									rules={selectedDayDetails.replacementRules}
+								/>
+							)}
 
-			{/* Drawer - shows details for selected date */}
-			<div className={`${styles.drawer} ${isDrawerOpen ? styles.drawerOpen : ''}`}>
-				<div className={styles.drawerHeader}>
-					<CloseButton onClick={handleCloseDrawer} type="close" />
-					<Text weight="semibold">{formattedSelectedDate}</Text>
-				</div>
+							<RulesGroup
+								excludedTimePoints={selectedDayDetails.excludedTimePoints}
+								includeRules={selectedDayDetails.includeRules}
+								kind="include"
+								rules={selectedDayDetails.includeRules}
+							/>
 
-				<div className={styles.drawerContent}>
-					{selectedDayDetails ? (
-						<>
-							{/* Time Points Summary */}
-							<Surface className={styles.daySummary}>
-								<Section gap="sm">
-									<Text size="lg" weight="semibold">
-										{t('default:scheduling.copy.activeTimepointCount', '', { count: selectedDayDetails.finalTimePoints.length })}
-									</Text>
-									<Divider />
-									<DayPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints as HHMM[]} />
-								</Section>
-							</Surface>
-
-							{/* Applied Rules Details */}
-							<Surface overflow="auto">
-								<Section gap="sm">
-									<Text size="lg" weight="semibold">{t('default:scheduling.copy.appliedRules')}</Text>
-									<Divider />
-
-									{selectedDayDetails.replacementRules.length > 0 && (
-										<RulesGroup
-											excludedTimePoints={selectedDayDetails.excludedTimePoints}
-											includeRules={selectedDayDetails.includeRules}
-											kind="replacement"
-											rules={selectedDayDetails.replacementRules}
-										/>
-									)}
-
-									<RulesGroup
-										excludedTimePoints={selectedDayDetails.excludedTimePoints}
-										includeRules={selectedDayDetails.includeRules}
-										kind="include"
-										rules={selectedDayDetails.includeRules}
-									/>
-
-									<RulesGroup
-										excludedTimePoints={selectedDayDetails.excludedTimePoints}
-										includeRules={selectedDayDetails.includeRules}
-										kind="exclude"
-										rules={selectedDayDetails.excludeRules}
-									/>
-								</Section>
-							</Surface>
-						</>
-					) : (
-						<div className={styles.emptyState}>
-							<Text c="muted">{t('default:scheduling.copy.selectDay')}</Text>
-						</div>
-					)}
-				</div>
-			</div>
-		</div>
+							<RulesGroup
+								excludedTimePoints={selectedDayDetails.excludedTimePoints}
+								includeRules={selectedDayDetails.includeRules}
+								kind="exclude"
+								rules={selectedDayDetails.excludeRules}
+							/>
+						</Section>
+					</Surface>
+				</>
+			)}
+			overlaySidebar
+		>
+			<Pane
+				header={[
+					<RulesCalendarPreviewHeader key="header" affectedDayCount={affectedDaysMap.size} />,
+				]}
+			>
+				<CalendarSchedule
+					date={visibleDate}
+					events={ruleImpactEvents}
+					locale={localeContext.data.locale}
+					onDateChange={handleVisibleDateChange}
+					onDayClick={handleDayClick}
+					onEventClick={handleEventClick}
+					sources={sources}
+					view="year"
+					yearPeriodDisplay="muted"
+					yearViewProps={{ viewSelectProps: { views: ['year'] } }}
+				/>
+			</Pane>
+		</RulesDrawerLayout>
 	);
 }

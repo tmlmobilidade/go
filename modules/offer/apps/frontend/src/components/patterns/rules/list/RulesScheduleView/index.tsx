@@ -21,9 +21,8 @@ interface RuleLegendItem {
 	isExclude?: boolean
 	isReplacement?: boolean
 	label: string
-	long: string
+	name: string
 	ruleId: string
-	short: string
 	slot: number
 	tooltip?: string
 }
@@ -65,7 +64,7 @@ export function RulesScheduleView() {
 
 		for (const rule of allRules) {
 			if (!uniqueRules.has(rule._id)) {
-				const { long, short, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, locale, periods, t });
+				const { label: name, tooltip } = buildRuleSummary(rule, { events: eventsContext.data.raw, locale, periods, t });
 				const isReplacement = rule.kind === 'event_replacement';
 				const isExclude = (rule.kind === 'manual' && rule.operating_mode === 'exclude') || rule.kind === 'event_restriction';
 				uniqueRules.set(rule._id, {
@@ -73,16 +72,15 @@ export function RulesScheduleView() {
 					isExclude,
 					isReplacement,
 					label: '',
-					long,
+					name,
 					ruleId: rule._id,
-					short,
 					slot: 0,
 					tooltip,
 				});
 			}
 		}
 
-		const sorted = Array.from(uniqueRules.values()).sort((a, b) => a.short.localeCompare(b.short, locale));
+		const sorted = Array.from(uniqueRules.values()).sort((a, b) => a.name.localeCompare(b.name, locale));
 		const pillCount = getPillCount(8);
 
 		return sorted.map((item, idx) => ({
@@ -144,7 +142,7 @@ export function RulesScheduleView() {
 			{/* Legend Section */}
 			<div className={styles.legend}>
 				{legendItems.map(item => (
-					<Tooltip key={item.ruleId} label={item.long} withArrow>
+					<Tooltip key={item.ruleId} label={item.name} withArrow>
 						<button
 							aria-pressed={selectedRuleIds.size === 0 || selectedRuleIds.has(item.ruleId)}
 							className={styles.legendPill}
@@ -155,7 +153,7 @@ export function RulesScheduleView() {
 							style={pillStyle(item.slot)}
 							type="button"
 						>
-							{item.label} {item.short}
+							{item.label} {item.name}
 						</button>
 					</Tooltip>
 				))}
@@ -186,7 +184,7 @@ export function RulesScheduleView() {
 									<tr key={item.ruleId}>
 										{/* sticky left rule cell */}
 										<td className={styles.cellRuleSticky}>
-											<Tooltip key={item.ruleId} label={item.long}>
+											<Tooltip key={item.ruleId} label={item.name}>
 												<div
 													className={styles.headerRule}
 													style={{ ...pillStyle(item.slot), border: 'none' }}
@@ -207,7 +205,7 @@ export function RulesScheduleView() {
 												>
 													{hasTimePoint && (
 														<div className={styles.iconCenter}>
-															<Tooltip label={`${item.tooltip || item.long}`} withArrow>
+															<Tooltip label={`${item.tooltip || item.name}`} withArrow>
 																{item.isExclude && <IconCancel color={`var(--pill-${item.slot}-text)`} size={20} />}
 																{item.isReplacement && <IconSwitchHorizontal color={`var(--pill-${item.slot}-text)`} size={20} />}
 																{!item.isExclude && !item.isReplacement && <IconCheck color={`var(--pill-${item.slot}-text)`} size={20} />}

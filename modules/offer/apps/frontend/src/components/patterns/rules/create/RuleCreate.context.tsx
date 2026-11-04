@@ -6,7 +6,7 @@ import { usePeriodsContext } from '@/contexts/Periods.context';
 import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/go-types-offer';
 import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { buildRuleSummary, getManualRuleAffectedDates } from '@tmlmobilidade/go-utils-offer';
+import { buildRuleSummary, getManualRuleAffectedDates, type RuleSummary } from '@tmlmobilidade/go-utils-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type StandardFormContextValue, useLocaleContext, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
@@ -31,7 +31,7 @@ interface RuleCreateContextState extends StandardFormContextValue<ManualRule> {
 			count: number
 			dates: CalendarDate[]
 		}
-		ruleSummary: { long: string, short: string }
+		ruleSummary: RuleSummary
 		values: ManualRule
 	}
 	flags: {
@@ -83,11 +83,12 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 		weekdays: [],
 		year_period_ids: [],
 	}, [initialValues]);
-	const { form, isDirty, isValid, unblock } = useStandardForm<ManualRule, typeof ManualRuleSchema>({
+	const { form, isDirty, isValid: isFormValid, unblock } = useStandardForm<ManualRule, typeof ManualRuleSchema>({
 		defaultValues,
 		schema: ManualRuleSchema,
 	});
 	const values = useStandardFormWatch({ compute: values => values, control: form.control });
+	const isValid = isFormValid && (!isEventExceptionEnabled || Boolean(values.event_id));
 
 	//
 	// C. Transform data
@@ -119,14 +120,21 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 	// D. Handle actions
 
+	const validateEventSelection = useCallback(() => {
+		if (!isEventExceptionEnabled || form.getValues('event_id')) return true;
+		form.setError('event_id', { message: t('default:scheduling.copy.selectEvent'), type: 'required' });
+		return false;
+	}, [form, isEventExceptionEnabled, t]);
+
 	const handleSubmitRule = useCallback(async () => {
+		if (!validateEventSelection()) return;
 		await form.handleSubmit((data) => {
 			// Names are preview metadata; the Pattern update contract strips them.
-			onSubmit({ ...data, name: ruleSummary.long });
+			onSubmit({ ...data, name: ruleSummary.label });
 			unblock();
 			closeCreateRuleModal();
 		})();
-	}, [form, onSubmit, ruleSummary.long, unblock]);
+	}, [form, onSubmit, ruleSummary.label, unblock, validateEventSelection]);
 
 	const handleDeleteRule = useCallback(() => {
 		if (onDelete) {
@@ -138,12 +146,13 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 
 	const handleDuplicateRule = useCallback(async () => {
 		if (!onDuplicate) return;
+		if (!validateEventSelection()) return;
 		await form.handleSubmit((data) => {
-			onDuplicate({ ...data, name: ruleSummary.long });
+			onDuplicate({ ...data, name: ruleSummary.label });
 			unblock();
 			closeCreateRuleModal();
 		})();
-	}, [form, onDuplicate, ruleSummary.long, unblock]);
+	}, [form, onDuplicate, ruleSummary.label, unblock, validateEventSelection]);
 
 	//
 	// E. Define context value
