@@ -28,10 +28,8 @@ export function PlanDetail() {
 	//
 	// B. Render components
 
-	if (error) return <ErrorDisplay message={error} />;
-
 	if (!planDetailContext.data.plan) {
-		return <LoadingOverlay />;
+		return error ? <ErrorDisplay message={error} /> : <LoadingOverlay />;
 	}
 
 	return (
