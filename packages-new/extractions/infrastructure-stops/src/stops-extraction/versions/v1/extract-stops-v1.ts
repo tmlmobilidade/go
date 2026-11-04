@@ -12,6 +12,7 @@ import { stringify as csvStringify } from 'csv-stringify/sync';
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { filterStopsByCoordinatesRadius } from '../../../filter-stops-by-coordinates-radius.js';
 import { type InfrastructureStopsV1OutputRow, InfrastructureStopsV1OutputRowSchema } from './types.js';
 
 /**
@@ -59,7 +60,12 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 		{ $sort: { created_at: -1 } },
 	];
 
-	const aggregationResult = await goDb.infrastructure.stops.aggregate(pipeline);
+	const permittedStops = await goDb.infrastructure.stops.aggregate(pipeline);
+
+	//
+	// Apply the coordinate radius to the permitted stops
+
+	const matchingStops = filterStopsByCoordinatesRadius(permittedStops, validatedProperties.coordinates);
 
 	const fileName = `infrastructure-stops-v1-${extraction._id}.csv`;
 
@@ -75,9 +81,9 @@ export async function extractInfrastructureStopsV1(context: ExtractionTaskContex
 	});
 
 	//
-	// Parse the aggregation result into CSV
+	// Parse matching stops into CSV
 
-	for (const foundStop of aggregationResult) {
+	for (const foundStop of matchingStops) {
 		//
 
 		//
