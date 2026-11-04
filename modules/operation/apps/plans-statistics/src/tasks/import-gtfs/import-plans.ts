@@ -1,12 +1,12 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+
+import { importPlanGtfs } from './steps/import-plan-gtfs.js';
 
 /* * */
 
@@ -44,17 +44,7 @@ export async function importPlansTask() {
 		const databasePath = path.join(directory, `${encodeURIComponent(plan._id)}.db`);
 
 		try {
-			const url = await storageProvider.getSignedUrl({ fileId });
-
-			fs.rmSync(databasePath, { force: true });
-
-			const gtfs = await importGtfsToDatabase({
-				source: { url },
-				sqlite_config: { instancePath: databasePath },
-			});
-
-			// Close the connection directly: cleanup() would also delete the database file.
-			gtfs._db.databaseInstance.close();
+			await importPlanGtfs(fileId, databasePath);
 			Logger.success(`Imported plan "${plan._id}" to ${databasePath}.`);
 			break;
 		} catch (error) {
