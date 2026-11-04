@@ -87,7 +87,7 @@ export function PatternDetailSectionShape() {
 
 			<Section gap="md" height="100%" padding="none" width="100%">
 
-				<MapView height={500} id="shapeMapView">
+				<MapView key={patternDetailContext.data.id} defaultScrollZoom={false} height={500} id="shapeMapView">
 					<MapOverlayPatternShape
 						id="pattern-shape"
 						lineColor={patternDetailContext.data.typologyData?.color || undefined}
