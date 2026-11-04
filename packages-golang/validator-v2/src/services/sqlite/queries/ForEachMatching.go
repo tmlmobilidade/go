@@ -14,7 +14,11 @@ func ForEachMatching(t *types.SQLiteTable, field, value string, fn func(*types.S
 	//
 	// 1. Build the query
 
-	query := "SELECT rowid FROM " + dbops.SanitizeName(t.Name) + " AS source WHERE COALESCE(" + utils.Column(t, "source", field) + ", '') = ? ORDER BY rowid"
+	expression, err := column(t, "source", field)
+	if err != nil {
+		return err
+	}
+	query := "SELECT rowid FROM " + dbops.SanitizeName(t.Name) + " AS source WHERE COALESCE(" + expression + ", '') = ? ORDER BY rowid"
 
 	//
 	// 2. Execute the query

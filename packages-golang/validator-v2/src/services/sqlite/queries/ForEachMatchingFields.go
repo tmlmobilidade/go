@@ -35,7 +35,11 @@ func ForEachMatchingFields(t *types.SQLiteTable, field string, keys []any, field
 	targets := make([]any, len(fields)+1)
 	targets[0] = &rowID
 	for i, name := range fields {
-		columns = append(columns, utils.Column(t, "source", name))
+		expression, err := column(t, "source", name)
+		if err != nil {
+			return err
+		}
+		columns = append(columns, expression)
 		targets[i+1] = &values[i]
 	}
 
@@ -50,8 +54,12 @@ func ForEachMatchingFields(t *types.SQLiteTable, field string, keys []any, field
 	//
 	// 4. Build the query
 
+	expression, err := column(t, "source", field)
+	if err != nil {
+		return err
+	}
 	query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeName(t.Name) +
-		" AS source WHERE COALESCE(" + utils.Column(t, "source", field) + ", '')" + condition + " ORDER BY source.rowid"
+		" AS source WHERE COALESCE(" + expression + ", '')" + condition + " ORDER BY source.rowid"
 
 	//
 	// 5. Execute the query

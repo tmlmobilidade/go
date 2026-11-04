@@ -3,22 +3,29 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
-// ShapeIdForeign owns its source and related-table requirements.
+// ShapeIdForeign checks that trip shape IDs exist in shapes.
+// Missing lookup tables skip the rule, even without a file-presence dependency.
 func ShapeIdForeign(ctx *context.ValidationContext) error {
 	//
 
 	//
-	// 1. Require the lookup table without changing graph dependencies
+	// 1. Skip when the lookup table is unavailable
 
-	if !context.HasTable(ctx, "shapes") {
+	exists, err := queries.TableExists(ctx.DB, "shapes")
+	if err != nil {
+		return err
+	}
+	if !exists {
 		ctx.Skipped = true
 		return nil
 	}
+	shapes := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: "shapes"}
 
 	//
-	// 2. Read the trip shape ID after Kahn releases this rule
+	// 2. Read each trip's shape ID
 
 	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *context.ValidationContext) error {
 		value, err := queries.Field(row.Source, "shape_id")
@@ -32,7 +39,7 @@ func ShapeIdForeign(ctx *context.ValidationContext) error {
 		//
 		// 3. Check the related table and report through the same row context
 
-		exists, err := queries.Exists(row.Tables.Tables["shapes"], "shape_id", value)
+		exists, err := queries.Exists(shapes, "shape_id", value)
 		if err != nil {
 			return err
 		}

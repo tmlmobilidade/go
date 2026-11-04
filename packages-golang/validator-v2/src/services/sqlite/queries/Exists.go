@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
@@ -15,8 +14,12 @@ func Exists(t *types.SQLiteTable, field string, value string) (bool, error) {
 	//
 	// 1. Build the query
 
+	expression, err := column(t, "source", field)
+	if err != nil {
+		return false, err
+	}
 	query := "SELECT EXISTS(SELECT 1 FROM " + dbops.SanitizeName(t.Name) +
-		" AS source WHERE " + utils.Column(t, "source", field) + " = ?)"
+		" AS source WHERE " + expression + " = ?)"
 
 	//
 	// 2. Execute the query

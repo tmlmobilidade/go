@@ -17,24 +17,10 @@ func runValidations(db *sql.DB, rules map[string]ruleTypes.RuleConfig, messageSe
 	//
 
 	//
-	// 1. Load the SQLite table metadata shared by validation checks
-
-	loading := logger.AppLogger.StartPerformanceTracker("Loading SQLite validation table metadata")
-	tables, err := queries.LoadSQLiteTables(db)
-	loading.End(err)
-	if err != nil {
-		messageService.AddMessage(messageTypes.Message{
-			FileName: "N/A", Field: "N/A", RuleID: "file_validation",
-			Severity: ruleTypes.SEVERITY_ERROR, Message: fmt.Sprintf("Error loading GTFS validation tables: %v", err),
-		})
-		return
-	}
-
-	//
-	// 2. Prepare query indexes before concurrent validation starts
+	// 1. Prepare query indexes before concurrent validation starts
 
 	preparation := logger.AppLogger.StartPerformanceTracker("Preparing SQLite validation indexes")
-	err = queries.PrepareSQLiteIndexes(tables)
+	err := queries.PrepareSQLiteIndexes(db)
 	preparation.End(err)
 	if err != nil {
 		messageService.AddMessage(messageTypes.Message{
@@ -45,9 +31,9 @@ func runValidations(db *sql.DB, rules map[string]ruleTypes.RuleConfig, messageSe
 	}
 
 	//
-	// 3. Execute DAG validations.
+	// 2. Execute DAG validations.
 
 	tracker := logger.AppLogger.StartPerformanceTracker("Validating GTFS rules")
-	_, err = validations.RunValidations(db, rules, tables, messageService)
+	_, err = validations.RunValidations(db, rules, messageService)
 	tracker.End(err)
 }

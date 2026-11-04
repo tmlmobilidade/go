@@ -51,7 +51,7 @@ and version values. Logger and translator instances live in its `logger` and
 
 ```mermaid
 flowchart LR
-    SQLite[Existing GTFS SQLite] --> Prepared[Table metadata and indexes]
+    SQLite[Existing GTFS SQLite] --> Prepared[Lookup index preparation]
     Config[Validated rules.json] --> Graph[Global dependency graph]
     Registry[Registered checks] --> Graph
     Prepared --> Checks[Concurrent whole-rule checks]
@@ -72,11 +72,12 @@ ZIP input is no longer supported by the validator.
 checks its SQLite schema, and returns a database connection. Missing paths are
 rejected without creating a database. Imported rows remain on disk: query helpers
 preserve TEXT values and expose NULL cells as empty strings. Preparation is
-separate: `queries.LoadSQLiteTables(db)` loads shared table and
-column metadata, then `queries.PrepareSQLiteIndexes(tables)` creates lookup
-indexes in one transaction before concurrent checks start. Missing tables and
-columns are left for GTFS validation rules to report. The input must be writable
-and is retained after validation; only the connection is closed.
+separate: `queries.PrepareSQLiteIndexes(db)` creates lookup indexes in one
+transaction before concurrent checks start. Table and column existence are queried
+directly from SQLite when needed; there is no shared schema cache or preload step.
+Missing columns become SQL `NULL` in validation queries, and missing tables are
+left for file-presence rules to report. The input must be writable and is retained
+after validation; only the connection is closed.
 
 The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 
@@ -117,7 +118,7 @@ declaration stays in `main.go` and includes the central registrations.
 
 ### Validation Execution Flow
 
-1. Load the already validated configuration, prepared tables, and shared collector.
+1. Receive the database connection, validated configuration, and shared collector.
 2. Collect registered callbacks and file-presence gates. Bind explicit dependencies
    from `rules.json` into one graph.
 3. Start every dependency-ready rule immediately. Each rule scans its complete
@@ -128,8 +129,8 @@ declaration stays in `main.go` and includes the central registrations.
 5. Wait for every started worker, then return `Result.Statuses` and `Result.Summary`.
    Runtime failures are added as technical findings and also returned as Go errors.
 
-The scheduler has no rule concurrency limit. Table metadata remains shared and immutable;
-each rule receives a private context before entering the graph. Its ID identifies
+The scheduler has no rule concurrency limit. Rules share the database connection
+pool and query its schema when needed. Each rule receives a private context before entering the graph. Its ID identifies
 the node, and only `depends_on` controls when Kahn invokes its callback.
 
 ### Validation Function Signature
@@ -161,8 +162,8 @@ the report and error.
 
 ### Validation Context
 
-`ValidationContext` contains the rule ID, complete configuration, shared table
-metadata, message receiver, and outcome. `Config.Severity` is the source used by
+`ValidationContext` contains the rule ID, complete configuration, database
+connection, message receiver, and outcome. `Config.Severity` is the source used by
 severity and reporting helpers. Each row callback receives a child context with
 its own source location and copied configuration; row changes do not leak into
 other rows or rules. Findings propagate to the parent outcome before Kahn
@@ -230,6 +231,13 @@ The rules file accepts a flat object keyed by rule ID, either directly or inside
     "trips_shape_id_field": {
       "severity": "warning",
       "depends_on": ["trips_file_missing"]
+    },
+    "shapes_file_missing": {
+      "severity": "error"
+    },
+    "trips_shape_id_foreign": {
+      "severity": "error",
+      "depends_on": ["trips_shape_id_field", "shapes_file_missing"]
     }
   }
 }
@@ -245,8 +253,10 @@ Each rule can have:
 - **depends_on**: Any rule IDs, including `<file>_file_missing`, that must pass before this rule runs
 
 Explicit `depends_on` settings can refer to rules from any table. Scheduling follows
-only those explicit dependencies. Workers skip checks whose source or required
-lookup tables are missing, without adding graph dependencies.
+only those explicit dependencies. Checks also skip when their source or required
+lookup tables are missing, even without a file-presence dependency. File-presence
+rules control missing-file diagnostics; these local checks prevent queries against
+unavailable tables. Dependencies are not added automatically.
 Kahn's graph is built inside `validations/main.go`, before any checks execute.
 
 Each prerequisite must finish and pass across its whole source table before its

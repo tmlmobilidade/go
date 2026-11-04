@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
@@ -16,16 +15,23 @@ func FieldWithCount(r *types.SQLiteRow, field string) (string, int, error) {
 	//
 	// 1. Check if the row is nil
 
-	if r.Table == nil {
-		return "", 0, fmt.Errorf("select a row from %s before reading fields", r.Name)
+	if r == nil || r.Table == nil {
+		return "", 0, fmt.Errorf("select a row from a table before reading fields")
 	}
 
 	//
 	// 2. Build the query
 
 	table := dbops.SanitizeName(r.Table.Name)
-	column := utils.Column(r.Table, "source", field)
-	query := "SELECT " + column + ", (SELECT COUNT(*) FROM " + table + " AS other WHERE " + utils.Column(r.Table, "other", field) + " = " + column + ") FROM " + table + " AS source WHERE source.rowid = ?"
+	expression, err := column(r.Table, "source", field)
+	if err != nil {
+		return "", 0, err
+	}
+	other := "NULL"
+	if expression != "NULL" {
+		other = "other." + dbops.SanitizeName(field)
+	}
+	query := "SELECT " + expression + ", (SELECT COUNT(*) FROM " + table + " AS other WHERE " + other + " = " + expression + ") FROM " + table + " AS source WHERE source.rowid = ?"
 
 	//
 	// 3. Execute the query

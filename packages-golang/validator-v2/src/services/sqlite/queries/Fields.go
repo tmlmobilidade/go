@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
@@ -62,7 +61,11 @@ func Fields(r *types.SQLiteRow, fields ...string) (map[string]string, error) {
 	values := make([]sql.NullString, len(fields))
 	targets := make([]any, len(fields))
 	for i, field := range fields {
-		columns[i] = utils.Column(r.Table, "source", field)
+		expression, err := column(r.Table, "source", field)
+		if err != nil {
+			return nil, err
+		}
+		columns[i] = expression
 		targets[i] = &values[i]
 	}
 	query := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeName(r.Table.Name) + " AS source WHERE source.rowid = ?"

@@ -12,10 +12,10 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/execution"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/registry"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
 	graph "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/i18n"
@@ -32,12 +32,12 @@ var RuleSources embed.FS
 * RunValidations orchestrates all rules through one global Kahn dependency graph.
 * A node finishes after its entire source table is checked. Failed or skipped
 * prerequisites block dependents; every ready rule starts without a concurrency cap.
-* Configuration is already validated. Tables must belong to db and remain stable.
+* Configuration is already validated. The supplied database must remain open during the run.
 * Process-wide message overrides, when used by the CLI, must also remain stable.
 * A nil collector creates a private report. Operational failures are reported and returned;
 * ordinary GTFS errors and warnings are returned in Result.Summary.
  */
-func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, tables *sqliteTypes.SQLiteTables, messageService messages.MessageService) (validationTypes.Result, error) {
+func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messageService messages.MessageService) (validationTypes.Result, error) {
 	//
 
 	//
@@ -52,16 +52,11 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, table
 		result.Summary = messageService.GetSummary()
 		return result, err
 	}
-	if db == nil || tables == nil || tables.DB != db {
-		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("prepared SQLite tables must belong to the supplied database")))
+	if db == nil {
+		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("database connection is nil")))
 	}
 	if err := db.Ping(); err != nil {
 		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("open validation database: %w", err)))
-	}
-	for name, table := range tables.Tables {
-		if table == nil || table.DB != db {
-			return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("SQLite table %q belongs to a different database", name)))
-		}
 	}
 
 	//
@@ -78,7 +73,11 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, table
 	for _, table := range variables.GtfsRuleFiles {
 		id := table + "_file_missing"
 		checks[id] = func(ctx *context.ValidationContext) error {
-			if context.HasTable(ctx, table) {
+			exists, err := queries.TableExists(ctx.DB, table)
+			if err != nil {
+				return err
+			}
+			if exists {
 				return nil
 			}
 			ctx.FileName = table + ".txt"
@@ -118,7 +117,7 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, table
 		if config.Severity == "" {
 			config.Severity = rules.SEVERITY_IGNORE
 		}
-		ruleContext := context.NewRuleContext(id, tables, config.RuleContext, messageService)
+		ruleContext := context.NewRuleContext(id, db, config.RuleContext, messageService)
 		dependencies := slices.Clone(config.DependsOn)
 		nodes = append(nodes, graph.Rule[*validationTypes.Execution]{ID: ruleContext.RuleID, DependsOn: dependencies, Run: func(run *validationTypes.Execution) graph.Status {
 			return execution.RunRule(run, ruleContext, check)

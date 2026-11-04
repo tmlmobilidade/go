@@ -1,12 +1,12 @@
 package context
 
 import (
+	"database/sql"
 	"slices"
 
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
 // ValidationContext is the single input supplied to an executable rule.
@@ -14,7 +14,7 @@ type ValidationContext = types.ValidationContext
 
 // NewRuleContext creates a private context while its rule waits in the graph.
 // Kahn invokes the callback only when its configured dependencies have passed.
-func NewRuleContext(ruleID string, tables *sqliteTypes.SQLiteTables, config rules.RuleContext, adder messages.MessageAdder) *ValidationContext {
+func NewRuleContext(ruleID string, db *sql.DB, config rules.RuleContext, adder messages.MessageAdder) *ValidationContext {
 	//
 
 	//
@@ -26,9 +26,9 @@ func NewRuleContext(ruleID string, tables *sqliteTypes.SQLiteTables, config rule
 	}
 
 	//
-	// 2. Attach the rule identity, shared tables, and synchronized message receiver
+	// 2. Attach the rule identity, database connection, and synchronized message receiver
 
-	return &ValidationContext{RuleID: ruleID, Tables: tables, Config: config, MessageAdder: adder, Row: -1}
+	return &ValidationContext{RuleID: ruleID, DB: db, Config: config, MessageAdder: adder, Row: -1}
 }
 
 func cloneConfig(config rules.RuleContext) rules.RuleContext {

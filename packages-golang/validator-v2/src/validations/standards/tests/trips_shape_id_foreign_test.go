@@ -22,10 +22,10 @@ func TestShapeIdForeign(t *testing.T) {
 				if tc.missing {
 					missing = "shape_id"
 				}
-				_, tables := testutil.Fixture(t, "P1", tc.value, missing)
+				db := testutil.Fixture(t, "P1", tc.value, missing)
 
 				c := &testutil.Collector{}
-				if err := standard.ShapeIdForeign(context.NewRuleContext("trips_shape_id_foreign", tables, rules.RuleContext{Severity: severity}, c)); err != nil {
+				if err := standard.ShapeIdForeign(context.NewRuleContext("trips_shape_id_foreign", db, rules.RuleContext{Severity: severity}, c)); err != nil {
 					t.Fatal(err)
 				}
 				count := tc.count
@@ -37,15 +37,21 @@ func TestShapeIdForeign(t *testing.T) {
 		}
 	}
 	testutil.QueryError(t, standard.ShapeIdForeign)
-	t.Run("lookup_error", func(t *testing.T) {
-		db, tables := testutil.Fixture(t, "P1", "R1_0", "")
-		if _, err := db.Exec("DROP TABLE shapes"); err != nil {
-			t.Fatal(err)
-		}
-		c := &testutil.Collector{}
-		if err := standard.ShapeIdForeign(context.NewRuleContext("trips_shape_id_foreign", tables, rules.RuleContext{Severity: rules.SEVERITY_ERROR}, c)); err == nil {
-			t.Fatal("expected lookup error")
-		}
-		testutil.AssertMessages(t, c, "trips_shape_id_foreign", "shape_id", rules.SEVERITY_ERROR, 0)
-	})
+	for _, table := range []string{"trips", "shapes"} {
+		t.Run("missing_table/"+table, func(t *testing.T) {
+			db := testutil.Fixture(t, "P1", "R1_0", "")
+			if _, err := db.Exec("DROP TABLE " + table); err != nil {
+				t.Fatal(err)
+			}
+			c := &testutil.Collector{}
+			ctx := context.NewRuleContext("trips_shape_id_foreign", db, rules.RuleContext{Severity: rules.SEVERITY_ERROR}, c)
+			if err := standard.ShapeIdForeign(ctx); err != nil {
+				t.Fatal(err)
+			}
+			if !ctx.Skipped {
+				t.Fatal("missing required table must skip the rule")
+			}
+			testutil.AssertMessages(t, c, "trips_shape_id_foreign", "shape_id", rules.SEVERITY_ERROR, 0)
+		})
+	}
 }

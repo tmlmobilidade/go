@@ -11,39 +11,39 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
 )
 
-// HasTable checks shared metadata without opening a cursor or changing scheduling.
-func HasTable(ctx *ValidationContext, name string) bool {
-	return ctx != nil && ctx.Tables != nil && ctx.Tables.Tables[name] != nil
-}
-
 // ForEachRow creates a scoped child context for each row selected by the rule.
-// Table and field selection stays inside the implementation, not in the scheduler.
+// Missing source tables skip the rule, even without a file-presence dependency.
 func ForEachRow(ctx *ValidationContext, tableName string, fields []string, check func(*ValidationContext) error) error {
 	//
 
 	//
-	// 1. Require a rule context and leave unavailable source tables for file checks
+	// 1. Validate the context and identify the source table
 
-	if ctx == nil || ctx.Tables == nil || ctx.MessageAdder == nil || check == nil {
-		return fmt.Errorf("row validation requires a context, tables, messages, and callback")
+	if ctx == nil || ctx.DB == nil || ctx.MessageAdder == nil || check == nil {
+		return fmt.Errorf("row validation requires a context, database, messages, and callback")
 	}
 	ctx.FileName = tableName + ".txt"
 	ctx.Field = ""
 	if len(fields) > 0 {
 		ctx.Field = fields[0]
 	}
-	if !HasTable(ctx, tableName) {
+
+	exists, err := queries.TableExists(ctx.DB, tableName)
+	if err != nil {
+		return err
+	}
+	if !exists {
 		ctx.Skipped = true
 		return nil
 	}
-	table := ctx.Tables.Tables[tableName]
+	table := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: tableName}
 
 	//
 	// 2. Read bounded batches, releasing SQLite cursors before each callback
 
 	checked := 0
 	lastProgress := time.Now()
-	err := queries.ForEachRowFields(table, fields, func(source *sqliteTypes.SQLiteRow) (err error) {
+	err = queries.ForEachRowFields(table, fields, func(source *sqliteTypes.SQLiteRow) (err error) {
 		child := *ctx
 		child.Config = cloneConfig(ctx.Config)
 		child.Source = source

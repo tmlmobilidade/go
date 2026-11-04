@@ -35,7 +35,11 @@ func ForEachRowFields(table *types.SQLiteTable, fields []string, fn func(*types.
 	const batchSize = 512
 	columns := []string{"source.rowid"}
 	for _, field := range fields {
-		columns = append(columns, utils.Column(table, "source", field))
+		expression, err := column(table, "source", field)
+		if err != nil {
+			return err
+		}
+		columns = append(columns, expression)
 	}
 	selectRows := "SELECT " + strings.Join(columns, ", ") + " FROM " + dbops.SanitizeName(table.Name) + " AS source"
 	firstBatch := true

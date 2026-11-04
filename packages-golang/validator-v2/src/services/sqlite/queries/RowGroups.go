@@ -2,7 +2,6 @@ package queries
 
 import (
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
 )
 
@@ -15,7 +14,11 @@ func RowGroups(t *types.SQLiteTable, field string) ([]types.SQLiteRowGroup, erro
 	//
 	// 1. Query the table
 
-	query := "SELECT source.rowid, COALESCE(" + utils.Column(t, "source", field) + ", '') FROM " +
+	expression, err := column(t, "source", field)
+	if err != nil {
+		return nil, err
+	}
+	query := "SELECT source.rowid, COALESCE(" + expression + ", '') FROM " +
 		dbops.SanitizeName(t.Name) + " AS source ORDER BY source.rowid"
 	rows, err := t.DB.Query(query)
 	if err != nil {

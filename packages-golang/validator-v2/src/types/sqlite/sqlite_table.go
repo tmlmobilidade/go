@@ -4,10 +4,9 @@ import (
 	"database/sql"
 )
 
-// SQLiteTable shares a database connection and column names, never row values.
+// SQLiteTable identifies a table through its database connection and name.
+// Table and column existence are queried directly from SQLite.
 type SQLiteTable struct {
-	DB       *sql.DB
-	Name     string
-	Columns  map[string]bool
-	Prepared *SQLiteTables
+	DB   *sql.DB
+	Name string
 }
