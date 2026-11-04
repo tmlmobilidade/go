@@ -2,8 +2,8 @@
 
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 
-import { updatePlanStatisticsTask } from './tasks/update-plan-statistics.js';
+import { importPlansTask } from './tasks/import-plans.js';
 
 /* * */
 
-await runOnInterval(updatePlanStatisticsTask, { intervalMs: '10m' });
+await runOnInterval(importPlansTask, { intervalMs: '10m' });

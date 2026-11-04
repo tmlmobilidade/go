@@ -2,7 +2,6 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type PlansDetailItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type Attachment, type User } from '@tmlmobilidade/go-types-core';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type UpdatePlanDto, UpdatePlanSchema } from '@tmlmobilidade/go-types-operation';
@@ -32,7 +31,7 @@ interface PlanDetailContextState extends DetailContextStateTemplate {
 		id: string
 		operation_gtfs: Attachment | null
 		operation_gtfs_normalized: Attachment | null
-		plan: null | PlansDetailItem
+		plan: null | Plan
 		user: null | User
 	}
 	flags: DetailContextStateTemplate['flags'] & {

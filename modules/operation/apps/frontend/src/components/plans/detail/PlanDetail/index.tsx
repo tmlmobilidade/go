@@ -5,7 +5,6 @@ import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.c
 import { PlanDetailHeader } from '@/components/plans/detail/PlanDetailHeader';
 import { PlanDetailSectionActiveDates } from '@/components/plans/detail/PlanDetailSectionActiveDates';
 import { PlanDetailSectionController } from '@/components/plans/detail/PlanDetailSectionController';
-import { PlanDetailSectionStatistics } from '@/components/plans/detail/PlanDetailSectionStatistics';
 import { PlansDetailSectionApexConfig } from '@/components/plans/detail/PlansDetailSectionApexConfig';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, HasPermission, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
@@ -21,7 +20,7 @@ export function PlanDetail() {
 	//
 	// A. Setup variables
 
-	const { error, isLoading } = usePlansDetailData();
+	const { isLoading } = usePlansDetailData();
 
 	const planDetailContext = usePlanDetailContext();
 
@@ -29,7 +28,7 @@ export function PlanDetail() {
 	// B. Render components
 
 	if (!planDetailContext.data.plan) {
-		return error ? <ErrorDisplay message={error} /> : <LoadingOverlay />;
+		return <LoadingOverlay />;
 	}
 
 	return (
@@ -38,7 +37,6 @@ export function PlanDetail() {
 			{planDetailContext.flags.error && <ErrorDisplay message={planDetailContext.flags.error.message} />}
 
 			<PlanDetailSectionActiveDates />
-			<PlanDetailSectionStatistics />
 			<PlansDetailSectionOperationGtfs />
 
 			<HasPermission

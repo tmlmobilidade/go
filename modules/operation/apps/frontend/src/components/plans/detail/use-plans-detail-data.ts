@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PlansDetailItem } from '@tmlmobilidade/go-operation-pckg-types';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -12,7 +12,7 @@ import { usePlansDetailPlanId } from './use-plans-detail-plan-id';
 /* * */
 
 interface UsePlansDetailDataReturnType {
-	data: null | PlansDetailItem
+	data: null | Plan
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
@@ -33,8 +33,8 @@ export function usePlansDetailData(): UsePlansDetailDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<PlansDetailItem>>(API_ROUTES.operation.PLANS_DETAIL(planId), {
-		fetcher: async (url: string) => await fetchApiData<PlansDetailItem>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Plan>>(API_ROUTES.operation.PLANS_DETAIL(planId), {
+		fetcher: async (url: string) => await fetchApiData<Plan>({ url }),
 		refreshInterval: 30_000, // 30 seconds
 	});
 
