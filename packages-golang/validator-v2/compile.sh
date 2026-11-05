@@ -4,7 +4,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
-WRAPPER_DIR="$REPO_ROOT/modules/operation/apps/validator/ts-wrapper"
+WRAPPER_DIR="$REPO_ROOT/modules/operation/apps/validator"
 BIN_DIR="$WRAPPER_DIR/bin"
 RUNTIME_BIN_DIR="$WRAPPER_DIR/dist/bin"
 VALIDATOR_GO_CACHE_DIR="${GOCACHE:-${TMPDIR:-/tmp}/go-plans-validator-cache}"
