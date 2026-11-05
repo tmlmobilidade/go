@@ -19,7 +19,7 @@ import (
 )
 
 /*
-* RunValidations orchestrates all rules through one global Kahn dependency DAG.
+* RunValidations orchestrates configured rules and their prerequisites through one global Kahn dependency DAG.
 * A node finishes after its entire source table is checked. Failed or skipped
 * prerequisites block dependents; every ready rule starts without a concurrency cap.
 * Configuration is already validated. The supplied database must remain open during the run.
@@ -39,16 +39,15 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 
 	state := &validationTypes.Execution{Messages: messageService, Failures: make(map[string]error)}
 	result := validationTypes.Result{}
-	
+
 	finish := func(err error) (validationTypes.Result, error) {
 		result.Summary = messageService.GetSummary()
 		return result, err
 	}
-	
+
 	if db == nil {
 		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("database connection is nil")))
 	}
-	
 	if err := db.Ping(); err != nil {
 		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("open validation database: %w", err)))
 	}
@@ -78,17 +77,29 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 	}
 
 	//
-	// 4. Build the global DAG using only dependencies supplied in rules.json
+	// 4. Select configured rules and their declared prerequisites for the DAG
+
+	// Omitted rules are only needed when a configured rule depends on them.
+	// This keeps unrelated file-presence checks out of the execution graph.
+	required := make(map[string]bool, len(configuration))
+	for id, config := range configuration {
+		required[id] = true
+		for _, dependency := range config.DependsOn {
+			required[dependency] = true
+		}
+	}
 
 	ids := make([]string, 0, len(checks))
 	for id := range checks {
-		ids = append(ids, id)
+		if required[id] {
+			ids = append(ids, id)
+		}
 	}
 
 	slices.Sort(ids)
-	
+
 	nodes := make([]DAG.Rule[*validationTypes.Execution], 0, len(ids))
-	
+
 	for _, id := range ids {
 		check := checks[id]
 		config := configuration[id]
@@ -101,7 +112,7 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 			return execution.RunRule(run, ruleContext, check)
 		}})
 	}
-	
+
 	manager, err := algorithm.NewManager(nodes...)
 	if err != nil {
 		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("prepare validation DAG: %w", err)))

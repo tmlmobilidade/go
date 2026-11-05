@@ -1,0 +1,24 @@
+{
+	"shapes_file_missing": {
+		"severity": "error"
+	},
+	"trips_file_missing": {
+		"severity": "error"
+	},
+	"trips_pattern_id_field": {
+		"depends_on": ["trips_file_missing"],
+		"severity": "error"
+	},
+	"trips_pattern_id_same_shape_id": {
+		"depends_on": ["trips_file_missing", "shapes_file_missing"],
+		"severity": "error"
+	},
+	"trips_shape_id_field": {
+		"depends_on": ["trips_file_missing", "shapes_file_missing"],
+		"severity": "error"
+	},
+	"trips_shape_id_foreign": {
+		"depends_on": ["trips_shape_id_field", "shapes_file_missing"],
+		"severity": "error"
+	}
+}

@@ -12,9 +12,11 @@ go build -o dist/validator ./src
 go test -race ./...
 ```
 
-The repository's `npm run repo:validator-binary` currently targets
-`packages-golang/validator`. To build v2 for the TypeScript wrapper, use
-`bash packages-golang/validator-v2/compile.sh --local` from the repository root.
+The repository's `npm run repo:validator-binary` builds this package for the
+TypeScript wrapper. `npm run build:binary --workspace=@tmlmobilidade/go-operation-validator`
+also rebuilds the wrapper and is used by the worker's `predev` step.
+Both commands use `packages-golang/validator-v2/compile.sh`; the binary release
+workflow uses the same script with `--all`.
 The script clears the wrapper's `bin` and `dist/bin` directories and copies the
 new executable to both. `--all` builds Linux and macOS binaries for amd64 and arm64.
 
@@ -119,8 +121,8 @@ declaration stays in `main.go` and includes the central registrations.
 ### Validation Execution Flow
 
 1. Receive the database connection, validated configuration, and shared collector.
-2. Collect registered callbacks and file-presence gates. Bind explicit dependencies
-   from `rules.json` into one graph.
+2. Select configured callbacks and their declared prerequisites from the registered
+   checks and file-presence gates. Bind dependencies from `rules.json` into one graph.
 3. Start every dependency-ready rule immediately. Each rule scans its complete
    source table in bounded batches; cursors close before check callbacks run.
 4. On each completion, release dependents whose prerequisites passed. Info,
@@ -243,7 +245,11 @@ The rules file accepts a flat object keyed by rule ID, either directly or inside
 }
 ```
 
-`<file>_file_missing` checks whether the imported table exists. Any rule may depend on it, and it may itself have prerequisites. Once those prerequisites pass, it passes when the table exists and fails when it is missing, even when its diagnostic severity is `ignore` or its configuration entry is omitted.
+`<file>_file_missing` checks whether the imported table exists. It enters the graph
+when configured or referenced by `depends_on`, and it may itself have prerequisites.
+Once those prerequisites pass, it passes when the table exists and fails when it
+is missing, even when its diagnostic severity is `ignore` or its configuration
+entry is omitted. Unconfigured, unreferenced presence checks do not run.
 
 Each rule can have:
 

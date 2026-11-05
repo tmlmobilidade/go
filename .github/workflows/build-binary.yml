@@ -8,7 +8,7 @@ on:
       # - prd
     paths:
       - '.github/workflows/build-binary.yml'
-      - 'packages-golang/validator/**'
+      - 'packages-golang/validator-v2/**'
       - 'packages-golang/import-gtfs/**'
       - 'packages-golang/sqlite/**'
       - 'packages-golang/telemetry/**'
@@ -30,12 +30,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: packages-golang/validator/go.mod
+          go-version-file: packages-golang/validator-v2/go.mod
           cache-dependency-path: packages-golang/**/go.sum
 
       - name: Build binaries
         shell: bash
-        run: bash packages-golang/validator/compile.sh --all
+        run: bash packages-golang/validator-v2/compile.sh --all
 
       - name: Create or update GitHub release binaries
         shell: bash
