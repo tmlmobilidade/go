@@ -61,7 +61,7 @@
 			"error": "Erro",
 			"forbidden": "Proibido",
 			"ignore": "Ignorar",
-			"info": "Informação",
+			"info": "Info",
 			"warning": "Aviso"
 		},
 		"severity": "Severidade",
@@ -194,7 +194,7 @@
 			},
 			"info": {
 				"filter": "Filtrar por informações",
-				"label": "Informação"
+				"label": "Info"
 			},
 			"warning": {
 				"filter": "Filtrar por avisos",
