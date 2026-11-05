@@ -1,13 +1,13 @@
 /* * */
 
-import { findCommonDates } from '@tmlmobilidade/dates';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type YearPeriodsConflictsRequest, YearPeriodsConflictsRequestSchema, type YearPeriodsConflictsResponse } from '@tmlmobilidade/go-offer-pckg-types';
 import { type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { findCommonDates } from '@tmlmobilidade/go-utils-dates';
 
 //
 
@@ -82,7 +82,7 @@ export async function checkYearPeriodsConflictsHandler(request: FastifyRequest<{
 	// Find conflicts
 	// A date conflicts whenever the periods share at least one agency.
 
-	const conflicts: { dates: OperationalDate[], year_period: YearPeriod }[] = [];
+	const conflicts: { dates: OperationalDateInt[], year_period: YearPeriod }[] = [];
 
 	for (const otherPeriod of agencyPeriods) {
 		if (!otherPeriod.dates || otherPeriod.dates.length === 0) continue;

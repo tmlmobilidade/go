@@ -7,6 +7,6 @@ import '@/endpoints/gtfs/gtfs.routes.js';
 import '@/endpoints/fares/routes.js';
 import '@/endpoints/vkm/vkm.routes.js';
 import '@/endpoints/zones/routes.js';
-import '@/endpoints/shapes/shapes.routes.js';
+import '@/endpoints/shapes/routes.js';
 import '@/endpoints/events/routes.js';
 import '@/endpoints/year-periods/routes.js';

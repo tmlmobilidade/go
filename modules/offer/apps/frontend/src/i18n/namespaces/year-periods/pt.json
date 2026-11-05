@@ -1,0 +1,7 @@
+{
+	"shared": {
+		"usePeriodsAssignmentConflicts": {
+			"invalid_response": "Resposta de conflitos inválida"
+		}
+	}
+}

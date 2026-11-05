@@ -44,8 +44,6 @@ export function buildRoutesForLine(
 			const routeName = route.route_long_name || route.route_short_name || lineName;
 			return {
 				code: route.route_id,
-				created_by: 'system',
-				is_locked: false,
 				line_id: lineId,
 				name: routeName,
 				path_type: pathTypeMapper.fromGtfs(route.path_type),

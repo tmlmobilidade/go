@@ -3,19 +3,21 @@
 import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { buildRuleSummary, Dates, getManualRuleAffectedDates } from '@tmlmobilidade/dates';
 import { ManualRule, ManualRuleSchema } from '@tmlmobilidade/go-types-offer';
+import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildRuleSummary, getManualRuleAffectedDates, type RuleSummary } from '@tmlmobilidade/go-utils-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
-import { useForm, type UseFormReturnType } from '@tmlmobilidade/ui';
-import { zodResolver } from 'mantine-form-zod-resolver';
+import { type StandardFormContextValue, useLocaleContext, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { closeCreateRuleModal } from './RuleCreate.modal';
 
 /* * */
 
-interface RuleCreateContextState {
-	actions: {
+interface RuleCreateContextState extends StandardFormContextValue<ManualRule> {
+	actions: StandardFormContextValue<ManualRule>['actions'] & {
 		closeDrawer: () => void
 		deleteRule?: () => void
 		duplicateRule?: () => void
@@ -25,12 +27,12 @@ interface RuleCreateContextState {
 		submitRule: () => void
 	}
 	data: {
-		form: UseFormReturnType<ManualRule>
 		ruleImpact: null | {
 			count: number
-			dates: string[]
+			dates: CalendarDate[]
 		}
-		ruleSummary: { long: string, short: string }
+		ruleSummary: RuleSummary
+		values: ManualRule
 	}
 	flags: {
 		isDrawerOpen: boolean
@@ -59,50 +61,52 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
+	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 	const holidaysContext = useHolidaysContext();
 	const eventsContext = useEventsContext();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isEventExceptionEnabled, setIsEventExceptionEnabled] = useState(Boolean(initialValues?.event_id));
 
-	const [previewYear, setPreviewYear] = useState(Dates.now('Europe/Lisbon').js_date.getFullYear());
+	const [previewYear, setPreviewYear] = useState(Number(Dates.now('local').toFormat('yyyy')));
 
 	//
-	// B. Fetch data
+	// B. Setup form
 
-	//
-	// C. Setup form
-
-	const form = useForm<ManualRule>({
-		initialValues: initialValues || {
-			_id: generateRandomString({ length: 5 }),
-			kind: 'manual',
-			operating_mode: 'include',
-			timepoints: [],
-			weekdays: [],
-			year_period_ids: [],
-		},
-		mode: 'controlled',
-		validate: zodResolver(ManualRuleSchema),
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
+	const defaultValues = useMemo<ManualRule>(() => initialValues ?? {
+		_id: generateRandomString({ length: 5 }),
+		kind: 'manual',
+		operating_mode: 'include',
+		timepoints: [],
+		weekdays: [],
+		year_period_ids: [],
+	}, [initialValues]);
+	const { form, isDirty, isValid: isFormValid, unblock } = useStandardForm<ManualRule, typeof ManualRuleSchema>({
+		defaultValues,
+		schema: ManualRuleSchema,
 	});
+	const values = useStandardFormWatch({ compute: values => values, control: form.control });
+	const isValid = isFormValid && (!isEventExceptionEnabled || Boolean(values.event_id));
 
 	//
-	//
+	// C. Transform data
 
-	const ruleSummary = useMemo(() => buildRuleSummary(form.values, {
+	const ruleSummary = useMemo(() => buildRuleSummary(values, {
 		events: eventsContext.data.raw,
+		locale,
 		periods: periodsContext.data.raw,
+		t,
 	}),
-	[eventsContext.data.raw, form.values, periodsContext.data.raw]);
+	[eventsContext.data.raw, values, periodsContext.data.raw, locale, t]);
 
 	const ruleImpact = useMemo(() => {
-		const startDate = Dates.fromISO(`${previewYear}-01-01`).js_date;
-		const endDate = Dates.fromISO(`${previewYear}-12-31`).js_date;
+		const startDate = toCalendarDate(`${previewYear}-01-01`);
+		const endDate = toCalendarDate(`${previewYear}-12-31`);
 
 		return getManualRuleAffectedDates(
-			form.values,
+			values,
 			{
 				endDate,
 				events: eventsContext.data.raw,
@@ -111,57 +115,52 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 				startDate,
 			},
 		);
-	}, [eventsContext.data.raw, form.values, periodsContext.data.raw, holidaysContext.data.raw, previewYear]);
+	}, [eventsContext.data.raw, values, periodsContext.data.raw, holidaysContext.data.raw, previewYear]);
 
 	//
 	// D. Handle actions
 
-	const handleSubmitRule = useCallback(() => {
-		// Validate form
-		const validation = form.validate();
-		if (validation.hasErrors) {
-			return;
-		}
+	const validateEventSelection = useCallback(() => {
+		if (!isEventExceptionEnabled || form.getValues('event_id')) return true;
+		form.setError('event_id', { message: t('default:scheduling.copy.selectEvent'), type: 'required' });
+		return false;
+	}, [form, isEventExceptionEnabled, t]);
 
-		// Get the rule values and add the generated name
-		const ruleValues = {
-			...form.getValues(),
-			name: ruleSummary.long,
-			shortName: ruleSummary.short,
-		};
-
-		// Call the onSubmit callback
-		onSubmit(ruleValues);
-
-		// Close the modal
-		closeCreateRuleModal();
-	}, [form, ruleSummary.long, ruleSummary.short, onSubmit]);
+	const handleSubmitRule = useCallback(async () => {
+		if (!validateEventSelection()) return;
+		await form.handleSubmit((data) => {
+			// Names are preview metadata; the Pattern update contract strips them.
+			onSubmit({ ...data, name: ruleSummary.label });
+			unblock();
+			closeCreateRuleModal();
+		})();
+	}, [form, onSubmit, ruleSummary.label, unblock, validateEventSelection]);
 
 	const handleDeleteRule = useCallback(() => {
 		if (onDelete) {
 			onDelete();
+			unblock();
 			closeCreateRuleModal();
 		}
-	}, [onDelete]);
+	}, [onDelete, unblock]);
 
-	const handleDuplicateRule = useCallback(() => {
-		const validation = form.validate();
-		if (validation.hasErrors || !onDuplicate) {
-			return;
-		}
-
-		const ruleValues = {
-			...form.getValues(),
-			name: ruleSummary.long,
-			shortName: ruleSummary.short,
-		};
-
-		onDuplicate(ruleValues);
-		closeCreateRuleModal();
-	}, [form, onDuplicate, ruleSummary.long, ruleSummary.short]);
+	const handleDuplicateRule = useCallback(async () => {
+		if (!onDuplicate) return;
+		if (!validateEventSelection()) return;
+		await form.handleSubmit((data) => {
+			onDuplicate({ ...data, name: ruleSummary.label });
+			unblock();
+			closeCreateRuleModal();
+		})();
+	}, [form, onDuplicate, ruleSummary.label, unblock, validateEventSelection]);
 
 	//
 	// E. Define context value
+
+	const capabilities = useStandardFormCapabilities({
+		create: { hasPermission: true },
+		form: { isDirty, isValid },
+	});
 
 	const contextValue: RuleCreateContextState = useMemo(() => ({
 		actions: {
@@ -173,18 +172,29 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 			setPreviewYear,
 			submitRule: handleSubmitRule,
 		},
+		capabilities,
 		data: {
-			form,
 			ruleImpact,
 			ruleSummary,
+			values,
 		},
 		flags: {
 			isDrawerOpen,
 			isEditing: Boolean(initialValues),
 			isEventExceptionEnabled,
 		},
+		form,
+		isDirty,
+		isValid,
+		status: {},
+		unblock,
 	}), [
 		form,
+		capabilities,
+		isDirty,
+		isValid,
+		unblock,
+		values,
 		handleDeleteRule,
 		handleDuplicateRule,
 		handleSubmitRule,
@@ -198,7 +208,7 @@ export const RuleCreateContextProvider = ({ children, initialValues, onDelete, o
 	]);
 
 	//
-	// H. Render components
+	// F. Render components
 
 	return (
 		<RuleCreateContext.Provider value={contextValue}>

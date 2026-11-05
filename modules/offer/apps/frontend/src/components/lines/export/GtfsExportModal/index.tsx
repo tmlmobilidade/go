@@ -6,6 +6,7 @@ import { IconFileDownload } from '@tabler/icons-react';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { Button, Checkbox, CloseButton, closeModal, DateInput, Divider, Grid, Label, MeContextProvider, MultiSelect, NumberInput, openModal, Section, SegmentedControl, Spacer, Toolbar } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -41,6 +42,7 @@ function GtfsExportModal() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const context = useGtfsExportModalContext();
 	const linesListContext = useLinesListContext();
 
@@ -60,12 +62,12 @@ function GtfsExportModal() {
 		<div style={{ minHeight: '200px' }}>
 			<Toolbar>
 				<CloseButton onClick={() => closeModal(GTFS_EXPORT_MODAL_ID)} type="close" />
-				<Label size="lg" caps singleLine>Exportar GTFS</Label>
+				<Label size="lg" caps singleLine>{t('lines:export.GtfsExportModal.export_gtfs')}</Label>
 				<Spacer />
 				<Button
 					disabled={!context.flags.canSave}
 					icon={<IconFileDownload />}
-					label="Exportar"
+					label={t('lines:export.GtfsExportModal.export')}
 					loading={context.flags.loading}
 					onClick={context.actions.exportGtfs}
 				/>
@@ -76,10 +78,10 @@ function GtfsExportModal() {
 			<Section gap="md">
 				<MultiSelect
 					data={linesListContext.data.agencyOptions}
-					description="Selecione um ou mais operadores para exportar os dados correspondentes"
-					label="Selecionar operadores"
+					description={t('lines:export.GtfsExportModal.export_agencies_hint')}
+					label={t('lines:export.GtfsExportModal.select_agencies')}
 					onChange={context.actions.setAgencyIds}
-					placeholder="Selecionar operadores"
+					placeholder={t('lines:export.GtfsExportModal.select_agencies')}
 					value={context.data.form.values.agency_ids}
 					w="100%"
 				/>
@@ -90,14 +92,14 @@ function GtfsExportModal() {
 			<Section gap="md">
 				<Grid columns="ab" gap="md">
 					<DateInput
-						description="O serviço inicia nesta data, inclusive"
-						label="Primeira data do calendário"
+						description={t('lines:export.GtfsExportModal.calendar_start_hint')}
+						label={t('lines:export.GtfsExportModal.calendar_start')}
 						placeholder="YYYYMMDD"
 						{...context.data.form.getInputProps('clip_start_date')}
 					/>
 					<DateInput
-						description="O serviço termina nesta data, inclusive"
-						label="Última data do calendário"
+						description={t('lines:export.GtfsExportModal.calendar_end_hint')}
+						label={t('lines:export.GtfsExportModal.calendar_end')}
 						placeholder="YYYYMMDD"
 						{...context.data.form.getInputProps('clip_end_date')}
 					/>
@@ -109,14 +111,14 @@ function GtfsExportModal() {
 			<Section gap="md">
 				<Grid columns="ab" gap="md">
 					<DateInput
-						description="O plano é válido a partir desta data"
-						label="Data Feed início"
+						description={t('lines:export.GtfsExportModal.feed_start_hint')}
+						label={t('lines:export.GtfsExportModal.feed_start')}
 						placeholder="YYYYMMDD"
 						{...context.data.form.getInputProps('feed_start_date')}
 					/>
 					<DateInput
-						description="O plano é válido até esta data"
-						label="Data Feed fim"
+						description={t('lines:export.GtfsExportModal.feed_end_hint')}
+						label={t('lines:export.GtfsExportModal.feed_end')}
 						placeholder="YYYYMMDD"
 						{...context.data.form.getInputProps('feed_end_date')}
 					/>
@@ -130,9 +132,9 @@ function GtfsExportModal() {
 					onChange={value => context.actions.setLinesMode(value as LinesMode)}
 					value={context.data.form.values.lines_mode}
 					data={[
-						{ label: 'Todas as linhas', value: 'all' },
-						{ label: 'Apenas estas linhas', value: 'include' },
-						{ label: 'Todas exceto estas', value: 'exclude' },
+						{ label: t('lines:export.GtfsExportModal.all_lines'), value: 'all' },
+						{ label: t('lines:export.GtfsExportModal.only_lines'), value: 'include' },
+						{ label: t('lines:export.GtfsExportModal.except_lines'), value: 'exclude' },
 					]}
 				/>
 
@@ -140,8 +142,8 @@ function GtfsExportModal() {
 					<MultiSelect
 						key={context.data.form.key('lines_include')}
 						data={linesOptions}
-						description="Apenas estas linhas serão exportadas."
-						placeholder="Selecionar linhas"
+						description={t('lines:export.GtfsExportModal.only_lines_hint')}
+						placeholder={t('lines:export.GtfsExportModal.select_lines')}
 						w="100%"
 						{...context.data.form.getInputProps('lines_include')}
 					/>
@@ -151,8 +153,8 @@ function GtfsExportModal() {
 					<MultiSelect
 						key={context.data.form.key('lines_exclude')}
 						data={linesOptions}
-						description="Todas as linhas serão exportadas, exceto estas."
-						placeholder="Selecionar linhas"
+						description={t('lines:export.GtfsExportModal.except_lines_hint')}
+						placeholder={t('lines:export.GtfsExportModal.select_lines')}
 						w="100%"
 						{...context.data.form.getInputProps('lines_exclude')}
 					/>
@@ -165,8 +167,8 @@ function GtfsExportModal() {
 			<Section gap="md">
 				<NumberInput
 					defaultValue={1}
-					description="As paragens de um percurso são ordenadas sequencialmente por um número inteiro. É recomendado que se inicie a contagem com o número '1', no entanto é possível alterar (por exemplo para '0') em casos específicos."
-					label="Base de Contagem da Sequência de Paragens"
+					description={t('lines:export.GtfsExportModal.stop_sequence_hint')}
+					label={t('lines:export.GtfsExportModal.stop_sequence_start')}
 					min={0}
 					w="100%"
 					{...context.data.form.getInputProps('stop_sequence_start')}
@@ -178,12 +180,12 @@ function GtfsExportModal() {
 			<Section gap="md">
 				<Checkbox
 					checked={context.data.form.values.stops_export_all}
-					label="Incluir todas as paragens"
+					label={t('lines:export.GtfsExportModal.all_stops')}
 					{...context.data.form.getInputProps('stops_export_all', { type: 'checkbox' })}
 				/>
 				<Checkbox
 					checked={context.data.form.values.numeric_calendar_codes}
-					label="Códigos de calendário numéricos"
+					label={t('lines:export.GtfsExportModal.numeric_codes')}
 					{...context.data.form.getInputProps('numeric_calendar_codes', { type: 'checkbox' })}
 				/>
 			</Section>

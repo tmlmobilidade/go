@@ -3,8 +3,10 @@
 /* * */
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
-import { DAY_PERIOD_LABELS, DayPeriod } from '@tmlmobilidade/go-types-offer';
+import { DayPeriod } from '@tmlmobilidade/go-types-offer';
+import { getDayPeriodLabels } from '@tmlmobilidade/go-utils-offer';
 import { Section, SegmentedMultiSelect, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,12 +16,13 @@ export function ParameterCreateDayPeriod() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createParameterContext = useParameterCreateContext();
 
 	//
 	// B. Handle actions
 
-	const currentPeriods = createParameterContext.data.form.values.kind === 'override' ? createParameterContext.data.form.values.day_periods || [] : [];
+	const currentPeriods = createParameterContext.data.values.kind === 'override' ? createParameterContext.data.values.day_periods || [] : [];
 
 	//
 	// C. Render components
@@ -28,20 +31,21 @@ export function ParameterCreateDayPeriod() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>Períodos do Dia</Text>
+				<Text>{t('default:scheduling.dayPeriodsTitle')}</Text>
 			</Section>
 
 			<SegmentedMultiSelect
 				value={currentPeriods}
 				onChange={(selectedPeriods) => {
-					createParameterContext.data.form.setFieldValue(
+					createParameterContext.form.setValue(
 						'day_periods',
 						selectedPeriods.length > 0
 							? (selectedPeriods as DayPeriod[])
 							: undefined,
+						{ shouldDirty: true, shouldValidate: true },
 					);
 				}}
-				options={Object.entries(DAY_PERIOD_LABELS).map(([key, label]) => ({
+				options={Object.entries(getDayPeriodLabels(t)).map(([key, label]) => ({
 					label: label.short_with_time ?? label.short,
 					value: key as DayPeriod,
 				}))}

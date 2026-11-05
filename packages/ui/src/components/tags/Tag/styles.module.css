@@ -15,9 +15,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 18px;
-	height: 18px;
-	margin: 1px;
+	width: var(--tag-icon-size, 18px);
+	height: var(--tag-icon-size, 18px);
+	margin: var(--tag-icon-margin, 1px);
 }
 
 .label {

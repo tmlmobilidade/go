@@ -1,4 +1,4 @@
-import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -27,18 +27,18 @@ export type LegacyVkmDayType = z.infer<typeof LegacyVkmDayTypeSchema>;
 export const CalculateVkmSchema = z.object({
 	agency_id: z.string(),
 	calculation_method: VkmCalculationMethodSchema,
-	end_date: OperationalDateSchema.nullable().optional(),
+	end_date: OperationalDateIntSchema.nullable().optional(),
 	extension_source: VkmExtensionSourceSchema,
-	start_date: OperationalDateSchema,
+	start_date: OperationalDateIntSchema,
 });
 
 export const VkmCalculationInputsSchema = z.object({
 	agency_id: z.string(),
 	agency_name: z.string(),
 	calculation_method: VkmCalculationMethodSchema,
-	end_date: OperationalDateSchema,
+	end_date: OperationalDateIntSchema,
 	price_per_km: z.number(),
-	start_date: OperationalDateSchema,
+	start_date: OperationalDateIntSchema,
 	total_vkm_per_year: z.number(),
 });
 

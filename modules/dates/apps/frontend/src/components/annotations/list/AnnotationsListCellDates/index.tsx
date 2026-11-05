@@ -1,13 +1,13 @@
 /* * */
 
-import { Dates } from '@tmlmobilidade/dates';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { TagGroup, type TagProps } from '@tmlmobilidade/ui';
 
 /* * */
 
 interface AnnotationsListCellDatesProps {
-	dates: OperationalDate[]
+	dates: OperationalDateInt[]
 }
 
 /* * */
@@ -23,7 +23,7 @@ export function AnnotationsListCellDates({ dates }: AnnotationsListCellDatesProp
 		.map((item): TagProps => {
 			return {
 				label: Dates
-					.fromOperationalDate(item, 'Europe/Lisbon')
+					.fromOperationalDateInt(item, 'Europe/Lisbon')
 					.toFormat('dd-MM-yyyy'),
 				variant: 'muted',
 			};

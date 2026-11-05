@@ -3,7 +3,7 @@
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsStrictV29StopTimes, GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type CreatePatternDto, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/go-types-offer';
+import { type CreatePatternDto, type Pattern, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/go-types-offer';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
@@ -18,7 +18,8 @@ import { warn, WARNING } from '../warnings.js';
 /* * */
 
 export interface BuiltPattern {
-	input: CreatePatternDto
+	// The importer computes travel-time parameters itself; the API create endpoint seeds its own.
+	input: CreatePatternDto & Pick<Pattern, 'parameters'>
 	patternKey: string
 }
 
@@ -177,13 +178,11 @@ export async function buildPatternsForRoute(params: {
 			const destination = destinationStop ? (stopCache.get(destinationStop.stop_id)?.name ?? destinationStop.stop_id) : (trip.trip_headsign ?? 'Destino');
 
 			const patternCode = resolvePatternCode(lineCode, directionId, trip.pattern_id ?? null, patternIndex);
-			const patternInput: CreatePatternDto = {
+			const patternInput: BuiltPattern['input'] = {
 				code: patternCode,
-				comments: [],
 				destination,
 				direction: directionId as PatternDirection,
 				headsign: trip.trip_headsign ?? destination,
-				is_locked: false,
 				line_id: lineId,
 				origin,
 				parameters: [{
@@ -213,7 +212,7 @@ export async function insertPatterns(builtPatterns: BuiltPattern[]): Promise<{ p
 	let patternsCreated = 0;
 
 	for (const { input } of builtPatterns) {
-		const patternDoc = await goDb.offer.patterns.insertOne({ ...input, created_by: 'system' });
+		const patternDoc = await goDb.offer.patterns.insertOne({ ...input, comments: [], created_by: 'system', is_locked: false });
 		patternsCreated += 1;
 		Logger.info({
 			attributes: {
