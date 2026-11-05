@@ -4,7 +4,7 @@ import { generateComments } from '@/utils/comments.js';
 import { authorizePatternAccess } from '@/utils/pattern-access.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Pattern, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { type Pattern, PatternPathParametersSchema, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 
 /**
  * Updates an existing pattern by ID
@@ -42,6 +42,12 @@ export async function updatePatternHandler(request: FastifyRequest<{ Body: Updat
 	// Ordinary edits cannot move a pattern to a different parent hierarchy.
 	if ((validatedPattern.data.line_id !== undefined && validatedPattern.data.line_id !== patternData.line_id) || (validatedPattern.data.route_id !== undefined && validatedPattern.data.route_id !== patternData.route_id)) {
 		return sendErrorApiResponse(reply, { error: 'Pattern parent changes require a dedicated move operation', status_code: '409' });
+	}
+
+	// Path edits and their positional travel-time entries must be saved together.
+	if (validatedPattern.data.path !== undefined || validatedPattern.data.parameters !== undefined) {
+		const pathParameters = PatternPathParametersSchema.safeParse({ ...patternData, ...validatedPattern.data });
+		if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error.message, status_code: '400' });
 	}
 
 	const sanitizedBody = validatedPattern.data;

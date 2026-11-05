@@ -1,5 +1,6 @@
 /* * */
 
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -22,11 +23,17 @@ async function main() {
 	//
 	// Run all tasks sequentially
 
-	await publishGtfsRtFeed();
+	const agencies = await goDb.core.agencies.findMany({ 'open_data.services.service_alerts_enabled': true }, { projection: { _id: 1, name: 1 } });
 
-	await publishJsonFeed();
+	for (const agency of agencies) {
+		Logger.title(`Publishing alerts for agency ${agency._id} - ${agency.name}...`);
 
-	await publishRssFeed();
+		await publishGtfsRtFeed(agency._id);
+		await publishJsonFeed(agency._id);
+		await publishRssFeed(agency._id);
+
+		Logger.success({ message: `Finished publishing alerts for agency ${agency._id} - ${agency.name} (${globalTimer.get()})` });
+	}
 
 	//
 	// Log the total time taken for all tasks

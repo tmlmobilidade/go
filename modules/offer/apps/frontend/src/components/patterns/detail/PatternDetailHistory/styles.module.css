@@ -1,0 +1,12 @@
+.comments {
+	max-height: 600px;
+	overflow-y: auto;
+	padding: var(--size-spacing-sm);
+}
+
+.empty {
+	color: var(--color-system-text-400);
+	font-size: var(--font-size-sm);
+	padding: var(--size-spacing-md);
+	text-align: center;
+}

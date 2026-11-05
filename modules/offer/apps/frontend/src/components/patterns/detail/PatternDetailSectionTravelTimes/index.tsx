@@ -1,6 +1,7 @@
 /* * */
 
 import { Collapsible, Section } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { ParametersListView } from '../../shape/parameters/list/ParametersListView';
 
@@ -12,8 +13,9 @@ export function PatternDetailSectionTravelTimes() {
 	//
 	// A. Render components
 
+	const { t } = useTranslation();
 	return (
-		<Collapsible description="Define a duração entre paragens e o tempo de paragem para cada tipo de viagem." title="Tempos de viagem">
+		<Collapsible description={t('patterns:detail.PatternDetailSectionTravelTimes.travel_times_hint')} title={t('patterns:detail.PatternDetailSectionTravelTimes.travel_times')}>
 			<Section>
 				<ParametersListView />
 			</Section>

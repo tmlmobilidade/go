@@ -1,6 +1,6 @@
 /* * */
 
-import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -9,13 +9,13 @@ export const OfferGtfsV29ExtractionPropertiesSchema = z.object({
 
 	agency_ids: z.array(z.string()),
 
-	calendars_clip_end_date: OperationalDateSchema,
+	calendars_clip_end_date: OperationalDateIntSchema,
 
-	calendars_clip_start_date: OperationalDateSchema,
+	calendars_clip_start_date: OperationalDateIntSchema,
 
-	feed_end_date: OperationalDateSchema,
+	feed_end_date: OperationalDateIntSchema,
 
-	feed_start_date: OperationalDateSchema,
+	feed_start_date: OperationalDateIntSchema,
 
 	lines_exclude: z.array(z.string()).default([]),
 

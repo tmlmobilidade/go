@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type Holiday } from '@tmlmobilidade/go-types-offer';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';

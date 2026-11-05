@@ -5,9 +5,10 @@
 import { GtfsStepConfirmation } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepConfirmation';
 import { GtfsStepDropzone } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepDropzone';
 import { GtfsStepSelection } from '@/components/patterns/detail/PatternDetailSectionGtfs/GtfsStepSelection';
-import { type Pattern } from '@tmlmobilidade/go-types-offer';
-import { openModal } from '@tmlmobilidade/ui';
+import { type PatternsDetail } from '@tmlmobilidade/go-offer-pckg-types';
+import { closeModal, openModal } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { Trans } from 'react-i18next';
 
 /* * */
 
@@ -44,7 +45,7 @@ export interface GtfsRoute {
 interface GtfsImportModalContentProps {
 	currentShapeExtension: number
 	currentStopCount: number
-	onLoad: (pattern: Pattern) => void
+	onLoad: (pattern: PatternsDetail) => void
 	patternId: string
 }
 
@@ -101,7 +102,7 @@ function GtfsImportModalContent({ currentShapeExtension, currentStopCount, onLoa
 interface OpenGtfsImportModalProps {
 	currentShapeExtension: number
 	currentStopCount: number
-	onLoad: (pattern: Pattern) => void
+	onLoad: (pattern: PatternsDetail) => void
 	patternId: string
 }
 
@@ -119,6 +120,12 @@ export function openGtfsImportModal({ currentShapeExtension, currentStopCount, o
 		),
 		modalId: MODAL_ID,
 		size: 'xl',
-		title: 'Importar ficheiro GTFS',
+		title: <Trans i18nKey="patterns:detail.GtfsImportModalContent.import_gtfs" />,
 	});
+}
+
+/* * */
+
+export function closeGtfsImportModal() {
+	closeModal(MODAL_ID);
 }

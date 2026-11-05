@@ -1,0 +1,175 @@
+{
+	"create": {
+		"PatternCreateBasicInfo": {
+			"code": "Código",
+			"code_example": "Ex: 1001_0_1",
+			"destination": "Destino",
+			"destination_example": "Ex: Reboleira (Estação)",
+			"headsign": "Bandeira/Headsign",
+			"origin": "Origem"
+		},
+		"PatternCreateHeader": {
+			"new_pattern": "Novo Pattern"
+		}
+	},
+	"detail": {
+		"GtfsImportModalContent": {
+			"import_gtfs": "Importar ficheiro GTFS"
+		},
+		"GtfsStepConfirmation": {
+			"after_import": "COMO VAI FICAR DEPOIS DE IMPORTAR",
+			"back": "Voltar",
+			"before_import": "COMO ESTÁ AGORA",
+			"import": "Importar",
+			"import_confirmation": "Tem a certeza que pretende importar este percurso?",
+			"import_error": "Não foi possível importar o percurso.",
+			"meters": "metros",
+			"shape_label": "Shape:",
+			"stops_label": "Paragens:"
+		},
+		"GtfsStepDropzone": {
+			"choose_zip": "Arraste um ficheiro ZIP ou clique para selecionar (máximo 100MB)",
+			"drop_gtfs": "Arraste o ficheiro GTFS para aqui",
+			"file_rejected": "Ficheiro rejeitado",
+			"import_gtfs": "Importar ficheiro GTFS",
+			"process_automatically": "O ficheiro será processado automaticamente",
+			"upload_error": "Não foi possível processar o ficheiro GTFS. Verifique o ficheiro e tente novamente.",
+			"zip_only": "Apenas ficheiros ZIP são aceites (máximo 100MB)"
+		},
+		"GtfsStepSelection": {
+			"back": "Voltar",
+			"headsign_column": "Headsign",
+			"route_id": "Route ID",
+			"select": "Selecionar",
+			"select_pattern_hint": "Selecionar este percurso",
+			"stops": "Paragens"
+		},
+		"PatternDetailHeader": {
+			"delete_pattern": "Apagar Pattern",
+			"delete_pattern_message": "Tem a certeza que deseja apagar este Pattern? Esta ação não pode ser revertida.",
+			"save": "Guardar"
+		},
+		"PatternDetailHistory": {
+			"fields_reverted": "Campos revertidos. Clique em Guardar para persistir as alterações.",
+			"history": "Histórico",
+			"no_history": "Nenhuma atividade registrada para este pattern."
+		},
+		"PatternDetailSectionConfig": {
+			"code": "Código",
+			"code_example": "Ex: 1234_0",
+			"destination": "Destino",
+			"destination_example": "Ex: Reboleira (Estação)",
+			"direction": "Direção",
+			"direction_options": {
+				"inbound": "Volta",
+				"outbound": "Ida"
+			},
+			"headsign": "Bandeira/Headsign",
+			"origin": "Origem",
+			"pattern_config": "Configuração do Pattern"
+		},
+		"PatternDetailSectionRules": {
+			"new_rule": "Nova regra",
+			"operating_rules": "Regras de funcionamento",
+			"preview_calendar": "Prever calendário",
+			"rule_list": "Lista de regras",
+			"schedules": "Horários"
+		},
+		"PatternDetailSectionShape": {
+			"edit_pattern": "Editar percurso",
+			"import_gtfs": "Importar ficheiro GTFS",
+			"length": "Extensão",
+			"pattern_loaded": "Percurso carregado. Clique em Guardar para confirmar.",
+			"stop_sequence": "Sequência de paragens",
+			"trip_cost": "Custo de cada viagem"
+		},
+		"PatternDetailSectionTravelTimes": {
+			"travel_times": "Tempos de viagem",
+			"travel_times_hint": "Define a duração entre paragens e o tempo de paragem para cada tipo de viagem."
+		},
+		"PatternDetailSectionZones": {
+			"zones": "Afetação",
+			"zones_empty": "Adicione paragens ao percurso para configurar a afetação por zona."
+		}
+	},
+	"shape": {
+		"InitialStopSelector": {
+			"first_stop": "Primeira paragem",
+			"initial_stops_hint": "Ainda não existem paragens neste percurso. Adicione as duas primeiras paragens para calcular o percurso.",
+			"second_stop": "Segunda paragem",
+			"stop_sequence": "Sequência de paragens"
+		},
+		"ParameterCreateModifiers": {
+			"seconds": "seg"
+		},
+		"ParameterCreateStopItem": {
+			"dwell_sequence": "Tempo de paragem para a sequência {sequence}",
+			"seconds": "seg"
+		},
+		"PathTableColumnStop": {
+			"stop_id": "Stop ID:"
+		},
+		"RuleCreateSchedule": {
+			"timepoint_example": "Ex: 08:30 ou 0830 + Enter"
+		},
+		"ShapeEditorContent": {
+			"add_detour_failed": "Não foi possível adicionar desvio",
+			"detour_error": "Erro ao adicionar desvio",
+			"missing_segment": "Não foi possível identificar o segmento entre paragens.",
+			"not_editable_shape": "Este shape ainda não está preparado para desvios. Recalcule primeiro o percurso."
+		},
+		"ShapeEditorStopSelect": {
+			"load_stop_error": "Erro ao carregar paragem",
+			"search_stop": "Pesquisar paragem..."
+		},
+		"ShapeEditorStopsItem": {
+			"drop_off_no": "Não é permitida a saída de passageiros nesta paragem",
+			"drop_off_yes": "É permitida a saída de passageiros nesta paragem",
+			"pickup_no": "Não é permitida a entrada de passageiros nesta paragem",
+			"pickup_yes": "É permitida a entrada de passageiros nesta paragem",
+			"timepoint_no": "O horário de passagem não é exato nesta paragem",
+			"timepoint_yes": "O horário de passagem é exato nesta paragem"
+		},
+		"StopsList": {
+			"stop_sequence": "Sequência de paragens"
+		},
+		"StopsListRow": {
+			"add_stop": "Adicionar paragem",
+			"cancel": "Cancelar"
+		},
+		"StopsTableHeader": {
+			"drop_off": "Permite desembarque",
+			"pickup": "Permite embarque",
+			"segment_distance": "Distância entre paragens",
+			"sequence": "Sequência",
+			"stop": "Paragem",
+			"timepoint": "Timepoint",
+			"zones": "Afetação"
+		},
+		"StopsTableRow": {
+			"drop_off_no": "Não é permitida a saída de passageiros nesta paragem",
+			"drop_off_yes": "É permitida a saída de passageiros nesta paragem",
+			"pickup_no": "Não é permitida a entrada de passageiros nesta paragem",
+			"pickup_yes": "É permitida a entrada de passageiros nesta paragem",
+			"timepoint_no": "O horário de passagem não é exato nesta paragem",
+			"timepoint_yes": "O horário de passagem é exato nesta paragem"
+		},
+		"StopsTableTableColumnDistance": {
+			"distance_meters": "Distância (metros)",
+			"segment_sequence": "Distância do segmento para a sequência {sequence}"
+		},
+		"useShapeRoutePreview": {
+			"empty_response": "A pré-visualização do percurso não devolveu dados."
+		}
+	},
+	"table": {
+		"PathTableColumnStop": {
+			"stop_id": "Stop ID:"
+		},
+		"StopsTableHeader": {
+			"sequence": "Sequência",
+			"stop": "Paragem",
+			"zones": "Afetação"
+		}
+	}
+}

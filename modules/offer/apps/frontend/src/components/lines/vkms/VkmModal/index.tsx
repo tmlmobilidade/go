@@ -3,8 +3,9 @@
 import { useVkmModalContext, VkmModalContextProvider } from '@/contexts/VkmModal.context';
 import { IconCalculator, IconRulerMeasure } from '@tabler/icons-react';
 import { type VkmCalculationResult, type VkmExtensionSource, type VkmPeriodResult } from '@tmlmobilidade/go-types-offer';
-import { Button, CloseButton, closeModal, Collapsible, DateInput, Divider, Grid, Label, Loader, MeContextProvider, openModal, Section, SegmentedControl, type SegmentedControlDataItem, Select, Spacer, Text, Toolbar } from '@tmlmobilidade/ui';
+import { Button, CloseButton, closeModal, Collapsible, DateInput, Divider, Grid, Label, Loader, MeContextProvider, openModal, Section, SegmentedControl, type SegmentedControlDataItem, Select, Spacer, Text, Toolbar, useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -13,38 +14,6 @@ import { LinesListContextProvider, useLinesListContext } from '../../list/LinesL
 /* * */
 
 export const VKM_MODAL_ID = 'vkm-modal';
-
-/* * */
-
-const calculationMethodOptions: SegmentedControlDataItem[] = [
-	{ label: 'Ano móvel', value: 'rolling_year' },
-	{ label: 'Intervalo fixo', value: 'fixed_range' },
-];
-
-const extensionSourceOptions: { label: string, value: VkmExtensionSource }[] = [
-	{ label: 'GO (recomendado)', value: 'go' },
-	{ label: 'Stop times', value: 'stop_times' },
-];
-
-const methodLabels = {
-	fixed_range: 'Intervalo fixo',
-	rolling_year: 'Ano móvel',
-} as const;
-
-const sourceLabels = {
-	go: 'GO',
-	stop_times: 'Stop times',
-} as const;
-
-const sourceDescriptions = {
-	go: 'Usa a extensão atualmente guardada no percurso e corresponde ao equivalente da antiga opção recomendada de shape (GO v1).',
-	stop_times: 'Soma as distâncias entre paragens (`distance_delta`) ao longo do percurso.',
-} as const;
-
-const integerFormatter = new Intl.NumberFormat('pt-PT');
-const kilometerFormatter = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2, minimumFractionDigits: 2 });
-const euroFormatter = new Intl.NumberFormat('pt-PT', { currency: 'EUR', style: 'currency' });
-const percentFormatter = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2, style: 'percent' });
 
 /* * */
 
@@ -70,47 +39,81 @@ export const openVkmModal = () => {
 
 /* * */
 
-function formatOperationalDate(value: string) {
-	return `${value.slice(6, 8)}/${value.slice(4, 6)}/${value.slice(0, 4)}`;
-}
-
-function formatKilometers(value: number) {
-	return `${kilometerFormatter.format(value)} km`;
-}
-
-function buildOverviewCards(result: VkmCalculationResult) {
-	return [
-		{ label: 'Distância total', value: formatKilometers(result.total_from_distance) },
-		{ label: 'Custo estimado', value: euroFormatter.format(result.total_in_euros) },
-		...(result.inputs.calculation_method === 'rolling_year'
-			? [{ label: 'Face ao contratado', value: percentFormatter.format(result.total_relative_to_contract) }]
-			: []),
-	];
-}
-
-function buildDayTypeCards(result: VkmCalculationResult) {
-	return [
-		{ label: 'Dias úteis', value: formatKilometers(result.day_type_one) },
-		{ label: 'Sábados', value: formatKilometers(result.day_type_two) },
-		{ label: 'Domingos e feriados', value: formatKilometers(result.day_type_three) },
-	];
-}
-
-function buildPeriodDayTypeCards(period: VkmPeriodResult) {
-	return [
-		{ label: 'Dias úteis', value: formatKilometers(period.day_type_one) },
-		{ label: 'Sábados', value: formatKilometers(period.day_type_two) },
-		{ label: 'Domingos e feriados', value: formatKilometers(period.day_type_three) },
-	];
-}
-
-/* * */
-
 function VkmModal() {
 	//
 
 	//
 	// A. Setup variables
+
+	const { t } = useTranslation();
+	const { data: { locale } } = useLocaleContext();
+
+	const calculationMethodOptions: SegmentedControlDataItem[] = [
+		{ label: t('lines:vkms.VkmModal.rolling_year'), value: 'rolling_year' },
+		{ label: t('lines:vkms.VkmModal.fixed_range'), value: 'fixed_range' },
+	];
+
+	const extensionSourceOptions: { label: string, value: VkmExtensionSource }[] = [
+		{ label: t('lines:vkms.VkmModal.go_recommended'), value: 'go' },
+		{ label: t('lines:vkms.VkmModal.stop_times'), value: 'stop_times' },
+	];
+
+	const methodLabels = {
+		fixed_range: t('lines:vkms.VkmModal.fixed_range'),
+		rolling_year: t('lines:vkms.VkmModal.rolling_year'),
+	} as const;
+
+	const sourceLabels = {
+		go: 'GO',
+		stop_times: t('lines:vkms.VkmModal.stop_times'),
+	} as const;
+
+	const sourceDescriptions = {
+		go: t('lines:vkms.VkmModal.go_description'),
+		stop_times: t('lines:vkms.VkmModal.stop_times_description'),
+	} as const;
+
+	// Use Portugal's regional number conventions for GO's Portuguese language.
+	const numberLocale = locale === 'pt' ? 'pt-PT' : locale;
+	const integerFormatter = new Intl.NumberFormat(numberLocale);
+	const kilometerFormatter = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+	const euroFormatter = new Intl.NumberFormat(numberLocale, { currency: 'EUR', style: 'currency' });
+	const percentFormatter = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 2, style: 'percent' });
+
+	function formatOperationalDate(date: number) {
+		const value = String(date);
+		return new Intl.DateTimeFormat(locale, { timeZone: 'UTC' }).format(new Date(`${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}T00:00:00Z`));
+	}
+
+	function formatKilometers(value: number) {
+		return `${kilometerFormatter.format(value)} km`;
+	}
+
+	function buildOverviewCards(result: VkmCalculationResult) {
+		return [
+			{ label: t('lines:vkms.VkmModal.total_distance'), value: formatKilometers(result.total_from_distance) },
+			{ label: t('lines:vkms.VkmModal.estimated_cost'), value: euroFormatter.format(result.total_in_euros) },
+			...(result.inputs.calculation_method === 'rolling_year'
+				? [{ label: t('lines:vkms.VkmModal.relative_contract'), value: percentFormatter.format(result.total_relative_to_contract) }]
+				: []),
+		];
+	}
+
+	function buildDayTypeCards(result: VkmCalculationResult) {
+		return [
+			{ label: t('lines:vkms.VkmModal.business_days'), value: formatKilometers(result.day_type_one) },
+			{ label: t('lines:vkms.VkmModal.saturdays'), value: formatKilometers(result.day_type_two) },
+			{ label: t('lines:vkms.VkmModal.sundays_holidays'), value: formatKilometers(result.day_type_three) },
+		];
+	}
+
+	function buildPeriodDayTypeCards(period: VkmPeriodResult) {
+		return [
+			{ label: t('lines:vkms.VkmModal.business_days'), value: formatKilometers(period.day_type_one) },
+			{ label: t('lines:vkms.VkmModal.saturdays'), value: formatKilometers(period.day_type_two) },
+			{ label: t('lines:vkms.VkmModal.sundays_holidays'), value: formatKilometers(period.day_type_three) },
+		];
+	}
 
 	const context = useVkmModalContext();
 	const linesListContext = useLinesListContext();
@@ -119,15 +122,9 @@ function VkmModal() {
 		return linesListContext.data.agencyOptions.find(item => item.value === context.data.form.values.agency_id) ?? null;
 	}, [linesListContext.data.agencyOptions, context.data.form.values.agency_id]);
 
-	const overviewCards = useMemo(() => {
-		if (!context.data.result) return [];
-		return buildOverviewCards(context.data.result);
-	}, [context.data.result]);
+	const overviewCards = context.data.result ? buildOverviewCards(context.data.result) : [];
 
-	const dayTypeCards = useMemo(() => {
-		if (!context.data.result) return [];
-		return buildDayTypeCards(context.data.result);
-	}, [context.data.result]);
+	const dayTypeCards = context.data.result ? buildDayTypeCards(context.data.result) : [];
 
 	//
 	// B. Render components
@@ -136,7 +133,7 @@ function VkmModal() {
 		<div className={styles.root}>
 			<Toolbar>
 				<CloseButton onClick={() => closeModal(VKM_MODAL_ID)} type="close" />
-				<Label size="lg" caps singleLine>Consultar VKM</Label>
+				<Label size="lg" caps singleLine>{t('lines:vkms.VkmModal.vkm')}</Label>
 				<Spacer />
 			</Toolbar>
 
@@ -146,9 +143,9 @@ function VkmModal() {
 				<Section gap="md">
 					<Select
 						data={linesListContext.data.agencyOptions}
-						description="Selecione o operador para calcular os VKM da oferta planeada"
-						label="Operador"
-						placeholder="Selecionar operador"
+						description={t('lines:vkms.VkmModal.vkm_agency_hint')}
+						label={t('lines:vkms.VkmModal.agency')}
+						placeholder={t('lines:vkms.VkmModal.select_agency')}
 						w="100%"
 						{...context.data.form.getInputProps('agency_id')}
 					/>
@@ -159,8 +156,8 @@ function VkmModal() {
 				<Section gap="sm">
 					<SegmentedControl
 						data={calculationMethodOptions}
-						description="Escolha se quer calcular um ano móvel a partir da data inicial ou um intervalo fechado."
-						label="Método de cálculo"
+						description={t('lines:vkms.VkmModal.method_hint')}
+						label={t('lines:vkms.VkmModal.calculation_method')}
 						onChange={value => context.actions.setCalculationMethod(value as typeof context.data.form.values.calculation_method)}
 						value={context.data.form.values.calculation_method}
 						fullWidth
@@ -173,7 +170,7 @@ function VkmModal() {
 					<SegmentedControl
 						data={extensionSourceOptions}
 						description={sourceDescriptions[context.data.form.values.extension_source]}
-						label="Fonte da extensão"
+						label={t('lines:vkms.VkmModal.extension_source')}
 						onChange={value => context.data.form.setFieldValue('extension_source', value as VkmExtensionSource)}
 						value={context.data.form.values.extension_source}
 						fullWidth
@@ -185,15 +182,15 @@ function VkmModal() {
 				<Section gap="md">
 					<Grid columns={context.data.form.values.calculation_method === 'fixed_range' ? 'ab' : 'a'} gap="md">
 						<DateInput
-							description="Primeira data considerada no cálculo"
-							label="Data inicial"
+							description={t('lines:vkms.VkmModal.start_hint')}
+							label={t('lines:vkms.VkmModal.start_date')}
 							placeholder="YYYYMMDD"
 							{...context.data.form.getInputProps('start_date')}
 						/>
 						{context.data.form.values.calculation_method === 'fixed_range' && (
 							<DateInput
-								description="Última data considerada no cálculo"
-								label="Data final"
+								description={t('lines:vkms.VkmModal.end_hint')}
+								label={t('lines:vkms.VkmModal.end_date')}
 								placeholder="YYYYMMDD"
 								{...context.data.form.getInputProps('end_date')}
 							/>
@@ -206,7 +203,7 @@ function VkmModal() {
 						<Button
 							disabled={!context.flags.canSave}
 							icon={<IconCalculator />}
-							label="Calcular"
+							label={t('lines:vkms.VkmModal.calculate')}
 							loading={context.flags.loading}
 							onClick={context.actions.calculateVkm}
 						/>
@@ -220,14 +217,14 @@ function VkmModal() {
 				{context.flags.loading ? (
 					<div className={styles.resultsState}>
 						<Loader />
-						<Text c="dimmed" size="sm">A calcular VKM para a configuração selecionada...</Text>
+						<Text c="dimmed" size="sm">{t('lines:vkms.VkmModal.calculating')}</Text>
 					</div>
 				) : context.data.result ? (
 					<div className={styles.resultsStack}>
 						<div className={styles.summary}>
 							<div className={styles.summaryHeader}>
 								<IconRulerMeasure size={20} />
-								<Text fw={700} size="lg">Resumo do cálculo</Text>
+								<Text fw={700} size="lg">{t('lines:vkms.VkmModal.calculation_summary')}</Text>
 							</div>
 							<Text c="dimmed" size="sm">
 								{selectedAgency?.label ?? context.data.result.inputs.agency_name}
@@ -241,18 +238,16 @@ function VkmModal() {
 								{formatOperationalDate(context.data.result.inputs.end_date)}
 							</Text>
 							<Text c="dimmed" size="sm">
-								Preço por km:
-								{' '}
+								{t('lines:vkms.VkmModal.price_km')}{' '}
 								{euroFormatter.format(context.data.result.inputs.price_per_km)}
 								{' · '}
-								VKM contratados/ano:
-								{' '}
+								{t('lines:vkms.VkmModal.contracted_vkm')}{' '}
 								{integerFormatter.format(context.data.result.inputs.total_vkm_per_year)}
 							</Text>
 						</div>
 
 						<div className={styles.sectionPanel}>
-							<Text fw={700} size="base">Visão geral</Text>
+							<Text fw={700} size="base">{t('lines:vkms.VkmModal.overview')}</Text>
 							<div className={styles.metricsGrid}>
 								{overviewCards.map(card => (
 									<div key={card.label} className={styles.metricCard}>
@@ -263,7 +258,7 @@ function VkmModal() {
 							</div>
 
 							<div className={styles.breakdownBlock}>
-								<Text fw={700} size="base">Totais por dia tipo</Text>
+								<Text fw={700} size="base">{t('lines:vkms.VkmModal.day_totals')}</Text>
 								<div className={styles.metricsGrid}>
 									{dayTypeCards.map(card => (
 										<div key={card.label} className={styles.metricCard}>
@@ -276,10 +271,10 @@ function VkmModal() {
 						</div>
 
 						{context.data.result.periods.length > 0 ? context.data.result.periods.map((period, index) => (
-							<Collapsible key={period.id ?? `${period.name}-${index}`} title={`Totais para ${period.name}`} defaultOpen>
+							<Collapsible key={period.id ?? `${period.name}-${index}`} title={t('lines:vkms.VkmModal.period_heading', { name: period.name })} defaultOpen>
 								<div className={styles.periodSection}>
 									<div className={styles.periodTotalCard}>
-										<Text c="dimmed" size="sm">Total do período</Text>
+										<Text c="dimmed" size="sm">{t('lines:vkms.VkmModal.period_total')}</Text>
 										<Text fw={700} size="xl">{formatKilometers(period.total)}</Text>
 									</div>
 
@@ -295,14 +290,14 @@ function VkmModal() {
 							</Collapsible>
 						)) : (
 							<div className={styles.sectionPanel}>
-								<Text fw={700} size="base">Totais por período</Text>
-								<Text c="dimmed" size="sm">Não existem períodos definidos para o intervalo selecionado.</Text>
+								<Text fw={700} size="base">{t('lines:vkms.VkmModal.period_totals')}</Text>
+								<Text c="dimmed" size="sm">{t('lines:vkms.VkmModal.no_periods')}</Text>
 							</div>
 						)}
 					</div>
 				) : (
 					<div className={styles.resultsState}>
-						<Text c="dimmed" size="sm">Selecione um operador, ajuste os parâmetros e clique em calcular para ver os VKM.</Text>
+						<Text c="dimmed" size="sm">{t('lines:vkms.VkmModal.vkm_empty')}</Text>
 					</div>
 				)}
 			</Section>

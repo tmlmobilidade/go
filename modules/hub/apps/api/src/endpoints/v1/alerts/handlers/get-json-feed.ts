@@ -1,35 +1,23 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type HubV1ApiAlert } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-/**
- * Returns a JSON feed with service alerts.
- * @param request The request object.
- * @param reply The reply object.
- */
+/** Return organization-scoped published data. */
 export async function getJsonFeedHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiAlert[]>) {
 	//
 
 	//
-	// Get the published feed from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get('hub:v1:alerts:published:json');
-
-	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/alerts:getJsonFeedHandler()] No JSON feed found in cache. Returning empty array.' });
-		return sendErrorApiResponse(reply, {
-			error: 'No JSON feed found in cache.',
-			status_code: '404',
-		});
-	}
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiAlert[]>(agencyIds, `alerts:published:json`);
+	const data = entries.flatMap(entry => entry.data);
 
 	//
-	// Return the parsed feed
+	// Return the merged data
 
-	return sendSuccessApiResponse(reply, JSON.parse(cachedData), {
-		max_age: '30s',
-	});
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '30s' });
 }

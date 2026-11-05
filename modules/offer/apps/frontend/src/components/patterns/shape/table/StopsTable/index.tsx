@@ -24,7 +24,7 @@ export function StopsTable() {
 			<div className={styles.tableScroll}>
 				<StopsTableHeader />
 				<div className={styles.body}>
-					{patternDetailContext.data.pattern.path.map((pathItem, index) => (
+					{patternDetailContext.data.path.map((pathItem, index) => (
 						<StopsTableRow key={index} pathItem={pathItem} rowIndex={index} />
 					))}
 				</div>

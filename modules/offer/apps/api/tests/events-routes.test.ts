@@ -124,7 +124,7 @@ test('event creation stores rule definitions without redundant parent identity',
 	const response = await server.inject({ cookies, method: 'POST', payload: {
 		agency_ids: ['A'],
 		code: 'EVENT',
-		rules: [{ all_day: true, dates: ['20261021'], event: { id: 'wrong', title: 'Stale title' }, kind: 'event_restriction', lines_mode: 'all' }],
+		rules: [{ all_day: true, dates: [20261021], event: { id: 'wrong', title: 'Stale title' }, kind: 'event_restriction', lines_mode: 'all' }],
 		title: 'Current title',
 	}, url: createPath });
 	assert.equal(response.statusCode, 200);

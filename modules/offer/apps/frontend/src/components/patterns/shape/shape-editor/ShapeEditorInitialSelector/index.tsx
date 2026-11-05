@@ -5,6 +5,7 @@
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { MapOverlayPatternShape, MapView, Section, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from '../ShapeEditorContent/styles.module.css';
 
@@ -27,6 +28,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const [firstStop, setFirstStop] = useState<null | Stop>(null);
 
 	//
@@ -47,11 +49,11 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 	return (
 		<div className={styles.container}>
 			<Section gap="md" width="30%">
-				<Text size="xl" weight="semibold">Sequência de paragens</Text>
-				<Text>Ainda não existem paragens neste percurso. Adicione as duas primeiras paragens para calcular o percurso.</Text>
+				<Text size="xl" weight="semibold">{t('patterns:shape.InitialStopSelector.stop_sequence')}</Text>
+				<Text>{t('patterns:shape.InitialStopSelector.initial_stops_hint')}</Text>
 				<ShapeEditorStopSelect
 					disabled={isLoading}
-					label="Primeira paragem"
+					label={t('patterns:shape.InitialStopSelector.first_stop')}
 					onChange={handleFirst}
 					value={firstStop}
 				/>
@@ -59,7 +61,7 @@ export function InitialStopSelector({ isLoading, lineColor, lineData, onInitiali
 					<ShapeEditorStopSelect
 						disabled={isLoading}
 						excludeStopIds={[firstStop._id]}
-						label="Segunda paragem"
+						label={t('patterns:shape.InitialStopSelector.second_stop')}
 						onChange={handleSecond}
 						value={null}
 					/>

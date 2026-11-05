@@ -76,6 +76,14 @@ export async function importPatternGtfsHandler(request: FastifyRequest<{ Body: P
 	const formattedPath = [];
 	const populatedPath: PatternsDetailPathItem[] = [];
 	let prevDistance = 0;
+	const existingVisits = new Map<string, { index: number, item: NonNullable<typeof patternData.path>[number] }[]>();
+	for (const [index, item] of (patternData.path ?? []).entries()) {
+		const visits = existingVisits.get(item.stop_id) ?? [];
+		visits.push({ index, item });
+		existingVisits.set(item.stop_id, visits);
+	}
+	const matchedVisitIndices: (number | undefined)[] = [];
+	const usedPathIds = new Set<string>();
 
 	for (const [pathIndex, pathItem] of sortedPath.entries()) {
 		// Find the associated stop
@@ -86,7 +94,12 @@ export async function importPatternGtfsHandler(request: FastifyRequest<{ Body: P
 		}
 
 		// Get original path stop to preserve user settings
-		const originalPathStop = patternData.path?.find(item => item.stop_id === associatedStop._id);
+		const originalVisit = existingVisits.get(associatedStop._id)?.shift();
+		const originalPathStop = originalVisit?.item;
+		matchedVisitIndices.push(originalVisit?.index);
+		let occurrenceId = originalPathStop?._id ?? generateRandomString({ length: 5 });
+		while (usedPathIds.has(occurrenceId)) occurrenceId = generateRandomString({ length: 5 });
+		usedPathIds.add(occurrenceId);
 
 		// Calculate distance delta
 		const distanceDelta = pathIndex === 0 ? 0 : Math.round(pathItem.shape_dist_traveled) - prevDistance;
@@ -94,13 +107,13 @@ export async function importPatternGtfsHandler(request: FastifyRequest<{ Body: P
 
 		// Add formatted path item
 		const pathEntry = {
-			_id: originalPathStop?._id || `temp-${associatedStop._id}-${pathIndex}`,
+			_id: occurrenceId,
 			allow_drop_off: originalPathStop?.allow_drop_off ?? true,
 			allow_pickup: originalPathStop?.allow_pickup ?? true,
 			distance_delta: distanceDelta,
 			stop_id: associatedStop._id,
 			timepoint: originalPathStop?.timepoint ?? true,
-			zones: originalPathStop?.zones ?? [], // fix this later
+			zones: originalPathStop?.zones ?? [], // Preserve Offer zone assignments for this visit.
 		};
 		formattedPath.push(pathEntry);
 		populatedPath.push({ ...pathEntry, stop: associatedStop });
@@ -109,16 +122,20 @@ export async function importPatternGtfsHandler(request: FastifyRequest<{ Body: P
 	// Build parameter path using avg_speed and dwell_time computed by the GTFS parser,
 	// falling back to existing parameter values for matching stops
 	const existingDefaultParam = patternData.parameters?.find(p => p.kind === 'default');
-	const existingSpeedMap = new Map(existingDefaultParam?.path.map(p => [p.stop_id, p]) ?? []);
 
 	const defaultParameter: StopsParameter = {
 		_id: generateRandomString({ length: 5 }),
 		kind: 'default',
-		path: formattedPath.map((p, i) => ({
-			avg_speed: sortedPath[i].avg_speed || existingSpeedMap.get(p.stop_id)?.avg_speed || 0,
-			dwell_time: sortedPath[i].dwell_time ?? existingSpeedMap.get(p.stop_id)?.dwell_time ?? 30,
-			stop_id: p.stop_id,
-		})),
+		path: formattedPath.map((p, i) => {
+			const originalIndex = matchedVisitIndices[i];
+			const existing = originalIndex === undefined ? undefined : existingDefaultParam?.path[originalIndex];
+			const matching = existing?.stop_id === p.stop_id ? existing : undefined;
+			return {
+				avg_speed: sortedPath[i].avg_speed || matching?.avg_speed || 0,
+				dwell_time: sortedPath[i].dwell_time ?? matching?.dwell_time ?? 30,
+				stop_id: p.stop_id,
+			};
+		}),
 	};
 
 	//

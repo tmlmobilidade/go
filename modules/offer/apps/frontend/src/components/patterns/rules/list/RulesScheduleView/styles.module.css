@@ -23,6 +23,10 @@
 }
 
 .legendPill {
+	appearance: none;
+	border-radius: var(--size-spacing-sm);
+	font-family: inherit;
+	padding: var(--size-spacing-xs) var(--size-spacing-sm);
 	text-transform: none;
 	font-size: var(--font-size-sm);
 	cursor: pointer;

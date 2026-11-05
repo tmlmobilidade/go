@@ -1,14 +1,13 @@
 'use client';
 
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { StopsParameterExtended } from '@/utils/stops-parameters';
-import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
+import { copyDefaultStopParameters, StopsParameterExtended } from '@/utils/stops-parameters';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Path, StopsParameter, StopsParameterSchema } from '@tmlmobilidade/go-types-offer';
-import { useForm } from '@tmlmobilidade/ui';
-import { type UseFormReturnType } from '@tmlmobilidade/ui';
-import { zodResolver } from 'mantine-form-zod-resolver';
+import { buildParameterSummary, computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/go-utils-offer';
+import { type StandardFormContextValue, useLocaleContext, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { closeCreateParameterModal } from './ParameterCreate.modal';
 
@@ -20,8 +19,8 @@ export type StopsParameterExtendedWithStats = StopsParameterExtended & {
 	totalDistance: number
 };
 
-interface ParameterCreateContextState {
-	actions: {
+interface ParameterCreateContextState extends StandardFormContextValue<StopsParameter> {
+	actions: StandardFormContextValue<StopsParameter>['actions'] & {
 		applyDefaultSpeeds: () => void
 		applyFixedDwellTime: (dwellTimeSeconds: number) => void
 		applyFixedSpeed: (speedKmh: number) => void
@@ -31,10 +30,10 @@ interface ParameterCreateContextState {
 	}
 	data: {
 		defaultParameter?: StopsParameter
-		form: UseFormReturnType<StopsParameter>
 		mergedPath?: MergedPathItem[]
 		parameterForUI: StopsParameterExtendedWithStats
 		path?: PatternsDetailPathItem[]
+		values: StopsParameter
 	}
 	flags: {
 		isEditing: boolean
@@ -73,105 +72,84 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
+	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 
 	//
-	// B. Fetch data
+	// B. Setup form
 
-	//
-	// C. Setup form
-
-	const defaultValues = {
-		business_periods: [],
+	const defaultValues = useMemo<StopsParameter>(() => initialValues ?? {
 		kind: 'override',
-		path: (path || []).map(pathItem => ({
-			...pathItem,
-			avg_speed: 0,
-			dwell_time: 30,
-			stop_id: pathItem.stop_id,
-		})),
-		stop_sequence: [],
+		path: (path ?? []).map(item => ({ avg_speed: 0, dwell_time: 30, stop_id: item.stop_id })),
 		vehicle_type: '',
 		weekdays: [],
 		year_period_ids: [],
-	} as StopsParameter;
-
-	const form = useForm<StopsParameter>({
-		initialValues: initialValues || defaultValues,
-		mode: 'controlled',
-		validate: zodResolver(StopsParameterSchema),
-		validateInputOnBlur: true,
-		validateInputOnChange: true,
+	}, [initialValues, path]);
+	const { form, isDirty, isValid, unblock } = useStandardForm<StopsParameter, typeof StopsParameterSchema>({
+		defaultValues,
+		schema: StopsParameterSchema,
 	});
+	const values = useStandardFormWatch({ compute: values => values, control: form.control });
 
 	//
+	// C. Transform data
+
 	// Merge base `path` (source of truth for distance_delta/stop/etc)
 	// with form edits (avg_speed/dwell_time)
 	//
-	const mergedPath = useMemo(() => getMergedPath(path || [], form.values.path), [path, form.values.path]);
+	const mergedPath = useMemo(() => getMergedPath(path || [], values.path), [path, values.path]);
 
 	const parameterForUI = useMemo(() => {
 		const periods = periodsContext.data.raw || [];
 		const travelTimes = computeSegmentTravelTimes(mergedPath || []);
-		const { long, short } = buildParameterSummary(form.values, { periods });
+		const { long, short } = buildParameterSummary(values, { locale, periods, t });
 
 		const totalDistance = (mergedPath || []).reduce((sum, item) => sum + (item.distance_delta ?? 0), 0);
 		const totalTripSeconds = travelTimes.totalTripSecondsWithStops.raw;
 		const pureDwellSeconds = travelTimes.totalTripSecondsWithStops.raw - travelTimes.totalTripSecondsWithoutStops.raw;
 		const avgCommercialSpeed = totalTripSeconds > 0 ? Math.round((totalDistance / 1000) / (totalTripSeconds / 3600) * 10) / 10 : null;
 
-		return { ...form.values, avgCommercialSpeed, name: long, pureDwellSeconds, shortName: short, totalDistance, travelTimes };
-	}, [form.values, mergedPath, periodsContext.data.raw]);
+		return { ...values, avgCommercialSpeed, name: long, pureDwellSeconds, shortName: short, totalDistance, travelTimes };
+	}, [values, mergedPath, periodsContext.data.raw, locale, t]);
 
 	//
 	// D. Handle actions
 
-	const handleSubmitParameter = useCallback(() => {
-		// Validate form
-		const validation = form.validate();
-		if (validation.hasErrors) {
-			return;
-		}
-
-		// Get the rule values
-		const ruleValues = form.getValues();
-
-		// Call the onSubmit callback
-		onSubmit(ruleValues);
-
-		// Close the modal
-		closeCreateParameterModal();
-	}, [form, onSubmit]);
+	const handleSubmitParameter = useCallback(async () => {
+		await form.handleSubmit((data) => {
+			onSubmit(data);
+			unblock();
+			closeCreateParameterModal();
+		})();
+	}, [form, onSubmit, unblock]);
 
 	const handleDeleteParameter = useCallback(() => {
 		if (onDelete) {
 			onDelete();
+			unblock();
 			closeCreateParameterModal();
 		}
-	}, [onDelete]);
+	}, [onDelete, unblock]);
 
 	const handleApplyDefaultSpeeds = useCallback(() => {
 		if (!defaultParameter) return;
 		const currentPath = form.getValues().path;
-		const defaultPathMap = new Map(defaultParameter.path.map(p => [p.stop_id, p]));
-		const newPath = currentPath.map((p) => {
-			const def = defaultPathMap.get(p.stop_id);
-			if (!def) return p;
-			return { ...p, avg_speed: def.avg_speed, dwell_time: def.dwell_time };
-		});
-		form.setFieldValue('path', newPath);
+		const newPath = copyDefaultStopParameters(currentPath, defaultParameter.path);
+		form.setValue('path', newPath, { shouldDirty: true, shouldValidate: true });
 	}, [defaultParameter, form]);
 
 	const handleApplyFixedSpeed = useCallback((speedKmh: number) => {
 		const currentPath = form.getValues().path;
 		const newPath = currentPath.map(p => ({ ...p, avg_speed: speedKmh }));
-		form.setFieldValue('path', newPath);
+		form.setValue('path', newPath, { shouldDirty: true, shouldValidate: true });
 	}, [form]);
 
 	const handleApplyFixedDwellTime = useCallback((dwellTimeSeconds: number) => {
 		const currentPath = form.getValues().path;
 		const newPath = currentPath.map(p => ({ ...p, dwell_time: dwellTimeSeconds }));
-		form.setFieldValue('path', newPath);
+		form.setValue('path', newPath, { shouldDirty: true, shouldValidate: true });
 	}, [form]);
 
 	const handleApplySpeedFactor = useCallback((factor: number) => {
@@ -180,11 +158,16 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 			...p,
 			avg_speed: Math.round(p.avg_speed * factor * 10) / 10,
 		}));
-		form.setFieldValue('path', newPath);
+		form.setValue('path', newPath, { shouldDirty: true, shouldValidate: true });
 	}, [form]);
 
 	//
 	// E. Define context value
+
+	const capabilities = useStandardFormCapabilities({
+		create: { hasPermission: true },
+		form: { isDirty, isValid },
+	});
 
 	const contextValue: ParameterCreateContextState = useMemo(() => ({
 		actions: {
@@ -195,20 +178,26 @@ export const ParameterCreateContextProvider = ({ children, defaultParameter, ini
 			deleteParameter: onDelete ? handleDeleteParameter : undefined,
 			submitParameter: handleSubmitParameter,
 		},
+		capabilities,
 		data: {
 			defaultParameter,
-			form,
 			mergedPath,
 			parameterForUI,
 			path,
+			values,
 		},
 		flags: {
 			isEditing: Boolean(initialValues),
 		},
-	}), [defaultParameter, form, handleApplyDefaultSpeeds, handleApplyFixedDwellTime, handleApplyFixedSpeed, handleApplySpeedFactor, handleDeleteParameter, handleSubmitParameter, initialValues, mergedPath, onDelete, parameterForUI, path]);
+		form,
+		isDirty,
+		isValid,
+		status: {},
+		unblock,
+	}), [capabilities, isDirty, isValid, unblock, values, defaultParameter, form, handleApplyDefaultSpeeds, handleApplyFixedDwellTime, handleApplyFixedSpeed, handleApplySpeedFactor, handleDeleteParameter, handleSubmitParameter, initialValues, mergedPath, onDelete, parameterForUI, path]);
 
 	//
-	// H. Render components
+	// F. Render components
 
 	return (
 		<ParameterCreateContext.Provider value={contextValue}>

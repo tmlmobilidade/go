@@ -14,13 +14,13 @@
 			"confirmMessage": "Are you sure you want to delete this event? This cannot be undone.",
 			"confirmTitle": "Delete event"
 		},
-		"empty": "Select a event",
+		"empty": "Select an event",
 		"fields": {
 			"agency_ids": {
 				"label": "Affected operators"
 			},
 			"code": {
-				"description": "Uppercase letters, numbers and underscores only. Maximum {{max}} characters.",
+				"description": "Uppercase letters, numbers and underscores only. Maximum {max} characters.",
 				"label": "Code",
 				"placeholder": "E.g. MARAT_LIS"
 			},
@@ -43,18 +43,10 @@
 			"title": "Events"
 		},
 		"ruleCard": {
-			"allDay": "All day {{dates}}",
 			"allLines": "All lines",
-			"days_one": "day",
-			"days_other": "days",
-			"exceptLines": "All except {{lines}}",
-			"lines_one": "{{count}} line",
-			"lines_other": "{{count}} lines",
-			"namedLines": "Lines {{lines}}",
-			"noLines": "No lines",
-			"onDates": "(on {{dates}})",
-			"operateAs": "Operates as {{replacement}}",
-			"timeWindow": "{{start}} to {{end}} {{dates}}"
+			"exceptLines": "All lines except {lines}",
+			"namedLines": "Only lines {lines}",
+			"noLines": "No lines"
 		},
 		"ruleEditor": {
 			"affectedDates": "2. Which dates does this rule affect?",
@@ -73,7 +65,6 @@
 			"excludeLinesDescription": "All lines except these will be affected.",
 			"includeLines": "Only these lines",
 			"includeLinesDescription": "Only these lines will be affected.",
-			"newRule": "New rule",
 			"noPatterns": "No associated patterns",
 			"operateAs": "The selected dates will operate as:",
 			"patterns": "Associated patterns",
@@ -119,7 +110,7 @@
 			},
 			"code": {
 				"label": "Code",
-				"placeholder": "Ex: T1-BORDO"
+				"placeholder": "E.g. T1-BORDO"
 			},
 			"currency_type": {
 				"label": "Currency"
@@ -165,12 +156,60 @@
 			}
 		}
 	},
+	"networkLocks": {
+		"line": "Locked by the line. Unlock the line first.",
+		"route": "Locked by the route. Unlock the route first."
+	},
+	"patterns": {
+		"create": {
+			"RuleCreateEvents": {
+				"select_event_first": "Select an event to define the rule dates. You can then narrow them by period, weekday or month."
+			},
+			"RuleCreateMonths": {
+				"event_optional_hint": "Optional — narrows the event dates to the selected months. No selection means no month filter.",
+				"optional_hint": "Optional — with no selection, applies to all months."
+			},
+			"RuleCreatePeriods": {
+				"optional_hint": "Optional — narrows the event dates to the selected periods. No selection means no period filter.",
+				"required_hint": "Select at least one period. Use All to select every available period."
+			},
+			"RuleCreateWeekdays": {
+				"optional_hint": "Optional — narrows the event dates to the selected weekdays. No selection means no weekday filter.",
+				"required_hint": "Select at least one weekday. Use All to select every day."
+			}
+		},
+		"list": {
+			"RulesCalendarPreviewRulesGroup": {
+				"no_schedules_removed": "This rule removes no schedules on this day."
+			}
+		},
+		"shapeEditor": {
+			"anchorIssuesDescription": "Some detours do not identify a unique occurrence between stops. Recalculation will remove those detours and preserve unambiguous ones.",
+			"anchorIssuesTitle": "Detours with unidentified segments",
+			"apply": "Apply",
+			"cancel": "Cancel",
+			"conversionHistory": "This conversion is recorded in local history and can be undone before applying.",
+			"conversionWarning": "The resulting route may differ slightly from the original.",
+			"convert": "Convert and edit",
+			"convertDescription": "To edit stops and detours, convert the shape to the editable format by recalculating the route.",
+			"dismiss": "Dismiss",
+			"importedDescription": "This pattern was imported directly from GTFS and has no intermediate routing points calculated by our platform.",
+			"importedTitle": "Shape imported from GTFS",
+			"missingSegment": "missing segment",
+			"missingStops": "All stops need coordinates before recalculating the route.",
+			"recalculate": "Recalculate route",
+			"redo": "Redo",
+			"routeErrorTitle": "Error recalculating route",
+			"undo": "Undo",
+			"unknownError": "Unknown error"
+		}
+	},
 	"periods": {
 		"assignment": {
 			"acknowledge": "I understand and want to continue",
 			"blockedConflict": "Assignment blocked: a conflicting period is locked or you lack update permission for all its operators.",
 			"checking": "Checking conflicts...",
-			"conflictMessage": "{{count}} dates will be removed from periods: {{periods}}.",
+			"conflictMessage": "{count} dates will be removed from periods: {periods}.",
 			"conflictTitle": "Conflict warning",
 			"create": "Create a new period",
 			"dayCount_one": "{{count}} day",
@@ -184,8 +223,41 @@
 			"submit": "Assign period",
 			"title": "Assign dates"
 		},
+		"calendar": {
+			"backToPeriod": "Back to period",
+			"cancelEditing": "Cancel editing",
+			"cancelSelection": "Cancel selection (Esc)",
+			"changes": "{added, plural, one {# date added} other {# dates added}} · {removed, plural, one {# date removed} other {# dates removed}}",
+			"discardChanges": "Discard changes",
+			"editDates": "Edit dates",
+			"editHint": "Start on an assigned day to remove dates, or on a free day to add them. Then select the last day of the range. Changes apply to every operator of this period.",
+			"lastRange": "Last range: {count, plural, one {# day} other {# days}}",
+			"legend": "Periods shown in the calendar",
+			"noChanges": "No pending changes",
+			"overviewHint": "Select an operator. Choose a period in the list, legend or an assigned calendar day to view and edit its dates.",
+			"readOnly": "Read only",
+			"readOnlyLocked": "This period is locked and cannot be edited.",
+			"readOnlyPermissions": "Editing this period’s settings or dates requires update permission for every associated operator.",
+			"saveDates": "Save dates",
+			"saveSettingsFirst": "Save or revert your settings changes before editing dates.",
+			"selectAgencies": "Select an operator to view the calendar.",
+			"selectEnd": "Select the last day of the range or press Esc to cancel.",
+			"selectRange": "Select a date range in the calendar",
+			"settings": "Period settings",
+			"settingsChanged": "Pending settings changes",
+			"sharedScope": "Dates in this period apply to: {agencies}.",
+			"title": "Period calendar"
+		},
 		"create": {
 			"title": "New period"
+		},
+		"dateManagement": {
+			"coverage": {
+				"complete": "All dates have a period",
+				"description": "Dates without a period for at least one operator of this period.",
+				"missing": "{count, plural, one {# date without a period} other {# dates without a period}}",
+				"moreRanges": "+ {count, plural, one {# more range} other {# more ranges}}"
+			}
 		},
 		"detail": {
 			"cancel": "Cancel",
@@ -208,6 +280,11 @@
 			"name": {
 				"label": "Name",
 				"placeholder": "E.g. School period 2025/2026"
+			},
+			"short_name": {
+				"description": "Abbreviation used to identify the period in service names.",
+				"label": "Short name",
+				"placeholder": "E.g. SCH"
 			}
 		},
 		"list": {
@@ -217,6 +294,126 @@
 				"name": "Name"
 			},
 			"title": "Periods"
+		}
+	},
+	"scheduling": {
+		"copy": {
+			"activeTimepointCount": "{count, plural, one {# active departure} other {# active departures}}",
+			"add": "Add",
+			"adjustSpeeds": "Adjust speeds",
+			"adjustSpeedsHint": "Multiply current speeds by the specified factor.",
+			"affectedDays": "{count, plural, one {This rule affects # calendar day} other {This rule affects # calendar days}}",
+			"all": "All",
+			"appliedRules": "Applied rules",
+			"apply": "Apply",
+			"averageTravelTime": "Average travel time",
+			"averageTravelTimeLabel": "Average travel time",
+			"batchHint": "Apply values to all travel times in this configuration.",
+			"businessDays": "Weekdays",
+			"cancel": "Cancel",
+			"checkTimepoints": "Check the entered departure times.",
+			"close": "Close",
+			"commercialSpeed": "Commercial average speed",
+			"conditionsHint": "These departures apply when ALL the conditions below match",
+			"conditionsQuestion": "3. When should these departures apply?",
+			"copy": "Copy",
+			"copyDefault": "Copy default configuration",
+			"copyDefaultHint": "Replace speeds and dwell times with the default configuration values.",
+			"create": "Create",
+			"dayCount": "{count, plural, one {# day} other {# days}}",
+			"dayDetailsHint": "Click an affected day to see its departures and applicable rules.",
+			"defaultConfigurationHint": "Used by default when no specific configuration applies.",
+			"delete": "Delete",
+			"deleteNamedRule": "Are you sure you want to delete rule \"{name}\"?",
+			"deleteRule": "Delete rule",
+			"deleteRuleTitle": "Delete rule",
+			"deleteRuleWarning": "Are you sure you want to delete this rule? This cannot be undone.",
+			"duplicate": "Duplicate",
+			"dwellPlaceholder": "Dwell time (seconds)",
+			"dwellSequence": "Dwell time for sequence {sequence}",
+			"dwellTime": "Dwell time",
+			"dwellTimes": "Dwell times",
+			"edit": "Edit",
+			"event": "Event",
+			"eventDetails": "Go to event details",
+			"eventException": "Event exception",
+			"eventHint": "When enabled, this rule applies to the selected event. The conditions below can narrow its dates.",
+			"eventWeekdays": "Event weekdays",
+			"excludeService": "Exclude service",
+			"excludedAllDay": "Service excluded all day",
+			"excludedBy": "Excluded by: {name}",
+			"excludedDays": "Departures do not operate on these days",
+			"excludedWindow": "Service excluded from {start} to {end}",
+			"existingTimepoint": "This departure time already exists",
+			"existingTimepoints": "These departure times already exist",
+			"fixedDwell": "Fixed dwell time",
+			"fixedDwellHint": "Set the same dwell time at all stops.",
+			"fixedSpeed": "Fixed speed",
+			"fixedSpeedHint": "Set the same average speed on all segments.",
+			"includeService": "Include service",
+			"includedDays": "Departures operate on these days",
+			"invalidFormat": "Invalid format",
+			"invalidTokens": "Invalid format: {tokens}",
+			"newConfiguration": "New configuration",
+			"newRule": "New rule",
+			"noExcludeRules": "No exclusion rules.",
+			"noIncludeRules": "No inclusion rules.",
+			"noTimepoints": "No departures to show.",
+			"open": "Open",
+			"operatingHint": "Choose whether this rule includes or excludes departures when the conditions below match.",
+			"parameterConditionsHint": "These parameters apply when ALL the conditions below match",
+			"parameterConditionsQuestion": "1. When does this configuration apply?",
+			"pasteHint": "You can also paste or drag multiple times from a spreadsheet. E.g. 10:00 13:00 15:00 or 1000 1300 1500",
+			"periods": "Periods",
+			"previewCalendar": "Preview calendar",
+			"quickActions": "Quick actions",
+			"replaceService": "Replace service",
+			"rule": "Rule",
+			"ruleActions": "Rule actions",
+			"ruleQuestion": "1. What happens to these departures?",
+			"secondsSuffix": " s",
+			"segmentSpeed": "Average speed for segment {sequence}",
+			"selectDay": "Select a day in the calendar",
+			"selectEvent": "Select an event.",
+			"selectPeriod": "Select at least one period.",
+			"selectWeekday": "Select at least one weekday.",
+			"sequence": "Sequence",
+			"specificConfigurations": "Specific configurations",
+			"specificConfigurationsHint": "Override the default configuration for specific periods, days or departure times.",
+			"speed": "Average speed",
+			"speedPlaceholder": "Average speed (km/h)",
+			"speedSequence": "Average speed for sequence {sequence}",
+			"stop": "Stop",
+			"stopFallback": "Stop {id}",
+			"timepointCount": "{count, plural, one {# departure} other {# departures}}",
+			"timepointPlaceholder": "E.g. 08:30 or 0830 or 830 + Enter",
+			"timepointsQuestion": "2. Which departures does this rule affect?",
+			"toStop": "To {stop}",
+			"totalDistance": "Total distance",
+			"totalDuration": "Total duration",
+			"totalDurationLabel": "Total duration:",
+			"travelTime": "Travel time",
+			"travelTimeHint": "Average travel time calculated from the distance and average speed on the segment between this stop and the previous one.",
+			"tripEnd": "End of trip",
+			"unnamedRule": "Unnamed rule",
+			"validNonnegativeNumber": "Enter a valid number greater than or equal to zero.",
+			"vehicle": "Vehicle",
+			"vehicleQuestion": "{step}. Which vehicle type should operate this trip?",
+			"weekdays": "Weekdays",
+			"weekend": "Weekend"
+		},
+		"dayPeriodsTitle": "Day periods",
+		"months": {
+			"eventTitle": "Event months",
+			"title": "Months"
+		}
+	},
+	"shared": {
+		"RuleEventEffect": {
+			"replacement": "Runs as",
+			"restriction_all_day": "Schedules will not run all day",
+			"restriction_timepoints": "Schedules at <timeRange/> will not run",
+			"restriction_window": "Schedules between <timeRange/> will not run"
 		}
 	},
 	"typologies": {
@@ -235,7 +432,7 @@
 			},
 			"code": {
 				"label": "Code",
-				"placeholder": "Ex: LONGA"
+				"placeholder": "E.g. LONGA"
 			},
 			"color": {
 				"label": "Background colour"
@@ -288,7 +485,7 @@
 			},
 			"code": {
 				"label": "Code",
-				"placeholder": "Ex: 1101"
+				"placeholder": "E.g. 1101"
 			},
 			"geojson": {
 				"invalid": "Invalid GeoJSON file",

@@ -1,0 +1,6 @@
+.root {
+	--tag-icon-size: 16px;
+	--tag-icon-margin: 0;
+
+	flex-shrink: 0;
+}
