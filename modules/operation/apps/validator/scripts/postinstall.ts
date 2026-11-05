@@ -26,6 +26,7 @@ const WRAPPER_ROOT = existsSync(join(__dirname, '..', 'package.json'))
 	: join(__dirname, '..', '..');
 const BUNDLED_BIN_PATH = join(WRAPPER_ROOT, 'bin');
 const LOCAL_BIN_PATH = join(__dirname, '..', 'bin');
+const GO_BINARY_PATH = join(WRAPPER_ROOT, '../../../../packages-golang/validator-v2/dist/validator');
 
 /**
  * Resolves the URL to download the binary from.
@@ -104,7 +105,7 @@ async function downloadRemoteBinaries(): Promise<void> {
 		res = await fetch(remoteUrl);
 	} catch (err) {
 		const errorMessage = err instanceof Error ? err.message : String(err);
-		throw new Error(`Failed to fetch remote binary from ${remoteUrl}: ${errorMessage}`);
+		throw new Error(`Failed to fetch remote binary from ${remoteUrl}: ${errorMessage}`, { cause: err });
 	}
 
 	if (!res.ok) {
@@ -146,8 +147,7 @@ async function main(): Promise<void> {
 		return;
 	}
 
-	const binaryDistributionFilePath = [BUNDLED_BIN_PATH, LOCAL_BIN_PATH]
-		.map(binPath => join(binPath, binaryDistributionFile))
+	const binaryDistributionFilePath = [GO_BINARY_PATH, ...[BUNDLED_BIN_PATH, LOCAL_BIN_PATH].map(binPath => join(binPath, binaryDistributionFile))]
 		.find(binaryPath => existsSync(binaryPath));
 
 	// Check if the file exists locally (development environment)

@@ -20,6 +20,12 @@ workflow uses the same script with `--all`.
 The script clears the wrapper's `bin` and `dist/bin` directories and copies the
 new executable to both. `--all` builds Linux and macOS binaries for amd64 and arm64.
 
+The wrapper declares this Go package as a build dependency, so Turbo includes its
+sources when pruning Docker builds and compiles it before building the wrapper.
+Local builds also write `dist/validator` in this package. The wrapper copies that
+artifact into its runtime `dist/bin` directory, including when Turbo restores the
+Go build from cache.
+
 Building a binary does not rebuild or deploy the worker image.
 
 To run the rules in `rules.json` against a ZIP or an imported GTFS SQLite file:

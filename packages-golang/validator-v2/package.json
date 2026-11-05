@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"build": "go build -ldflags=-w -o dist/validator ./src",
+		"build": "bash ./compile.sh",
 		"build:binary": "bash ./compile.sh",
 		"dev": "go run -ldflags=-w ./src",
 		"lint": "go vet ./...",

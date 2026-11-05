@@ -53,6 +53,9 @@ for TARGET in "${TARGETS[@]}"; do
 done
 
 if [ "${1:---local}" = "--local" ]; then
+	# Turbo caches this package's dist output; the wrapper copies it after a cache hit.
+	mkdir -p "$SCRIPT_DIR/dist"
+	cp -p "$BINARY_PATH" "$SCRIPT_DIR/dist/validator"
 	BINARY_VERSION="$("$BINARY_PATH" -version)"
 	echo "GTFS validator binary ready: $BINARY_VERSION"
 fi
