@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
+		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-import-gtfs": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*"
