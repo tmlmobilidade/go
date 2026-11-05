@@ -4,7 +4,6 @@
 	"private": true,
 	"scripts": {
 		"build": "bash ./compile.sh",
-		"build:binary": "bash ./compile.sh",
 		"dev": "go run -ldflags=-w ./src",
 		"lint": "go vet ./...",
 		"repo:validator-rules": "bash ../../scripts/generate-validator-rules.sh",
