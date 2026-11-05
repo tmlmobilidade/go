@@ -58,6 +58,18 @@
 	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
 }
 
+.tag[data-variant='info'] {
+	color: var(--color-status-info-primary);
+	background-color: var(--color-status-info-contrast);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
+.tag[data-variant='info'][data-filled="true"] {
+	color: var(--color-status-info-contrast);
+	background-color: var(--color-status-info-primary);
+	box-shadow: 0 1px 3px 0 rgb(0 0 0 / 15%);
+}
+
 .tag[data-variant='success'] {
 	color: var(--color-status-success-primary);
 	background-color: var(--color-status-success-contrast);

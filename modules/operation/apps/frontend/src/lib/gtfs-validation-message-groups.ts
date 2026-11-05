@@ -48,7 +48,16 @@ export function filterGroupsBySeverity(groups: GtfsValidationOutputRuleMessage[]
 	}
 
 	return groups
-		.map(group => ({ ...group, messages: group.messages.filter(message => message.severity === severity) }))
+		.map((group) => {
+			const messages = group.messages.filter(message => message.severity === severity);
+			return {
+				...group,
+				field: [...new Set(messages.map(message => message.field))].join(', '),
+				messages,
+				severity,
+				total_rows: new Set(messages.flatMap(message => message.rows)).size,
+			};
+		})
 		.filter(group => group.messages.length > 0);
 }
 
