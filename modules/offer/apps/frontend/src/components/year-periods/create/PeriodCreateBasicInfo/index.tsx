@@ -49,6 +49,7 @@ export function PeriodCreateBasicInfo() {
 					<TextInput
 						description={t('default:periods.fields.short_name.description')}
 						error={fieldState.error?.message}
+						inputWrapperOrder={['label', 'input', 'description', 'error']}
 						label={t('default:periods.fields.short_name.label')}
 						onChange={field.onChange}
 						placeholder={t('default:periods.fields.short_name.placeholder')}

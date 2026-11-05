@@ -73,10 +73,12 @@ function VkmModal() {
 		stop_times: t('lines:vkms.VkmModal.stop_times_description'),
 	} as const;
 
-	const integerFormatter = new Intl.NumberFormat(locale);
-	const kilometerFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
-	const euroFormatter = new Intl.NumberFormat(locale, { currency: 'EUR', style: 'currency' });
-	const percentFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 2, style: 'percent' });
+	// Use Portugal's regional number conventions for GO's Portuguese language.
+	const numberLocale = locale === 'pt' ? 'pt-PT' : locale;
+	const integerFormatter = new Intl.NumberFormat(numberLocale);
+	const kilometerFormatter = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+	const euroFormatter = new Intl.NumberFormat(numberLocale, { currency: 'EUR', style: 'currency' });
+	const percentFormatter = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 2, style: 'percent' });
 
 	function formatOperationalDate(date: number) {
 		const value = String(date);

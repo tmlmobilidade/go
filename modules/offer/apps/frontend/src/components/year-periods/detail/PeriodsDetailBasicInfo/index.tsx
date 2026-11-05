@@ -50,6 +50,7 @@ export function PeriodsDetailBasicInfo() {
 						<TextInput
 							description={t('default:periods.fields.short_name.description')}
 							error={fieldState.error?.message}
+							inputWrapperOrder={['label', 'input', 'description', 'error']}
 							label={t('default:periods.fields.short_name.label')}
 							onChange={field.onChange}
 							placeholder={t('default:periods.fields.short_name.placeholder')}
@@ -78,22 +79,6 @@ export function PeriodsDetailBasicInfo() {
 				/>
 				<StandardFormController
 					control={form.control}
-					name="agency_ids"
-					render={({ field, fieldState }) => (
-						<MultiSelect
-							data={options}
-							disabled={!capabilities.editEnabled || isLoading || !!error}
-							error={fieldState.error?.message}
-							label={t('default:periods.fields.agency_ids.label')}
-							onChange={field.onChange}
-							value={field.value ?? []}
-							w="100%"
-							withAsterisk={!CreateYearPeriodSchema.shape.agency_ids.isOptional()}
-						/>
-					)}
-				/>
-				<StandardFormController
-					control={form.control}
 					name="color"
 					render={({ field, fieldState }) => (
 						<ColorInput
@@ -109,6 +94,22 @@ export function PeriodsDetailBasicInfo() {
 					)}
 				/>
 			</Grid>
+			<StandardFormController
+				control={form.control}
+				name="agency_ids"
+				render={({ field, fieldState }) => (
+					<MultiSelect
+						data={options}
+						disabled={!capabilities.editEnabled || isLoading || !!error}
+						error={fieldState.error?.message}
+						label={t('default:periods.fields.agency_ids.label')}
+						onChange={field.onChange}
+						value={field.value ?? []}
+						w="100%"
+						withAsterisk={!CreateYearPeriodSchema.shape.agency_ids.isOptional()}
+					/>
+				)}
+			/>
 		</Section>
 	);
 }
