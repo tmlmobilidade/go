@@ -7,10 +7,8 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { planStatisticsWriter } from '../../utils/writer.js';
+import { calculateGtfsStatistics, type GtfsStatistics } from '../calculate-statistics/calculate-gtfs-statistics.js';
 import { calculatePlanCost } from '../calculate-statistics/calculate-plan-cost.js';
-import { calculateTripVkms } from '../calculate-statistics/calculate-trip-vkms.js';
-import { countLines } from '../calculate-statistics/count-lines.js';
-import { countTrips } from '../calculate-statistics/count-trips.js';
 import { importPlanGtfs } from './steps/import-plan-gtfs.js';
 
 /* * */
@@ -48,16 +46,11 @@ export async function importPlansTask() {
 
 		try {
 			const gtfs = await importPlanGtfs(fileId, databasePath);
-			let tripCount: number;
-			let lineCount: number;
-			let vkmCount: number;
+			let statistics: GtfsStatistics;
 
 			try {
 				// Calculate totals while the imported SQLite connection is still open.
-				tripCount = countTrips(gtfs);
-				lineCount = countLines(gtfs);
-				vkmCount = calculateTripVkms(gtfs, plan.active_from, plan.active_until)
-					.reduce((total, trip) => total + trip.vkm, 0);
+				statistics = calculateGtfsStatistics(gtfs, plan.active_from, plan.active_until);
 			} finally {
 				// Close without cleanup(), which would also delete the SQLite file.
 				gtfs._db.databaseInstance.close();
@@ -65,7 +58,7 @@ export async function importPlansTask() {
 
 			// Read the current rate from the operator associated with this plan.
 			const agency = await goDb.core.agencies.findById(plan.agency_id, { projection: { 'financials.price_per_km': 1 } });
-			const cost = calculatePlanCost(vkmCount, agency?.financials?.price_per_km);
+			const cost = calculatePlanCost(statistics.vkm_count, agency?.financials?.price_per_km);
 
 			// Persist the totals and applied rate, flushing before leaving this task run.
 			await planStatisticsWriter.write({
@@ -73,11 +66,9 @@ export async function importPlansTask() {
 				hash: plan.hash,
 				plan_id: plan._id,
 				statistics: {
-					line_count: lineCount,
+					...statistics,
 					plan_cost: cost,
 					price_per_km: cost.status === 'ready' ? Number(agency?.financials?.price_per_km) : null,
-					trip_count: tripCount,
-					vkm_count: vkmCount,
 				},
 			});
 			await planStatisticsWriter.flush();
@@ -86,9 +77,9 @@ export async function importPlansTask() {
 				? new Intl.NumberFormat('pt-PT', { currency: 'EUR', style: 'currency' }).format(cost.amount)
 				: cost.status;
 
-			const vkmLabel = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(vkmCount);
+			const vkmLabel = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(statistics.vkm_count);
 
-			Logger.success(`Imported plan "${plan._id}" to ${databasePath}. Trips: ${tripCount}. Lines: ${lineCount}. VKM: ${vkmLabel} km. Estimated cost: ${costLabel}.`);
+			Logger.success(`Imported plan "${plan._id}" to ${databasePath}. Trips: ${statistics.trip_count}. Lines: ${statistics.line_count}. VKM: ${vkmLabel} km. Estimated cost: ${costLabel}.`);
 			break;
 		} catch (error) {
 			Logger.error({ error, message: `Error processing plan "${plan._id}".` });
