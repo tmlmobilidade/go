@@ -1,0 +1,70 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 15px;
+}
+
+/* * */
+/* SWATCH */
+
+.swatch {
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	border: 2px solid transparent;
+	cursor: pointer;
+	opacity: 0.8;
+	transition: all 100ms ease-in-out;
+}
+
+.swatch:active {
+	transform: scale(0.95);
+	opacity: 1;
+}
+
+.swatch:hover {
+	opacity: 1;
+	border-width: 3px;
+}
+
+.swatch[data-theme="ocean"] {
+	background: var(--theme-ocean-color-primary);
+	border-color: var(--theme-ocean-color-secondary);
+}
+
+.swatch[data-theme="park"] {
+	background: var(--theme-park-color-primary);
+	border-color: var(--theme-park-color-secondary);
+}
+
+.swatch[data-theme="path"] {
+	background: var(--theme-path-color-primary);
+	border-color: var(--theme-path-color-secondary);
+}
+
+.swatch[data-theme="pool"] {
+	background: var(--theme-pool-color-primary);
+	border-color: var(--theme-pool-color-secondary);
+}
+
+.swatch[data-theme="royal"] {
+	background: var(--theme-royal-color-primary);
+	border-color: var(--theme-royal-color-secondary);
+}
+
+.swatch[data-theme="street"] {
+	background: var(--theme-street-color-primary);
+	border-color: var(--theme-street-color-secondary);
+}
+
+.swatch[data-active="true"] {
+	box-shadow: 0 0 5px 0 rgb(0 0 0 / 10%);
+	transform: scale(1.3);
+	border-width: 2px;
+	opacity: 1;
+	cursor: default;
+}

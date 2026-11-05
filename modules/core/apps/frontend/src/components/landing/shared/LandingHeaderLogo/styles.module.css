@@ -1,0 +1,75 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	gap: 2px;
+	align-items: center;
+	justify-content: center;
+	padding: 4px;
+	padding-left: 11px;
+	background-color: var(--color-system-background-100);
+	border-radius: 999px;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* * */
+/* TEXT */
+
+.text {
+	font-size: 40px;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--color-system-text-100);
+}
+
+/* * */
+/* LIVE ICON */
+
+.liveIcon {
+	position: relative;
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+}
+
+/* * */
+/* DOT */
+
+.dot {
+	width: 12px;
+	height: 12px;
+	background-color: var(--color-primary);
+	border-radius: 999px;
+}
+
+/* * */
+/* RIPPLE */
+
+.ripple {
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	background-color: var(--color-primary);
+	border-radius: 999px;
+	animation: 8000ms linear infinite pulse;
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 1;
+		transform: scale(0);
+	}
+	25% {
+		opacity: 0;
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(1);
+	}
+}
