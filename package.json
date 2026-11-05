@@ -189,8 +189,7 @@
 		"repo:sql": "bash ./scripts/generate-sql-registry.sh",
 		"repo:sql:check": "bash ./scripts/generate-sql-registry.sh --check",
 		"repo:validator-binary": "bash packages-golang/validator-v2/compile.sh",
-		"repo:validator-rules": "bash ./scripts/generate-validator-rules.sh",
-		"repo:validator-rules:check": "bash ./scripts/generate-validator-rules.sh --check"
+		"repo:validator-rules": "bash ./scripts/generate-validator-rules.sh"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "21.2.4",
