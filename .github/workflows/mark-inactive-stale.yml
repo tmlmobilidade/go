@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set Progress to Stale for inactive open issues
+      - name: Set Progress to Stale for inactive Working or Testing issues
         env:
           GH_TOKEN: ${{ secrets.GO_REPO_TOKEN_ISSUES }}
           FIELD_ID: ${{ vars.PROGRESS_FIELD_ID }}
@@ -47,6 +47,14 @@ jobs:
                     id
                     url
                     createdAt
+                    issueFieldValues(first: 20) {
+                      nodes {
+                        ... on IssueFieldSingleSelectValue {
+                          name
+                          field { ... on IssueFieldSingleSelect { id } }
+                        }
+                      }
+                    }
                     comments(last: 1) {
                       nodes { createdAt }
                     }
@@ -122,6 +130,18 @@ jobs:
 
               issue_id=$(jq -r '.id' <<<"$issue")
               issue_url=$(jq -r '.url' <<<"$issue")
+              progress=$(jq -r --arg fieldId "$FIELD_ID" '
+                [ .issueFieldValues.nodes[]?
+                  | select(.field.id == $fieldId)
+                  | .name ]
+                | first // ""
+              ' <<<"$issue")
+
+              # Idea, Planned, Done, Stale, Canceled, Duplicate, and unset Progress stay as they are.
+              if [[ "$progress" != "Working" && "$progress" != "Testing" ]]; then
+                skipped=$((skipped + 1))
+                continue
+              fi
 
               # Latest of creation, the last issue comment, and the latest commit on a linked pull request.
               last_activity=$(jq -r '
@@ -161,7 +181,7 @@ jobs:
             cursor=$(jq -r '.data.search.pageInfo.endCursor' <<<"$page")
           done
 
-          echo "Done. marked=$marked skipped_active=$skipped failed=$failed"
+          echo "Done. marked=$marked skipped=$skipped failed=$failed"
           if (( failed > 0 )); then
             exit 1
           fi
