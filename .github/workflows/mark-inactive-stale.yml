@@ -47,7 +47,7 @@ jobs:
                     id
                     url
                     createdAt
-                    issueFieldValues(first: 20) {
+                    issueFieldValues(first: 50) {
                       nodes {
                         ... on IssueFieldSingleSelectValue {
                           name
