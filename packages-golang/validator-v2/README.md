@@ -291,10 +291,10 @@ row findings. Diagnostic-only IDs have no executable work and remain skipped whe
 used as prerequisites. File-presence gates use actual table existence independently
 of whether their missing-file diagnostic is enabled.
 
-Run `npm run repo:validator-rules` to generate only `packages-new/types/gtfs-validator/src/rules/rule-ids.ts`. The generator reads IDs from the central registrations; dependencies remain in `rules.json`.
+Run `npm run repo:validator-rules` from the repository root or this package directory to generate only `packages-new/types/gtfs-validator/src/rules/rule-ids.ts`. The generator reads IDs from the central registrations; dependencies remain in `rules.json`.
 
 V2 currently registers four executable checks. The committed shared catalog still
-contains the full legacy rule set, so `repo:validator-rules:check` currently reports
+contains the full legacy rule set, so `npm run repo:validator-rules -- --check` currently reports
 a mismatch. To inspect v2's generated catalog separately during migration, run
 `npm run repo:validator-rules -- /tmp/validator-v2-rules`.
 
