@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import { calculatePlanCost } from '../calculate-statistics/calculate-plan-cost.js';
 import { calculateTripVkms } from '../calculate-statistics/calculate-trip-vkms.js';
 import { countLines } from '../calculate-statistics/count-lines.js';
 import { countTrips } from '../calculate-statistics/count-trips.js';
@@ -20,7 +21,7 @@ interface PlanStatics {
 	vkm_count: number
 }
 
-/** Imports normalized plan GTFS files and logs trip, line and VKM totals. */
+/** Imports normalized plan GTFS files and logs trip, line, VKM and estimated cost totals. */
 export async function importPlansTask() {
 	//
 	// Only import plans whose organizer has finished processing the current hash.
@@ -63,7 +64,16 @@ export async function importPlansTask() {
 				gtfs._db.databaseInstance.close();
 			}
 
-			Logger.success(`Imported plan "${plan._id}" to ${databasePath}. Trips: ${tripCount}. Lines: ${lineCount}. VKM: ${vkmCount}.`);
+			// Read the current rate from the operator associated with this plan.
+			const agency = await goDb.core.agencies.findById(plan.agency_id, { projection: { 'financials.price_per_km': 1 } });
+			const cost = calculatePlanCost(vkmCount, agency?.financials?.price_per_km);
+			const costLabel = cost.status === 'ready'
+				? new Intl.NumberFormat('pt-PT', { currency: 'EUR', style: 'currency' }).format(cost.amount)
+				: cost.status;
+
+			const vkmLabel = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(vkmCount);
+
+			Logger.success(`Imported plan "${plan._id}" to ${databasePath}. Trips: ${tripCount}. Lines: ${lineCount}. VKM: ${vkmLabel} km. Estimated cost: ${costLabel}.`);
 			break;
 		} catch (error) {
 			// An import failure must not prevent the remaining plans from being processed.
