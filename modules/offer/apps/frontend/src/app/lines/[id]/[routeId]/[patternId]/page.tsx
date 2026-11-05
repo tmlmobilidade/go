@@ -1,21 +1,15 @@
 /* * */
 
-import { LinesListContextProvider } from '@/components/lines/list/LinesList.context';
 import { PatternDetail } from '@/components/patterns/detail/PatternDetail';
 import { PatternDetailContextProvider } from '@/components/patterns/detail/PatternDetail.context';
-import { RouteDetailContextProvider } from '@/components/routes/detail/RouteDetail.context';
 
 /* * */
 
 export default async function PatternDetailPage({ params }: { params: Promise<{ id: string, patternId: string, routeId: string }> }) {
-	const { id, patternId, routeId } = await params;
+	const { patternId } = await params;
 	return (
-		<LinesListContextProvider>
-			<RouteDetailContextProvider lineId={id} routeId={routeId}>
-				<PatternDetailContextProvider lineId={id} patternId={patternId}>
-					<PatternDetail />
-				</PatternDetailContextProvider>
-			</RouteDetailContextProvider>
-		</LinesListContextProvider>
+		<PatternDetailContextProvider key={patternId}>
+			<PatternDetail />
+		</PatternDetailContextProvider>
 	);
 }

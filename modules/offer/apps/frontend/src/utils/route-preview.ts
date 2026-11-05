@@ -1,17 +1,10 @@
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
-import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
+import { PatternsDetailPathItem, type RoutePreviewLeg, type RoutePreviewResponse } from '@tmlmobilidade/go-offer-pckg-types';
+import { type ShapeAnchor } from '@tmlmobilidade/go-types-offer';
+
+import { resolveShapeAnchors } from './shape-anchors';
 
 /* * */
-
-export interface RoutePreviewAnchor {
-	_id: string
-	after_stop_id: string
-	before_stop_id: string
-	lat: number
-	lon: number
-	sequence: number
-	type: 'through' | 'via'
-}
 
 export interface RoutePreviewLegSegment {
 	after_stop_id: string
@@ -27,47 +20,6 @@ export interface RoutePreviewPoint {
 	lat: number
 	lon: number
 	type: 'break' | 'through' | 'via'
-}
-
-export interface RoutePreviewLeg {
-	distance: number
-	duration: number
-	encoded_polyline?: string
-	from_index: number
-	geojson: {
-		geometry: {
-			coordinates: number[][]
-			type: string
-		}
-		properties: {
-			distance: number
-			duration: number
-			from_index: number
-			to_index: number
-		}
-		type: string
-	}
-	geometry: [number, number][]
-	to_index: number
-}
-
-export interface RoutePreviewResponse {
-	distance: number
-	duration: number
-	encoded_polyline: string
-	geojson: {
-		geometry: {
-			coordinates: [number, number][]
-			type: 'LineString'
-		}
-		properties: {
-			distance: number
-			duration: number
-		}
-		type: 'Feature'
-	}
-	geometry: [number, number][]
-	legs: RoutePreviewLeg[]
 }
 
 export interface RoutePreviewRecalculationRange {
@@ -104,8 +56,9 @@ function getPathStops(path: PatternsDetailPathItem[]): PathStopEntry[] {
 
 /* * */
 
-export function buildRoutePreviewModel(path: PatternsDetailPathItem[], anchors: RoutePreviewAnchor[]) {
+export function buildRoutePreviewModel(path: PatternsDetailPathItem[], anchors: ShapeAnchor[]) {
 	const pathStops = getPathStops(path);
+	const resolvedAnchors = resolveShapeAnchors(path, anchors).anchors;
 
 	if (!pathStops.length) {
 		return {
@@ -121,10 +74,10 @@ export function buildRoutePreviewModel(path: PatternsDetailPathItem[], anchors: 
 		const currentStop = pathStops[index];
 		const nextStop = pathStops[index + 1];
 
-		const segmentAnchors = anchors
+		const segmentAnchors = resolvedAnchors
 			.filter(anchor => (
-				anchor.after_stop_id === currentStop.pathItem.stop_id &&
-				anchor.before_stop_id === nextStop.pathItem.stop_id
+				anchor.after_path_item_id === currentStop.pathItem._id &&
+				anchor.before_path_item_id === nextStop.pathItem._id
 			))
 			.sort((a, b) => a.sequence - b.sequence);
 
@@ -280,3 +233,5 @@ export function composeRoutePreviewResponse(legs: (RoutePreviewLeg | undefined)[
 		legs: completeLegs,
 	};
 }
+
+export type { RoutePreviewLeg, RoutePreviewResponse } from '@tmlmobilidade/go-offer-pckg-types';

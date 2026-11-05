@@ -5,6 +5,7 @@
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { closeCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
 import { CloseButton, DeleteButton, Section, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import { ParameterCreateSummaryCard } from '../ParameterCreateSummaryCard';
 
@@ -16,8 +17,9 @@ export function ParameterCreateHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const ruleCreateContext = useParameterCreateContext();
-	const isDefaultRule = ruleCreateContext.data.form?.values.kind === 'default';
+	const isDefaultRule = ruleCreateContext.data.values.kind === 'default';
 
 	//
 	// B. Render components
@@ -29,7 +31,7 @@ export function ParameterCreateHeader() {
 
 					<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
 						<CloseButton onClick={closeCreateParameterModal} type="close" />
-						<Tag label={ruleCreateContext.data.parameterForUI.name || 'Nova Regra'} variant="muted" />
+						<Tag label={ruleCreateContext.data.parameterForUI.name || t('default:scheduling.copy.newConfiguration')} variant="muted" />
 					</Section>
 
 					{!isDefaultRule && ruleCreateContext.flags.isEditing && ruleCreateContext.actions.deleteParameter && (

@@ -2,7 +2,8 @@
 
 import { useLineDetailContext } from '@/components/lines/detail/LineDetail.context';
 import { LineSchema } from '@tmlmobilidade/go-types-offer';
-import { Collapsible, Grid, Section, Switch } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, StandardFormController, Switch } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -12,31 +13,46 @@ export function LineDetailSectionSpecs() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const lineDetailContext = useLineDetailContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Collapsible title="Especificações da Linha">
+		<Collapsible title={t('lines:detail.LineDetailSectionSpecs.line_specs')}>
 			<Section gap="sm">
 				<Grid columns="ab">
-					<Switch
-						key={lineDetailContext.data.form.key('is_circular_line')}
-						disabled={lineDetailContext.flags.isReadOnly}
-						label="Linha Circular"
-						required={!LineSchema.shape.is_circular_line.isOptional()}
-						w="fit-content"
-						{...lineDetailContext.data.form.getInputProps('is_circular_line', { type: 'checkbox' })}
+					<StandardFormController
+						control={lineDetailContext.form.control}
+						name="is_circular_line"
+						render={({ field, fieldState }) => (
+							<Switch
+								checked={!!field.value}
+								error={fieldState.error?.message}
+								label={t('lines:detail.LineDetailSectionSpecs.circular_line')}
+								onChange={event => field.onChange(event.currentTarget.checked)}
+								readOnly={!lineDetailContext.capabilities.editEnabled}
+								required={!LineSchema.shape.is_circular_line.isOptional()}
+								w="fit-content"
+							/>
+						)}
 					/>
 
-					<Switch
-						key={lineDetailContext.data.form.key('is_school_line')}
-						disabled={lineDetailContext.flags.isReadOnly}
-						label="Linha Escolar"
-						required={!LineSchema.shape.is_school_line.isOptional()}
-						w="fit-content"
-						{...lineDetailContext.data.form.getInputProps('is_school_line', { type: 'checkbox' })}
+					<StandardFormController
+						control={lineDetailContext.form.control}
+						name="is_school_line"
+						render={({ field, fieldState }) => (
+							<Switch
+								checked={!!field.value}
+								error={fieldState.error?.message}
+								label={t('lines:detail.LineDetailSectionSpecs.school_line')}
+								onChange={event => field.onChange(event.currentTarget.checked)}
+								readOnly={!lineDetailContext.capabilities.editEnabled}
+								required={!LineSchema.shape.is_school_line.isOptional()}
+								w="fit-content"
+							/>
+						)}
 					/>
 				</Grid>
 			</Section>

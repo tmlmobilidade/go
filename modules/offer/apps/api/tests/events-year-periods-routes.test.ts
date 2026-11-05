@@ -75,7 +75,7 @@ test('Offer custom conflict route validates JSON and returns the conflict contra
 	PERMISSIONS = [{ action: 'read', resources: { agency_ids: ['A'] }, scope: 'year_periods' }];
 	const invalid = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], dates: 'invalid' }, url: '/year-periods/check-conflicts' });
 	assert.equal(invalid.statusCode, 400);
-	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], dates: ['20261020'] }, url: '/year-periods/check-conflicts' });
+	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], dates: [20261020] }, url: '/year-periods/check-conflicts' });
 	assert.equal(response.statusCode, 200);
 	assert.deepEqual(response.json().data, { conflicts: [] });
 });

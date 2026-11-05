@@ -1,17 +1,21 @@
 .longTitle {
-  display: flex;
-  gap: var(--size-spacing-xs);
-  align-items: center;
-  height: 35px;
-  font-weight: 600;
-  text-transform: uppercase;
+	display: flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	height: 35px;
+	font-weight: 600;
+	text-transform: uppercase;
 }
 
 .compactTitle {
-  display: flex;
-  gap: var(--size-spacing-xs);
-  align-items: center;
-  min-width: 50px;
-  height: 35px;
-  text-transform: uppercase;
+	display: flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	min-width: 50px;
+	height: 35px;
+	text-transform: uppercase;
+}
+
+.mutedIcon {
+	opacity: 0.7;
 }

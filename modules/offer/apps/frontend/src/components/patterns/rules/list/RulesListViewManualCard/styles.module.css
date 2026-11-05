@@ -9,7 +9,6 @@
   justify-content: space-between;
   width: 100%;
   overflow: hidden;
-  padding: var(--size-spacing-md);
   background-color: var(--color-system-background-100);
   border: 1px solid var(--color-system-border-100);
   border-radius: var(--size-spacing-xs);
@@ -21,12 +20,22 @@
   background-color: var(--color-system-background-200);
 }
 
-/* * */
-/* TIMES COUNT */
+.eventName {
+  min-width: 0;
+  max-width: 100%;
+}
 
-.timesCount {
-  color: var(--color-system-text-200);
-  font-size: var(--size-spacing-md);
+.schedules {
+  width: 100%;
+  padding: var(--size-spacing-sm) var(--size-spacing-md);
+  border-top: 1px solid var(--color-system-border-100);
+}
+
+.header {
+  width: 100%;
+  padding: var(--size-spacing-md);
+  padding-right: var(--size-spacing-3xl);
+  background-color: var(--color-system-background-200);
 }
 
 .eventName:hover {
@@ -40,4 +49,12 @@
   position: absolute;
   top: var(--size-spacing-sm);
   right: var(--size-spacing-sm);
+}
+
+.container[data-read-only] {
+	cursor: default;
+}
+
+.container[data-read-only]:hover {
+	background-color: var(--color-system-background-100);
 }

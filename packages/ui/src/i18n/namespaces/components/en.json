@@ -140,5 +140,43 @@
 		"Topbar": {
 			"show_sidebar_aria": "Show sidebar"
 		}
+	},
+	"calendar": {
+		"month": "Month",
+		"year": "Year",
+		"today": "Today",
+		"previous": "Previous",
+		"next": "Next",
+		"selectMonth": "Select month",
+		"selectYear": "Select year",
+		"switchToMonthView": "Switch to month view",
+		"switchToYearView": "Switch to year view",
+		"viewSelectLabel": "Calendar view",
+		"more": "+{count} events",
+		"agency": "Operator",
+		"agencies": "Operators",
+		"types": {
+			"annotation": "Annotations",
+			"event": "Events",
+			"holiday": "Holidays",
+			"period": "Periods",
+			"rule-impact": "Affected days"
+		},
+		"nextMonth": "Next month",
+		"previousMonth": "Previous month",
+		"nextYear": "Next year",
+		"previousYear": "Previous year",
+		"nextDecade": "Next decade",
+		"previousDecade": "Previous decade",
+		"daysCopied": "Day count copied",
+		"copyDays": "Copy day count",
+		"copyAffectedDays": "Copy affected day count",
+		"affectedDays": "{count, plural, one {affected day} other {affected days}}",
+		"noTimepoints": "No times"
+	},
+	"common": {
+		"WeekdaySelector": {
+			"sundayAndHolidays": "{day} and holidays"
+		}
 	}
 }
