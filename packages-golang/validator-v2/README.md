@@ -198,7 +198,7 @@ The `MessageService` collects all validation messages throughout the execution:
 
 - **Message Aggregation**: Messages are collected with metadata (file name, field, row numbers, severity)
 - **Deduplication**: Findings with the same file, rule, field, severity, and text
-  are merged, retaining the first 99 source rows and the latest occurrence
+  are merged, retaining at most 50 row examples: the first 49 source rows and the latest occurrence
 - **Severity Tracking**: Counts distinct error and warning diagnostics in the report
 - **Dependency Outcomes**: Counts every emitted info, warning, and error finding
   before deduplication so repeated findings still fail the rule

@@ -47,7 +47,7 @@ func (service *MessageService) AddMessage(message types.Message) {
 	}
 
 	//
-	// 4. Merge identical diagnostics, retaining the first 99 rows and latest row
+	// 4. Merge identical diagnostics, retaining the first 49 rows and latest row
 
 	for index, existing := range service.messages {
 		if existing.Message == message.Message && existing.FileName == message.FileName && existing.RuleID == message.RuleID && existing.Field == message.Field && existing.Severity == message.Severity {
@@ -71,9 +71,9 @@ func (service *MessageService) AddMessage(message types.Message) {
 
 // retainedRows bounds the displayed sample while preserving the latest occurrence.
 func retainedRows(rows []int) []int {
-	if len(rows) > 100 {
-		rows[99] = rows[len(rows)-1]
-		return slices.Clone(rows[:100])
+	if len(rows) > 50 {
+		rows[49] = rows[len(rows)-1]
+		return slices.Clone(rows[:50])
 	}
 	return rows
 }
