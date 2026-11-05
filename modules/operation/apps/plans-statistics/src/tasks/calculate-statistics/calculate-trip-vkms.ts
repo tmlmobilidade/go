@@ -21,7 +21,7 @@ interface TripDistance {
 /* * */
 
 /** Calculates VKM per trip using calendar_dates within the inclusive YYYYMMDD range. */
-export function calculateVkms(gtfs: GtfsSQLTables, startDate: number, endDate: number): TripVkms[] {
+export function calculateTripVkms(gtfs: GtfsSQLTables, startDate: number, endDate: number): TripVkms[] {
 	if (!gtfs.trips || !gtfs.shapes || !gtfs.calendar_dates) {
 		throw new Error('Cannot calculate VKMs: trips, shapes or calendar dates are missing.');
 	}

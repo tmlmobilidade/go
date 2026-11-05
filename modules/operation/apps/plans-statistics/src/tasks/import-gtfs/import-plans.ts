@@ -6,9 +6,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { calculateLines } from '../calculate-statistics/calculate-lines.js';
-import { calculateTrips } from '../calculate-statistics/calculate-trips.js';
-import { calculateVkms } from '../calculate-statistics/calculate-vkms.js';
+import { calculateTripVkms } from '../calculate-statistics/calculate-trip-vkms.js';
+import { countLines } from '../calculate-statistics/count-lines.js';
+import { countTrips } from '../calculate-statistics/count-trips.js';
 import { importPlanGtfs } from './steps/import-plan-gtfs.js';
 
 /* * */
@@ -54,9 +54,9 @@ export async function importPlansTask() {
 
 			try {
 				// Calculate totals while the imported SQLite connection is still open.
-				tripCount = calculateTrips(gtfs);
-				lineCount = calculateLines(gtfs);
-				vkmCount = calculateVkms(gtfs, plan.active_from, plan.active_until)
+				tripCount = countTrips(gtfs);
+				lineCount = countLines(gtfs);
+				vkmCount = calculateTripVkms(gtfs, plan.active_from, plan.active_until)
 					.reduce((total, trip) => total + trip.vkm, 0);
 			} finally {
 				// Close without cleanup(), which would also delete the SQLite file.

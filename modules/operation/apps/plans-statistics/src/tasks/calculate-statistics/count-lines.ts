@@ -5,7 +5,7 @@ import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 /* * */
 
 /** Counts the distinct route_short_name values imported from routes.txt. */
-export function calculateLines(gtfs: GtfsSQLTables): number {
+export function countLines(gtfs: GtfsSQLTables): number {
 	if (!gtfs.routes) {
 		throw new Error('Cannot calculate lines: the GTFS routes table is missing.');
 	}
