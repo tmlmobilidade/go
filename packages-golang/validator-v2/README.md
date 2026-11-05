@@ -22,6 +22,25 @@ new executable to both. `--all` builds Linux and macOS binaries for amd64 and ar
 
 Building a binary does not rebuild or deploy the worker image.
 
+To run the rules in `rules.json` against a ZIP or an imported GTFS SQLite file:
+
+```sh
+cd packages-golang/validator-v2
+make dev INPUT=data/gtfs_20261021_TML.zip
+# Or use an existing SQLite database:
+make dev INPUT=/absolute/path/feed.sqlite
+```
+
+The Makefile lives at the package root. For ZIP input, it calls the
+existing `import-gtfs` CLI first, then passes
+its temporary SQLite database to the normal validator. The temporary database is
+removed after the run; the input ZIP or existing SQLite file is retained.
+
+This writes `src/output.json` using Portuguese messages and debug logging.
+Override `RULES`, `OUTPUT`, `RULES_LANG`, or `LOG_LEVEL` as needed; relative paths
+are resolved from the directory where you run make. Use `make run` with the same options to build and execute
+`dist/gtfs-validator` instead.
+
 ## Architecture Overview
 
 The GTFS Validator follows a modular, concurrent architecture designed for efficiency and extensibility. The system is organized into several key components:
