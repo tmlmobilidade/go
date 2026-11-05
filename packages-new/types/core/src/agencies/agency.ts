@@ -31,3 +31,9 @@ export const UpdateAgencySchema = CreateAgencySchema.omit({ created_by: true }).
 export type Agency = z.infer<typeof AgencySchema>;
 export type CreateAgencyDto = z.infer<typeof CreateAgencySchema>;
 export type UpdateAgencyDto = z.infer<typeof UpdateAgencySchema>;
+
+/* * */
+
+/** Basic agency identity shared by selectors and cross-module displays. */
+export const AgencyReferenceSchema = AgencySchema.pick({ _id: true, code: true, name: true, short_name: true });
+export type AgencyReference = z.infer<typeof AgencyReferenceSchema>;

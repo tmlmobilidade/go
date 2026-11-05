@@ -139,7 +139,8 @@ export async function parsePlanTask(planData: Plan) {
 				const calendarDatesData = importedGtfsSql.calendar_dates[currentTrip.service_id];
 				const routeData = importedGtfsSql.routes.get('route_id', currentTrip.route_id);
 				const shapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
-				const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
+				// Imported GTFS sequences are TEXT, so order them numerically.
+				const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY CAST(stop_sequence AS INTEGER)', [currentTrip.trip_id]);
 				const stopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
 
 				//

@@ -93,6 +93,9 @@ export const PAGE_ROUTES = Object.freeze({
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'frontend_url')}/typologies`,
 
+		// YEAR_PERIODS_DATES
+		YEAR_PERIODS_DATES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}/dates`,
+
 		// YEAR_PERIODS
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'frontend_url')}/year-periods`,
@@ -170,9 +173,7 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}`,
 		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
 		AGENCIES_LIST: `${getModuleConfig('core', 'api_url')}/agencies`,
-
-		// AGENCY-ORGANIZATIONS
-		AGENCY_ORGANIZATIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/agency-organizations`,
+		AGENCIES_LOOKUP: `${getModuleConfig('core', 'api_url')}/platform/agencies/lookup`,
 
 		// APP-CONFIGS
 		APP_CONFIGS_BANNER: `${getModuleConfig('core', 'api_url')}/app-configs/banner`,
@@ -189,6 +190,7 @@ export const API_ROUTES = Object.freeze({
 		EXTRACTIONS_DOWNLOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/download/${encodeURIComponent(id)}`,
 		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
 		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
+		EXTRACTIONS_RELOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/reload/${encodeURIComponent(id)}`,
 
 		// HOME
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
@@ -397,6 +399,7 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('offer', 'api_url')}/year-periods/check-conflicts`,
 		YEAR_PERIODS_CREATE: `${getModuleConfig('offer', 'api_url')}/year-periods/create`,
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_DETAIL_DATES: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/dates`,
 		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'api_url')}/year-periods`,
 		YEAR_PERIODS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/year-periods/list-agencies`,

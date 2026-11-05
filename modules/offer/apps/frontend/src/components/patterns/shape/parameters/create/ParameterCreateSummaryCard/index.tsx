@@ -5,6 +5,7 @@
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { IconClock, IconGauge, IconMapPin, IconPlayerTrackNext } from '@tabler/icons-react';
 import { Section, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -47,6 +48,8 @@ function MetricTile({ icon, label, value }: MetricTileProps) {
 /* * */
 
 export function ParameterCreateSummaryCard() {
+	const { t } = useTranslation();
+
 	const ctx = useParameterCreateContext();
 	const { avgCommercialSpeed, pureDwellSeconds, totalDistance, travelTimes } = ctx.data.parameterForUI;
 
@@ -54,31 +57,31 @@ export function ParameterCreateSummaryCard() {
 		<Section flexDirection="row" gap="sm" padding="none">
 			<MetricTile
 				icon={<IconMapPin size={18} />}
-				label="Distância total"
+				label={t('default:scheduling.copy.totalDistance')}
 				value={totalDistance > 0 ? formatDistance(totalDistance) : '—'}
 			/>
 
 			<MetricTile
 				icon={<IconClock size={18} />}
-				label="Duração total"
+				label={t('default:scheduling.copy.totalDuration')}
 				value={travelTimes.totalTripSecondsWithStops.formatted || '—'}
 			/>
 
 			<MetricTile
 				icon={<IconPlayerTrackNext size={18} />}
-				label="Tempo de viagem"
+				label={t('default:scheduling.copy.travelTime')}
 				value={travelTimes.totalTripSecondsWithoutStops.formatted || '—'}
 			/>
 
 			<MetricTile
 				icon={<IconClock size={18} />}
-				label="Tempo de paragens"
+				label={t('default:scheduling.copy.dwellTimes')}
 				value={pureDwellSeconds > 0 ? formatSeconds(pureDwellSeconds) : '—'}
 			/>
 
 			<MetricTile
 				icon={<IconGauge size={18} />}
-				label="Vel. média comercial"
+				label={t('default:scheduling.copy.commercialSpeed')}
 				value={avgCommercialSpeed != null ? `${avgCommercialSpeed} km/h` : '—'}
 			/>
 		</Section>

@@ -1,6 +1,6 @@
 'use client';
 
-import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
+import { WEEKDAYS } from '@tmlmobilidade/go-types-shared';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 

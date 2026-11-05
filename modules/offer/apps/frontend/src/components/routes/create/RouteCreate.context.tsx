@@ -1,106 +1,120 @@
 'use client';
 
+import { useLinesDetailData } from '@/components/lines/detail/use-lines-detail-data';
+import { useLinesListData } from '@/components/lines/list/use-lines-list-data';
 import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.modal';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type CreateRouteDto, CreateRouteSchema, type Route } from '@tmlmobilidade/go-types-offer';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 /* * */
 
-interface RouteCreateContextState {
-	actions: {
-		create: () => Promise<void>
-	}
-	data: {
-		form: UseFormReturnType<CreateRouteDto>
-	}
-	flags: {
-		isSaving: boolean
-		isValid: boolean
-	}
-}
-
-/* * */
-
-const RouteCreateContext = createContext<RouteCreateContextState | undefined>(undefined);
+const RouteCreateContext = createContext<StandardFormContextValue<CreateRouteDto> | undefined>(undefined);
 
 export function useRouteCreateContext() {
 	const context = useContext(RouteCreateContext);
-	if (!context) {
-		throw new Error('useRouteCreateContext must be used within a RouteCreateContextProvider');
-	}
+	if (!context) throw new Error('useRouteCreateContext must be used within a RouteCreateContextProvider');
 	return context;
 }
 
 /* * */
 
-export const RouteCreateContextProvider = ({ children, lineId }: PropsWithChildren<{ lineId: string }>) => {
+export function RouteCreateContextProvider({ children, lineId }: PropsWithChildren<{ lineId: string }>) {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
+	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const accessRef = useRef(false);
+	const { mutate: listMutate } = useLinesListData();
+	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);
 
 	//
-	// B. Fetch data
+	// B. Setup form
 
-	const { mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreateRouteDto, typeof CreateRouteSchema>({
+		defaultValues: { code: '', line_id: lineId, name: '' },
+		schema: CreateRouteSchema,
 	});
 
 	//
-	// C. Setup form
+	// C. Handle requests
 
-	const { flags, form } = useTypicalForm<CreateRouteDto>(CreateRouteSchema, undefined, { code: '', line_id: lineId, name: '' }, 'controlled');
-
-	//
-	// D. Handle actions
-
-	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Route>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.ROUTES_CREATE }),
+	const { action: createRequest, isLoading: isCreating } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Route>({ body: CreateRouteSchema.parse(form.getValues()), method: 'POST', url: API_ROUTES.offer.ROUTES_CREATE }),
 		onSuccess: ({ data }) => {
-			form.resetDirty();
+			form.reset();
+			unblock();
+			listMutate();
 			lineMutate();
 			closeCreateRouteModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, data._id)));
+			if (data?._id) router.push(keepUrlParams(PAGE_ROUTES.offer.ROUTE_DETAIL(lineId, data._id)));
 		},
 	});
 
 	//
-	// E. Define context value
+	// D. Setup capabilities
 
-	const contextValue: RouteCreateContextState = useMemo(() => ({
+	const agencyIds = line?.agency_id ? [line.agency_id] : [];
+	const hasCreatePermission = agencyIds.length > 0 && PermissionCatalog.hasPermissionResourceAll({
+		action: PermissionCatalog.all.lines.actions.create,
+		permissions: me?.permissions ?? [],
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.lines.scope,
+		value: agencyIds,
+	});
+	const isReady = !meLoading && !meError && !lineLoading && !lineError && !!line && !line.is_locked;
+	const standardCapabilities = useStandardFormCapabilities({
+		create: { hasPermission: hasCreatePermission, isCreating },
+		form: { isDirty, isValid },
+		loading: { isLoading: !isReady },
+	});
+	const createEnabled = standardCapabilities.createEnabled;
+	const editEnabled = standardCapabilities.editEnabled && hasCreatePermission;
+	accessRef.current = createEnabled;
+
+	const handleCreate = useCallback(async () => {
+		if (!accessRef.current) return;
+		await form.handleSubmit(async () => {
+			if (accessRef.current) await createRequest();
+		})();
+	}, [createRequest, form]);
+
+	useEffect(() => {
+		accessRef.current = createEnabled;
+		return () => {
+			accessRef.current = false;
+		};
+	}, [createEnabled]);
+
+	//
+	// E. Return context value
+
+	const stateValue: StandardFormContextValue<CreateRouteDto> = useMemo(() => ({
 		actions: {
 			create: handleCreate,
 		},
-		data: {
-			form,
+		capabilities: {
+			createEnabled,
+			editEnabled,
 		},
-		flags: {
-			isSaving,
-			isValid: flags.isValid,
-		},
-	}), [
 		form,
-		flags.isValid,
-		handleCreate,
-		isSaving,
-	]);
-
-	//
-	// H. Render components
+		isDirty,
+		isValid,
+		status: {
+			isCreating,
+		},
+		unblock,
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, isDirty, isValid, unblock]);
 
 	return (
-		<RouteCreateContext.Provider value={contextValue}>
+		<RouteCreateContext.Provider value={stateValue}>
 			{children}
 		</RouteCreateContext.Provider>
 	);
-
-	//
-};
+}

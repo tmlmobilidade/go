@@ -13,7 +13,14 @@ import { useMapViewContext } from '../MapViewContext';
 
 /* * */
 
-export function MapViewToolbar() {
+interface MapViewToolbarProps {
+	onScrollZoomChange?: (value: boolean) => void
+	scrollZoom?: boolean
+}
+
+/* * */
+
+export function MapViewToolbar({ onScrollZoomChange, scrollZoom }: MapViewToolbarProps) {
 	//
 
 	//
@@ -21,6 +28,7 @@ export function MapViewToolbar() {
 
 	const mapContext = useMapContext();
 	const mapViewContext = useMapViewContext();
+	const isScrollZoomEnabled = scrollZoom ?? mapContext.flags.scroll_zoom;
 
 	//
 	// B. Transform data
@@ -30,11 +38,22 @@ export function MapViewToolbar() {
 		.map(([key, style]) => ({ label: style.label, value: key }));
 
 	//
-	// C. Render components
+	// C. Handle actions
+
+	const handleToggleScrollZoom = () => {
+		if (onScrollZoomChange) {
+			onScrollZoomChange(!isScrollZoomEnabled);
+			return;
+		}
+		mapContext.actions.toggleScrollZoom();
+	};
+
+	//
+	// D. Render components
 
 	return (
 		<Toolbar>
-			<Switch checked={mapContext.flags.scroll_zoom} label="Permitir Zoom" onChange={() => mapContext.actions.toggleScrollZoom()} />
+			<Switch checked={isScrollZoomEnabled} label="Permitir Zoom" onChange={handleToggleScrollZoom} />
 			<Switch checked={mapViewContext.flags.auto_zoom} label="Auto Zoom" onChange={() => mapViewContext.actions.toggleAutoZoom()} />
 			<Spacer />
 			<SearchField onChange={mapContext.actions.handleSearch} value={mapContext.data.search} />

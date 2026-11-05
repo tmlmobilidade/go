@@ -1,5 +1,6 @@
 'use client';
 
+import { AnnotationsContextProvider } from '@/contexts/Annotations.context';
 import { EventsContextProvider } from '@/contexts/Events.context';
 import { HolidaysContextProvider } from '@/contexts/Holidays.context';
 import { PeriodsContextProvider } from '@/contexts/Periods.context';
@@ -14,24 +15,26 @@ const MODAL_ID = 'rule-calendar-preview-modal';
 
 /* * */
 
-export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleRule[], patternCode: string) => {
+export const openRulesCalendarPreviewModal = (agencyId: string, rules: ScheduleRule[]) => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<EventsContextProvider agencyId={agencyId}>
-					<PeriodsContextProvider agencyId={agencyId}>
-						<HolidaysContextProvider agencyId={agencyId}>
-							<RulesCalendarPreview patternCode={patternCode} rules={rules} />
-						</HolidaysContextProvider>
-					</PeriodsContextProvider>
-				</EventsContextProvider>
+				<AnnotationsContextProvider agencyId={agencyId}>
+					<EventsContextProvider agencyId={agencyId}>
+						<PeriodsContextProvider agencyId={agencyId}>
+							<HolidaysContextProvider agencyId={agencyId}>
+								<RulesCalendarPreview rules={rules} />
+							</HolidaysContextProvider>
+						</PeriodsContextProvider>
+					</EventsContextProvider>
+				</AnnotationsContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,
 		closeOnEscape: false,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: '80%',
+		size: '1500px',
 		styles: {
 			body: {
 				height: '100%',

@@ -2,8 +2,11 @@
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
+import { RuleTimepointCount } from '@/components/patterns/rules/shared/RuleTimepointCount';
+import { RuleLabelTag } from '@/components/shared/rules/RuleLabelTag';
 import { IconCopy } from '@tabler/icons-react';
-import { CloseButton, DeleteButton, IconButton, Spacer, Tag, Toolbar } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, IconButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -13,6 +16,7 @@ export function RuleCreateHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const ruleCreateContext = useRuleCreateContext();
 
 	//
@@ -21,22 +25,23 @@ export function RuleCreateHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={closeCreateRuleModal} type="close" />
-			<Tag label={ruleCreateContext.data.ruleSummary.short || 'Nova Regra'} variant="muted" />
+			<RuleLabelTag label={ruleCreateContext.data.ruleSummary.label} />
+			<RuleTimepointCount count={ruleCreateContext.data.values.timepoints?.length ?? 0} />
 
-			<Spacer />
+			<Spacer shrink />
 
 			{ruleCreateContext.flags.isEditing && ruleCreateContext.actions.duplicateRule && (
 				<IconButton
 					icon={<IconCopy size={20} />}
 					onClick={ruleCreateContext.actions.duplicateRule}
-					tooltip="Duplicar"
+					tooltip={t('default:scheduling.copy.duplicate')}
 				/>
 			)}
 
 			{ruleCreateContext.flags.isEditing && ruleCreateContext.actions.deleteRule && (
 				<DeleteButton
-					confirmMessage="Tem a certeza que deseja apagar esta regra? Esta ação não pode ser revertida."
-					confirmTitle="Apagar Regra"
+					confirmMessage={t('default:scheduling.copy.deleteRuleWarning')}
+					confirmTitle={t('default:scheduling.copy.deleteRuleTitle')}
 					onDelete={ruleCreateContext.actions.deleteRule}
 					showConfirmation
 				/>

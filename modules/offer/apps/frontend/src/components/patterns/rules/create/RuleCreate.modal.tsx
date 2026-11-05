@@ -32,7 +32,7 @@ export const openCreateRuleModal = (agencyId: string, onSubmit: (rule: ManualRul
 		closeOnEscape: false,
 		modalId: MODAL_ID,
 		padding: 0,
-		size: '80%',
+		size: '1500px',
 		styles: {
 			body: {
 				height: '100%',

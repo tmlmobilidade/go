@@ -140,5 +140,43 @@
 		"Topbar": {
 			"show_sidebar_aria": "Mostrar barra lateral"
 		}
+	},
+	"calendar": {
+		"month": "Mes",
+		"year": "Año",
+		"today": "Hoy",
+		"previous": "Anterior",
+		"next": "Siguiente",
+		"selectMonth": "Seleccionar mes",
+		"selectYear": "Seleccionar año",
+		"switchToMonthView": "Cambiar a vista mensual",
+		"switchToYearView": "Cambiar a vista anual",
+		"viewSelectLabel": "Vista del calendario",
+		"more": "+{count} eventos",
+		"agency": "Operador",
+		"agencies": "Operadores",
+		"types": {
+			"annotation": "Anotaciones",
+			"event": "Eventos",
+			"holiday": "Festivos",
+			"period": "Períodos",
+			"rule-impact": "Días afectados"
+		},
+		"nextMonth": "Mes siguiente",
+		"previousMonth": "Mes anterior",
+		"nextYear": "Año siguiente",
+		"previousYear": "Año anterior",
+		"nextDecade": "Década siguiente",
+		"previousDecade": "Década anterior",
+		"daysCopied": "Número de días copiado",
+		"copyDays": "Copiar número de días",
+		"copyAffectedDays": "Copiar número de días afectados",
+		"affectedDays": "{count, plural, one {día afectado} other {días afectados}}",
+		"noTimepoints": "Sin horarios"
+	},
+	"common": {
+		"WeekdaySelector": {
+			"sundayAndHolidays": "{day} y festivos"
+		}
 	}
 }

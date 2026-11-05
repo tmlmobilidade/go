@@ -112,6 +112,7 @@
 		"dev:tracker:es-crtm-aisa": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-aisa-*",
 		"dev:tracker:es-crtm-la-veloz": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-la-veloz-*",
 		"dev:tracker:pt-cimat-flaviamobil": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-cimat-flaviamobil-*",
+		"dev:tracker:pt-cimrc-sit": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-cimrc-sit-*",
 		"dev:tracker:pt-tml-ccfl": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ccfl-*",
 		"dev:tracker:pt-tml-cm": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-*",
 		"dev:tracker:pt-tml-cm-core-migrate": "npm run build:tracker:pckg && npm run repo:load-env-stg -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-core-migrate",
@@ -137,6 +138,7 @@
 		"prd:hub:publish-eta": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-eta",
 		"prd:hub:publish-gtfs": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-gtfs",
 		"prd:hub:publish-network": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-network",
+		"prd:hub:publish-plans": "npm run build:hub:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-plans",
 		"prd:hub:publish-vehicles": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-publish-vehicles",
 		"prd:hub:ui:navegante-app": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-hub-api --filter=@tmlmobilidade/go-hub-frontend-navegante-app",
 		"prd:infrastructure": "npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-infrastructure-*",
@@ -159,6 +161,7 @@
 		"prd:tracker:es-crtm-aisa": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-aisa-*",
 		"prd:tracker:es-crtm-la-veloz": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-es-crtm-la-veloz-*",
 		"prd:tracker:pt-cimat-flaviamobil": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-cimat-flaviamobil-*",
+		"prd:tracker:pt-cimrc-sit": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-cimrc-sit-*",
 		"prd:tracker:pt-tml-ccfl": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ccfl-*",
 		"prd:tracker:pt-tml-cm": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-*",
 		"prd:tracker:pt-tml-cm-core-migrate": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-cm-core-migrate",
@@ -203,8 +206,8 @@
 	],
 	"overrides": {
 		"eslint": "10.9.1",
-		"react": "19.2.8",
-		"react-dom": "19.2.8",
+		"react": "19.3.1",
+		"react-dom": "19.3.1",
 		"zod": "3.25.76"
 	},
 	"allowScripts": {

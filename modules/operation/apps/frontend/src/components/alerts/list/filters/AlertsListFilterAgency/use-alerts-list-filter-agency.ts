@@ -1,6 +1,6 @@
 'use client';
 
-import { useAgencyFilterOptions, useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
+import { useFilterStateList, type UseFilterStateListReturnType } from '@tmlmobilidade/ui';
 
 import { useAlertsAgenciesData } from '../../../shared/use-alerts-agencies-data';
 
@@ -18,7 +18,5 @@ export function useAlertsListFilterAgency(): UseFilterStateListReturnType {
 		},
 	});
 
-	const groupedOptions = useAgencyFilterOptions(options);
-
-	return useFilterStateList('agency', ids, groupedOptions);
+	return useFilterStateList('agency', ids, options);
 }
