@@ -1,6 +1,6 @@
 /* * */
 
-import { node } from '@tmlmobilidade/eslint'
+import { node } from '@tmlmobilidade/eslint';
 
 /* * */
 

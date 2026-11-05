@@ -6,3 +6,7 @@ import './users/routes.js';
 import './platform/index.js';
 import './organizations/routes.js';
 import './home/routes.js';
+import './changelogs/routes.js';
+import './banners/routes.js';
+import './platform/changelogs/routes.js';
+import './platform/banners/routes.js';

@@ -1,0 +1,115 @@
+.item {
+	list-style: none;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+	padding: var(--size-spacing-lg);
+	font: inherit;
+	text-align: start;
+	overflow-wrap: anywhere;
+	cursor: pointer;
+	background: var(--color-system-background-100);
+	border: 2px solid var(--color-system-border-100);
+	border-radius: var(--border-radius-sm);
+}
+
+.card:hover {
+	border-color: var(--color-primary);
+}
+
+.card:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 3px;
+}
+
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.state {
+	display: inline-flex;
+	flex-shrink: 0;
+	gap: 5px;
+	align-items: center;
+	padding: 4px 9px;
+	font-size: 12px;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-primary);
+	background: var(--color-background);
+	border-radius: var(--border-radius-sm);
+}
+
+.title {
+	font-size: 18px;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-system-text-100);
+}
+
+.summary {
+	font-size: 16px;
+	line-height: 1.6;
+	color: var(--color-system-text-200);
+	white-space: pre-line;
+}
+
+.footer {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.counts {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.count {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	padding: 5px 9px;
+	font-size: 13px;
+	color: var(--changelog-category-color);
+	background: var(--changelog-category-background);
+	border-radius: var(--border-radius-sm);
+}
+
+.count svg {
+	flex-shrink: 0;
+}
+
+.action {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	font-size: 14px;
+	font-weight: var(--font-weight-semibold);
+	color: var(--color-primary);
+}
+
+.card[data-seen='true'] {
+	background: var(--color-system-background-200);
+}
+
+.card[data-seen='true'] .title,
+.card[data-seen='true'] .action,
+.card[data-seen='true'] .state {
+	color: var(--color-system-text-200);
+}
+
+.card[data-seen='true'] .count,
+.card[data-seen='true'] .state {
+	color: var(--color-system-text-200);
+	background: var(--color-system-background-300);
+}
