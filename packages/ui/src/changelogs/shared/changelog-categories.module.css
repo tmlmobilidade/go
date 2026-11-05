@@ -1,0 +1,14 @@
+.category[data-category='new_feature'] {
+	--changelog-category-color: var(--pill-5-text);
+	--changelog-category-background: var(--pill-5-bg);
+}
+
+.category[data-category='improvement'] {
+	--changelog-category-color: var(--pill-1-text);
+	--changelog-category-background: var(--pill-1-bg);
+}
+
+.category[data-category='bug_fix'] {
+	--changelog-category-color: var(--pill-2-text);
+	--changelog-category-background: var(--pill-2-bg);
+}
