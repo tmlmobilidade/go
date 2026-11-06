@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	messageTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	ruleTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	messageTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
+	ruleTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations"
 )
 
 // runValidations coordinates database preparation and rule execution for the CLI.

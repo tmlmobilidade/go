@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm"
-	DAGTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/algorithm"
+	DAGTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/algorithm"
 )
 
 func main() {
