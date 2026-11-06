@@ -1,9 +1,9 @@
 package queries
 
 import (
-	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // ForEachMatching selects source rows whose field equals the supplied value.

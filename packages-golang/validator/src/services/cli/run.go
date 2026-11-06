@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	utils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/cli/utils"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/cli"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator/src/services/cli/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/cli"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 )
 
 func Run(cli *types.CLI) error {

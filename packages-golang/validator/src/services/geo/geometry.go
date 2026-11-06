@@ -1,6 +1,6 @@
 package geo
 
-import types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
+import types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
 
 /*
 * Geometry owns caches for one validation invocation. Each rule creates its own

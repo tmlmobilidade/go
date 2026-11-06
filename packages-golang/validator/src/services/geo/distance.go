@@ -3,8 +3,8 @@ package geo
 import (
 	"database/sql"
 
-	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/geo"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
+	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/geo"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
 )
 
 /*

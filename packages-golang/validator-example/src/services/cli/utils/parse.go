@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/cli"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/cli"
 )
 
 // Parse parses the command line arguments and sets the options in the CLI struct

@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
-	loggerTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/logger"
+	loggerTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/logger"
 )
 
 // ProgressTracker counts finished rows. Complete is required after all checks

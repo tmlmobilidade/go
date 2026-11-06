@@ -3,7 +3,7 @@ package queries
 import (
 	"fmt"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // ForEachMatchingValuesFields reads several lookup keys in bounded queries.

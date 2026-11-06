@@ -1,8 +1,8 @@
 package queries
 
 import (
-	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/database"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/sqlite"
 )
 
 // rowGroups reads keys and source row IDs together, avoiding a query per row.

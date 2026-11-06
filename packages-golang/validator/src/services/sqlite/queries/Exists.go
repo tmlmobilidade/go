@@ -3,8 +3,8 @@ package queries
 import (
 	"fmt"
 
-	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // Exists checks a value across the table without loading matching rows.

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/utils"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/utils"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // ForEachRowFields reads bounded batches of source rows and their requested fields.

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	dbops "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/database"
+	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
 )
 
 // PrepareSQLiteIndexes creates validation lookup indexes before concurrent checks start.

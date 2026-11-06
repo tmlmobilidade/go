@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 
-	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/geo"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/geo"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 /*
