@@ -6,9 +6,9 @@ import (
 	"os"
 	"slices"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/discover"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules/discover"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/validations"
 )
 
 // ValidateRulesJSON reads rules.json and runs every validation step using source-discovered rule IDs.

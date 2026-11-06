@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables"
 )
 
 // DiscoverRuleIDs collects validation and runtime IDs without executing checks.

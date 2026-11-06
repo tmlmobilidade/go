@@ -3,7 +3,7 @@ package severity
 import (
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
 // isTechnicalNotice identifies parser and file-level diagnostics that can be emitted

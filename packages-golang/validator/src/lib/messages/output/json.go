@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/messages"
 )
 
 // WriteJSON writes the grouped report as one JSON line.

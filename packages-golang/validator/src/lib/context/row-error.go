@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 // rowError implements the error behavior while RowError remains a data contract.

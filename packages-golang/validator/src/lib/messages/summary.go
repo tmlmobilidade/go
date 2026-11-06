@@ -3,7 +3,7 @@ package messages
 import (
 	"slices"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/messages"
 )
 
 // AllMessages returns the details from every rule group in report order.

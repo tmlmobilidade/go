@@ -3,7 +3,7 @@ package messages
 import (
 	"os"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/output"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/messages/output"
 )
 
 // OutputSummary writes the report to a file, or stdout when no path is provided.

@@ -7,8 +7,8 @@ import (
 	"slices"
 	"strings"
 
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables"
 )
 
 // Register binds a batch of rule IDs to their validation functions.

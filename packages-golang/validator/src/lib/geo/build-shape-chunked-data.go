@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strconv"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 )
 
 /*

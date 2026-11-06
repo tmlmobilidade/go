@@ -5,10 +5,10 @@ import (
 	"slices"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
 )
 
 // CollectErrors records and reports a technical error, then returns all

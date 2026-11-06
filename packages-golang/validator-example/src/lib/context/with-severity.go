@@ -1,8 +1,8 @@
 package context
 
 import (
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
 // WithSeverity updates the context when a nonempty severity is supplied.

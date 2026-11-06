@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	graph "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	graph "github.com/tmlmobilidade/go/packages-golang/validator/src/types/algorithm"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables/logger"
 )
 
 // RunRule executes a callback released by Kahn; each rule owns its data access.

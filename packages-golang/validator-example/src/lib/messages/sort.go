@@ -4,7 +4,7 @@ import (
 	"cmp"
 	"slices"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
 )
 
 // sortedMessages orders a report deterministically without mutating the input.

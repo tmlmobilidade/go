@@ -3,7 +3,7 @@ package messages
 import (
 	"sync"
 
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/messages"
 )
 
 // MessageService collects findings safely across concurrent checks.

@@ -4,7 +4,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 )
 
 func ValidateCurrencyType(currencyType string) bool {

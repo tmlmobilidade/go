@@ -1,7 +1,7 @@
 package geo
 
 import (
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
 )
 
 /*

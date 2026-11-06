@@ -1,6 +1,6 @@
 package validators
 
-import "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/validators/utils"
+import "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/validators/utils"
 
 // IsHexString validates a six-digit hexadecimal color without a leading hash.
 func IsHexString(value string) bool {

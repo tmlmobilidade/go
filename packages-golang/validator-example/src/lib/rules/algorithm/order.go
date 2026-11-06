@@ -1,6 +1,6 @@
 package algorithm
 
-import types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
+import types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/algorithm"
 
 /*
 * Order returns a valid dependency order for inspection. Concurrent execution

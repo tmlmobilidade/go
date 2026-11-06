@@ -3,9 +3,9 @@ package messages
 import (
 	"slices"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages/severity"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/messages/severity"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 )
 
 // AddMessage resolves severity, converts row indexes, and merges repeated diagnostics.

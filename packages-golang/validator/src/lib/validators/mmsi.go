@@ -3,7 +3,7 @@ package validators
 import (
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 )
 
 // ValidateMMSI checks a Maritime Mobile Service Identity, used to identify the

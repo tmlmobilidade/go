@@ -1,8 +1,8 @@
 package context
 
 import (
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/i18n"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables/i18n"
 )
 
 // GetTranslatedMessage resolves a detail key under the context's rule ID.

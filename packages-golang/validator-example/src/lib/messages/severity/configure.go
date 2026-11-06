@@ -1,8 +1,8 @@
 package severity
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables"
 )
 
 // ConfigureMessageSeverities prepares message overrides for a validation run.

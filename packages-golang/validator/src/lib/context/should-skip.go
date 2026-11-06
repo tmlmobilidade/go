@@ -1,7 +1,7 @@
 package context
 
 import (
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 // ShouldSkip reports whether the check should skip normal field validation.

@@ -5,10 +5,10 @@ import (
 	"time"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/context"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/context"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
 )
 
 // ForEachRow creates a scoped child context for each row selected by the rule.
