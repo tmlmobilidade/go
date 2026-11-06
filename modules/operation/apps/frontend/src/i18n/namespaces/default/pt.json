@@ -471,6 +471,10 @@
 			},
 			"RideAnalysisPath": {
 				"description": "Distribuição dos passageiros por paragem",
+				"labels": {
+					"outside_route": "Fora do percurso",
+					"without_stop": "Sem paragem"
+				},
 				"table": {
 					"columns": {
 						"passengers_observed": {

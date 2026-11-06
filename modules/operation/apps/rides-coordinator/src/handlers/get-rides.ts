@@ -87,7 +87,7 @@ export async function getRidesHandler(): Promise<RidesCoordinatorRidesResponse> 
 
 		const foundWaitingRidesIds = foundWaitingRides.map(item => item._id);
 
-		ridesCollection.updateMany({ _id: { $in: foundWaitingRidesIds } }, {
+		await ridesCollection.updateMany({ _id: { $in: foundWaitingRidesIds } }, {
 			$set: {
 				processing_status: 'processing',
 				updated_at: Dates.now('utc').unix_milliseconds,

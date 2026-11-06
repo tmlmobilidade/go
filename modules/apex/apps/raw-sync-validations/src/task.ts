@@ -16,7 +16,7 @@ import { ZodError } from 'zod';
 const writer = new BatchWriter<SimplifiedApexValidation>({
 	batch_size: 10_000,
 	insertFn: async (data) => {
-		await labDb.simplifiedApex.validations.insert('JSONEachRow', data);
+		await labDb.simplifiedApex.validations.insert('JSONEachRow', data, { waitForAsyncInsert: true });
 	},
 	title: await labDb.simplifiedApex.validations.getTableName(),
 });

@@ -118,10 +118,12 @@ export class ClickHouseInterfaceTemplate<T extends object> {
 	 * Inserts data into a specified ClickHouse table using the service's client.
 	 * @param format The format of the data being inserted (default is 'JSONEachRow').
 	 * @param values An array of data objects to insert into the table.
+	 * @param options Set waitForAsyncInsert when subsequent work must read the inserted rows.
 	 * @returns A promise that resolves when the data is inserted successfully.
 	 */
-	public async insert(format: DataFormat = 'JSONEachRow', values: T[]) {
+	public async insert(format: DataFormat = 'JSONEachRow', values: T[], options: { waitForAsyncInsert?: boolean } = {}) {
 		return this.client.insert<T>({
+			...(options.waitForAsyncInsert ? { clickhouse_settings: { wait_for_async_insert: 1 } } : {}),
 			format: format,
 			table: `"${this.databaseName}"."${this.tableName}"`,
 			values: values,
