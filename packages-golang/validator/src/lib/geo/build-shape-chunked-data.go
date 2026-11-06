@@ -1,26 +1,32 @@
 package geo
 
 import (
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 	"sort"
 	"strconv"
+
+	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
+	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
 )
 
-// BuildShapeChunkedData prepares one shape for stop-distance checks without
-// modifying its input. The caller must group points by shape_id beforehand.
-// It returns regularly spaced samples for distance searches and original vertices
-// with their source sequences for reports. Empty input or no parsable coordinates
-// returns nil. Coordinate ranges and sequence validity are checked by other rules.
+/*
+* BuildShapeChunkedData prepares one shape for stop-distance checks without
+* modifying its input. The caller must group points by shape_id beforehand.
+* It returns regularly spaced samples for distance searches and original vertices
+* with their source sequences for reports. Empty input or no parsable coordinates
+* returns nil. Coordinate ranges and sequence validity are checked by other rules.
+ */
 func BuildShapeChunkedData(points []types.ShapeCoordinatesValidation) *types.ShapeChunkedData {
+
+	//
 	// 1. No source rows means there is no shape geometry to build.
+
 	if len(points) == 0 {
 		return nil
 	}
 
+	//
 	// 2. Sort a copy by numeric shape_pt_sequence (for example, 3 before 20).
-	// A sequence that cannot be parsed uses Atoi's returned value; an ordinary
-	// syntax error gives zero. Sequence validation belongs to its dedicated rules.
+
 	sorted := make([]types.ShapeCoordinatesValidation, len(points))
 	copy(sorted, points)
 	sort.Slice(sorted, func(i, j int) bool {
@@ -29,10 +35,9 @@ func BuildShapeChunkedData(points []types.ShapeCoordinatesValidation) *types.Sha
 		return seqI < seqJ
 	})
 
+	//
 	// 3. Parse coordinates in shape order and retain each original sequence.
-	// Skip rows whose latitude or longitude cannot be parsed. This can connect
-	// the retained points across a skipped row; it does not split the shape.
-	// Successful parsing alone does not enforce coordinate ranges or finiteness.
+
 	orderedCoordinates := make([]types.Coordinates, 0, len(sorted))
 	origPoints := make([]types.ShapePointWithSequence, 0, len(sorted))
 	for _, p := range sorted {
@@ -50,17 +55,21 @@ func BuildShapeChunkedData(points []types.ShapeCoordinatesValidation) *types.Sha
 		origPoints = append(origPoints, types.ShapePointWithSequence{Sequence: seq, Coordinate: coord})
 	}
 
+	//
 	// 4. Avoid building a shape when every row failed coordinate parsing.
+
 	if len(orderedCoordinates) == 0 {
 		return nil
 	}
 
-	// 5. Resample at ShapeSegmentLengthMeters (currently 50m). Searching only
-	// original vertices could miss a stop near the middle of a long segment.
+	//
+	// 5. Resample at ShapeSegmentLengthMeters (currently 50m) for distance checks.
+
 	chunked := ChunkCoordinates(orderedCoordinates, variables.ShapeSegmentLengthMeters)
 
-	// 6. Keep the two representations together: samples supply distances;
-	// original vertices supply real source coordinates and sequences for reports.
+	//
+	// 6. Keep samples for distance checks and original vertices for reports.
+
 	return &types.ShapeChunkedData{
 		ChunkedCoordinates: chunked,
 		OriginalPoints:     origPoints,
