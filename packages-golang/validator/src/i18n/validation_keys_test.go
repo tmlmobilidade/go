@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 )
 
 func TestGenericMessagesDescribeFindings(t *testing.T) {
@@ -63,7 +63,7 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		directory, local := strings.CutPrefix(importPath, "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/")
+		directory, local := strings.CutPrefix(importPath, "github.com/tmlmobilidade/go/packages-golang/validator/src/")
 		if !local {
 			continue
 		}

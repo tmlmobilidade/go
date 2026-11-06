@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/utils"
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/validations"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
 	_ "modernc.org/sqlite"
 )
 

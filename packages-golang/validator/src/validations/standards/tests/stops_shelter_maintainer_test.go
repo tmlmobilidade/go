@@ -3,7 +3,7 @@ package standard_test
 import (
 	"testing"
 
-	standard "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/standards/checks"
+	standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/checks"
 )
 
 func TestStopsShelterMaintainer(t *testing.T) {

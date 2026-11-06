@@ -3,7 +3,7 @@ package fields_test
 import (
 	"testing"
 
-	fields "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/fields/checks"
+	fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fields/checks"
 )
 
 func TestDestinationIdField(t *testing.T) {

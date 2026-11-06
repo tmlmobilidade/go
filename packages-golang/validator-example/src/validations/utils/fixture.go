@@ -6,10 +6,10 @@ import (
 	"reflect"
 	"testing"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
 	_ "modernc.org/sqlite"
 )
 

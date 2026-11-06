@@ -1,8 +1,8 @@
 package fields_test
 
 import (
-	fields "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/fields/checks"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/utils"
+	fields "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/fields/checks"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/utils"
 	"testing"
 )
 

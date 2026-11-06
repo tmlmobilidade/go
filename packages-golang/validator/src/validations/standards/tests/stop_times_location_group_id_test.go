@@ -3,8 +3,8 @@ package standard_test
 import (
 	"testing"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	standard "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/standards/checks"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
+	standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/checks"
 )
 
 func TestStopTimesLocationGroupId(t *testing.T) {

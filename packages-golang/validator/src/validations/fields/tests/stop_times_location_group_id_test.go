@@ -3,8 +3,8 @@ package fields_test
 import (
 	"testing"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	fields "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/fields/checks"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
+	fields "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/fields/checks"
 )
 
 func TestLocationGroupIdField(t *testing.T) {

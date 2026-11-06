@@ -1,7 +1,7 @@
 package custom_test
 
 import (
-	custom "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/customs/checks"
+	custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/checks"
 	"testing"
 )
 

@@ -3,10 +3,10 @@ package standard_test
 import (
 	"testing"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	standard "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/standards/checks"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/utils"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	standard "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/standards/checks"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/utils"
 )
 
 func TestShapeIdForeign(t *testing.T) {
