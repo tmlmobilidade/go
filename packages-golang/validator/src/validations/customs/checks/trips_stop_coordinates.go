@@ -11,10 +11,15 @@ import (
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/customs/utils"
 )
 
-// StopCoordinates checks every distinct served stop against the densified trip shape.
+/*
+* StopCoordinates checks each distinct served stop against its trip's sampled shape.
+* Geometry caches shapes and stop-shape results for this invocation, while each
+* trip retains its own findings. Reports identify the closest original shape point.
+ */
 func StopCoordinates(ctx *context.ValidationContext) error {
+
 	//
-	// 1. Select the source tables and keep derived state private to this invocation
+	// 1. Require trip, stop-time, stop, and shape tables; create a local geometry cache.
 
 	ready, err := validationutils.RequireTables(ctx, "trips", "stop_times", "stops", "shapes")
 	if err != nil || !ready {
@@ -22,16 +27,20 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 	}
 	geometry := &geoService.Geometry{}
 
+	//
+	// 2. Visit each trip so findings remain associated with its source row.
+
 	return context.ForEachRow(ctx, "trips", []string{"stop_id", "trip_id", "shape_id"}, func(rowCtx *context.ValidationContext) error {
+
 		//
-		// 2. Check if the stop_id validation should run
+		// 3. Skip this trip when the rule configuration disables its check.
 
 		if context.ShouldSkip(rowCtx) {
 			return nil
 		}
 
 		//
-		// 3. Get the trip_id, shape_id values
+		// 4. Read the trip ID and the shape ID used for its geometry.
 
 		trip, err := queries.Fields(rowCtx.Source, "trip_id", "shape_id")
 		if err != nil {
@@ -39,14 +48,14 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 4. Skip empty stop_id values
+		// 5. Skip trips without a trip ID or shape ID.
 
 		if trip["trip_id"] == "" || trip["shape_id"] == "" {
 			return nil
 		}
 
 		//
-		// 5. Get the stop_times table
+		// 6. Load stop times to find the stops served by this trip.
 
 		times, err := validationutils.Table(rowCtx, "stop_times")
 		if err != nil {
@@ -54,7 +63,7 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 6. Get the stops table
+		// 7. Load the stop table and prepare an ordered list of distinct stop IDs.
 
 		stops, err := validationutils.Table(rowCtx, "stops")
 		if err != nil {
@@ -64,7 +73,7 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 		seen := map[string]bool{}
 
 		//
-		// 7. Collect the matching rows
+		// 8. Collect each nonempty served stop ID once, preserving query order.
 
 		err = queries.ForEachMatchingFields(times, "trip_id", []any{trip["trip_id"]}, []string{"stop_id"}, func(_ *sqliteTypes.SQLiteRow, fields map[string]string) error {
 			id := fields["stop_id"]
@@ -79,7 +88,7 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 8. Read each stop's first complete coordinates in batches.
+		// 9. Read each stop's first complete coordinates in batches.
 		// Keep invalid nonempty coordinates: the geometry check handles them.
 
 		coordinates := make(map[string]types.StopCoordinatesValidation, len(ids))
@@ -95,8 +104,10 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 			return err
 		}
 
-		// Check in the original served-stop order, retaining each trip's findings
-		// even when the geometry result is shared with another trip.
+		//
+		// 10. Check stops in their collected order through the cached geometry service.
+		// A cached result still produces a separate finding for each affected trip.
+
 		for _, id := range ids {
 			stop, found := coordinates[id]
 			if !found {
@@ -114,7 +125,7 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 9. Return success
+		// 11. Finish this trip after reporting its distance violations.
 
 		return nil
 	})

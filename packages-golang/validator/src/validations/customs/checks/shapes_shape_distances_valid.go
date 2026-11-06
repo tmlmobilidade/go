@@ -15,21 +15,21 @@ import (
 )
 
 /*
-ShapeDistancesValid checks, per "block" of a shape (points between one shape_dist_traveled
-reset to 0.0 and the next, or the end of the shape), that the block's total shape_dist_traveled
-matches the sum of the real (haversine) distances between its points. Unlike the sibling
-per-segment validations, this looks at the cumulative distance over the whole block, so it can
-catch drift that stays within tolerance segment-by-segment but adds up over a longer run.
-
-A block is only checked end-to-end if every one of its individual segments already passed the
-per-segment tolerance; a single bad segment skips the block's total check (it's already flagged
-by the per-segment validation instead of being double-reported here).
-
-https://gtfs.org/schedule/reference/#shapestxt
-*/
+* ShapeDistancesValid compares recorded and Haversine totals within shape blocks.
+* Each block starts at a recorded zero and ends just before the next zero, or at
+* the shape's final point when there is no later reset.
+* Recorded distances use geo.ShapeDistTraveledToMeters with the shape-wide maximum.
+* Missing segment distances or a segment difference above tolerance skip the block.
+* Converted increments below 0.001 meters are omitted from the geometric total;
+* blocks with no accumulated geometry are skipped. Total differences above
+* tolerance are reported at the block's final source row.
+*
+* https://gtfs.org/schedule/reference/#shapestxt
+ */
 func ShapeDistancesValid(ctx *context.ValidationContext) error {
+
 	//
-	// 1. Select the source tables and keep derived state private to this invocation
+	// 1. Require the shapes table before visiting each distinct shape ID.
 
 	ready, err := validationutils.RequireTables(ctx, "shapes")
 	if err != nil || !ready {
@@ -40,19 +40,18 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 		config := &rowCtx.Config
 
 		//
-		// 2. Get the tolerance
+		// 2. Resolve the allowed difference between recorded and geometric meters.
 
 		toleranceMeters := validationutils.DistanceTolerance(config, variables.DefaultShapeBlockToleranceMeters, true)
 
 		//
-		// 3. Get the violations
+		// 3. Collect block-distance findings for the current shape.
 
 		violations := []types.ShapeDistanceBlockViolation{}
 
 		//
-		// 4. Read only this shape's sequence, coordinates, and recorded distances.
+		// 4. Read the shape ID and skip rows without one.
 
-		// Each point keeps its SQLite row index so sorting cannot change diagnostics.
 		shapeID, err := queries.Field(rowCtx.Source, "shape_id")
 		if err != nil {
 			return err
@@ -62,7 +61,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 5. Get the table
+		// 5. Open the shapes table for the current group.
 
 		table, err := validationutils.Table(rowCtx, "shapes")
 		if err != nil {
@@ -70,13 +69,13 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 6. Get the shape groups
+		// 6. Read only this shape's sequences, coordinates, and recorded distances.
 
 		shapeGroups := map[string][]types.ShapePoint{}
 		err = queries.ForEachMatchingFields(table, "shape_id", []any{shapeID}, []string{"shape_pt_sequence", "shape_pt_lat", "shape_pt_lon", "shape_dist_traveled"}, func(row *sqliteTypes.SQLiteRow, values map[string]string) error {
 
 			//
-			// 7.2 Parse the values
+			// 7. Parse the sequence and coordinates, returning any conversion error.
 
 			sequence, err := strconv.Atoi(values["shape_pt_sequence"])
 			if err != nil {
@@ -92,7 +91,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 			}
 
 			//
-			// 7.3 Create the point
+			// 8. Retain the source row and parse the optional recorded distance.
 
 			point := types.ShapePoint{ShapeID: shapeID, Row: row.Row, Sequence: sequence, Coordinates: types.Coordinates{Lat: lat, Lng: lon}}
 			if values["shape_dist_traveled"] != "" {
@@ -104,7 +103,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 			}
 
 			//
-			// 7.4 Add the point to the shape groups
+			// 9. Collect the parsed point under its shape ID.
 
 			shapeGroups[shapeID] = append(shapeGroups[shapeID], point)
 			return nil
@@ -114,7 +113,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 7. Order each shape's points and compare its travelled distance with the real geometry
+		// 10. Sort each shape's points by sequence before comparing its geometry.
 
 		for _, shapeGroup := range shapeGroups {
 			sort.SliceStable(shapeGroup, func(i, j int) bool {
@@ -122,12 +121,9 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 			})
 
 			//
-			// 8.1 Get the max distance traveled
+			// 11. Use the shape's maximum recorded distance for the shared unit guess.
+			// geo.ShapeDistTraveledToMeters applies this same guess to every conversion.
 
-			// GTFS doesn't fix a unit for shape_dist_traveled; feeds use either km or m.
-			// The largest value in the shape is used to guess which one (see
-			// geo.ShapeDistTraveledToMeters), since a per-segment guess
-			// would be unreliable for short segments.
 			var maxDistTraveled float64
 			for _, pt := range shapeGroup {
 				if pt.Distance != nil && *pt.Distance > maxDistTraveled {
@@ -136,7 +132,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 			}
 
 			//
-			// 8.2 Process blocks: from 0.0 (reset) to next 0.0 or end of shape
+			// 12. Start a block only at a point whose recorded distance is zero.
 
 			for blockStart := 0; blockStart < len(shapeGroup); blockStart++ {
 				pt := shapeGroup[blockStart]
@@ -145,7 +141,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 				}
 
 				//
-				// Find block end: last point before next 0.0 or end of shape
+				// 13. End the block before the next recorded zero, or at the final point.
 
 				blockEnd := blockStart
 				for j := blockStart + 1; j < len(shapeGroup); j++ {
@@ -160,11 +156,8 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 				}
 
 				//
-				// Walk the block segment by segment
-
-				// Walk the block segment by segment first: if any single segment is already
-				// outside tolerance, it's the per-segment validation's job to report it, so this
-				// block is skipped here rather than double-reported against its cumulative total.
+				// 14. Accumulate Haversine lengths only for usable segments within tolerance.
+				// Missing distances or a segment difference above tolerance skip this block.
 
 				var totalRealM float64
 				allSegmentsPass := true
@@ -176,10 +169,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 						allSegmentsPass = false
 						break
 					}
-					// The block's first segment starts at the 0.0 reset point and must be
-					// counted: the block's final shape_dist_traveled is measured from there,
-					// so skipping it would leave totalRealM short by that segment's length
-					// and flag correct shapes.
+					// Include the first segment from zero in the block's geometric total.
 					if *curr.Distance == 0.0 {
 						continue
 					}
@@ -203,14 +193,16 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 					totalRealM += realSegM
 				}
 
-				// totalRealM == 0 means every segment in the block was skipped (missing or
-				// near-zero deltas), so there's nothing real to compare the block's total against.
+				//
+				// 15. Skip blocks with a failed segment or no accumulated geometric length.
+
 				if !allSegmentsPass || totalRealM == 0 {
 					continue
 				}
 
-				// All segments passed individually; now compare the block's cumulative real
-				// distance against its final shape_dist_traveled value.
+				//
+				// 16. Compare the accumulated Haversine total with the block's recorded total.
+
 				lastPt := shapeGroup[blockEnd]
 				totalExpectedM := geo.ShapeDistTraveledToMeters(*lastPt.Distance, maxDistTraveled)
 				diffMeters := math.Abs(totalRealM - totalExpectedM)
@@ -218,6 +210,9 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 				if diffMeters <= toleranceMeters {
 					continue
 				}
+
+				//
+				// 17. Retain differences above tolerance at the block's final source row.
 
 				violations = append(violations, types.ShapeDistanceBlockViolation{
 					ShapeID:          lastPt.ShapeID,
@@ -227,13 +222,15 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 					DifferenceMeters: diffMeters,
 				})
 
-				// Skip to after this block for next iteration
+				//
+				// 18. Resume the outer scan after the reported block.
+
 				blockStart = blockEnd
 			}
 		}
 
 		//
-		// 8. Report every block whose travelled distance does not match its geometry
+		// 19. Report each block-distance finding at its retained source row.
 
 		for _, violation := range violations {
 
@@ -247,7 +244,7 @@ func ShapeDistancesValid(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 9. Return success
+		// 20. Finish this shape after reporting its block-distance differences.
 
 		return nil
 	})

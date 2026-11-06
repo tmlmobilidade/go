@@ -16,12 +16,18 @@ import (
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/customs/utils"
 )
 
-// ShapePointsCoordinatesDistances compares each cumulative-distance
-// increment with its Haversine segment, including the first segment from zero.
-// Decreases belong to the monotonic-distance rule, not this geometric check.
+/*
+* ShapePointsCoordinatesDistances compares each recorded distance increment with
+* its Haversine segment, including the first segment from a recorded zero.
+* Distances are converted to meters using the configured unit or shape-wide guess.
+* Invalid or duplicate sequences skip the shape; unusable adjacent points and
+* decreasing distances skip the segment. Differences above tolerance are reported
+* at the later point's source row. Decreases belong to the monotonic-distance rule.
+ */
 func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
+
 	//
-	// 1. Select the source tables and keep derived state private to this invocation
+	// 1. Require the shapes table before visiting each distinct shape ID.
 
 	ready, err := validationutils.RequireTables(ctx, "shapes")
 	if err != nil || !ready {
@@ -32,12 +38,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		config := &rowCtx.Config
 
 		//
-
-		//
-		// 2. Get the rule and severity
-
-		//
-		// 2. Get the severity
+		// 2. Skip shapes when the rule has no active severity.
 
 		severity := rowCtx.Config.Severity
 
@@ -46,12 +47,12 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 2. Get the tolerance
+		// 3. Resolve the allowed difference between recorded and geometric meters.
 
 		toleranceMeters := validationutils.DistanceTolerance(config, variables.DefaultShapeSegmentToleranceMeters, true)
 
 		//
-		// 3. Read this shape's sequence, coordinates, and distances from SQLite
+		// 4. Read the current shape ID for its coordinate and distance lookup.
 
 		shapeID, err := queries.Field(rowCtx.Source, "shape_id")
 		if err != nil {
@@ -59,7 +60,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 4. Read the points from the table
+		// 5. Open the shapes table for the current group.
 
 		table, err := validationutils.Table(rowCtx, "shapes")
 		if err != nil {
@@ -67,7 +68,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 5. Parse the points
+		// 6. Parse sequences, coordinates, and optional distances; retain source rows.
 
 		points := []types.ShapePoint{}
 		invalidSequence := false
@@ -101,7 +102,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 6. Order the points, skipping shapes with ambiguous sequences
+		// 7. Sort by sequence and skip the shape if two points share a sequence.
 
 		sort.SliceStable(points, func(i, j int) bool { return points[i].Sequence < points[j].Sequence })
 		for i := 1; i < len(points); i++ {
@@ -111,7 +112,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 7. Resolve the recorded-distance unit for this shape
+		// 8. Use valid recorded distances to resolve one meter scale for the whole shape.
 
 		var maxDistTraveled float64
 		for _, point := range points {
@@ -122,7 +123,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		scale := validationutils.ShapeDistanceScale(config, maxDistTraveled)
 
 		//
-		// 8. Compare each recorded increment with its geometric segment
+		// 9. Compare each usable recorded increment with geo.HaversineDistance.
 
 		violations := []types.ShapeSegmentDistanceViolation{}
 		for i := 1; i < len(points); i++ {
@@ -157,7 +158,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 9. Report the violations
+		// 10. Report differences above tolerance at the later point's original row.
 
 		for _, violation := range violations {
 
@@ -177,7 +178,7 @@ func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 10. Return nil
+		// 11. Finish this shape after reporting its segment-distance differences.
 
 		return nil
 	})
