@@ -1,0 +1,16 @@
+package fields_test
+
+import (
+	"testing"
+
+	fields "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/fields/checks"
+)
+
+func TestParishIdField(t *testing.T) {
+	checkPresence(t, fieldCheck{
+		id:    "stops_parish_id_field",
+		table: "stops",
+		field: "parish_id",
+		run:   fields.ParishIdField,
+	})
+}

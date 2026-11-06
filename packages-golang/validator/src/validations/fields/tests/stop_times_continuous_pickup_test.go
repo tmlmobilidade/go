@@ -1,0 +1,17 @@
+package fields_test
+
+import (
+	"testing"
+
+	fields "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/fields/checks"
+)
+
+func TestStopTimesContinuousPickupField(t *testing.T) {
+	checkPresence(t, fieldCheck{
+		id:            "stop_times_continuous_pickup_field",
+		table:         "stop_times",
+		field:         "continuous_pickup",
+		run:           fields.StopTimesContinuousPickupField,
+		skipForbidden: true,
+	})
+}
