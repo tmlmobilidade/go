@@ -59,9 +59,9 @@ function intersects<T>(a: readonly T[] | undefined, b: readonly T[] | undefined)
 /**
  * Determines if a manual rule intersects with an event replacement rule's targets.
  *
- * Requires overlap in BOTH dimensions: at least one target weekday AND at least
- * one target period. This is used when a
- * replacement rule overrides the normal schedule for certain weekdays/periods.
+ * Ordinary rules require overlap in both weekday and period. Event-linked rules
+ * are already scoped by event date; empty filters do not narrow that scope,
+ * while selected filters must overlap the replacement's targets.
  *
  * @param rule - The manual rule to check
  * @param replacement - The event replacement rule defining override targets
@@ -75,6 +75,13 @@ function intersects<T>(a: readonly T[] | undefined, b: readonly T[] | undefined)
  * ```
  */
 export function manualRuleMatchesReplacement(rule: ManualRule, replacement: EventReplacementRule): boolean {
+	if (rule.event_id) {
+		return (
+			(!rule.weekdays?.length || intersects(rule.weekdays, replacement.weekdays))
+			&& (!rule.year_period_ids.length || intersects(rule.year_period_ids, replacement.year_period_ids))
+		);
+	}
+
 	return (
 		intersects(rule.weekdays, replacement.weekdays)
 		&& intersects(rule.year_period_ids, replacement.year_period_ids)
