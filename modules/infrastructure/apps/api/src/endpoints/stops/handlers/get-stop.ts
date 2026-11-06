@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
+import { type Stop, type StopId, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
@@ -44,5 +44,5 @@ export async function getStopHandler(request: FastifyRequest<{ Params: { id: Sto
 		});
 	}
 
-	return sendSuccessApiResponse(reply, foundStop);
+	return sendSuccessApiResponse(reply, StopSchema.parse(foundStop));
 }

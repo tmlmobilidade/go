@@ -20,8 +20,6 @@ let ROWS: Record<string, unknown>[];
 let WRITES: Record<string, unknown>[];
 let DELETED: string[];
 let LIST_QUERY: unknown;
-let ASSOCIATED_PATTERNS: Record<string, unknown>[] = [];
-let PATTERN_QUERY: unknown;
 
 const collection = {
 	deleteById: async (id: string) => { DELETED.push(id); },
@@ -46,10 +44,7 @@ const collection = {
 };
 
 mock.module('@tmlmobilidade/go-interfaces-godb', {
-	namedExports: { goDb: { offer: { ...Object.fromEntries(resources.map(resource => [resource.collection, collection])), patterns: { aggregate: async (query: unknown) => {
-		PATTERN_QUERY = query;
-		return ASSOCIATED_PATTERNS;
-	} } } } },
+	namedExports: { goDb: { offer: Object.fromEntries(resources.map(resource => [resource.collection, collection])) } },
 });
 
 function permission(scope: string, action: string, agencyIds = ['A']): Permission {
@@ -354,18 +349,13 @@ describe('period conflicts and assignment', () => {
 	});
 });
 
-describe('event detail enrichment', () => {
-	test('fetches associated patterns and overrides legacy stored association fields', async () => {
-		ROW = { _id: 'event', agency_ids: ['A'], associated_patterns: [{ _id: 'stale' }], code: 'EVENT', title: 'Event' };
-		ASSOCIATED_PATTERNS = [{ _id: 'pattern', code: 'P1', headsign: 'Destination', line_id: 'line', route_id: 'route' }];
+describe('event detail response', () => {
+	test('returns only the event, without querying patterns or returning stored associations', async () => {
+		ROW = { _id: 'event', agency_ids: ['A'], associated_patterns: [{ _id: 'stale' }], code: 'EVENT', created_at: 1_792_368_000_000, created_by: 'actor', title: 'Event', updated_at: 1_792_368_000_000 };
 		const result = await invoke(getEventHandler as Handler, undefined, [permission('events', 'read')]);
 		assert.equal(result.httpStatus, 200);
 		const data = result.response.data as Record<string, unknown>;
-		assert.deepEqual(data.associated_patterns, ASSOCIATED_PATTERNS);
-		assert.deepEqual(PATTERN_QUERY, [
-			{ $match: { rules: { $elemMatch: { event_id: 'record', kind: 'manual' } } } },
-			{ $project: { _id: 1, code: 1, headsign: 1, line_id: 1, route_id: 1 } },
-			{ $sort: { code: 1 } },
-		]);
+		assert.equal(data._id, 'event');
+		assert.equal('associated_patterns' in data, false);
 	});
 });

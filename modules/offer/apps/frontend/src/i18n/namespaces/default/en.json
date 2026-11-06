@@ -65,9 +65,7 @@
 			"excludeLinesDescription": "All lines except these will be affected.",
 			"includeLines": "Only these lines",
 			"includeLinesDescription": "Only these lines will be affected.",
-			"noPatterns": "No associated patterns",
 			"operateAs": "The selected dates will operate as:",
-			"patterns": "Associated patterns",
 			"periods": "Periods",
 			"replacement": "Service replacement",
 			"replacementDescription": "Apply service from another day type on these dates",
@@ -83,7 +81,6 @@
 			"serviceType": "4. Which service applies on these dates?",
 			"startTime": "Start time",
 			"startTimeDescription": "HH:MM within the operational day. E.g. 10:00",
-			"viewPatterns": "View associated patterns",
 			"weekdays": "Weekdays",
 			"weekend": "Weekend"
 		},
