@@ -118,6 +118,13 @@
 			},
 			"not_available": "N/A"
 		},
+		"StopsDetailPatternsMenu": {
+			"error": "Não foi possível carregar os percursos associados.",
+			"loading": "A carregar percursos associados…",
+			"no_patterns": "Sem percursos associados",
+			"patterns": "Percursos associados",
+			"view_patterns": "Ver percursos associados"
+		},
 		"StopsDetailSectionFlagItem": {
 			"fields": {
 				"agency_ids": {

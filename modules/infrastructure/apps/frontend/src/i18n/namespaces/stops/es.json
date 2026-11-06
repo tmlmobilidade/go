@@ -118,6 +118,13 @@
 			},
 			"not_available": "N/A"
 		},
+		"StopsDetailPatternsMenu": {
+			"error": "No se pudieron cargar los recorridos asociados.",
+			"loading": "Cargando recorridos asociados…",
+			"no_patterns": "Sin recorridos asociados",
+			"patterns": "Recorridos asociados",
+			"view_patterns": "Ver recorridos asociados"
+		},
 		"StopsDetailSectionFlagItem": {
 			"fields": {
 				"agency_ids": {

@@ -43,10 +43,10 @@ export function useStopsDetailData(): UseStopsDetailDataReturnType {
 
 	return useMemo(() => ({
 		data: data?.data,
-		error: error?.error,
+		error: data?.error ?? error?.message ?? null,
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [data?.data, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [data?.data, data?.error, data?.timestamp, error, isLoading, isValidating, mutate]);
 };
