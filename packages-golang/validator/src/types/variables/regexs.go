@@ -1,6 +1,9 @@
 package variables
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
 var MMSIRegex = regexp.MustCompile(`^[2-7]\d{8}$`)
 
@@ -11,3 +14,10 @@ var PhoneRegex = regexp.MustCompile(`^[0-9A-Za-z\s\-\+$begin:math:text$$end:math
 
 // PhoneDigitRegex identifies digits when checking phone length.
 var PhoneDigitRegex = regexp.MustCompile(`[0-9]`)
+
+const DefaultPatternIDFormat = "XXXX_X_X"
+
+var DefaultPatternIDRegex = regexp.MustCompile(`^[^_]{1,4}_[^_]_[^_]$`)
+var PatternIDDisplayReplacer = strings.NewReplacer(
+	`[^_]{1,4}`, "XXXX", `[^_]`, "X", `^`, "", `$`, "", `\`, "", `(`, "", `)`, "",
+)
