@@ -1,8 +1,8 @@
 package standard
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
 func ShapePtLonField(ctx *context.ValidationContext) error {

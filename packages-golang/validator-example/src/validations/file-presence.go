@@ -1,11 +1,11 @@
 package validations
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/i18n"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/i18n"
 )
 
 // TablesFilePresence adds a presence gate for each supported GTFS table.

@@ -1,8 +1,8 @@
 package fields
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
 )
 
 // PatternIdField checks its own source table using the context released by Kahn.

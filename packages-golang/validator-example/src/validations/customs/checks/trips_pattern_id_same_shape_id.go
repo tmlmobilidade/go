@@ -1,8 +1,8 @@
 package custom
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
 )
 
 // PatternIdSameShapeId checks the pattern_id and shape_id fields for equality.

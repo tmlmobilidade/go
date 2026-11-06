@@ -1,8 +1,8 @@
 package validationutils
 
 import (
-	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/geo"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/geo"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	"strings"
 )
 

@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
-	validationutils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/customs/utils"
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
+	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
 func DirectionIdPatternConsistent(ctx *context.ValidationContext) error {

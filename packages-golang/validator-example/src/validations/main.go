@@ -6,16 +6,16 @@ import (
 	"slices"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	collector "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/algorithm"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/execution"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/registry"
-	DAG "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables/logger"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	collector "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/algorithm"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/execution"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/registry"
+	DAG "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/algorithm"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
 )
 
 /*

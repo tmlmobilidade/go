@@ -1,9 +1,9 @@
 package standard
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/sqlite"
 )
 
 // ShapeIdForeign checks that trip shape IDs exist in shapes.

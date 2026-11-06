@@ -1,12 +1,12 @@
 package validations
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/rules/registry"
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/variables"
-	custom "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/customs/checks"
-	fields "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/fields/checks"
-	standard "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/standards/checks"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/registry"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables"
+	custom "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/customs/checks"
+	fields "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/fields/checks"
+	standard "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/standards/checks"
 )
 
 // RegisterRules registers every executable validation once before checks run.

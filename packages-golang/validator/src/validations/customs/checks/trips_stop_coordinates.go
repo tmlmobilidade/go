@@ -1,14 +1,14 @@
 package custom
 
 import (
-	geoService "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/geo"
+	geoService "github.com/tmlmobilidade/go/packages-golang/validator/src/services/geo"
 	"strconv"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
-	validationutils "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/customs/utils"
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
+	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
 /*

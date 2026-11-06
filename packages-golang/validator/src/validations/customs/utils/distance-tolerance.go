@@ -1,7 +1,7 @@
 package validationutils
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	"math"
 	"strconv"
 )

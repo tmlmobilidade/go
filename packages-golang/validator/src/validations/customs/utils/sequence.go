@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 type TripsSequencePoint struct {
