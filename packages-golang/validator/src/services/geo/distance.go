@@ -2,27 +2,40 @@ package geo
 
 import (
 	"database/sql"
+
 	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/lib/geo"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/geo"
 )
 
-// Distance caches both violations and successful checks, including missing geometry.
+/*
+* Distance checks a stop against a shape and caches the result for this instance.
+* Cached nil results include successful checks and unavailable geometry.
+* Load errors are returned without caching the failed lookup.
+ */
 func (g *Geometry) Distance(db *sql.DB, stop types.StopCoordinatesValidation, shapeID string) (*types.StopClosestShapePointsInfo, error) {
 	//
-	// 1. Reuse results only within this service instance
+
+	//
+	// 1. Initialize the shape and stop-shape caches for this service instance.
+
 	if g.shapes == nil {
 		g.shapes = map[string]*types.ShapeChunkedData{}
 	}
 	if g.pairs == nil {
 		g.pairs = map[[2]string]*types.StopClosestShapePointsInfo{}
 	}
+
+	//
+	// 2. Reuse a cached result for this stop ID and shape ID, including nil results.
+
 	key := [2]string{stop.StopId, shapeID}
 	if result, found := g.pairs[key]; found {
 		return result, nil
 	}
 
 	//
-	// 2. Load and densify each referenced shape once
+	// 3. Load and prepare each referenced shape once for distance checks.
+
 	shape, found := g.shapes[shapeID]
 	if !found {
 		var err error
@@ -34,7 +47,8 @@ func (g *Geometry) Distance(db *sql.DB, stop types.StopCoordinatesValidation, sh
 	}
 
 	//
-	// 3. Retain nil results so valid pairs do not trigger repeated geometry work
+	// 4. Cache the finding or nil result so this pair needs no repeated calculation.
+
 	result := mathgeo.StopShapeDistanceViolation(stop, shapeID, shape)
 	g.pairs[key] = result
 	return result, nil
