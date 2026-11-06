@@ -11,12 +11,12 @@ export const GtfsStrictV30RoutesSchema = z.object({
 	cemv_support: nullAsUndefined(GtfsTernarySchema.optional().default('0')),
 	continuous_drop_off: nullAsUndefined(GtfsPickupDropoffTypeSchema.optional()),
 	continuous_pickup: nullAsUndefined(GtfsPickupDropoffTypeSchema.optional()),
-	route_color: HexColorSchema,
+	route_color: nullAsUndefined(HexColorSchema.default('000000')),
 	route_id: z.string(),
 	route_long_name: z.string(),
 	route_short_name: z.string(),
 	route_sort_order: nullAsUndefined(z.number().optional()),
-	route_text_color: HexColorSchema,
+	route_text_color: nullAsUndefined(HexColorSchema.default('FFFFFF')),
 	route_type: GtfsRouteTypeSchema,
 });
 
