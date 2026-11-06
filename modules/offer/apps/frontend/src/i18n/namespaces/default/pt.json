@@ -65,9 +65,7 @@
 			"excludeLinesDescription": "Todas as linhas serão afetadas, exceto estas.",
 			"includeLines": "Apenas estas linhas",
 			"includeLinesDescription": "Apenas estas linhas serão afetadas.",
-			"noPatterns": "Sem patterns associados",
 			"operateAs": "O(s) dia(s) selecionado(s) irão funcionar como:",
-			"patterns": "Patterns associados",
 			"periods": "Períodos",
 			"replacement": "Substituição de oferta",
 			"replacementDescription": "Aplicar oferta de outro tipo de dia nestas datas",
@@ -83,7 +81,6 @@
 			"serviceType": "4. Que tipo de oferta se aplica nestes dias?",
 			"startTime": "Hora de início",
 			"startTimeDescription": "Formato HH:MM no dia operacional. Ex.: 10:00",
-			"viewPatterns": "Ver patterns associados",
 			"weekdays": "Dias úteis",
 			"weekend": "Fim de semana"
 		},

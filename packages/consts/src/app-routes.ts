@@ -369,6 +369,7 @@ export const API_ROUTES = Object.freeze({
 		EVENTS_CREATE: `${getModuleConfig('offer', 'api_url')}/events/create`,
 		EVENTS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}`,
 		EVENTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}/lock`,
+		EVENTS_DETAIL_PATTERNS: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}/patterns`,
 		EVENTS_LIST: `${getModuleConfig('offer', 'api_url')}/events`,
 		EVENTS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/events/list-agencies`,
 

@@ -6,6 +6,9 @@ import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 
 import { offerSchedulingResources } from '@tmlmobilidade/go-utils-offer';
 import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui/i18n';
 
+import namespaceEventsEn from './namespaces/events/en.json' with { type: 'json' };
+import namespaceEventsEs from './namespaces/events/es.json' with { type: 'json' };
+import namespaceEventsPt from './namespaces/events/pt.json' with { type: 'json' };
 import namespaceLinesEn from './namespaces/lines/en.json' with { type: 'json' };
 import namespaceLinesEs from './namespaces/lines/es.json' with { type: 'json' };
 import namespaceLinesPt from './namespaces/lines/pt.json' with { type: 'json' };
@@ -28,6 +31,7 @@ export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
 	...offerSchedulingResources.pt,
 	'default': namespaceDefaultPt,
+	'events': namespaceEventsPt,
 	'lines': namespaceLinesPt,
 	'patterns': namespacePatternsPt,
 	'routes': namespaceRoutesPt,
@@ -40,6 +44,7 @@ export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
 	...offerSchedulingResources.es,
 	'default': namespaceDefaultEs,
+	'events': namespaceEventsEs,
 	'lines': namespaceLinesEs,
 	'patterns': namespacePatternsEs,
 	'routes': namespaceRoutesEs,
@@ -52,6 +57,7 @@ export const i18nResourceKeysEn = {
 	...i18nResourceKeysEnShared,
 	...offerSchedulingResources.en,
 	'default': namespaceDefaultEn,
+	'events': namespaceEventsEn,
 	'lines': namespaceLinesEn,
 	'patterns': namespacePatternsEn,
 	'routes': namespaceRoutesEn,

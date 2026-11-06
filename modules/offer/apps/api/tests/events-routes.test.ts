@@ -9,6 +9,12 @@ import { after, beforeEach, mock, test } from 'node:test';
 let PERMISSIONS: Permission[];
 let WRITES: Record<string, unknown>[];
 let AGENCIES: Record<string, unknown>[];
+let PATTERN_QUERY: unknown;
+const event = EventSchema.parse({ _id: 'event', agency_ids: ['A'], code: 'EVENT', created_at: 1_792_368_000_000, created_by: 'actor', title: 'Event', updated_at: 1_792_368_000_000 });
+const patterns = [
+	{ _id: 'public', code: 'P1', headsign: 'Destination', line_id: 'line-a', route_id: 'route-a' },
+	{ _id: 'private', code: 'P2', headsign: 'Destination', line_id: 'line-b', route_id: 'route-b' },
+];
 
 mock.module('@tmlmobilidade/go-providers-auth', {
 	namedExports: {
@@ -31,11 +37,20 @@ mock.module('@tmlmobilidade/go-interfaces-godb', {
 			},
 			offer: {
 				events: {
+					findById: async () => ({ ...event, associated_patterns: [{ _id: 'stale' }] }),
 					insertOne: async (data: Record<string, unknown>) => {
 						WRITES.push(data);
 						return EventSchema.parse({ ...data, _id: 'event', created_at: 1_792_368_000_000, updated_at: 1_792_368_000_000 });
 					},
 				},
+				lines: { findMany: async (filter: { _id: { $in: string[] }, agency_id?: { $in: string[] } }) => [
+					{ _id: 'line-a', agency_id: 'A' },
+					{ _id: 'line-b', agency_id: 'B' },
+				].filter(line => filter._id.$in.includes(line._id) && (!filter.agency_id || filter.agency_id.$in.includes(line.agency_id))) },
+				patterns: { findMany: async (query: unknown) => {
+					PATTERN_QUERY = query;
+					return patterns;
+				} },
 			},
 		},
 	},
@@ -56,6 +71,7 @@ after(async () => {
 beforeEach(() => {
 	PERMISSIONS = [{ action: 'create', resources: { agency_ids: ['A'] }, scope: 'events' }];
 	WRITES = [];
+	PATTERN_QUERY = undefined;
 	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'must not appear', short_name: 'CCFL' }];
 });
 
@@ -139,4 +155,34 @@ test('agency labels default missing short names', async () => {
 	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
 	assert.equal(response.statusCode, 200);
 	assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: '' }]);
+});
+
+test('event detail and pattern associations have independent authenticated responses', async () => {
+	PERMISSIONS = [
+		{ action: 'read', resources: { agency_ids: ['A'] }, scope: 'events' },
+		{ action: 'read', resources: { agency_ids: ['A'] }, scope: 'lines' },
+	];
+	const detail = await server.inject({ cookies, method: 'GET', url: '/events/event' });
+	assert.equal(detail.statusCode, 200);
+	assert.equal('associated_patterns' in detail.json().data, false);
+	assert.equal(PATTERN_QUERY, undefined);
+
+	const patternsPath = API_ROUTES.offer.EVENTS_DETAIL_PATTERNS('event').replace(getModuleConfig('offer', 'api_url'), '');
+	const response = await server.inject({ cookies, method: 'GET', url: patternsPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(response.json().data, [patterns[0]]);
+	assert.deepEqual(PATTERN_QUERY, { rules: { $elemMatch: { event_id: 'event', kind: 'manual' } } });
+});
+
+test('event associations enforce event access and line agency permissions independently', async () => {
+	PERMISSIONS = [{ action: 'read', resources: { agency_ids: ['B'] }, scope: 'events' }];
+	const denied = await server.inject({ cookies, method: 'GET', url: '/events/event/patterns' });
+	assert.equal(denied.statusCode, 403);
+	assert.equal(PATTERN_QUERY, undefined);
+
+	PERMISSIONS = [{ action: 'read', resources: { agency_ids: ['A'] }, scope: 'events' }];
+	const noOfferAccess = await server.inject({ cookies, method: 'GET', url: '/events/event/patterns' });
+	assert.equal(noOfferAccess.statusCode, 200);
+	assert.deepEqual(noOfferAccess.json().data, []);
+	assert.equal(PATTERN_QUERY, undefined);
 });
