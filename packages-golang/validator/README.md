@@ -61,7 +61,7 @@ The GTFS Validator follows a modular, concurrent architecture designed for effic
 6. **Validation Context** - Provides common utilities for validation functions
 
 Shared data types and contracts live under `src/types`, grouped into `cli`,
-`logger`, `messages`, `rules`, `algorithm`, `sqlite`,
+`logger`, `messages`, `rules`, `algorithm`, `sqlite`, `geo`,
 `context`, and `validations`. The `types` tree contains declarations only;
 row-error behavior lives in `lib/context`, and report helpers live in
 `lib/messages`. Query and execution logic stays in
@@ -73,6 +73,13 @@ severity settings, supported tables and codes, compiled regexes, string escaping
 and version values. Logger and translator instances live in its `logger` and
 `i18n` subpackages to avoid import cycles. Per-call state remains local. The two
 `go:embed` declarations stay beside the source files they embed.
+
+Geometry follows the same boundaries: `lib/geo` contains the calculations,
+`services/geo` loads shapes through the SQLite query helpers and owns one rule's
+geometry caches, and `types/geo` holds the coordinate, point, and diagnostic
+contracts. Geometry functions and types each have a focused file. Shared
+thresholds live in `types/variables/geo.go`; custom-rule tolerance and unit options
+are resolved in `validations/customs/utils`.
 
 ### High-Level Flow
 
