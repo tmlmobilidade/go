@@ -7,7 +7,7 @@ A high-performance GTFS (General Transit Feed Specification) validation tool wri
 Build and test this package directly:
 
 ```sh
-cd packages-golang/validator-v2
+cd packages-golang/validator
 go build -o dist/validator ./src
 go test -race ./...
 ```
@@ -15,7 +15,7 @@ go test -race ./...
 The repository's `npm run repo:validator-binary` builds this package for the
 TypeScript wrapper. `npm run build:binary --workspace=@tmlmobilidade/go-operation-validator`
 also rebuilds the wrapper and is used by the worker's `predev` step.
-Both commands use `packages-golang/validator-v2/compile.sh`; the binary release
+Both commands use `packages-golang/validator/compile.sh`; the binary release
 workflow uses the same script with `--all`.
 The script clears the wrapper's `bin` and `dist/bin` directories and copies the
 new executable to both. `--all` builds Linux and macOS binaries for amd64 and arm64.
@@ -31,7 +31,7 @@ Building a binary does not rebuild or deploy the worker image.
 To run the rules in `rules.json` against a ZIP or an imported GTFS SQLite file:
 
 ```sh
-cd packages-golang/validator-v2
+cd packages-golang/validator
 make dev INPUT=data/gtfs_20261021_TML.zip
 # Or use an existing SQLite database:
 make dev INPUT=/absolute/path/feed.sqlite
@@ -306,10 +306,9 @@ of whether their missing-file diagnostic is enabled.
 
 Run `npm run repo:validator-rules` from the repository root or this package directory to generate only `packages-new/types/gtfs-validator/src/rules/rule-ids.ts`. The generator reads IDs from the central registrations; dependencies remain in `rules.json`.
 
-V2 currently registers four executable checks. The committed shared catalog still
-contains the full legacy rule set, so `npm run repo:validator-rules -- --check` currently reports
-a mismatch. To inspect v2's generated catalog separately during migration, run
-`npm run repo:validator-rules -- /tmp/validator-v2-rules`.
+Run `npm run repo:validator-rules -- --check` to check the committed catalog without
+rewriting it. To inspect the generated catalog separately, run
+`npm run repo:validator-rules -- /tmp/validator-rules`.
 
 Rule-ID discovery has one entry point: `lib/rules/discover.DiscoverRuleIDs(fs.FS)`.
 Rules JSON validation supplies the embedded `validations.RuleSources`; TypeScript
