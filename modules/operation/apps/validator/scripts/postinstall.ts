@@ -26,7 +26,7 @@ const WRAPPER_ROOT = existsSync(join(__dirname, '..', 'package.json'))
 	: join(__dirname, '..', '..');
 const BUNDLED_BIN_PATH = join(WRAPPER_ROOT, 'bin');
 const LOCAL_BIN_PATH = join(__dirname, '..', 'bin');
-const GO_BINARY_PATH = join(WRAPPER_ROOT, '../../../../packages-golang/validator-v2/dist/validator');
+const GO_BINARY_PATH = join(WRAPPER_ROOT, '../../../../packages-golang/validator/dist/validator');
 
 /**
  * Resolves the URL to download the binary from.

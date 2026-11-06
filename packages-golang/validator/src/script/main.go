@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/script/typescript"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/script/typescript"
 )
 
 func main() {
