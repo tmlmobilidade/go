@@ -9,8 +9,8 @@ import (
 	testutil "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/validations/utils"
 )
 
-func TestShapeIdForeign(t *testing.T) {
-	for _, severity := range []rules.Severities{rules.SEVERITY_ERROR, rules.SEVERITY_WARNING, rules.SEVERITY_INFO, rules.SEVERITY_IGNORE} {
+func TestTripsShapeIdForeign(t *testing.T) {
+	for _, severity := range []rules.Severities{rules.SEVERITY_ERROR, rules.SEVERITY_WARNING, rules.SEVERITY_INFO, rules.SEVERITY_IGNORE, rules.SEVERITY_FORBIDDEN, ""} {
 		for _, tc := range []struct {
 			name    string
 			value   any
@@ -29,10 +29,14 @@ func TestShapeIdForeign(t *testing.T) {
 					t.Fatal(err)
 				}
 				count := tc.count
-				if severity == rules.SEVERITY_IGNORE {
+				if severity == rules.SEVERITY_IGNORE || severity == "" {
 					count = 0
 				}
-				testutil.AssertMessages(t, c, "trips_shape_id_foreign", "shape_id", severity, count)
+				expectedSeverity := severity
+				if severity == rules.SEVERITY_FORBIDDEN {
+					expectedSeverity = rules.SEVERITY_ERROR
+				}
+				testutil.AssertMessages(t, c, "trips_shape_id_foreign", "shape_id", expectedSeverity, count)
 			})
 		}
 	}
