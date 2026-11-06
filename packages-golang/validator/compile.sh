@@ -4,7 +4,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
-WRAPPER_DIR="$REPO_ROOT/modules/operation/apps/validator/ts-wrapper"
+WRAPPER_DIR="$REPO_ROOT/modules/operation/apps/validator"
 BIN_DIR="$WRAPPER_DIR/bin"
 RUNTIME_BIN_DIR="$WRAPPER_DIR/dist/bin"
 VALIDATOR_GO_CACHE_DIR="${GOCACHE:-${TMPDIR:-/tmp}/go-plans-validator-cache}"
@@ -53,6 +53,9 @@ for TARGET in "${TARGETS[@]}"; do
 done
 
 if [ "${1:---local}" = "--local" ]; then
+	# Turbo caches this package's dist output; the wrapper copies it after a cache hit.
+	mkdir -p "$SCRIPT_DIR/dist"
+	cp -p "$BINARY_PATH" "$SCRIPT_DIR/dist/validator"
 	BINARY_VERSION="$("$BINARY_PATH" -version)"
 	echo "GTFS validator binary ready: $BINARY_VERSION"
 fi

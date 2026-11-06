@@ -4,24 +4,48 @@ A high-performance GTFS (General Transit Feed Specification) validation tool wri
 
 ## Building the binary
 
-From the repository root, `npm run repo:validator-binary` builds for the current
-machine. It uses `compile.sh` (default: `--local`), clears `bin` and `dist/bin`
-under `modules/operation/apps/validator/ts-wrapper`, and writes the executable
-to both directories. Go is required.
-
-To build all four release binaries (Linux and macOS, amd64 and arm64), run:
+Build and test this package directly:
 
 ```sh
-bash packages-golang/validator/compile.sh --all
+cd packages-golang/validator-v2
+go build -o dist/validator ./src
+go test -race ./...
 ```
 
-Starting the worker with `npm run dev:operation:gtfs-validator` automatically runs
-the wrapper's `build:binary` through the worker's `predev` hook. This compiles
-the Go binary and builds the TypeScript wrapper before starting the Node process.
+The repository's `npm run repo:validator-binary` builds this package for the
+TypeScript wrapper. `npm run build:binary --workspace=@tmlmobilidade/go-operation-validator`
+also rebuilds the wrapper and is used by the worker's `predev` step.
+Both commands use `packages-golang/validator-v2/compile.sh`; the binary release
+workflow uses the same script with `--all`.
+The script clears the wrapper's `bin` and `dist/bin` directories and copies the
+new executable to both. `--all` builds Linux and macOS binaries for amd64 and arm64.
 
-The `build-binary.yml` release workflow runs `compile.sh --all` and uploads the
-four binaries to a GitHub release. Container packaging is a separate step;
-running this script locally does not rebuild or deploy the worker image.
+The wrapper declares this Go package as a build dependency, so Turbo includes its
+sources when pruning Docker builds and compiles it before building the wrapper.
+Local builds also write `dist/validator` in this package. The wrapper copies that
+artifact into its runtime `dist/bin` directory, including when Turbo restores the
+Go build from cache.
+
+Building a binary does not rebuild or deploy the worker image.
+
+To run the rules in `rules.json` against a ZIP or an imported GTFS SQLite file:
+
+```sh
+cd packages-golang/validator-v2
+make dev INPUT=data/gtfs_20261021_TML.zip
+# Or use an existing SQLite database:
+make dev INPUT=/absolute/path/feed.sqlite
+```
+
+The Makefile lives at the package root. For ZIP input, it calls the
+existing `import-gtfs` CLI first, then passes
+its temporary SQLite database to the normal validator. The temporary database is
+removed after the run; the input ZIP or existing SQLite file is retained.
+
+This writes `src/output.json` using Portuguese messages and debug logging.
+Override `RULES`, `OUTPUT`, `RULES_LANG`, or `LOG_LEVEL` as needed; relative paths
+are resolved from the directory where you run make. Use `make run` with the same options to build and execute
+`dist/gtfs-validator` instead.
 
 ## Architecture Overview
 
@@ -30,70 +54,37 @@ The GTFS Validator follows a modular, concurrent architecture designed for effic
 ### Core Components
 
 1. **GTFS Loader** - Opens existing GTFS SQLite databases
-2. **SQLite Storage** - Stores GTFS data in a temporary SQLite database for efficient access
+2. **SQLite Queries** - Read imported data and prepare lookup indexes
 3. **Validation Registry** - Manages registration and discovery of validation functions
 4. **Rules Engine** - Processes configurable validation rules from JSON files
 5. **Message Service** - Collects and aggregates validation results
 6. **Validation Context** - Provides common utilities for validation functions
 
+Shared data types and contracts live under `src/types`, grouped into `cli`,
+`logger`, `messages`, `rules`, `algorithm`, `sqlite`,
+`context`, and `validations`. The `types` tree contains declarations only;
+row-error behavior lives in `lib/context`, and report helpers live in
+`lib/messages`. Query and execution logic stays in
+`services` and `lib`. Service implementations that own methods and private state,
+such as the logger and message collector, keep those together in their package.
+
+Shared runtime variables live under `src/types/variables`: registry state,
+severity settings, supported tables and codes, compiled regexes, string escaping,
+and version values. Logger and translator instances live in its `logger` and
+`i18n` subpackages to avoid import cycles. Per-call state remains local. The two
+`go:embed` declarations stay beside the source files they embed.
+
 ### High-Level Flow
 
-```
-Existing GTFS SQLite Database → ID Map Preparation → File Validation → Table Validations (Concurrent) → Results Output
-```
-
-### Architecture Diagram
-
 ```mermaid
-classDiagram
-    class Main {
-        +main()
-        +runValidations()
-    }
-    
-    class GTFSSQLite {
-        +ReadGTFSSQLite()
-    }
-    
-    class Gtfs {
-        +HasTable()
-        +IterateStops()
-        +IterateTrips()
-    }
-    
-    class RulesParser {
-        +ParseRules()
-    }
-    
-    class GtfsRules {
-        +validation rules
-    }
-    
-    class Registry {
-        +Register()
-        +Get()
-    }
-    
-    class TableValidation {
-        +RunValidations()
-    }
-    
-    Main --> GTFSSQLite : opens SQLite
-    GTFSSQLite --> Gtfs : supplies database
-    Main --> RulesParser : loads rules
-    RulesParser --> GtfsRules : parses
-    Main --> Registry : queries
-    Registry --> TableValidation : executes
-    TableValidation --> Gtfs : reads data
-    TableValidation --> GtfsRules : uses rules
-    
-    class MessageService {
-        +AddMessage()
-        +PrintJSON()
-    }
-    
-    TableValidation --> MessageService : reports issues
-    Main --> MessageService : outputs results
+flowchart LR
+    SQLite[Existing GTFS SQLite] --> Prepared[Lookup index preparation]
+    Config[Validated rules.json] --> Graph[Global dependency graph]
+    Registry[Registered checks] --> Graph
+    Prepared --> Checks[Concurrent whole-rule checks]
+    Graph --> Checks
+    Checks --> Messages[Message collector]
+    Messages --> Output[JSON to stdout or file]
 ```
 
 ## GTFS Loading Process
@@ -101,59 +92,109 @@ classDiagram
 The validator accepts an existing SQLite database produced by [import-gtfs](../import-gtfs/).
 Run the importer separately, then pass its output path with `-input /path/to/gtfs.db`.
 The flow is `import-gtfs → SQLite → validator → validation results`.
-The validator uses shared `telemetry` timing. Its integration test uses `import-gtfs`
-to verify that the producer output can be loaded and prepared for validation.
+The validator uses shared `telemetry` timing.
 ZIP input is no longer supported by the validator.
 
-`ReadGTFSSQLite()` opens the database without creating missing files, rebuilds the
-validator's `id_map`, and loads ID lookups into memory. Validation then prepares
-its indexes and derived tables. The input must be writable and is retained after
-validation; only the connection is closed. Repeated validation rebuilds the ID map.
+`services/sqlite.ReadGTFSSQLite()` opens an existing regular file with `mode=rw`,
+checks its SQLite schema, and returns a database connection. Missing paths are
+rejected without creating a database. Imported rows remain on disk: query helpers
+preserve TEXT values and expose NULL cells as empty strings. Preparation is
+separate: `queries.PrepareSQLiteIndexes(db)` creates lookup indexes in one
+transaction before concurrent checks start. Table and column existence are queried
+directly from SQLite when needed; there is no shared schema cache or preload step.
+Missing columns become SQL `NULL` in validation queries, and missing tables are
+left for file-presence rules to report. The input must be writable and is retained
+after validation; only the connection is closed.
 
 The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 
+## Logging
+
+`src/services/logger` composes the shared telemetry logger with validator row
+progress. Its shared instance is `types/variables/logger.AppLogger`, which supports
+all telemetry severity methods, log-level filtering,
+and performance trackers. Severity logs go to stderr so stdout can contain the
+JSON result. `ENVIRONMENT=dev` selects readable logs; other environments use
+structured JSON with timestamps and attributes. Shared presentation methods such
+as `Divider` still write to stdout; the entrypoint uses `Info` for its banner.
+
+```go
+progress := logger.AppLogger.NewProgressTracker("trips", totalRows, 1000)
+// Call after each processed row:
+progress.Track()
+// Call only after all table checks finish successfully:
+progress.Complete()
+```
+
+Progress includes the table, processed rows, total rows, and completion status.
+Reaching the final row does not report 100% until `Complete` is called. Progress
+trackers accept concurrent row updates and normalize a zero row threshold to one.
+
 ## Validation Processing
 
-The validation system uses a registry pattern that allows validation functions to be registered and discovered automatically.
+`validations/main.go` orchestrates execution through one global Kahn dependency graph.
+`validations/registry-rules.go` registers every whole-rule callback in `RegisterRules()`, with each rule ID beside its validation function. Each callback owns
+its table selection, fields, and related-table requirements. Source discovery
+reads the same registrations to validate IDs in `rules.json` separately.
 
-### Validation Registry
-
-The `validations.Registry` maintains a thread-safe map of table names to validation functions:
-
-- **Registration**: Each validation package registers itself during `init()` using `validations.Register(tableName, validationFunction)`
-- **Discovery**: The main validation loop looks up validation functions by table name
-- **Thread Safety**: The registry uses read-write mutexes to support concurrent access
+The `validations` root contains the orchestrator in `main.go`, its tests in
+`main_test.go`, and the registration list in `registry-rules.go`. Rule callback
+execution and operational-failure helpers live in `lib/rules/execution`;
+shared execution data stays in `types/validations`. The embedded source
+declaration stays in `main.go` and includes the central registrations.
 
 ### Validation Execution Flow
 
-1. **Rules Parsing**: Validation rules are loaded from a JSON file (if provided) and parsed into a `GtfsRules` structure
-2. **File Validation**: Basic file-level validations run first (required files, forbidden files, conditional requirements)
-3. **Table Validation**: For each GTFS table:
-   - Check if the table exists in the database
-   - Look up the registered validation function
-   - Execute the validation function in a separate goroutine
-4. **Concurrent Execution**: All table validations run concurrently using goroutines and a `sync.WaitGroup`
-5. **Completion**: The system waits for all validations to complete before proceeding
+1. Receive the database connection, validated configuration, and shared collector.
+2. Select configured callbacks and their declared prerequisites from the registered
+   checks and file-presence gates. Bind dependencies from `rules.json` into one graph.
+3. Start every dependency-ready rule immediately. Each rule scans its complete
+   source table in bounded batches; cursors close before check callbacks run.
+4. On each completion, release dependents whose prerequisites passed. Info,
+   warning, and error findings mark a rule failed; failed/skipped prerequisites block dependents.
+   Independent rules continue without a table or ready-level barrier.
+5. Wait for every started worker, then return `Result.Statuses` and `Result.Summary`.
+   Runtime failures are added as technical findings and also returned as Go errors.
+
+The scheduler has no rule concurrency limit. Rules share the database connection
+pool and query its schema when needed. Each rule receives a private context before entering the graph. Its ID identifies
+the node, and only `depends_on` controls when Kahn invokes its callback.
 
 ### Validation Function Signature
 
-Each validation function follows this signature:
+Every executable rule receives one context:
 
 ```go
-func(gtfs types.Gtfs, rules *types.GtfsRules)
+func PatternIdField(ctx *context.ValidationContext) error {
+    return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *context.ValidationContext) error {
+        // Read row.Source, use row.Config, and report through context.AddMessage.
+        return nil
+    })
+}
+
+func RegisterRules() {
+    // In validations/registry-rules.go, register all callbacks in one batch:
+    registry.Register(validationTypes.RuleChecks{
+        "trips_pattern_id_field": fields.PatternIdField,
+        "trips_shape_id_field":   fields.TripsShapeIdField,
+    })
+}
 ```
 
-- **gtfs**: Provides access to the GTFS data via iterator methods and database queries
-- **rules**: Contains the validation rules for the specific table being validated
+The rule selects its own source table, fields, and related tables. `ForEachRow`
+reads bounded batches and releases its SQLite cursor before invoking callbacks,
+so related-table queries also work with a single database connection. The
+orchestrator returns findings in the report and operational failures through both
+the report and error.
 
 ### Validation Context
 
-The `ValidationContext` struct provides common utilities for validation functions:
-
-- **Severity Management**: Checks if a validation should be ignored or if a field is forbidden
-- **Message Creation**: Standardized message creation with proper formatting
-- **Translation Support**: Access to internationalized error messages
-- **Row Tracking**: Tracks which rows have validation issues
+`ValidationContext` contains the rule ID, complete configuration, database
+connection, message receiver, and outcome. `Config.Severity` is the source used by
+severity and reporting helpers. Each row callback receives a child context with
+its own source location and copied configuration; row changes do not leak into
+other rows or rules. Findings propagate to the parent outcome before Kahn
+releases or blocks its dependents. Translation helpers use the context's rule ID.
 
 ## Results Collection and Output
 
@@ -162,9 +203,16 @@ The `ValidationContext` struct provides common utilities for validation function
 The `MessageService` collects all validation messages throughout the execution:
 
 - **Message Aggregation**: Messages are collected with metadata (file name, field, row numbers, severity)
-- **Deduplication**: Duplicate messages are merged, keeping track of all affected rows
-- **Severity Tracking**: Maintains counts of errors and warnings
-- **Early Exit**: Can exit early if too many issues are detected (configurable limit)
+- **Deduplication**: Findings with the same file, rule, field, severity, and text
+  are merged, retaining at most 50 row examples: the first 49 source rows and the latest occurrence
+- **Severity Tracking**: Counts distinct error and warning diagnostics in the report
+- **Dependency Outcomes**: Counts every emitted info, warning, and error finding
+  before deduplication so repeated findings still fail the rule
+
+The shared collector interface exposes `AddMessage`, `GetSummary`, and
+`RuleIssueCount`. The concrete collector also provides `OutputSummary` for the CLI.
+Each run owns its collector, and report snapshots can be changed without changing
+stored findings. `AllMessages` flattens grouped reports for callers such as tests.
 
 ### Output Formats
 
@@ -178,9 +226,10 @@ The validator supports multiple output formats:
 
 Each validation message contains:
 
-- **ValidationID**: Unique identifier for the validation rule
+- **RuleID**: Unique identifier for the validation rule
 - **Message**: Human-readable error or warning message
-- **Severity**: ERROR, WARNING, or IGNORE
+- **Severity**: `info`, `warning`, or `error`; ignored findings are omitted and
+  forbidden findings are reported as errors
 - **FileName**: The GTFS file being validated
 - **Field**: The specific field being validated
 - **Rows**: Array of row numbers (1-indexed, accounting for header row) where the issue occurs
@@ -202,51 +251,81 @@ The rules file accepts a flat object keyed by rule ID, either directly or inside
 ```json
 {
   "validation_rules": {
-    "agency_file_missing": {
+    "trips_file_missing": {
       "severity": "error",
       "depends_on": []
     },
-    "agency_id_unique": {
+    "trips_shape_id_field": {
       "severity": "warning",
-      "depends_on": ["agency_file_missing"]
+      "depends_on": ["trips_file_missing"]
+    },
+    "shapes_file_missing": {
+      "severity": "error"
+    },
+    "trips_shape_id_foreign": {
+      "severity": "error",
+      "depends_on": ["trips_shape_id_field", "shapes_file_missing"]
     }
   }
 }
 ```
 
-`<file>_file_missing` checks whether the imported table exists. Any rule may depend on it, and it may itself have prerequisites. Once those prerequisites pass, it passes when the table exists and fails when it is missing, even when its diagnostic severity is `ignore` or its configuration entry is omitted.
+`<file>_file_missing` checks whether the imported table exists. It enters the graph
+when configured or referenced by `depends_on`, and it may itself have prerequisites.
+Once those prerequisites pass, it passes when the table exists and fails when it
+is missing, even when its diagnostic severity is `ignore` or its configuration
+entry is omitted. Unconfigured, unreferenced presence checks do not run.
 
 Each rule can have:
 
-- **severity**: `error`, `warning`, `info`, `ignore`, or `forbidden`
+- **severity**: `ignore`, `info`, `warning`, `error`, or `forbidden`
 - **options**: An array of allowed string values
 - **compare**: An array of `{ "key": "field_name", "value": "expected_value" }` objects
 - **depends_on**: Any rule IDs, including `<file>_file_missing`, that must pass before this rule runs
 
-Dependencies come only from `depends_on` in the supplied rules JSON. Omitting it or supplying an empty array means the rule has no prerequisites. One global graph orders all rules, including dependencies across tables and execution scopes. Unknown dependencies and cycles are rejected before the SQLite input is opened. Execution scopes in `lib/rules/scopes.go` select the rows checked by an action; they do not restrict dependencies.
+Explicit `depends_on` settings can refer to rules from any table. Scheduling follows
+only those explicit dependencies. Checks also skip when their source or required
+lookup tables are missing, even without a file-presence dependency. File-presence
+rules control missing-file diagnostics; these local checks prevent queries against
+unavailable tables. Dependencies are not added automatically.
+Kahn's graph is built inside `validations/main.go`, before any checks execute.
 
-Within the same table, prerequisites must pass for the affected row or every member of the affected group. Across tables, the prerequisite must finish and pass across all its rows/groups. Findings at any severity, ignored or unimplemented checks, missing source tables, and checks with no source rows block dependents; independent rules continue. File-presence checks use actual table existence as described above.
+Each prerequisite must finish and pass across its whole source table before its
+dependents run. Info/warning/error findings, ignored rules, and missing required tables
+block dependents; independent work continues. An empty source table produces no
+row findings. Diagnostic-only IDs have no executable work and remain skipped when
+used as prerequisites. File-presence gates use actual table existence independently
+of whether their missing-file diagnostic is enabled.
 
-Run `npm run repo:validator-rules` to generate only `packages-new/types/gtfs-validator/src/rules-new/rule-ids.ts`. The generator reads IDs from the validation implementations; it does not generate a catalogue or define dependencies.
+Run `npm run repo:validator-rules` from the repository root or this package directory to generate only `packages-new/types/gtfs-validator/src/rules/rule-ids.ts`. The generator reads IDs from the central registrations; dependencies remain in `rules.json`.
 
-Rules grouped by GTFS file are rejected. The runtime stores `types.GtfsRules` as a map from rule ID to `types.RuleContext`: `agency_id_unique` is read directly, without an `agency` section or an `agency.` prefix. Each check receives only its own context, for example `AgencyEmailField(db, rules.Rule("agency_email_field"))`. Use `ignore` to disable a rule. The generated list's technical diagnostic IDs, including `file_validation` and `file_not_found_in_rules`, are accepted as flat entries, but their runtime severities remain fixed.
+V2 currently registers four executable checks. The committed shared catalog still
+contains the full legacy rule set, so `npm run repo:validator-rules -- --check` currently reports
+a mismatch. To inspect v2's generated catalog separately during migration, run
+`npm run repo:validator-rules -- /tmp/validator-v2-rules`.
 
-For the flat checks/tests layout and shared DAG entry point, see [Validation structure](src/validations/README.md).
+Rule-ID discovery has one entry point: `lib/rules/discover.DiscoverRuleIDs(fs.FS)`.
+Rules JSON validation supplies the embedded `validations.RuleSources`; TypeScript
+generation supplies `os.DirFS(sourceDir)`. Both use the same parsing, runtime IDs,
+deduplication, and sorting. Standalone binaries do not need the Go source checkout,
+and the generator still supports `--source-dir`.
+
+Rules grouped by GTFS file are rejected. Configuration is a map from rule ID to
+`rules.RuleConfig`: `trips_pattern_id_field` is read directly, without a `trips`
+section or a `trips.` prefix. Each check receives only its own context. Use
+`ignore` to disable a rule. The generated list's technical diagnostic IDs,
+including `file_validation` and `file_not_found_in_rules`, are accepted as flat
+entries, but their runtime severities remain fixed.
 
 ## Performance Considerations
 
-- **Concurrent Validations**: Table validations run concurrently to maximize CPU utilization
-- **Streaming Access**: Data is streamed from SQLite rather than loaded entirely into memory
-- **Batch Processing**: Database operations use batch transactions
-- **Early Termination**: Can exit early if too many validation errors are detected
-- **Progress Tracking**: Large tables show progress indicators during validation
+- **Concurrent Validations**: Every rule starts when its configured prerequisites pass
+- **Bounded Reads**: Source rows are buffered in batches of 512, with cursors closed
+  before callbacks perform related-table queries
+- **Indexed Lookups**: Lookup indexes are prepared before concurrent checks start
+- **Progress Tracking**: Rules log their start, progress, final status, and duration
 
 ## Cleanup
 
-After validation completes:
-
-1. The SQLite database connection is closed
-2. The temporary database file is removed
-3. Results are output in the requested format
-
-This ensures no temporary files are left behind after validation completes.
+After validation completes, results are written to stdout or the configured file
+and the SQLite connection is closed. The supplied database is retained.

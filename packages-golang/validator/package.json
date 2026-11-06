@@ -1,12 +1,12 @@
 {
-	"name": "@tmlmobilidade/go-golang-validator",
+	"name": "@tmlmobilidade/go-golang-validator-v2",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"build": "go build -ldflags=-w -o dist/validator ./src",
-		"build:binary": "bash ./compile.sh",
+		"build": "bash ./compile.sh",
 		"dev": "go run -ldflags=-w ./src",
 		"lint": "go vet ./...",
+		"repo:validator-rules": "bash ../../scripts/generate-validator-rules.sh",
 		"test": "go test ./..."
 	},
 	"devDependencies": {

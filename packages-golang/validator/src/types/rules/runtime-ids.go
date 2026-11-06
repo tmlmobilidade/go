@@ -1,0 +1,4 @@
+package rules
+
+// RuleIDGtfsFeedFilePresenceAndIntegrity identifies forbidden-file diagnostics.
+const RuleIDGtfsFeedFilePresenceAndIntegrity = "file_validation_gtfs_feed_file_presence_and_integrity_rule"
