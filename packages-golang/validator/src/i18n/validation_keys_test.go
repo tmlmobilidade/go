@@ -74,6 +74,7 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 		packages[alias] = filepath.Join("..", filepath.FromSlash(directory))
 	}
 	functionRules := map[string]string{}
+	registeredDirectories := map[string]bool{}
 	ast.Inspect(registrations, func(node ast.Node) bool {
 		batch, ok := node.(*ast.CompositeLit)
 		if !ok {
@@ -98,6 +99,7 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 				t.Fatalf("cannot resolve validation package for %s", id)
 			}
 			functionRules[filepath.Join(packages[alias.Name], function.Sel.Name)] = id
+			registeredDirectories[packages[alias.Name]] = true
 		}
 		return true
 	})
@@ -160,6 +162,11 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 			}
 			// Resolve rule-specific detail keys inside registered validations.
 			if !strings.HasPrefix(filepath.ToSlash(path), "../validations/") {
+				return true
+			}
+			// Unregistered packages have no runtime rule IDs yet. Registered
+			// packages still fail below if a callback's mapping is missing.
+			if !registeredDirectories[filepath.Dir(path)] {
 				return true
 			}
 			if len(call.Args) == 0 {

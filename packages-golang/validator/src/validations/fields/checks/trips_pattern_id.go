@@ -5,7 +5,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/services/sqlite/queries"
 )
 
-// PatternIdField checks its own source table using the context released by Kahn.
 func PatternIdField(ctx *context.ValidationContext) error {
 	//
 
@@ -14,7 +13,7 @@ func PatternIdField(ctx *context.ValidationContext) error {
 
 	return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *context.ValidationContext) error {
 		//
-		// 2. Read the current source value
+		// 2. Get the pattern_id value
 
 		value, err := queries.Field(row.Source, "pattern_id")
 		if err != nil {
@@ -22,11 +21,20 @@ func PatternIdField(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 3. Report missing values using this context's configuration and rule ID
+		// 3. Check if the pattern_id is required
 
-		if value == "" && !context.ShouldIgnore(row) {
+		if value == "" {
+			if context.ShouldIgnore(row) {
+				return nil
+			}
+
 			context.AddMessage(row, context.GetSeverityMessage(row, "required", "recommended", "informational"))
+			return nil
 		}
+
+		//
+		// 4. Return success
+
 		return nil
 	})
 }
