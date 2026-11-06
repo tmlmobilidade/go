@@ -9,8 +9,8 @@ import { z } from 'zod';
 export const GtfsStrictV30StopTimesSchema = z.object({
 	arrival_time: OperationalTimeSchema,
 	departure_time: OperationalTimeSchema,
-	drop_off_type: GtfsPickupDropoffTypeSchema,
-	pickup_type: GtfsPickupDropoffTypeSchema,
+	drop_off_type: nullAsUndefined(GtfsPickupDropoffTypeSchema.default('0')),
+	pickup_type: nullAsUndefined(GtfsPickupDropoffTypeSchema.default('0')),
 	shape_dist_traveled: NonNegativeFloatSchema,
 	stop_id: z.string(),
 	stop_sequence: NonNegativeIntegerSchema,
