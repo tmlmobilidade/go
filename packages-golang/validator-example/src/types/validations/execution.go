@@ -3,7 +3,7 @@ package validations_types
 import (
 	"sync"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
 )
 
 // Execution shares immutable inputs and one synchronized collector across workers.

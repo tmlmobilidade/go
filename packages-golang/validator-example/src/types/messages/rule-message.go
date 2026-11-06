@@ -1,7 +1,7 @@
 package messages
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
 // RuleMessage groups the findings for one rule and file under a generic description.

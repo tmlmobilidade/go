@@ -1,6 +1,6 @@
 package messages
 
-import "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+import "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 
 // Message is one validation finding, with its source location and rule identity.
 type Message struct {

@@ -3,7 +3,7 @@ package variables
 import (
 	"sync"
 
-	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/validations"
+	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/validations"
 )
 
 // RegisteredRules holds the callbacks shared by validation runs.

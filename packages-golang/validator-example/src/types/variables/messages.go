@@ -3,7 +3,7 @@ package variables
 import (
 	"sync/atomic"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
 // MessageSeverities publishes an immutable configuration snapshot to running checks.

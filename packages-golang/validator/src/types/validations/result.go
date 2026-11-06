@@ -1,8 +1,8 @@
 package validations_types
 
 import (
-	algorithm_types "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/algorithm"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
+	algorithm_types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/algorithm"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/messages"
 )
 
 // Result contains the final execution state and the complete validation report.

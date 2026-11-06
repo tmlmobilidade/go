@@ -3,9 +3,9 @@ package context_types
 import (
 	"database/sql"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/rules"
-	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-v2/src/types/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/messages"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
+	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // ValidationContext stores the location, severity, and outcome of one check invocation.
