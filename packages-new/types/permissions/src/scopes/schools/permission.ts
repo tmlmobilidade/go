@@ -10,7 +10,7 @@ import { SchoolsPermissionScopeSchema } from './scope.js';
 
 export const SchoolsPermissionSchema = z.object({
 	action: SchoolsPermissionActionsSchema,
-	resources: SchoolsPermissionResourcesSchema.default({}),
+	resources: SchoolsPermissionResourcesSchema.prefault({}),
 	scope: SchoolsPermissionScopeSchema,
 });
 

@@ -2,8 +2,8 @@
 
 import { type AggregationPipeline } from '@/common/aggregation-pipeline.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { MongoConnector } from '@tmlmobilidade/mongo';
 import { generateRandomString } from '@tmlmobilidade/strings';
 import { type AggregateOptions, type AggregationCursor, type Collection, type DeleteOptions, type DeleteResult, type Document, type Filter, type FindOptions, Flatten, type IndexDescription, type InsertManyResult, type InsertOneOptions, type InsertOneResult, type MongoClientOptions, type OptionalUnlessRequiredId, type UpdateOptions, type UpdateResult, type WithId } from 'mongodb';
@@ -14,10 +14,10 @@ import { z } from 'zod';
 export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate> {
 	//
 
-	protected createSchema: null | z.ZodSchema = null;
+	protected createSchema: null | z.ZodType<TCreate> = null;
 	protected mongoCollection: Collection<T>;
 	protected mongoConnector: MongoConnector;
-	protected updateSchema: null | z.ZodSchema = null;
+	protected updateSchema: null | z.ZodType<TUpdate> = null;
 
 	/**
 	 * Aggregates documents in the collection.
@@ -263,7 +263,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 				// In safe mode, a schema is required to validate the document.
 				if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
 				// Validate the document against the create schema
-				parsedDocument = this.createSchema.parse(parsedDocument);
+				parsedDocument = this.createSchema.parse(parsedDocument) as OptionalUnlessRequiredId<T>;
 				// Add the missing default fields, if present in the original document.
 				// The schema might have omitted these fields, so we need to add them back.
 				if (doc._id) parsedDocument._id = doc._id;
@@ -372,7 +372,7 @@ export abstract class MongoCollectionClass<T extends Document, TCreate, TUpdate>
 	 * @returns A promise that resolves to the result of the update operation
 	 */
 	public async updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: TUpdate & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>> {
-		let parsedUpdateFields = {
+		let parsedUpdateFields: TUpdate = {
 			...updateFields,
 			updated_at: updateFields.updated_at || Dates.now('utc').unix_milliseconds,
 			updated_by: updateFields.updated_by || 'system',

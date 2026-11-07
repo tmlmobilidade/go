@@ -38,5 +38,5 @@ export const PasswordRequirementsSchema = z
 			} : undefined,
 		};
 
-		checkPassComplexity.addIssue({ code: z.ZodIssueCode.custom, message: JSON.stringify(errObj), path: ['password'] });
+		checkPassComplexity.addIssue({ code: 'custom', message: JSON.stringify(errObj), path: ['password'] });
 	});

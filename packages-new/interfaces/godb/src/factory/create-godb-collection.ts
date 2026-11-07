@@ -29,7 +29,7 @@ interface CreateGoDbCollectionParams<T extends Document> {
 	collectionName: string
 	database: Db
 	indexDescription: null | SimplifiedMongoIndex<T>[]
-	schema: null | z.ZodSchema
+	schema: null | z.ZodType<T>
 }
 
 /**

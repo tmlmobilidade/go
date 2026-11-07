@@ -23,7 +23,7 @@ export type HexColor = string & {
  * // => '#FFFFFF' as HexColor
  * ```
  */
-export const HexColorSchema = z
+export const HexColorSchema: z.ZodType<HexColor> = z
 	.coerce
 	.string()
 	.transform(value => value.startsWith('#') ? value : `#${value}`)

@@ -6,7 +6,7 @@ import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PatternsDetail, type PatternsDetailPathItem, type PatternsImportGtfsRequest, PatternsImportGtfsRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
-import { type StopsParameter } from '@tmlmobilidade/go-types-offer';
+import { type Path, type StopsParameter } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 /**
@@ -73,7 +73,7 @@ export async function importPatternGtfsHandler(request: FastifyRequest<{ Body: P
 	// Process path with stop population and calculations
 
 	const sortedPath = validatedImport.data.path.sort((a, b) => a.stop_sequence - b.stop_sequence);
-	const formattedPath = [];
+	const formattedPath: Path[] = [];
 	const populatedPath: PatternsDetailPathItem[] = [];
 	let prevDistance = 0;
 	const existingVisits = new Map<string, { index: number, item: NonNullable<typeof patternData.path>[number] }[]>();

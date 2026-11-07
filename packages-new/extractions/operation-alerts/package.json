@@ -27,7 +27,7 @@
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/strings": "*",
 		"csv-stringify": "6.8.3",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

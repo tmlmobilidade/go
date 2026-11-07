@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { VehicleEmissionSchema } from './emission.js';
@@ -49,7 +49,7 @@ export const vehicleSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateVehicleSchema = vehicleSchema.omit({ created_at: true, updated_at: true });
-export const UpdateVehicleSchema = CreateVehicleSchema.omit({ created_by: true }).partial();
+export const UpdateVehicleSchema = partialWithoutDefaults(CreateVehicleSchema.omit({ created_by: true }));
 
 /* * */
 

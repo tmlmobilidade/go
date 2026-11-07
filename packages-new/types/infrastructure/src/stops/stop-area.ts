@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -11,7 +11,7 @@ export const StopAreaSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateStopAreaSchema = StopAreaSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateStopAreaSchema = CreateStopAreaSchema.omit({ created_by: true }).partial();
+export const UpdateStopAreaSchema = partialWithoutDefaults(CreateStopAreaSchema.omit({ created_by: true }));
 
 export type StopArea = z.infer<typeof StopAreaSchema>;
 export type CreateStopAreaDto = z.infer<typeof CreateStopAreaSchema>;

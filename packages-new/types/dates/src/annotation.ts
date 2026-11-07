@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateIntSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -14,7 +14,7 @@ export const AnnotationSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateAnnotationSchema = AnnotationSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
-export const UpdateAnnotationSchema = CreateAnnotationSchema.partial();
+export const UpdateAnnotationSchema = partialWithoutDefaults(CreateAnnotationSchema);
 
 /* * */
 

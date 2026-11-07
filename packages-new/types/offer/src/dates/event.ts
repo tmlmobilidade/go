@@ -1,7 +1,7 @@
 /* * */
 
 import { EventRuleSchema } from '@/network/rules.js';
-import { BaseDocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateIntSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -20,7 +20,7 @@ export const EventSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateEventSchema = EventSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
-export const UpdateEventSchema = CreateEventSchema.partial();
+export const UpdateEventSchema = partialWithoutDefaults(CreateEventSchema);
 
 /* * */
 

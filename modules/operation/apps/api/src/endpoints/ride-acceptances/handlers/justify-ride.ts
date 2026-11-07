@@ -24,7 +24,7 @@ export async function justifyRide(request: FastifyRequest<{ Body: { justificatio
 
 	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
 		...oldJustificationData,
-		acceptance_status: RideAcceptanceStatusSchema.Values.under_review,
+		acceptance_status: RideAcceptanceStatusSchema.enum.under_review,
 		justification: {
 			created_at: Dates.now('utc').unix_milliseconds,
 			created_by: request.me._id,

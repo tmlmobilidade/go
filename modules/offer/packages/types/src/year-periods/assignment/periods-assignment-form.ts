@@ -14,10 +14,10 @@ export const PeriodsAssignmentFormSchema = z.object({
 	yearPeriodId: z.string(),
 }).superRefine((values, context) => {
 	if (values.assignmentMode === 'existing' && !values.yearPeriodId) {
-		context.addIssue({ code: z.ZodIssueCode.custom, message: 'Select a period', path: ['yearPeriodId'] });
+		context.addIssue({ code: 'custom', message: 'Select a period', path: ['yearPeriodId'] });
 	}
 	if (values.assignmentMode === 'create' && !values.newPeriodName.trim()) {
-		context.addIssue({ code: z.ZodIssueCode.custom, message: 'Enter a period name', path: ['newPeriodName'] });
+		context.addIssue({ code: 'custom', message: 'Enter a period name', path: ['newPeriodName'] });
 	}
 });
 

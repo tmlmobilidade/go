@@ -1,7 +1,7 @@
 /* * */
 
 import { GeoJsonFeatureCollectionSchema, GeoJsonFeatureSchema } from '@tmlmobilidade/go-types-geo';
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -23,7 +23,7 @@ export const CreateZoneSchema = z.object({
 	code: ZoneSchema.shape.code,
 	name: ZoneSchema.shape.name,
 }).merge(
-	ZoneSchema.omit({
+	partialWithoutDefaults(ZoneSchema.omit({
 		_id: true,
 		agency_ids: true,
 		code: true,
@@ -33,11 +33,10 @@ export const CreateZoneSchema = z.object({
 		name: true,
 		updated_at: true,
 		updated_by: true,
-	}).partial(),
+	})),
 );
 
-export const UpdateZoneSchema = CreateZoneSchema
-	.partial();
+export const UpdateZoneSchema = partialWithoutDefaults(CreateZoneSchema);
 
 /* * */
 

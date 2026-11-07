@@ -39,7 +39,7 @@ export const TopDemandByAgencyByDayTypeSchema = MetricBaseSchema.extend({
 	data: z.object({
 		agencies: z.record(
 			z.string().describe('Agency ID'),
-			z.record(
+			z.partialRecord(
 				z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
 				z.record(
 					z.string().describe('Date in \'YYYY-MM-DD\' format'),
@@ -47,7 +47,7 @@ export const TopDemandByAgencyByDayTypeSchema = MetricBaseSchema.extend({
 				),
 			),
 		),
-		total: z.record(
+		total: z.partialRecord(
 			z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
 			z.record(
 				z.string().describe('Date in \'YYYY-MM-DD\' format'),
@@ -64,7 +64,7 @@ export const TopLines30DayPerformanceSchema = MetricBaseSchema.extend({
 			z.string().describe('Line ID'),
 			z.object({
 				increase_pct: z.number(),
-				last_30_days_by_day_type: z.record(
+				last_30_days_by_day_type: z.partialRecord(
 					z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
 					z.number(),
 				),
@@ -76,7 +76,7 @@ export const TopLines30DayPerformanceSchema = MetricBaseSchema.extend({
 			z.string().describe('Line ID'),
 			z.object({
 				increase_pct: z.number(),
-				last_30_days_by_day_type: z.record(
+				last_30_days_by_day_type: z.partialRecord(
 					z.enum(['day_type_1', 'day_type_2', 'day_type_3']),
 					z.number(),
 				),

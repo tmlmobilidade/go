@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -43,7 +43,7 @@ export const CreateFareSchema = z.object({
 	code: FareSchema.shape.code,
 	name: FareSchema.shape.name,
 }).merge(
-	FareSchema.omit({
+	partialWithoutDefaults(FareSchema.omit({
 		_id: true,
 		agency_ids: true,
 		code: true,
@@ -53,11 +53,10 @@ export const CreateFareSchema = z.object({
 		name: true,
 		updated_at: true,
 		updated_by: true,
-	}).partial(),
+	})),
 );
 
-export const UpdateFareSchema = CreateFareSchema
-	.partial();
+export const UpdateFareSchema = partialWithoutDefaults(CreateFareSchema);
 
 /* * */
 
