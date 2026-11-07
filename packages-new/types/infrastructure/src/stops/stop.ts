@@ -8,7 +8,7 @@ import { StopShelterSchema } from '@/stops/shelter.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { LocationSchema } from '@tmlmobilidade/go-types-locations';
-import { BaseDocumentSchema, CommentSchema, LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, LifecycleStatusSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -62,7 +62,7 @@ export const StopSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateStopSchema = StopSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateStopSchema = CreateStopSchema.omit({ created_by: true }).partial();
+export const UpdateStopSchema = partialWithoutDefaults(CreateStopSchema.omit({ created_by: true }));
 
 export type Stop = z.infer<typeof StopSchema>;
 export type CreateStopDto = z.infer<typeof CreateStopSchema>;

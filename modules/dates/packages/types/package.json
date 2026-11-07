@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-types-core": "*",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

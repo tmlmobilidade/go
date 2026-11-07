@@ -2,14 +2,14 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
-import { type DefaultValues, useForm, type UseFormReturn } from 'react-hook-form';
-import { z, type ZodType } from 'zod';
+import { type DefaultValues, type FieldValues, useForm, type UseFormReturn } from 'react-hook-form';
+import { type ZodType } from 'zod';
 
 import { usePreventNavigation } from '../../hooks/use-prevent-navigation';
 
 /* * */
 
-interface UseStandardFormProps<T, TSchema extends ZodType> {
+interface UseStandardFormProps<T extends FieldValues, TSchema extends ZodType<T>> {
 	apiData?: null | T
 	defaultValues?: DefaultValues<T>
 	hasUnsavedChanges?: boolean
@@ -17,7 +17,7 @@ interface UseStandardFormProps<T, TSchema extends ZodType> {
 	schema?: TSchema
 }
 
-export interface UseStandardFormReturnType<T> {
+export interface UseStandardFormReturnType<T extends FieldValues> {
 	form: UseFormReturn<T>
 	isDirty: boolean
 	isValid: boolean
@@ -35,16 +35,17 @@ export interface UseStandardFormReturnType<T> {
  * @param defaultValues Optional initial values to set when creating new forms.
  * @returns The form methods and state from React Hook Form.
  */
-export function useStandardForm<T, TSchema extends ZodType>({ apiData, defaultValues, hasUnsavedChanges = false, schema }: UseStandardFormProps<T, TSchema>): UseStandardFormReturnType<T> {
+export function useStandardForm<T extends FieldValues, TSchema extends ZodType<T>>({ apiData, defaultValues, hasUnsavedChanges = false, schema }: UseStandardFormProps<T, TSchema>): UseStandardFormReturnType<T> {
 	//
 
 	//
 	// Setup form and its related logic
 
-	const form = useForm<z.input<TSchema>>({
+	const form = useForm<T>({
 		defaultValues,
 		mode: 'all',
-		resolver: schema ? zodResolver(schema) : undefined,
+		// Form state uses the DTO type. The schema may accept additional inputs for coercion.
+		resolver: schema ? zodResolver(schema as ZodType<T, T>) : undefined,
 	});
 
 	//

@@ -9,14 +9,14 @@ import { z } from 'zod';
 export const GtfsStrictV30RoutesSchema = z.object({
 	agency_id: z.string(),
 	cemv_support: nullAsUndefined(GtfsTernarySchema.optional().default('0')),
-	continuous_drop_off: nullAsUndefined(GtfsPickupDropoffTypeSchema.optional()),
-	continuous_pickup: nullAsUndefined(GtfsPickupDropoffTypeSchema.optional()),
-	route_color: nullAsUndefined(HexColorSchema.default('000000')),
+	continuous_drop_off: nullAsUndefined(GtfsPickupDropoffTypeSchema.unwrap().optional()),
+	continuous_pickup: nullAsUndefined(GtfsPickupDropoffTypeSchema.unwrap().optional()),
+	route_color: nullAsUndefined(HexColorSchema.prefault('000000')),
 	route_id: z.string(),
 	route_long_name: z.string(),
 	route_short_name: z.string(),
 	route_sort_order: nullAsUndefined(z.number().optional()),
-	route_text_color: nullAsUndefined(HexColorSchema.default('FFFFFF')),
+	route_text_color: nullAsUndefined(HexColorSchema.prefault('FFFFFF')),
 	route_type: GtfsRouteTypeSchema,
 });
 

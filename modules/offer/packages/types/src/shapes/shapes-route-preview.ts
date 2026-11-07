@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-const coordinatesSchema = z.tuple([z.number().finite(), z.number().finite()]);
+const coordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([z.number().finite(), z.number().finite()]);
 const lineGeometrySchema = z.object({ coordinates: z.array(coordinatesSchema), type: z.literal('LineString') });
 const summarySchema = z.object({ distance: z.number().finite().nonnegative(), duration: z.number().finite().nonnegative() });
 

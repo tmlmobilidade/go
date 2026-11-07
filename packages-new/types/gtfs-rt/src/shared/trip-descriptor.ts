@@ -10,7 +10,7 @@ import { GtfsRtScheduleRelationshipSchema } from './schedule-relationship.js';
 
 export const GtfsRtTripDescriptorSchema = z.object({
 	direction_id: GtfsTripDirectionSchema.nullish(),
-	modified_trip: z.any(),
+	modified_trip: z.any().optional(),
 	route_id: z.string(),
 	schedule_relationship: GtfsRtScheduleRelationshipSchema.nullish(),
 	start_date: OperationalDateIntSchema,

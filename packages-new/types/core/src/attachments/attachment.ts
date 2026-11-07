@@ -9,7 +9,7 @@ export const AttachmentSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
 		description: z.string().nullish(),
-		metadata: z.record(z.unknown()).nullish(),
+		metadata: z.record(z.string(), z.unknown()).nullish(),
 		name: z.string(),
 		resource_id: z.string(),
 		scope: z.string(),

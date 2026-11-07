@@ -38,7 +38,7 @@
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.6.1",
 		"papaparse": "5.7.0",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -25,7 +25,7 @@ export const CreateTypologySchema = z.object({
 	code: TypologySchema.shape.code,
 	name: TypologySchema.shape.name,
 }).merge(
-	TypologySchema.omit({
+	partialWithoutDefaults(TypologySchema.omit({
 		_id: true,
 		agency_ids: true,
 		code: true,
@@ -35,11 +35,10 @@ export const CreateTypologySchema = z.object({
 		name: true,
 		updated_at: true,
 		updated_by: true,
-	}).partial(),
+	})),
 );
 
-export const UpdateTypologySchema = CreateTypologySchema
-	.partial();
+export const UpdateTypologySchema = partialWithoutDefaults(CreateTypologySchema);
 
 /* * */
 

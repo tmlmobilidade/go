@@ -22,7 +22,7 @@ export type Longitude = number & {
  * const longitude = LongitudeSchema.parse('180.1');
  * // => Throws an error: 'Longitude must be between -180 and 180'
  */
-export const LongitudeSchema = z
+export const LongitudeSchema: z.ZodType<Longitude> = z
 	.coerce
 	.number()
 	.min(-180, 'Longitude must be between -180 and 180')

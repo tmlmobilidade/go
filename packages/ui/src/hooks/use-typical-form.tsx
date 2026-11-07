@@ -1,9 +1,9 @@
 'use client';
 
 import { type FormErrors, useForm, type UseFormReturnType } from '@mantine/form';
-import { zodResolver } from 'mantine-form-zod-resolver';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useEffect } from 'react';
-import { type Schema } from 'zod';
+import { type ZodType } from 'zod';
 
 // import { usePreventNavigation } from './use-prevent-navigation';
 
@@ -28,7 +28,7 @@ interface UseTypicalFormReturnType<T> {
  * @returns The current value of the CSS variable, or the default value or undefined if not set.
  */
 export function useTypicalForm<T extends Record<string, unknown>>(
-	schema: Schema,
+	schema: ZodType,
 	apiData?: null | T | undefined,
 	initialValues?: Partial<T>,
 	mode?: 'controlled' | 'uncontrolled',
@@ -42,7 +42,7 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 		cascadeUpdates: true,
 		initialValues: initialValues as T,
 		mode: mode || 'uncontrolled',
-		validate: zodResolver(schema as Schema<T>),
+		validate: zod4Resolver(schema),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});

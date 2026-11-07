@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateIntSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -16,7 +16,7 @@ export const YearPeriodSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateYearPeriodSchema = YearPeriodSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
-export const UpdateYearPeriodSchema = CreateYearPeriodSchema.partial();
+export const UpdateYearPeriodSchema = partialWithoutDefaults(CreateYearPeriodSchema);
 
 export const UpdateYearPeriodDatesSchema = z.object({
 	add_dates: z.array(OperationalDateIntSchema).default([]),
@@ -28,7 +28,7 @@ export const UpdateYearPeriodDatesSchema = z.object({
 
 	if (overlappingDates.length > 0) {
 		context.addIssue({
-			code: z.ZodIssueCode.custom,
+			code: 'custom',
 			message: `Dates cannot be added and removed in the same request: ${overlappingDates.join(', ')}`,
 			path: ['remove_dates'],
 		});

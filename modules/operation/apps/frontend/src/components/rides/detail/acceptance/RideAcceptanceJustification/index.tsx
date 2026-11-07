@@ -81,7 +81,7 @@ export function RideAcceptanceJustification() {
 			<Label size="lg" caps>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</Label>
 			<RideAcceptanceStatus grade={acceptance.acceptance_status} />
 			<HasPermission
-				action={acceptance.acceptance_status !== RideAcceptanceStatusSchema.Values.justification_required ? 'NONE' : PermissionCatalog.all.rides.actions.acceptance_justify}
+				action={acceptance.acceptance_status !== RideAcceptanceStatusSchema.enum.justification_required ? 'NONE' : PermissionCatalog.all.rides.actions.acceptance_justify}
 				fallback={fallback}
 				scope={PermissionCatalog.all.rides.scope}
 			>

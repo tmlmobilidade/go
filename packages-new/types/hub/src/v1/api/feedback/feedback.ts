@@ -45,7 +45,7 @@ function validateReasonsForEntity(feedback: PublicFeedbackReasonSelection, conte
 	feedback.reasons.forEach((reason, index) => {
 		if (!allowedReasons.has(reason)) {
 			context.addIssue({
-				code: z.ZodIssueCode.custom,
+				code: 'custom',
 				message: `Reason '${reason}' is not valid for ${feedback.entity_type} feedback.`,
 				path: ['reasons', index],
 			});
@@ -53,7 +53,7 @@ function validateReasonsForEntity(feedback: PublicFeedbackReasonSelection, conte
 
 		if (selectedReasons.has(reason)) {
 			context.addIssue({
-				code: z.ZodIssueCode.custom,
+				code: 'custom',
 				message: `Reason '${reason}' cannot be selected more than once.`,
 				path: ['reasons', index],
 			});

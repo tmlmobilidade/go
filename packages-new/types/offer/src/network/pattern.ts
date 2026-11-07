@@ -2,7 +2,7 @@
 
 import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
 import { StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
-import { BaseDocumentSchema, CommentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
@@ -58,6 +58,13 @@ export const ShapeAnchorSchema = z.object({
 	|| (!anchor.after_path_item_id && !anchor.before_path_item_id && Boolean(anchor.after_stop_id) && Boolean(anchor.before_stop_id))
 ), { message: 'An anchor must identify both ends of one path segment.' });
 
+const CoordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([z.number(), z.number()]);
+const GeoJsonCoordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([
+	z.number().finite().min(-180).max(180),
+	z.number().finite().min(-90).max(90),
+]);
+const ShapePropertiesSchema: z.ZodType<object> = z.object({});
+
 const ShapeLegSchema = z.object({
 	distance: z.number().finite().nonnegative(),
 	duration: z.number().finite().nonnegative(),
@@ -65,7 +72,7 @@ const ShapeLegSchema = z.object({
 	from_index: z.number().int().nonnegative(),
 	geojson: z.object({
 		geometry: z.object({
-			coordinates: z.array(z.tuple([z.number().finite().min(-180).max(180), z.number().finite().min(-90).max(90)])),
+			coordinates: z.array(GeoJsonCoordinatesSchema),
 			type: z.literal('LineString').default('LineString'),
 		}),
 		properties: z.object({
@@ -76,7 +83,7 @@ const ShapeLegSchema = z.object({
 		}),
 		type: z.literal('Feature').default('Feature'),
 	}),
-	geometry: z.array(z.tuple([z.number(), z.number()])),
+	geometry: z.array(CoordinatesSchema),
 	to_index: z.number().int().nonnegative(),
 });
 
@@ -86,10 +93,10 @@ export const ShapeSchema = z.object({
 	extension: z.number().finite().nonnegative(),
 	geojson: z.object({
 		geometry: z.object({
-			coordinates: z.array(z.tuple([z.number().finite().min(-180).max(180), z.number().finite().min(-90).max(90)])),
+			coordinates: z.array(GeoJsonCoordinatesSchema),
 			type: z.literal('LineString').default('LineString'),
 		}),
-		properties: z.object({}).optional(),
+		properties: ShapePropertiesSchema.optional(),
 		type: z.literal('Feature').default('Feature'),
 	}),
 	legs: z.array(ShapeLegSchema).optional(),
@@ -129,11 +136,11 @@ export const PatternPathParametersSchema = z.object({
 	path: z.array(PathSchema).default([]),
 }).superRefine((value, context) => {
 	if (new Set(value.path.map(item => item._id)).size !== value.path.length) {
-		context.addIssue({ code: z.ZodIssueCode.custom, message: 'Path occurrence IDs must be unique.', path: ['path'] });
+		context.addIssue({ code: 'custom', message: 'Path occurrence IDs must be unique.', path: ['path'] });
 	}
 	for (const [parameterIndex, parameter] of (value.parameters ?? []).entries()) {
 		if (parameter.path.length !== value.path.length || parameter.path.some((item, index) => item.stop_id !== value.path[index]?.stop_id)) {
-			context.addIssue({ code: z.ZodIssueCode.custom, message: 'Travel-time parameters must match each path occurrence in order.', path: ['parameters', parameterIndex, 'path'] });
+			context.addIssue({ code: 'custom', message: 'Travel-time parameters must match each path occurrence in order.', path: ['parameters', parameterIndex, 'path'] });
 		}
 	}
 });
@@ -155,8 +162,7 @@ const PatternWritableSchema = PatternSchema
 // The API initializes the default stop parameters when creating a pattern.
 export const CreatePatternSchema = PatternWritableSchema.omit({ parameters: true });
 
-export const UpdatePatternSchema = PatternWritableSchema
-	.partial()
+export const UpdatePatternSchema = partialWithoutDefaults(PatternWritableSchema)
 	.extend({
 		rules: PatternUpdateRulesSchema,
 	});

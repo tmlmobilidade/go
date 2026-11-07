@@ -1,10 +1,10 @@
-import { BannerSchema } from '@tmlmobilidade/go-types-core';
+import { BannerBaseSchema } from '@tmlmobilidade/go-types-core';
 import { PublishStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
-export const BannerListItemSchema = BannerSchema.innerType().pick({
+export const BannerListItemSchema = BannerBaseSchema.pick({
 	_id: true,
 	dismissal_version: true,
 	dismissible: true,

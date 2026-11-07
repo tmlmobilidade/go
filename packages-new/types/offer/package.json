@@ -41,7 +41,7 @@
 		"@tmlmobilidade/go-types-infrastructure": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/types": "*",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-types-dates": "*",

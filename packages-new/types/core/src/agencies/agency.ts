@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, LanguageTagSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, LanguageTagSchema, partialWithoutDefaults, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { AgencyAlertsSchema } from './alerts.js';
@@ -24,7 +24,7 @@ export const AgencySchema = BaseDocumentSchema.extend({
 });
 
 export const CreateAgencySchema = AgencySchema.omit({ created_at: true, updated_at: true });
-export const UpdateAgencySchema = CreateAgencySchema.omit({ created_by: true }).partial();
+export const UpdateAgencySchema = partialWithoutDefaults(CreateAgencySchema.omit({ created_by: true }));
 
 /* * */
 

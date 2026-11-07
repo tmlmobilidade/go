@@ -1,7 +1,7 @@
 /* * */
 
 import { HomeQuickLinkSchema } from '@/home/quick-link.js';
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { OrganizationOpenDataSchema } from './open-data.js';
@@ -21,7 +21,7 @@ export const OrganizationSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateOrganizationSchema = OrganizationSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateOrganizationSchema = CreateOrganizationSchema.omit({ created_by: true }).partial();
+export const UpdateOrganizationSchema = partialWithoutDefaults(CreateOrganizationSchema.omit({ created_by: true }));
 
 export type Organization = z.infer<typeof OrganizationSchema>;
 export type CreateOrganizationDto = z.infer<typeof CreateOrganizationSchema>;

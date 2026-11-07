@@ -16,7 +16,7 @@ export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUs
 	// Validate the request body against the UpdateUserDto schema
 	const validatedUserData = UpdateUserSchema.safeParse(request.body);
 	if (!validatedUserData.success) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.issues);
 	}
 
 	// Remove password field if not provided to avoid

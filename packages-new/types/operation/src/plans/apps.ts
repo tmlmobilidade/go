@@ -12,6 +12,6 @@ export const PlanAppsSchema = z.object({
 	hub_publish_gtfs: PlanAppHubPublishGtfsSchema,
 	organizer: PlanAppOrganizerSchema,
 	rides_feeder: PlanAppRidesFeederSchema,
-}).default({});
+}).prefault({});
 
 export type PlanApps = z.infer<typeof PlanAppsSchema>;
