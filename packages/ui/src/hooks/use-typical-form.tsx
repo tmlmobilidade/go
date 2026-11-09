@@ -1,8 +1,9 @@
 'use client';
 
 import { type FormErrors, useForm, type UseFormReturnType } from '@mantine/form';
-import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { useEffect } from 'react';
+import { createValidationResolver } from '@tmlmobilidade/go-utils-validation';
+import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { type ZodType } from 'zod';
 
 // import { usePreventNavigation } from './use-prevent-navigation';
@@ -38,14 +39,27 @@ export function useTypicalForm<T extends Record<string, unknown>>(
 	//
 	// Setup form and its related logic
 
+	const { i18n } = useTranslation();
+	const locale = i18n.resolvedLanguage ?? i18n.language;
+	const previousLocale = useRef(locale);
+
 	const form = useForm<T>({
 		cascadeUpdates: true,
 		initialValues: initialValues as T,
 		mode: mode || 'uncontrolled',
-		validate: zod4Resolver(schema),
+		validate: createValidationResolver(schema, locale),
 		validateInputOnBlur: true,
 		validateInputOnChange: true,
 	});
+
+	useEffect(() => {
+		if (previousLocale.current === locale) return;
+		previousLocale.current = locale;
+		const fields = Object.keys(form.errors);
+		if (!fields.length) return;
+		const errors = createValidationResolver(schema, locale)(form.getValues());
+		form.setErrors(Object.fromEntries(fields.filter(field => errors[field]).map(field => [field, errors[field]])));
+	}, [locale, form, schema]);
 
 	//
 	// Initialize form with API data

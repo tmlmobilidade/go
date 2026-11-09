@@ -59,6 +59,7 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-offer": "*",
+		"@tmlmobilidade/go-utils-validation": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"@vis.gl/react-maplibre": "8.1.3",
