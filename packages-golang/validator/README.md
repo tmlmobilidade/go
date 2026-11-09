@@ -140,15 +140,22 @@ trackers accept concurrent row updates and normalize a zero row threshold to one
 ## Validation Processing
 
 `validations/main.go` orchestrates execution through one global Kahn dependency graph.
-`validations/registry-rules.go` registers every whole-rule callback in `RegisterRules()`, with each rule ID beside its validation function. Each callback owns
+`validations/registry-rules.go` lists custom, field, and standard callbacks in
+separate comment sections inside `RegisterRules()`. Each callback owns
 its table selection, fields, and related-table requirements. Source discovery
 reads the same registrations to validate IDs in `rules.json` separately.
 
-The `validations` root contains the orchestrator in `main.go`, its tests in
-`main_test.go`, and the registration list in `registry-rules.go`. Rule callback
+Field callbacks handle missing values and configured field requirements. Standard
+callbacks handle formats, ranges, uniqueness, references, and relationships;
+optional blank values are left to their separate field checks. Custom callbacks
+apply TML-specific checks. These remain independently configurable, and their
+execution order comes from explicit `depends_on` entries.
+
+The `validations` root contains the orchestrator in `main.go`, integration and
+registry coverage tests, and the registration list in `registry-rules.go`. Rule callback
 execution and operational-failure helpers live in `lib/rules/execution`;
 shared execution data stays in `types/validations`. The embedded source
-declaration stays in `main.go` and includes the central registrations.
+declaration stays in `rule-sources.go` and includes the registration file.
 
 ### Validation Execution Flow
 
