@@ -2,50 +2,50 @@ package standard
 
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
-// ShapeIdForeign checks that trip shape IDs exist in shapes.
-// Missing lookup tables skip the rule, even without a file-presence dependency.
 func ShapeIdForeign(ctx *context.ValidationContext) error {
 	//
+	// 1. Select this rule's source rows and required lookup tables.
 
-	//
-	// 1. Skip when the lookup table is unavailable
-
-	exists, err := queries.TableExists(ctx.DB, "shapes")
-	if err != nil {
+	ready, err := context.RequireTables(ctx, "trips", "shapes")
+	if err != nil || !ready {
 		return err
 	}
-	if !exists {
-		ctx.Skipped = true
-		return nil
-	}
-	shapes := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: "shapes"}
 
-	//
-	// 2. Read each trip's shape ID
+	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(rowCtx *context.ValidationContext) error {
+		if context.ShouldIgnore(rowCtx) {
+			return nil
+		}
 
-	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *context.ValidationContext) error {
-		value, err := queries.Field(row.Source, "shape_id")
+		value, err := queries.Field(rowCtx.Source, "shape_id")
 		if err != nil {
 			return err
 		}
-		if value == "" {
-			return nil
-		} // Presence is handled by the field rule.
 
 		//
-		// 3. Check the related table and report through the same row context
+		// 2. Requiredness is checked by the field rule.
 
-		exists, err := queries.Exists(shapes, "shape_id", value)
+		if value == "" {
+			return nil
+		}
+
+		//
+		// 3. Check if the shape_id exists in the shapes table
+
+		referenceExists1, err := queries.Exists(&sqliteTypes.SQLiteTable{DB: rowCtx.DB, Name: "shapes"}, "shape_id", value)
 		if err != nil {
 			return err
 		}
-		if !exists {
-			context.AddMessage(row, context.GetTranslatedMessage(row, "not_found", value))
+		if !referenceExists1 {
+			context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "not_found", value))
 		}
+
+		//
+		// 4. Return success
+
 		return nil
 	})
 }
