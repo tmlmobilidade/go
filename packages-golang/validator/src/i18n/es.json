@@ -434,7 +434,7 @@
 	"feed_info_feed_end_date_format": {
 		"generic": "El campo \"feed_end_date\" contiene una fecha no válida o un formato distinto de YYYYMMDD.",
 		"informational": "Se espera que el campo \"feed_end_date\" contenga una fecha válida con el formato AAAAMMDD",
-		"invalid": "El campo \"feed_end_date\" debe contener una fecha válida con el formato AAAAMMDD",
+		"invalid": "El campo \"feed_end_date\" debe contener una fecha válida con el formato AAAAMMDD (valor: \"%s\")",
 		"recommended": "Se recomienda que el campo \"feed_end_date\" contenga una fecha válida con el formato AAAAMMDD"
 	},
 	"feed_info_feed_lang_field": {
@@ -472,7 +472,7 @@
 	"feed_info_feed_start_date_format": {
 		"generic": "El campo \"feed_start_date\" contiene una fecha no válida o un formato distinto de YYYYMMDD.",
 		"informational": "Se espera que el campo \"feed_start_date\" contenga una fecha válida con el formato AAAAMMDD",
-		"invalid": "El campo \"feed_start_date\" debe contener una fecha válida con el formato AAAAMMDD",
+		"invalid": "El campo \"feed_start_date\" debe contener una fecha válida con el formato AAAAMMDD (valor: \"%s\")",
 		"recommended": "Se recomienda que el campo \"feed_start_date\" contenga una fecha válida con el formato AAAAMMDD"
 	},
 	"feed_info_feed_version_field": {
@@ -596,7 +596,7 @@
 	"levels_level_index_valid": {
 		"forbidden": "El campo \"level_index\" está prohibido",
 		"generic": "El campo \"level_index\" contiene un valor numérico no válido o negativo.",
-		"invalid": "El campo \"level_index\" debe ser un número entero no negativo",
+		"invalid": "El campo \"level_index\" debe ser un número no negativo (valor: \"%s\")",
 		"recommended": "Se recomienda el campo \"level_index\"",
 		"required": "El campo \"level_index\" es obligatorio"
 	},
@@ -828,7 +828,8 @@
 		"forbidden_with_window": "El campo \"continuous_drop_off\" debe estar vacío o tener el valor 1 cuando un viaje de esta ruta tiene una ventana de recogida o bajada en stop_times.txt",
 		"generic": "El valor de \"continuous_drop_off\" es incompatible con las condiciones del servicio continuo o con las ventanas de recogida y bajada.",
 		"recommended": "Se recomienda que el campo \"continuous_drop_off\" permita el servicio continuo; un valor vacío o 1 lo desactiva",
-		"required": "El campo \"continuous_drop_off\" debe permitir el servicio continuo; un valor vacío o 1 lo desactiva"
+		"required": "El campo \"continuous_drop_off\" debe permitir el servicio continuo; un valor vacío o 1 lo desactiva",
+		"invalid": "El campo \"continuous_drop_off\" contiene un valor enumerado no válido \"%s\"."
 	},
 	"routes_continuous_pickup_field": {
 		"generic": "El campo \"continuous_pickup\" no está cumplimentado.",
@@ -840,7 +841,8 @@
 		"forbidden_with_window": "El campo \"continuous_pickup\" debe estar vacío o tener el valor 1 cuando un viaje de esta ruta tiene una ventana de recogida o bajada en stop_times.txt",
 		"generic": "El valor de \"continuous_pickup\" es incompatible con las condiciones del servicio continuo o con las ventanas de recogida y bajada.",
 		"recommended": "Se recomienda que el campo \"continuous_pickup\" permita el servicio continuo; un valor vacío o 1 lo desactiva",
-		"required": "El campo \"continuous_pickup\" debe permitir el servicio continuo; un valor vacío o 1 lo desactiva"
+		"required": "El campo \"continuous_pickup\" debe permitir el servicio continuo; un valor vacío o 1 lo desactiva",
+		"invalid": "El campo \"continuous_pickup\" contiene un valor enumerado no válido \"%s\"."
 	},
 	"routes_line_id_equal_route_short_name": {
 		"generic": "Los valores de \"line_id\" y \"route_short_name\" son diferentes.",
@@ -1359,7 +1361,8 @@
 	},
 	"stops_parent_station_foreign": {
 		"duplicate": "El valor del campo \"parent_station\" está duplicado en stops.txt",
-		"generic": "El campo \"parent_station\" contiene valores repetidos."
+		"generic": "El campo \"parent_station\" hace referencia a una parada inexistente.",
+		"not_found": "La estación principal \"%s\" no se encontró en stops.stop_id."
 	},
 	"stops_parish_id_allowed": {
 		"generic": "El valor de \"parish_id\" no pertenece al conjunto de valores permitidos.",
@@ -1666,7 +1669,7 @@
 	"trips_bikes_allowed_valid": {
 		"forbidden": "El campo \"bikes_allowed\" está prohibido",
 		"generic": "El campo \"bikes_allowed\" contiene un valor no válido o no permitido.",
-		"invalid": "El campo \"bikes_allowed\" debe ser 0, 1 o 2",
+		"invalid": "El campo \"bikes_allowed\" debe ser 0, 1 o 2 (valor: \"%s\")",
 		"not_allowed": "El campo \"bikes_allowed\" \"%s\" no está permitido",
 		"recommended": "Se recomienda el campo \"bikes_allowed\"",
 		"required": "El campo \"bikes_allowed\" es obligatorio"
@@ -1696,7 +1699,7 @@
 	"trips_direction_id_valid": {
 		"forbidden": "El campo \"direction_id\" está prohibido",
 		"generic": "El campo \"direction_id\" contiene un valor no válido o no permitido.",
-		"invalid": "El campo \"direction_id\" debe ser 0 o 1",
+		"invalid": "El campo \"direction_id\" debe ser 0 o 1 (valor: \"%s\")",
 		"not_allowed": "El campo \"direction_id\" \"%s\" no está permitido",
 		"recommended": "Se recomienda el campo \"direction_id\"",
 		"required": "El campo \"direction_id\" es obligatorio"

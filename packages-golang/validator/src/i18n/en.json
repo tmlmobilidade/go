@@ -434,7 +434,7 @@
 	"feed_info_feed_end_date_format": {
 		"generic": "The \"feed_end_date\" field contains an invalid date or a format other than YYYYMMDD.",
 		"informational": "The \"feed_end_date\" field is expected to contain a valid date in YYYYMMDD format",
-		"invalid": "The \"feed_end_date\" field must contain a valid date in YYYYMMDD format",
+		"invalid": "The \"feed_end_date\" field must contain a valid date in YYYYMMDD format (value: \"%s\")",
 		"recommended": "The \"feed_end_date\" field should contain a valid date in YYYYMMDD format"
 	},
 	"feed_info_feed_lang_field": {
@@ -472,7 +472,7 @@
 	"feed_info_feed_start_date_format": {
 		"generic": "The \"feed_start_date\" field contains an invalid date or a format other than YYYYMMDD.",
 		"informational": "The \"feed_start_date\" field is expected to contain a valid date in YYYYMMDD format",
-		"invalid": "The \"feed_start_date\" field must contain a valid date in YYYYMMDD format",
+		"invalid": "The \"feed_start_date\" field must contain a valid date in YYYYMMDD format (value: \"%s\")",
 		"recommended": "The \"feed_start_date\" field should contain a valid date in YYYYMMDD format"
 	},
 	"feed_info_feed_version_field": {
@@ -596,7 +596,7 @@
 	"levels_level_index_valid": {
 		"forbidden": "Field \"level_index\" is forbidden",
 		"generic": "The \"level_index\" field contains an invalid or negative numeric value.",
-		"invalid": "Field \"level_index\" must be a non-negative integer",
+		"invalid": "Field \"level_index\" must be a non-negative number (value: \"%s\")",
 		"recommended": "Field \"level_index\" is recommended",
 		"required": "Field \"level_index\" is required"
 	},
@@ -828,7 +828,8 @@
 		"forbidden_with_window": "Field \"continuous_drop_off\" must be empty or 1 when a trip on this route has a pickup/drop-off window in stop_times.txt",
 		"generic": "The \"continuous_drop_off\" value is incompatible with continuous-service conditions or pickup/drop-off windows.",
 		"recommended": "Field \"continuous_drop_off\" is recommended to enable continuous service; an empty value or 1 disables it",
-		"required": "Field \"continuous_drop_off\" must enable continuous service; an empty value or 1 disables it"
+		"required": "Field \"continuous_drop_off\" must enable continuous service; an empty value or 1 disables it",
+		"invalid": "Field \"continuous_drop_off\" contains an invalid enum value \"%s\"."
 	},
 	"routes_continuous_pickup_field": {
 		"generic": "The \"continuous_pickup\" field is not populated.",
@@ -840,7 +841,8 @@
 		"forbidden_with_window": "Field \"continuous_pickup\" must be empty or 1 when a trip on this route has a pickup/drop-off window in stop_times.txt",
 		"generic": "The \"continuous_pickup\" value is incompatible with continuous-service conditions or pickup/drop-off windows.",
 		"recommended": "Field \"continuous_pickup\" is recommended to enable continuous service; an empty value or 1 disables it",
-		"required": "Field \"continuous_pickup\" must enable continuous service; an empty value or 1 disables it"
+		"required": "Field \"continuous_pickup\" must enable continuous service; an empty value or 1 disables it",
+		"invalid": "Field \"continuous_pickup\" contains an invalid enum value \"%s\"."
 	},
 	"routes_line_id_equal_route_short_name": {
 		"generic": "The \"line_id\" and \"route_short_name\" values differ.",
@@ -1359,7 +1361,8 @@
 	},
 	"stops_parent_station_foreign": {
 		"duplicate": "The value of field \"parent_station\" is duplicated in stops.txt",
-		"generic": "The \"parent_station\" field contains repeated values."
+		"generic": "The \"parent_station\" field references an unknown stop.",
+		"not_found": "Parent station \"%s\" was not found in stops.stop_id."
 	},
 	"stops_parish_id_allowed": {
 		"generic": "The \"parish_id\" value is not in the allowed set.",
@@ -1666,7 +1669,7 @@
 	"trips_bikes_allowed_valid": {
 		"forbidden": "Field \"bikes_allowed\" is forbidden",
 		"generic": "The \"bikes_allowed\" field contains an invalid or disallowed value.",
-		"invalid": "Field \"bikes_allowed\" must be 0, 1, or 2",
+		"invalid": "Field \"bikes_allowed\" must be 0, 1, or 2 (value: \"%s\")",
 		"not_allowed": "Field \"bikes_allowed\" \"%s\" is not allowed",
 		"recommended": "Field \"bikes_allowed\" is recommended",
 		"required": "Field \"bikes_allowed\" is required"
@@ -1696,7 +1699,7 @@
 	"trips_direction_id_valid": {
 		"forbidden": "Field \"direction_id\" is forbidden",
 		"generic": "The \"direction_id\" field contains an invalid or disallowed value.",
-		"invalid": "Field \"direction_id\" must be 0 or 1",
+		"invalid": "Field \"direction_id\" must be 0 or 1 (value: \"%s\")",
 		"not_allowed": "Field \"direction_id\" \"%s\" is not allowed",
 		"recommended": "Field \"direction_id\" is recommended",
 		"required": "Field \"direction_id\" is required"
