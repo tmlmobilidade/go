@@ -50,5 +50,5 @@ export async function reloadExtractionHandler(request: FastifyRequest<{ Params: 
 
 	const foundExtractions = await goDb.core.extractions.findMany({ created_by: request.me._id });
 
-	sendSuccessApiResponse(reply, foundExtractions ?? []);
+	return sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

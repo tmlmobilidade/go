@@ -55,5 +55,5 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 
 	const foundExtractions = await getUserExtractions(request.me._id);
 
-	sendSuccessApiResponse(reply, foundExtractions ?? []);
+	return sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

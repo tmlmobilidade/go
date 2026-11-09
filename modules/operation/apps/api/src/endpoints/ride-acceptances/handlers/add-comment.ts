@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 import { type NoteComment } from '@tmlmobilidade/go-types-shared';
@@ -15,11 +14,7 @@ export async function addComment(request: FastifyRequest<{ Body: NoteComment, Pa
 	const rideAcceptanceData = await goDb.operation.rideAcceptances.findOne({ _id: request.params.id });
 
 	if (!rideAcceptanceData) {
-		return reply.status(HTTP_STATUS.NOT_FOUND).send({
-			data: null,
-			error: 'Ride acceptance not found.',
-			statusCode: HTTP_STATUS.NOT_FOUND,
-		});
+		return sendErrorApiResponse(reply, { error: 'Ride acceptance not found.', status_code: '404' });
 	}
 
 	const updateResult = await goDb.operation.rideAcceptances.updateById(
@@ -27,9 +22,5 @@ export async function addComment(request: FastifyRequest<{ Body: NoteComment, Pa
 		{ ...rideAcceptanceData, comments: [...rideAcceptanceData.comments, { ...request.body, created_by: request.me._id, updated_by: request.me._id }], updated_by: request.me._id },
 	);
 
-	return reply.send({
-		data: updateResult,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, updateResult);
 }
