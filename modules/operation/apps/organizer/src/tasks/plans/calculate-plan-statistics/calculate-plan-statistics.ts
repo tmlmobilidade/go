@@ -84,7 +84,6 @@ export async function calculatePlanStatisticsTask() {
 			const vkmLabel = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(statistics.vkm_count);
 
 			Logger.success(`Imported plan "${plan._id}" to ${databasePath}. Trips: ${statistics.trip_count}. Lines: ${statistics.line_count}. VKM: ${vkmLabel} km. Estimated cost: ${costLabel}.`);
-			break;
 		} catch (error) {
 			Logger.error({ error, message: `Error processing plan "${plan._id}".` });
 			await setPlanStatus(plan._id, 'plans_statistics', 'error');
