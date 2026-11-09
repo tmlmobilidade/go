@@ -33,13 +33,16 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 	pending := make([]int, len(m.Ordered))
 	dependents := make([][]int, len(m.Ordered))
 	queue := make([]int, 0, len(m.Ordered))
+
 	for i, rule := range m.Ordered {
 		if _, exists := index[rule.ID]; exists {
 			return nil, fmt.Errorf("duplicate rule id %q", rule.ID)
 		}
+
 		if rule.Run == nil {
 			return nil, fmt.Errorf("rule %q has no run function", rule.ID)
 		}
+		
 		for _, dependency := range rule.DependsOn {
 			parent, exists := index[dependency]
 			if !exists {

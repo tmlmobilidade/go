@@ -5,6 +5,8 @@ import (
 	"slices"
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
+	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
@@ -13,11 +15,33 @@ import (
 
 // CollectErrors records and reports a technical error, then returns all
 // collected errors in rule-ID order. The combined result is also stored in run.Err.
-func CollectErrors(run *validationTypes.Execution, id, file, field string, rows []int, err error) error {
+// Pass a rule context to mark it failed and attach its source location, or nil for general errors.
+func CollectErrors(run *validationTypes.Execution, id string, ctx *types.ValidationContext, err error) error {
 	//
 
 	//
-	// 1. Collect concurrent failures and update the combined result
+	// 1. Resolve the source location and mark the rule failed when a context is available
+
+	file, field := "N/A", "N/A"
+	if ctx != nil {
+		ctx.Failed = true
+		if ctx.FileName != "" {
+			file = ctx.FileName
+		}
+		if ctx.Field != "" {
+			field = ctx.Field
+		}
+	}
+
+	var rows []int
+	if source, ok := context.RowErrorDetails(err); ok {
+		file = source.Table + ".txt"
+		field = source.Field
+		rows = []int{source.Row}
+	}
+
+	//
+	// 2. Collect concurrent failures and update the combined result
 
 	run.Mu.Lock()
 	run.Failures[id] = err
@@ -35,7 +59,7 @@ func CollectErrors(run *validationTypes.Execution, id, file, field string, rows 
 	run.Mu.Unlock()
 
 	//
-	// 2. Keep technical failures visible regardless of user-configured rule severity
+	// 3. Keep technical failures visible regardless of user-configured rule severity
 
 	run.Messages.AddMessage(messages.Message{
 		RuleID: "file_validation", FileName: file, Field: field, Rows: rows,

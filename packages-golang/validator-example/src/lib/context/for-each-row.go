@@ -13,7 +13,7 @@ import (
 
 // ForEachRow creates a scoped child context for each row selected by the rule.
 // Missing source tables skip the rule, even without a file-presence dependency.
-func ForEachRow(ctx *ValidationContext, tableName string, fields []string, check func(*ValidationContext) error) error {
+func ForEachRow(ctx *types.ValidationContext, tableName string, fields []string, check func(*types.ValidationContext) error) error {
 	//
 
 	//

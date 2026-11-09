@@ -9,12 +9,9 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
-// ValidationContext is the single input supplied to an executable rule.
-type ValidationContext = types.ValidationContext
-
 // NewRuleContext creates a private context while its rule waits in the graph.
 // Kahn invokes the callback only when its configured dependencies have passed.
-func NewRuleContext(ruleID string, db *sql.DB, config rules.RuleContext, adder messages.MessageAdder) *ValidationContext {
+func NewRuleContext(ruleID string, db *sql.DB, config rules.RuleContext, adder messages.MessageAdder) *types.ValidationContext {
 	//
 
 	//
@@ -28,7 +25,7 @@ func NewRuleContext(ruleID string, db *sql.DB, config rules.RuleContext, adder m
 	//
 	// 2. Attach the rule identity, database connection, and synchronized message receiver
 
-	return &ValidationContext{RuleID: ruleID, DB: db, Config: config, MessageAdder: adder, Row: -1}
+	return &types.ValidationContext{RuleID: ruleID, DB: db, Config: config, MessageAdder: adder, Row: -1}
 }
 
 func cloneConfig(config rules.RuleContext) rules.RuleContext {

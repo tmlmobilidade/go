@@ -46,10 +46,10 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 	}
 
 	if db == nil {
-		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("database connection is nil")))
+		return finish(execution.CollectErrors(state, "", nil, fmt.Errorf("database connection is nil")))
 	}
 	if err := db.Ping(); err != nil {
-		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("open validation database: %w", err)))
+		return finish(execution.CollectErrors(state, "", nil, fmt.Errorf("open validation database: %w", err)))
 	}
 
 	//
@@ -70,7 +70,7 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 	for id, config := range configuration {
 		if _, exists := checks[id]; !exists {
 			if config.Severity != "" && config.Severity != rules.SEVERITY_IGNORE {
-				return finish(execution.CollectErrors(state, id, "N/A", "N/A", nil, fmt.Errorf("rule %q has no execution callback", id)))
+				return finish(execution.CollectErrors(state, id, nil, fmt.Errorf("rule %q has no execution callback", id)))
 			}
 			checks[id] = nil
 		}
@@ -96,9 +96,10 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 		}
 	}
 
-	slices.Sort(ids)
+	//
+	// 5. Create the DAG nodes
 
-	nodes := make([]DAG.Rule[*validationTypes.Execution], 0, len(ids))
+	ruleNodes := make([]DAG.Rule[*validationTypes.Execution], 0, len(ids))
 
 	for _, id := range ids {
 		check := checks[id]
@@ -108,23 +109,23 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 		}
 		ruleContext := context.NewRuleContext(id, db, config.RuleContext, messageService)
 		dependencies := slices.Clone(config.DependsOn)
-		nodes = append(nodes, DAG.Rule[*validationTypes.Execution]{ID: ruleContext.RuleID, DependsOn: dependencies, Run: func(run *validationTypes.Execution) DAG.Status {
+		ruleNodes = append(ruleNodes, DAG.Rule[*validationTypes.Execution]{ID: ruleContext.RuleID, DependsOn: dependencies, Run: func(run *validationTypes.Execution) DAG.Status {
 			return execution.RunRule(run, ruleContext, check)
 		}})
 	}
 
-	manager, err := algorithm.NewManager(nodes...)
+	manager, err := algorithm.NewManager(ruleNodes...)
 	if err != nil {
-		return finish(execution.CollectErrors(state, "", "N/A", "N/A", nil, fmt.Errorf("prepare validation DAG: %w", err)))
+		return finish(execution.CollectErrors(state, "", nil, fmt.Errorf("prepare validation DAG: %w", err)))
 	}
 
 	//
 	// 5. Run the global scheduler once, releasing dependents on each rule completion
 
-	logger.AppLogger.Info(telemetry.LogEntry{Message: fmt.Sprintf("Global validation DAG ready: %d rules", len(nodes)), Attributes: map[string]any{"rules": len(nodes)}})
+	logger.AppLogger.Info(telemetry.LogEntry{Message: fmt.Sprintf("Global validation DAG ready: %d rules", len(ruleNodes)), Attributes: map[string]any{"rules": len(ruleNodes)}})
 	result.Statuses, err = algorithm.RunRules(manager, state)
 	if err != nil {
-		execution.CollectErrors(state, "", "N/A", "N/A", nil, err)
+		execution.CollectErrors(state, "", nil, err)
 	}
 
 	//
