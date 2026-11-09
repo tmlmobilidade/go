@@ -2,38 +2,38 @@ package standard
 
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	"strconv"
 )
 
-func ShapePtSequenceField(ctx *context.ValidationContext) error {
+func ShapePtSequence(ctx *context.ValidationContext) error {
 	//
+	// 1. Select this rule's source rows and required lookup tables.
 
-	//
-	// 1. Select the source table and fields for this rule
+	return context.ForEachRow(ctx, "shapes", []string{"shape_pt_sequence"}, func(rowCtx *context.ValidationContext) error {
+		if context.ShouldIgnore(rowCtx) {
+			return nil
+		}
 
-	return context.ForEachRow(ctx, "shapes", []string{"shape_pt_sequence"}, func(row *context.ValidationContext) error {
-		//
-		// 2. Get the shape_pt_sequence value
-
-		value, err := queries.Field(row.Source, "shape_pt_sequence")
+		value, err := queries.Field(rowCtx.Source, "shape_pt_sequence")
 		if err != nil {
 			return err
 		}
-
-		//
-		// 3. Check if the shape_pt_sequence is required
-
 		if value == "" {
-			if context.ShouldIgnore(row) {
-				return nil
-			}
-
-			context.AddMessage(row, context.GetSeverityMessage(row, "required", "recommended", "informational"))
 			return nil
 		}
 
 		//
-		// 4. Return success
+		// 2. Check if the shape_pt_sequence is non-negative
+
+		number, parseErr := strconv.Atoi(value)
+		if parseErr != nil || number < 0 {
+			context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "invalid"))
+			return nil
+		}
+
+		//
+		// 3. Return success
 
 		return nil
 	})
