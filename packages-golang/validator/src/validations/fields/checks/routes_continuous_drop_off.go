@@ -5,6 +5,29 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: continuous_drop_off
+  - Presence: Conditionally Forbidden
+  - Type: Enum
+
+# Description
+
+Route-wide continuous alighting policy: 0 allowed, 1 or empty unavailable, 2 arrangement by phone or 3 arrangement
+with the driver. Individual stop_times.txt records can override this policy.
+
+Conditionally Forbidden:
+  - Any value other than `1` or empty is Forbidden if `stop_times.start_pickup_drop_off_window` or
+    `stop_times.end_pickup_drop_off_window` are defined for any trip of this route.
+  - Optional otherwise.
+
+Presence and type follow [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RoutesContinuousDropOffField(ctx *context.ValidationContext) error {
 	//
 

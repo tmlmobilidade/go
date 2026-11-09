@@ -15,9 +15,9 @@ import (
 
 # Description
 
-Currency used to pay the fare.
+ISO 4217 currency code used for the fare price.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func CurrencyTypeField(ctx *context.ValidationContext) error {
 	//

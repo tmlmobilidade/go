@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: timepoint
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Indicates whether arrival and departure times are approximate with 0 or exact with 1. When timepoint is not
+provided, times are treated as exact.
+
+Presence and type follow [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func TimepointField(ctx *context.ValidationContext) error {
 	//
 

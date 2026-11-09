@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: registration_date
+  - Presence: Required
+  - Type: Date
+
+# Description
+
+Date when the vehicle was first registered, in any country, written as YYYYMMDD. Used to determine the vehicle's
+age.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func RegistrationDateField(ctx *context.ValidationContext) error {
 	//
 

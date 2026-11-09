@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: car_capacity
+  - Presence: Conditionally Required
+  - Type: Non-negative integer
+
+# Description
+
+Number of normal-sized passenger cars the vehicle can carry, primarily for ferries. A value of 0 means cars cannot
+be carried. Required for operators providing car transport and optional otherwise.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func CarCapacityField(ctx *context.ValidationContext) error {
 	//
 

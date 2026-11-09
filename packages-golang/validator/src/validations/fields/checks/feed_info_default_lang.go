@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [feed_info.txt]
+  - Field: default_lang
+  - Presence: Optional
+  - Type: Language code
+
+# Description
+
+Language to use when the consuming application does not know the rider's language.
+
+Presence and type follow [GTFS Standard].
+
+[feed_info.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/feed-info
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#feed_infotxt
+*/
 func DefaultLangField(ctx *context.ValidationContext) error {
 	//
 

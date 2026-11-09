@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: shelter_maintainer
+  - Presence: Configurable
+  - Type: Text
+
+# Description
+
+TML extension. Organization responsible for maintaining the stop shelter.
+
+This field is not defined by GTFS Standard and has no published presence requirement. Its presence is controlled by
+the validation rule configuration.
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+*/
 func ShelterMaintainerField(ctx *context.ValidationContext) error {
 	//
 

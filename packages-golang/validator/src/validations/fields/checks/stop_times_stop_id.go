@@ -5,6 +5,28 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: stop_id
+  - Presence: Conditionally Required
+  - Type: Foreign ID referencing stops.stop_id
+
+# Description
+
+Identifies the serviced stop or platform in stops.txt, with location_type=0 or empty. A trip can serve the same
+stop more than once.
+
+Conditionally Required:
+- Required if `stop_times.location_group_id` AND `stop_times.location_id` are NOT defined.
+- Forbidden if `stop_times.location_group_id` or `stop_times.location_id` are defined.
+
+Presence and type follow [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func StopTimesStopIdField(ctx *context.ValidationContext) error {
 	//
 

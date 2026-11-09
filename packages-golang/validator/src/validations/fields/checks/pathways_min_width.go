@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: min_width
+  - Presence: Optional
+  - Type: Positive float
+
+# Description
+
+Minimum pathway width in meters. Providing this field is recommended when the width is below one meter.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func MinWidthField(ctx *context.ValidationContext) error {
 	//
 

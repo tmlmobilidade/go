@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: agency_id
+  - Presence: Optional
+  - Type: Foreign ID referencing agency.agency_id
+
+# Description
+
+Identifies the agency responsible for the vehicle.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func VehiclesAgencyIdField(ctx *context.ValidationContext) error {
 	//
 

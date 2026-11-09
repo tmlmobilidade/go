@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: signposted_as
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Public-facing text reproduced from the physical signs for the pathway. It can be used to provide directions to
+riders.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func SignpostedAsField(ctx *context.ValidationContext) error {
 	//
 

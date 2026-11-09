@@ -10,14 +10,17 @@ import (
 
   - File: [agency.txt]
   - Field: agency_url
-  - Presence: Optional
+  - Presence: Required
   - Type: URL
 
 # Description
 
-URL of the transit agency.
+Website of the transit agency.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Presence and type follow [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyUrlField(ctx *context.ValidationContext) error {
 	//

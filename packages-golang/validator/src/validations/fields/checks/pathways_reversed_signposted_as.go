@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: reversed_signposted_as
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Text shown on physical signs when following the pathway from to_stop_id to from_stop_id.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func ReversedSignpostedAsField(ctx *context.ValidationContext) error {
 	//
 

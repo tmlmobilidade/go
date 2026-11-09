@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: make
+  - Presence: Required
+  - Type: Text
+
+# Description
+
+Manufacturer or brand of the vehicle.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func MakeField(ctx *context.ValidationContext) error {
 	//
 

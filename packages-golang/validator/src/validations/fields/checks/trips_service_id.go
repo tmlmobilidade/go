@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: service_id
+  - Presence: Required
+  - Type: Foreign ID referencing calendar.service_id or calendar_dates.service_id
+
+# Description
+
+Identifies the operating dates of the trip, as defined by calendar.txt, calendar_dates.txt or both.
+
+Presence and type follow [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripsServiceIdField(ctx *context.ValidationContext) error {
 	//
 

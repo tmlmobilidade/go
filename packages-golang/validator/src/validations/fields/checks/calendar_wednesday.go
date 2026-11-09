@@ -9,15 +9,19 @@ import (
 # Attributes
 
   - File: [calendar.txt]
-  - Field: [wednesday]
+  - Field: wednesday
   - Presence: Required
-  - Type: Boolean
+  - Type: Enum
 
 # Description
 
-Indicates whether service is available on Wednesday.
+Indicates whether service operates on Wednesdays between start_date and end_date. Use 1 for service and 0 for no
+service; calendar_dates.txt may override individual dates.
 
-[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+Presence and type follow [GTFS Standard].
+
+[calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendartxt
 */
 func WednesdayValidation(ctx *context.ValidationContext) error {
 	//

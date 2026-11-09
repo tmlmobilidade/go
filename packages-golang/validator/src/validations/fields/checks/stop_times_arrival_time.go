@@ -5,6 +5,31 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: arrival_time
+  - Presence: Conditionally Required
+  - Type: Time
+
+# Description
+
+Arrival time at the stop for this trip, using agency.agency_timezone rather than stops.stop_timezone. Use values
+beyond 24:00:00 after midnight within the same service day. Arrival and departure are equal when there is no
+separate dwell time.
+
+Conditionally Required:
+- Required for the first and last stop in a trip (defined by `stop_times.stop_sequence`).
+- Required for `timepoint=1`.
+- Forbidden when `start_pickup_drop_off_window` or `end_pickup_drop_off_window` are defined.
+- Optional otherwise.
+
+Presence and type follow [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func ArrivalTimeField(ctx *context.ValidationContext) error {
 	//
 

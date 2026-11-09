@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: location_type
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Type of location: 0 or empty for a stop/platform, 1 station, 2 entrance/exit, 3 generic node or 4 boarding area.
+
+Presence and type follow [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func LocationTypeField(ctx *context.ValidationContext) error {
 	//
 

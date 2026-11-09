@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: stop_id
+  - Presence: Required
+  - Type: Unique ID
+
+# Description
+
+Identifies a stop, platform, station, entrance, generic node or boarding area. It must also be distinct from
+identifiers in locations.geojson and location_groups.txt.
+
+Presence and type follow [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func StopsStopIdField(ctx *context.ValidationContext) error {
 	//
 

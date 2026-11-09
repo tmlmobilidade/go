@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_url
+  - Presence: Optional
+  - Type: URL
+
+# Description
+
+Web page specific to the route, distinct from the agency's general website.
+
+Presence and type follow [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RouteUrlField(ctx *context.ValidationContext) error {
 	//
 

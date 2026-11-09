@@ -5,6 +5,29 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_short_name
+  - Presence: Conditionally Required
+  - Type: Text
+
+# Description
+
+Short public-facing route designation, such as a route number or color name. It can be provided together with
+route_long_name and should be no longer than 12 characters.
+
+Conditionally Required:
+  - Required if `routes.route_long_name` is empty.
+  - Recommended if there is a brief service designation. This should be the commonly-known passenger name of the
+    service, and should be no longer than 12 characters.
+
+Presence and type follow [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RouteShortNameField(ctx *context.ValidationContext) error {
 	//
 

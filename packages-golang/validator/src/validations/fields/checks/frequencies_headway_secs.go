@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [frequencies.txt]
+  - Field: headway_secs
+  - Presence: Required
+  - Type: Positive integer
+
+# Description
+
+Positive interval in seconds between departures during the period from start_time to end_time. Intervals for the
+same trip must not overlap, but consecutive intervals may share an endpoint.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
+*/
 func HeadwaySecsField(ctx *context.ValidationContext) error {
 	//
 

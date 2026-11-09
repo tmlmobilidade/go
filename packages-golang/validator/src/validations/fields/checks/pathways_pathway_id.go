@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: pathway_id
+  - Presence: Required
+  - Type: Unique ID
+
+# Description
+
+Unique internal identifier for a pathway. Separate pathways can connect the same pair of locations.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func PathwayIdField(ctx *context.ValidationContext) error {
 	//
 

@@ -17,7 +17,7 @@ import (
 
 Identifies a fare class.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func FareAttributesFareIdField(ctx *context.ValidationContext) error {
 	//

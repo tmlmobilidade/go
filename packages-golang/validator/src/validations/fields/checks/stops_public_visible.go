@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: public_visible
+  - Presence: Configurable
+  - Type: Enum
+
+# Description
+
+TML extension controlling public visibility of the stop. The value check accepts 0 and 1; the published reference
+does not document the flag semantics.
+
+This field is not defined by GTFS Standard and has no published presence requirement. Its presence is controlled by
+the validation rule configuration.
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+*/
 func PublicVisibleField(ctx *context.ValidationContext) error {
 	//
 

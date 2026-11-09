@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [fare_rules.txt]
+  - Field: route_id
+  - Presence: Optional
+  - Type: Foreign ID referencing routes.route_id
+
+# Description
+
+Identifies a route to which the fare applies. Use a separate record for each route sharing the same fare.
+
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+*/
 func FareRulesRouteIdField(ctx *context.ValidationContext) error {
 	//
 

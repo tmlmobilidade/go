@@ -15,13 +15,13 @@ import (
 
 # Description
 
-Identifies the relevant agency for a fare.
+Identifies the agency responsible for the fare.
 
 Conditionally Required:
-  - Required when the dataset contains data for multiple transit [agencies.txt].
-  - Recommended otherwise.
+- Required if multiple agencies are defined in agency.txt.
+- Recommended otherwise.
 
-[agencies.txt]: https://gtfs.org/schedule/reference/#agencytxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func FareAttributesAgencyIdField(ctx *context.ValidationContext) error {
 	//

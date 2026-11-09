@@ -15,14 +15,9 @@ import (
 
 # Description
 
-Indicates when the fare must be paid.
+Specifies when payment is required: 0 for payment on board or 1 for payment before boarding.
 
-Valid options are:
-
-  - 0 - Fare is paid on board.
-  - 1 - Fare must be paid before boarding.
-
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func PaymentMethodField(ctx *context.ValidationContext) error {
 	//

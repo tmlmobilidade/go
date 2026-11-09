@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: has_bench
+  - Presence: Configurable
+  - Type: Enum
+
+# Description
+
+TML extension recording the presence or status of bench at the stop. The value check accepts 0, 1, 2 and 3; the
+published reference does not assign meanings to these codes.
+
+This field is not defined by GTFS Standard and has no published presence requirement. Its presence is controlled by
+the validation rule configuration.
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+*/
 func HasBenchField(ctx *context.ValidationContext) error {
 	//
 

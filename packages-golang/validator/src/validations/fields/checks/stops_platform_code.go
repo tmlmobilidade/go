@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: platform_code
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Public-facing platform identifier without words such as platform or track.
+
+Presence and type follow [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func PlatformCodeField(ctx *context.ValidationContext) error {
 	//
 

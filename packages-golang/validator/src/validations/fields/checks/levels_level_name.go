@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [levels.txt]
+  - Field: level_name
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Name of the level displayed to riders inside the station or building.
+
+[levels.txt]: https://gtfs.org/documentation/schedule/reference/#levelstxt
+*/
 func LevelNameField(ctx *context.ValidationContext) error {
 	//
 

@@ -7,6 +7,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: max_slope
+  - Presence: Optional
+  - Type: Float
+
+# Description
+
+Maximum slope ratio along the pathway: positive uphill, negative downhill or 0 or empty for no slope. Applicable to
+walkways and moving sidewalks, identified by pathway_mode values 1 and 3.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func MaxSlopeField(ctx *context.ValidationContext) error {
 	//
 

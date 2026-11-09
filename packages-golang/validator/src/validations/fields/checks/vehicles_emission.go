@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: emission
+  - Presence: Required
+  - Type: Enum
+
+# Description
+
+Emissions class applicable in the vehicle's operating territory. Accepted classes are Euro I through Euro VII, or
+N/A when not applicable, such as for electric vehicles.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func EmissionField(ctx *context.ValidationContext) error {
 	//
 

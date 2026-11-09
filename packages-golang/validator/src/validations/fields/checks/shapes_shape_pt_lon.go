@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: shape_pt_lon
+  - Presence: Required
+  - Type: Longitude
+
+# Description
+
+WGS84 longitude in decimal degrees of this point on the shape.
+
+Presence and type follow [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
 func ShapePtLonField(ctx *context.ValidationContext) error {
 	//
 

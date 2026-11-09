@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_sort_order
+  - Presence: Optional
+  - Type: Non-negative integer
+
+# Description
+
+Presentation order for routes. Routes with smaller non-negative values should be displayed first.
+
+Presence and type follow [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RouteSortOrderField(ctx *context.ValidationContext) error {
 	//
 

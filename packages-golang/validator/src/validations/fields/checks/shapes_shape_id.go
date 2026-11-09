@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: shape_id
+  - Presence: Required
+  - Type: ID
+
+# Description
+
+Identifies the shape shared by its constituent points.
+
+Presence and type follow [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
 func ShapesShapeIdField(ctx *context.ValidationContext) error {
 	//
 

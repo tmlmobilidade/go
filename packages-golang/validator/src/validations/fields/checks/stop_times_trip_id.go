@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: trip_id
+  - Presence: Required
+  - Type: Foreign ID referencing trips.trip_id
+
+# Description
+
+Identifies the trip to which this stop-time record belongs.
+
+Presence and type follow [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func StopTimesTripIdField(ctx *context.ValidationContext) error {
 	//
 

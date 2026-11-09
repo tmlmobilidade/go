@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [rider_categories.txt]
+  - Field: eligibility_url
+  - Presence: Optional
+  - Type: URL
+
+# Description
+
+Web page explaining the rider category and the conditions a passenger must meet to qualify for it.
+
+[rider_categories.txt]: https://gtfs.org/documentation/schedule/reference/#rider_categoriestxt
+*/
 func EligibilityUrlField(ctx *context.ValidationContext) error {
 	//
 

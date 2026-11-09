@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [fare_rules.txt]
+  - Field: fare_id
+  - Presence: Required
+  - Type: Foreign ID referencing fare_attributes.fare_id
+
+# Description
+
+Identifies the fare class defined in fare_attributes.txt.
+
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+*/
 func FareRulesFareIdField(ctx *context.ValidationContext) error {
 	//
 

@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [frequencies.txt]
+  - Field: start_time
+  - Presence: Required
+  - Type: Time
+
+# Description
+
+Departure time of the first vehicle from the trip's first stop for this headway interval.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
+*/
 func StartTimeField(ctx *context.ValidationContext) error {
 	//
 

@@ -9,15 +9,18 @@ import (
 # Attributes
 
   - File: [calendar.txt]
-  - Field: [start_date]
+  - Field: start_date
   - Presence: Required
   - Type: Date
 
 # Description
 
-Start service day for the service interval.
+First service date included in the calendar's date range, written as YYYYMMDD.
 
-[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+Presence and type follow [GTFS Standard].
+
+[calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendartxt
 */
 func StartDateValidation(ctx *context.ValidationContext) error {
 	//

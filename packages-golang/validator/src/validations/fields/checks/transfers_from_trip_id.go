@@ -9,6 +9,7 @@ import (
 
 /*
 # Attributes
+
   - File: [transfers.txt]
   - Field: from_trip_id
   - Presence: Conditionally Required
@@ -16,17 +17,14 @@ import (
 
 # Description
 
-Identifies a trip where a connection between routes begins.
-
-If from_trip_id is defined, the transfer will apply to the arriving trip for the given from_stop_id.
-
-If both from_trip_id and from_route_id are defined, the trip_id must belong to the route_id, and from_trip_id will take precedence.
+Identifies the arriving trip to which the transfer applies. When from_route_id is also supplied, the trip must
+belong to that route and takes precedence over it.
 
 Conditionally Required:
-- Required if transfer_type is 4 or 5.
+- Required if `transfer_type` is `4` or `5`.
 - Optional otherwise.
 
-[transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
+[transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
 func FromTripIdField(ctx *context.ValidationContext) error {
 	//

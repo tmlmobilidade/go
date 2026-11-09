@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [fare_rules.txt]
+  - Field: origin_id
+  - Presence: Optional
+  - Type: Foreign ID referencing stops.zone_id
+
+# Description
+
+Identifies an origin fare zone. Use a separate record for each origin zone associated with the fare.
+
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+*/
 func OriginIdField(ctx *context.ValidationContext) error {
 	//
 

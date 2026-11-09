@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: vehicle_id
+  - Presence: Required
+  - Type: Unique ID
+
+# Description
+
+Unique internal fleet identifier for a vehicle, corresponding to the vehicle identifier used in GTFS Realtime.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func VehicleIdField(ctx *context.ValidationContext) error {
 	//
 

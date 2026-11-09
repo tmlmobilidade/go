@@ -15,9 +15,9 @@ import (
 
 # Description
 
-Fare price, in the unit specified by currency_type.
+Non-negative fare amount expressed in the currency identified by currency_type.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func PriceField(ctx *context.ValidationContext) error {
 	//

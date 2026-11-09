@@ -7,6 +7,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: length
+  - Presence: Optional
+  - Type: Non-negative float
+
+# Description
+
+Horizontal pathway length in meters between from_stop_id and to_stop_id. Recommended for walkways, fare gates and
+exit gates, identified by pathway_mode values 1, 6 and 7.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func LengthField(ctx *context.ValidationContext) error {
 	//
 

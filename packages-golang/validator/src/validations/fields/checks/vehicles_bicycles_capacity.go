@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: bicycles_capacity
+  - Presence: Required
+  - Type: Non-negative integer
+
+# Description
+
+Number of spaces for non-folding bicycles. A value of 0 means that non-folding bicycles cannot be carried.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func BicyclesCapacityField(ctx *context.ValidationContext) error {
 	//
 

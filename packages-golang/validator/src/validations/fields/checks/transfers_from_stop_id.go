@@ -9,6 +9,7 @@ import (
 
 /*
 # Attributes
+
   - File: [transfers.txt]
   - Field: from_stop_id
   - Presence: Conditionally Required
@@ -16,14 +17,14 @@ import (
 
 # Description
 
-Identifies a stop (location_type=0) or a station (location_type=1) where a connection between routes begins.
-If this field refers to a station, the transfer rule applies to all its child stops. It must refer to a stop (location_type=0) if transfer_type is 4 or 5.
+Identifies the origin stop or station for the connection. A station reference covers its child stops. Transfer
+types 4 and 5 must reference a stop rather than a station.
 
 Conditionally Required:
-- Required if transfer_type is 1, 2, or 3.
-- Optional if transfer_type is 4 or 5.
+- Required if `transfer_type` is empty, `0`, `1`, `2`, or `3`.
+- Optional if `transfer_type` is `4` or `5`.
 
-[transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
+[transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
 func TransfersFromStopIdField(ctx *context.ValidationContext) error {
 	//

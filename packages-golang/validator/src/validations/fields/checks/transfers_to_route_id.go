@@ -7,20 +7,18 @@ import (
 
 /*
 # Attributes
+
   - File: [transfers.txt]
   - Field: to_route_id
-  - Presence: optional
+  - Presence: Optional
   - Type: Foreign ID referencing routes.route_id
 
 # Description
 
-Identifies a route where a connection begins.
+Identifies the departing route to which the transfer applies. When to_trip_id is also supplied, that trip must
+belong to this route and takes precedence.
 
-If to_route_id is defined, the transfer will apply to the departing trip on the route for the given to_stop_id.
-
-If both to_trip_id and to_route_id are defined, the trip_id must belong to the route_id, and to_trip_id will take precedence.
-
-[transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
+[transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
 func ToRouteIdField(ctx *context.ValidationContext) error {
 	//

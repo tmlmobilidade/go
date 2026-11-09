@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: wheelchair_accessible
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Wheelchair accessibility of the trip: 0 or empty for no information, 1 accessible or 2 not accessible.
+
+Presence and type follow [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripsWheelchairAccessibleField(ctx *context.ValidationContext) error {
 	//
 

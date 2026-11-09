@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [fare_rules.txt]
+  - Field: contains_id
+  - Presence: Optional
+  - Type: Foreign ID referencing stops.zone_id
+
+# Description
+
+Identifies a zone that an itinerary must enter for this fare to apply. When several zones are listed for the fare,
+the itinerary must match every listed zone.
+
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+*/
 func ContainsIdField(ctx *context.ValidationContext) error {
 	//
 

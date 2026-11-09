@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: shape_dist_traveled
+  - Presence: Optional
+  - Type: Non-negative float
+
+# Description
+
+Distance traveled from the first point of the shape to this point. It must increase with shape_pt_sequence and use
+the same units as stop_times.shape_dist_traveled.
+
+Presence and type follow [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
 func ShapesShapeDistTraveledField(ctx *context.ValidationContext) error {
 	//
 

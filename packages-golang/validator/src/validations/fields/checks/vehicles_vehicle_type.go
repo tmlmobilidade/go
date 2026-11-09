@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: vehicle_type
+  - Presence: Required
+  - Type: Enum
+
+# Description
+
+Transport mode of the vehicle, using the standard routes.route_type values.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func VehicleTypeField(ctx *context.ValidationContext) error {
 	//
 

@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: stair_count
+  - Presence: Optional
+  - Type: Non-null integer
+
+# Description
+
+Number of stairs along the pathway. A positive value means walking up from from_stop_id to to_stop_id; a negative
+value means walking down. Recommended for pathway_mode=2.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func StairCountField(ctx *context.ValidationContext) error {
 	//
 

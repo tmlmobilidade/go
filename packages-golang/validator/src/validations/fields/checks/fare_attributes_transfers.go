@@ -7,6 +7,7 @@ import (
 
 /*
 # Attributes
+
   - File: [fare_attributes.txt]
   - Field: transfers
   - Presence: Required
@@ -14,14 +15,10 @@ import (
 
 # Description
 
-Indicates the number of transfers permitted on this fare. Valid options are:
+Number of transfers included in the fare: 0 for none, 1 for one, 2 for two or an empty value for unlimited
+transfers.
 
-  - 0 - No transfers permitted on this fare.
-  - 1 - Riders may transfer once.
-  - 2 - Riders may transfer twice.
-  - empty - Unlimited transfers are permitted.
-
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func TransfersField(ctx *context.ValidationContext) error {
 	//

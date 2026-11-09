@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [levels.txt]
+  - Field: level_index
+  - Presence: Required
+  - Type: Float
+
+# Description
+
+Relative vertical position of the level. Ground level is 0, higher levels use positive values and underground
+levels use negative values.
+
+[levels.txt]: https://gtfs.org/documentation/schedule/reference/#levelstxt
+*/
 func LevelIndexField(ctx *context.ValidationContext) error {
 	//
 

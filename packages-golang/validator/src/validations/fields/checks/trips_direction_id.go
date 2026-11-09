@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: direction_id
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Identifies a travel direction with 0 or 1, helping distinguish opposite directions on the same route. It is not
+used to determine routing.
+
+Presence and type follow [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func DirectionIdField(ctx *context.ValidationContext) error {
 	//
 

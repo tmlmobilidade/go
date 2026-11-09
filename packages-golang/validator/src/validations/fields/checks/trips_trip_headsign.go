@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: trip_headsign
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Destination text displayed to riders for the trip. Use stop_times.stop_headsign when the displayed destination
+changes during the trip.
+
+Presence and type follow [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripHeadsignField(ctx *context.ValidationContext) error {
 	//
 

@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: stop_headsign
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Destination text displayed at this stop, overriding trips.trip_headsign only for this record. Repeat the value on
+each stop-time record where the override applies.
+
+Presence and type follow [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func StopHeadsignField(ctx *context.ValidationContext) error {
 	//
 

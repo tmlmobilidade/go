@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: drop_off_booking_rule_id
+  - Presence: Optional
+  - Type: Foreign ID referencing booking_rules.booking_rule_id
+
+# Description
+
+Identifies the booking rule for alighting at this stop time. Recommended when drop_off_type=2.
+
+Presence and type follow [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func DropOffBookingRuleIdField(ctx *context.ValidationContext) error {
 	//
 

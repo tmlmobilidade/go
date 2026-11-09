@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: stop_short_name
+  - Presence: Configurable
+  - Type: Text
+
+# Description
+
+TML extension. Abbreviated public-facing name of the stop.
+
+This field is not defined by GTFS Standard and has no published presence requirement. Its presence is controlled by
+the validation rule configuration.
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+*/
 func StopShortNameField(ctx *context.ValidationContext) error {
 	//
 

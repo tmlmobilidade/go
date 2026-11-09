@@ -7,6 +7,7 @@ import (
 
 /*
 # Attributes
+
   - File: [calendar_dates.txt]
   - Field: exception_type
   - Presence: Required
@@ -14,7 +15,12 @@ import (
 
 # Description
 
-Indicates whether service is available on the date specified in the date field.
+Specifies the change for the given service_id and date: 1 adds service and 2 removes service.
+
+Presence and type follow [GTFS Standard].
+
+[calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendar_datestxt
 */
 func ExceptionTypeField(ctx *context.ValidationContext) error {
 	//

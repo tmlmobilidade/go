@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt]
+  - Field: model
+  - Presence: Required
+  - Type: Text
+
+# Description
+
+Model of the vehicle.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+*/
 func ModelField(ctx *context.ValidationContext) error {
 	//
 

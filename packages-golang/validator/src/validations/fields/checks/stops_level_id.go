@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: level_id
+  - Presence: Optional
+  - Type: Foreign ID referencing levels.level_id
+
+# Description
+
+Identifies the level on which the location is situated. A level can be shared by stations that are not connected.
+
+Presence and type follow [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func StopsLevelIdField(ctx *context.ValidationContext) error {
 	//
 

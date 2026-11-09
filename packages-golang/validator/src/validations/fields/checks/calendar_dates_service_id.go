@@ -7,6 +7,7 @@ import (
 
 /*
 # Attributes
+
   - File: [calendar_dates.txt]
   - Field: service_id
   - Presence: Required
@@ -14,12 +15,13 @@ import (
 
 # Description
 
-Identifies a set of dates when a service exception occurs for one or more routes. Each (service_id, date) pair may only appear once in [calendar_dates.txt] if using [calendar.txt] and [calendar_dates.txt] in conjunction.
+Identifies the service affected by the exception. When calendar.txt defines the same service_id, this record
+modifies that calendar. A service_id and date pair must not be repeated.
 
-If a service_id value appears in both [calendar.txt] and [calendar_dates.txt], the information in [calendar_dates.txt] modifies the service information specified in [calendar.txt].
+Presence and type follow [GTFS Standard].
 
-[calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
-[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+[calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendar_datestxt
 */
 func CalendarDatesServiceIdField(ctx *context.ValidationContext) error {
 	//

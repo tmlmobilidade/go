@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: path_type
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Legacy TML route classification: 1 base path, 2 partial path or 3 variant path.
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+*/
 func PathTypeField(ctx *context.ValidationContext) error {
 	//
 

@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [frequencies.txt]
+  - Field: end_time
+  - Presence: Required
+  - Type: Time
+
+# Description
+
+Time at the trip's first stop when this headway interval ends or changes to another interval.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
+*/
 func EndTimeField(ctx *context.ValidationContext) error {
 	//
 

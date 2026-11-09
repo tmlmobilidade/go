@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: bikes_allowed
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Bicycle carriage policy for the trip: 0 or empty for no information, 1 bicycles allowed or 2 bicycles not allowed.
+
+Presence and type follow [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func BikesAllowedField(ctx *context.ValidationContext) error {
 	//
 

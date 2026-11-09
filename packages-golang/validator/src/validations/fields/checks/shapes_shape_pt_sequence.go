@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: shape_pt_sequence
+  - Presence: Required
+  - Type: Non-negative integer
+
+# Description
+
+Non-negative sequence number defining how points connect along the shape. Values must increase but need not be
+consecutive.
+
+Presence and type follow [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
 func ShapePtSequenceField(ctx *context.ValidationContext) error {
 	//
 

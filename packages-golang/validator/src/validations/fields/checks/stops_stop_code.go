@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: stop_code
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Short code displayed to riders for the location. It may match stop_id when that identifier is public-facing, and
+should be empty if no code is shown to riders.
+
+Presence and type follow [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func StopCodeField(ctx *context.ValidationContext) error {
 	//
 

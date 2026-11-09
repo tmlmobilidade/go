@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_type
+  - Presence: Required
+  - Type: Enum
+
+# Description
+
+Mode of transport used by the route. Standard values are 0 tram, 1 metro, 2 rail, 3 bus, 4 ferry, 5 cable tram, 6
+aerial lift, 7 funicular, 11 trolleybus and 12 monorail.
+
+Presence and type follow [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RouteTypeField(ctx *context.ValidationContext) error {
 	//
 

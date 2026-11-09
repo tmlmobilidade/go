@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: tts_stop_name
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Text-to-speech version of stop_name, suitable for reading the location name aloud.
+
+Presence and type follow [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func TtsStopNameField(ctx *context.ValidationContext) error {
 	//
 

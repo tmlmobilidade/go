@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: pattern_id
+  - Presence: Configurable
+  - Type: ID
+
+# Description
+
+TML extension grouping trips by a common operating pattern, including their route, direction, destination, shape
+and stop sequence.
+
+This field is not defined by GTFS Standard and has no published presence requirement. Its presence is controlled by
+the validation rule configuration.
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+*/
 func PatternIdField(ctx *context.ValidationContext) error {
 	//
 

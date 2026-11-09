@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [frequencies.txt]
+  - Field: trip_id
+  - Presence: Required
+  - Type: Foreign ID referencing trips.trip_id
+
+# Description
+
+Identifies the trip used as the template for this headway interval.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
+*/
 func FrequenciesTripIdField(ctx *context.ValidationContext) error {
 	//
 

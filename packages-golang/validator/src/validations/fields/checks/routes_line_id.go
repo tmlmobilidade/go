@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: line_id
+  - Presence: Required
+  - Type: ID
+
+# Description
+
+Identifier grouping route variants into a line. This legacy TML extension is required by the v29 route schema.
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+*/
 func LineIdField(ctx *context.ValidationContext) error {
 	//
 

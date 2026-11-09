@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: trip_short_name
+  - Presence: Optional
+  - Type: Text
+
+# Description
+
+Short public-facing identifier for the trip, such as a train number, when this differs from trip_headsign. It
+should be unique within a service day.
+
+Presence and type follow [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripShortNameField(ctx *context.ValidationContext) error {
 	//
 

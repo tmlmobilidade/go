@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: is_bidirectional
+  - Presence: Required
+  - Type: Enum
+
+# Description
+
+Specifies a one-way pathway from from_stop_id to to_stop_id with 0, or a pathway usable in both directions with 1.
+Exit gates with pathway_mode=7 must be one-way.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func IsBidirectionalField(ctx *context.ValidationContext) error {
 	//
 

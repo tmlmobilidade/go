@@ -7,6 +7,7 @@ import (
 
 /*
 # Attributes
+
   - File: [calendar_dates.txt]
   - Field: date
   - Presence: Required
@@ -14,9 +15,12 @@ import (
 
 # Description
 
-Date when service exception occurs.
+Service date on which the exception applies, written as YYYYMMDD.
 
-[calendar_dates.txt]: https://gtfs.org/schedule/reference/#calendar_datestxt
+Presence and type follow [GTFS Standard].
+
+[calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendar_datestxt
 */
 func DateField(ctx *context.ValidationContext) error {
 	//

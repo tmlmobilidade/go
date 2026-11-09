@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: from_stop_id
+  - Presence: Required
+  - Type: Foreign ID referencing stops.stop_id
+
+# Description
+
+Location where the pathway begins. It must reference a platform, entrance/exit, generic node or boarding area.
+Stations and platforms with stop_access=1 must not be used.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func PathwaysFromStopIdField(ctx *context.ValidationContext) error {
 	//
 

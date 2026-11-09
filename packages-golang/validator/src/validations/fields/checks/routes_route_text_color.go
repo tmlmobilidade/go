@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_text_color
+  - Presence: Optional
+  - Type: Color
+
+# Description
+
+Six-digit hexadecimal text color without a leading hash, displayed against route_color. Defaults to black when
+absent and must provide sufficient contrast.
+
+Presence and type follow [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RouteTextColorField(ctx *context.ValidationContext) error {
 	//
 

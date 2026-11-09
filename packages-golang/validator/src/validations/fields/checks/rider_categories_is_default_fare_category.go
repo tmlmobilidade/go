@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [rider_categories.txt]
+  - Field: is_default_fare_category
+  - Presence: Required
+  - Type: Enum
+
+# Description
+
+Marks the default rider category with 1; 0 or empty means another category. Each fare product with multiple
+eligible categories must have exactly one eligible default category.
+
+[rider_categories.txt]: https://gtfs.org/documentation/schedule/reference/#rider_categoriestxt
+*/
 func IsDefaultFareCategoryField(ctx *context.ValidationContext) error {
 	//
 

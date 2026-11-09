@@ -5,6 +5,20 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [rider_categories.txt]
+  - Field: rider_category_id
+  - Presence: Required
+  - Type: Unique ID
+
+# Description
+
+Identifies a rider category.
+
+[rider_categories.txt]: https://gtfs.org/documentation/schedule/reference/#rider_categoriestxt
+*/
 func RiderCategoryIdField(ctx *context.ValidationContext) error {
 	//
 

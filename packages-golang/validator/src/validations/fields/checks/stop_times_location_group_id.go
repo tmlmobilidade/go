@@ -5,6 +5,27 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: location_group_id
+  - Presence: Conditionally Forbidden
+  - Type: Foreign ID referencing location_groups.location_group_id
+
+# Description
+
+Identifies a group of stops at which riders can request pickup or drop-off. Every serviced group must appear in
+stop_times.txt, ordered by the sequence in which service is available.
+
+Conditionally Forbidden:
+- Forbidden if `stop_times.stop_id` or `stop_times.location_id` are defined.
+
+Presence and type follow [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func LocationGroupIdField(ctx *context.ValidationContext) error {
 	//
 

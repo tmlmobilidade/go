@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: route_id
+  - Presence: Required
+  - Type: Foreign ID referencing routes.route_id
+
+# Description
+
+Identifies the route to which the trip belongs.
+
+Presence and type follow [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripsRouteIdField(ctx *context.ValidationContext) error {
 	//
 

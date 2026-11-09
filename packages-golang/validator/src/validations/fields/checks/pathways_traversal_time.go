@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: traversal_time
+  - Presence: Optional
+  - Type: Positive integer
+
+# Description
+
+Average positive number of seconds needed to travel from from_stop_id to to_stop_id. Recommended for moving
+sidewalks, escalators and elevators, identified by pathway_mode values 3, 4 and 5.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
 func TraversalTimeField(ctx *context.ValidationContext) error {
 	//
 

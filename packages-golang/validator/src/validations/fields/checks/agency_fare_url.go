@@ -15,9 +15,12 @@ import (
 
 # Description
 
-URL of a web page where a rider can purchase tickets or other fare instruments for that agency, or a web page containing information about that agency's fares.
+Web page where riders can purchase the agency's tickets or find information about its fares.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Presence and type follow [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyFareUrlField(ctx *context.ValidationContext) error {
 	//

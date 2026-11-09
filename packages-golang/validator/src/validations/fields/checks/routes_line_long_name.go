@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: line_long_name
+  - Presence: Required
+  - Type: Text
+
+# Description
+
+Full public-facing line name grouping route variants. This legacy TML extension is required by the v29 route
+schema.
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+*/
 func LineLongNameField(ctx *context.ValidationContext) error {
 	//
 

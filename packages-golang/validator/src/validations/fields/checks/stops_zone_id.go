@@ -5,6 +5,23 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: zone_id
+  - Presence: Optional
+  - Type: ID
+
+# Description
+
+Fare zone associated with the stop. Ignored for station and station-entrance records.
+
+Presence and type follow [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func ZoneIdField(ctx *context.ValidationContext) error {
 	//
 

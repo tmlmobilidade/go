@@ -5,6 +5,24 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [feed_info.txt]
+  - Field: feed_contact_url
+  - Presence: Optional
+  - Type: URL
+
+# Description
+
+Technical contact page, support form or help desk for the dataset and its publication. Providing this field or
+feed_contact_email is recommended.
+
+Presence and type follow [GTFS Standard].
+
+[feed_info.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/feed-info
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#feed_infotxt
+*/
 func FeedContactUrlField(ctx *context.ValidationContext) error {
 	//
 

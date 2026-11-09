@@ -5,6 +5,21 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [frequencies.txt]
+  - Field: exact_times
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Specifies frequency-based service with 0 or an empty value, or exact scheduled departures at a fixed headway with
+1. For exact service, end_time is after the last departure and before that departure plus headway_secs.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
+*/
 func ExactTimesField(ctx *context.ValidationContext) error {
 	//
 
