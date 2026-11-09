@@ -1,6 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -45,6 +46,8 @@ export async function importPlansTask() {
 		const databasePath = path.join(directory, `${encodeURIComponent(plan._id)}.db`);
 
 		try {
+			await setPlanStatus(plan._id, 'plans_statistics', 'processing');
+
 			const gtfs = await importPlanGtfs(fileId, databasePath);
 			let statistics: GtfsStatistics;
 
@@ -72,6 +75,7 @@ export async function importPlansTask() {
 				},
 			});
 			await planStatisticsWriter.flush();
+			await setPlanStatus(plan._id, 'plans_statistics', 'complete', plan.hash);
 
 			const costLabel = cost.status === 'ready'
 				? new Intl.NumberFormat('pt-PT', { currency: 'EUR', style: 'currency' }).format(cost.amount)
@@ -83,6 +87,7 @@ export async function importPlansTask() {
 			break;
 		} catch (error) {
 			Logger.error({ error, message: `Error processing plan "${plan._id}".` });
+			await setPlanStatus(plan._id, 'plans_statistics', 'error');
 		}
 	}
 }

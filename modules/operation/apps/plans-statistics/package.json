@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-operation-pckg-utils": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
