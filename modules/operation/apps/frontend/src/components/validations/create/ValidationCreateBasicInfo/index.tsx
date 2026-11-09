@@ -49,7 +49,9 @@ export function ValidationCreateBasicInfo() {
 
 			{validationCreateContext.data.validationError && (
 				<>
-					<AlertMessage title={validationCreateContext.data.validationError.message} variant="danger" />
+					{validationCreateContext.data.validationError.message.split('\n').map(message => (
+						<AlertMessage key={message} title={message} variant="danger" />
+					))}
 					<Divider />
 				</>
 			)}
