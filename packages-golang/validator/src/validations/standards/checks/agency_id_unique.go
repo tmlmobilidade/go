@@ -2,7 +2,7 @@ package standard
 
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
 /*
@@ -22,32 +22,31 @@ This document uses the term "agency" in place of "brand". A dataset may contain 
 
 [agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
 */
-func AgencyAgencyIdField(ctx *context.ValidationContext) error {
+func AgencyAgencyIdUnique(ctx *context.ValidationContext) error {
 	//
+	// 1. Select this rule's source rows and required lookup tables.
 
-	//
-	// 1. Select the source table and fields for this rule
-
-	return context.ForEachRow(ctx, "agency", []string{"agency_id"}, func(row *context.ValidationContext) error {
-		//
-		// 2. Get the agency_id value
-
-		value, err := queries.Field(row.Source, "agency_id")
-		if err != nil {
-			return err
+	return context.ForEachRow(ctx, "agency", []string{"agency_id"}, func(rowCtx *context.ValidationContext) error {
+		if context.ShouldIgnore(rowCtx) {
+			return nil
 		}
 
 		//
-		// 3. Check if agency_id is required
+		// 2. Get the agency_id value
 
+		value, count, err := queries.FieldWithCount(rowCtx.Source, "agency_id")
+		if err != nil {
+			return err
+		}
 		if value == "" {
-			if context.ShouldSkip(row) {
-				return nil
-			}
-
-			message := context.GetSeverityMessage(row, "required", "recommended", "informational")
-			context.AddMessage(row, message)
 			return nil
+		}
+
+		//
+		// 3. Check if agency_id is Unique ID
+
+		if count > 1 {
+			context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "duplicate", value))
 		}
 
 		//
