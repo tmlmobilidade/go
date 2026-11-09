@@ -11,14 +11,33 @@ import (
 
 /*
 # Attributes
+
   - File: [trips.txt]
-  - Field: direction_id
-  - Presence: Required
-  - Type: ID
+  - Field: [pattern_id, direction_id]
+  - Presence: Configurable, Optional
+  - Type: ID, Enum
 
 # Description
 
-Ensure the direction_id is consistent with the pattern_id (e.g., pattern_id "1001_0_1" should have direction_id = 0).
+Matches the trip direction with the middle component of its TML pattern identifier.
+
+Validation: Reports a missing pattern_id or direction_id. An unreadable trip direction is left to its value check.
+The pattern must have exactly three underscore-separated components, and the middle component must parse as 0 or 1.
+That parsed number must equal the parsed trip direction. The first and last components are not otherwise validated;
+this check does not independently enforce the trip direction domain.
+
+Example: pattern_id=1001_0_1 requires direction_id=0; direction_id=01 is compared as the integer 1.
+
+The comparison is skipped when this rule is configured as forbidden. Unavailable source or lookup tables skip the
+check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func DirectionPatternIdMatch(ctx *context.ValidationContext) error {
 	//

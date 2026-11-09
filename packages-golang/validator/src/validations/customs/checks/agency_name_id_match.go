@@ -10,15 +10,31 @@ import (
 # Attributes
 
   - File: [agency.txt]
-  - Field: agency_name_id_match
-  - Presence: required
-  - Type: String
+  - Field: [agency_id, agency_name]
+  - Presence: Conditionally Required, Required
+  - Type: Unique ID, Text
 
 # Description
 
-Full name of the transit agency.
+Matches each agency identifier and name against the pairs in the rule configuration.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: An exact key/value pair passes. If Compare is omitted, the rule does not restrict the pair. An
+explicitly empty Compare list rejects every pair. Whitespace and letter case are preserved, and empty fields are
+not handled specially. The last configured name for the identifier is used in a mismatch message.
+
+Configuration: Compare contains the allowed agency_id and agency_name pairs.
+
+Example: With the configured pair A / Agency, A / Agency passes and A / Other Agency is reported.
+
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [agency.txt].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 */
 func AgencyNameIdMatch(ctx *context.ValidationContext) error {
 	//

@@ -12,14 +12,36 @@ import (
 
 /*
 # Attributes
+
   - File: [trips.txt]
   - Field: pattern_id
-  - Presence: optional
-  - Type: Foreigh Key referencing patterns.pattern_id
+  - Presence: Configurable
+  - Type: ID
 
 # Description
 
-Validates if the pattern_id is in the correct format. Must be in the defalut format "X at XXXX_X_X" or the formats specified in the rules.
+Checks a non-empty TML pattern identifier against the accepted regular expressions.
+
+Validation: The default expression requires three underscore-separated parts. The first has one to four
+non-underscore characters and the remaining parts have one each. It does not restrict those characters to digits or
+validate a direction. A match against any selected expression passes; configured expressions are not implicitly
+anchored.
+
+Configuration: Options are regular expressions. Omitted or empty options use the default. Invalid expressions are
+discarded; if none can be compiled, the default is restored. Surrounding whitespace in the identifier is preserved.
+
+Example: 1001_0_1 and ABCD_X_Y match the default; 10010_0_1 does not.
+
+The comparison is skipped when this rule is configured as forbidden. Unavailable source or lookup tables skip the
+check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func PatternIdFormat(ctx *context.ValidationContext) error {
 	//
@@ -118,6 +140,8 @@ func PatternIdFormat(ctx *context.ValidationContext) error {
 	})
 }
 
+// toPatternIDDisplayFormat derives a diagnostic label from the configured expression.
+// An empty simplified label falls back to the original expression; validation still uses the compiled expression.
 func toPatternIDDisplayFormat(formatRegex string) string {
 	formatted := variables.PatternIDDisplayReplacer.Replace(formatRegex)
 	if strings.TrimSpace(formatted) == "" {

@@ -13,27 +13,30 @@ import (
 # Attributes
 
   - File: [trips.txt]
-  - Field: shape_id
-  - Presence: Recommended
-  - Type: Foreign ID referencing shapes.shape_id
+  - Field: [shape_id, route_id, direction_id]
+  - Presence: Conditionally Required, Required, Optional
+  - Type: Foreign ID referencing shapes.shape_id, Foreign ID referencing routes.route_id, Enum
 
 # Description
 
-Identifies the geospatial shape describing the vehicle travel path for a trip, built from the route it serves and the direction it travels in.
+Builds the expected shape identifier from the route and trip direction.
 
-The `shape_id` must be the combination of `route_id` and `direction_id`, joined by an underscore, so that the shape of a trip can be derived from the fields that describe it.
+Validation: Skips trips with an empty shape_id or route_id, or a direction that does not parse as 0 or 1. Otherwise
+requires shape_id to equal route_id, one underscore and the normalized integer direction. The route and shape text
+are not trimmed. This rule does not resolve the shape reference.
 
-Trips without `shape_id`, `route_id` or `direction_id`, and trips whose `direction_id` is neither 0 nor 1, are left alone: there is nothing to compose from, and their own rules already report the problem.
+Example: route_id=1001_1 and direction_id=0 require shape_id=1001_1_0.
 
-# Example
+The comparison is skipped when this rule is configured as forbidden. Unavailable source or lookup tables skip the
+check.
 
-Both directions of a route reference a shape named after the route and the direction. A `trips.txt` file would contain these records:
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
 
-	trip_id,route_id,direction_id,shape_id
-	1234,1001_0,0,1001_0_0
-	1505,1001_0,1,1001_0_1
+Related tables: [trips.txt].
 
-[trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func ShapeIdRouteDirectionMatch(ctx *context.ValidationContext) error {
 	//

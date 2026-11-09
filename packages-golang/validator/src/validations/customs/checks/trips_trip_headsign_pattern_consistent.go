@@ -12,15 +12,30 @@ import (
 
 /*
 # Attributes
+
   - File: [trips.txt]
-  - Field: trip_headsign
-  - Presence: Required
-  - Type: Text
+  - Field: [pattern_id, trip_headsign]
+  - Presence: Configurable, Optional
+  - Type: ID, Text
 
 # Description
 
- 1. All trips with the same pattern_id must have the same trip_headsign
-    (including consistent presence: nil/empty vs non-empty).
+Keeps one headsign text within each non-empty pattern_id group.
+
+Validation: Collects every distinct trip_headsign string, including the empty string, and reports a group
+containing more than one. Empty and populated headsigns therefore conflict. A group with only empty headsigns does
+not report a consistency problem. Matching preserves whitespace and letter case.
+
+Rows with an empty pattern_id are not grouped. The comparison is skipped when this rule is configured as forbidden.
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func TripHeadsignPatternConsistent(ctx *context.ValidationContext) error {
 	//

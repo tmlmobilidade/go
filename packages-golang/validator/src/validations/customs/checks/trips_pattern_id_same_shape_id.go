@@ -8,16 +8,31 @@ import (
 
 /*
 # Attributes
+
   - File: [trips.txt]
-  - Field: pattern_id
-  - Presence: Recommended
-  - Type: ID
+  - Field: [pattern_id, shape_id]
+  - Presence: Configurable, Conditionally Required
+  - Type: ID, Foreign ID referencing shapes.shape_id
 
 # Description
 
-The `pattern_id` must be the same as the `shape_id`, so that the pattern identifier matches the shape referenced by the trip.
+Keeps the pattern identifier equal to the shape identifier on the same trip.
 
-Trips without `shape_id` or `pattern_id` are left alone: there is nothing to compare, and their own rules already report the problem.
+Validation: Skips comparison when either identifier is empty. Otherwise requires exact text equality, preserving
+whitespace and letter case. It does not check whether the shape exists.
+
+Example: pattern_id=1001_0_1 and shape_id=1001_0_1 pass.
+
+The comparison is skipped when this rule is configured as forbidden. Unavailable source or lookup tables skip the
+check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func PatternIdSameShapeId(ctx *context.ValidationContext) error {
 	//

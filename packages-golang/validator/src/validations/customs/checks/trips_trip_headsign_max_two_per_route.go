@@ -12,14 +12,30 @@ import (
 
 /*
 # Attributes
-  - File: trips.txt
-  - Field: trip_headsign
+
+  - File: [trips.txt]
+  - Field: [route_id, trip_headsign]
+  - Presence: Required, Optional
+  - Type: Foreign ID referencing routes.route_id, Text
 
 # Description
 
-Each route_id may have at most two distinct trip_headsign values.
-Trips with the same route_id and direction_id must share one trip_headsign.
-Missing values and invalid directions are handled by their own rules.
+Limits each route to two distinct populated trip_headsign values.
+
+Validation: Groups trips by non-empty route_id, ignores empty trip_headsign values and reports more than two
+distinct strings. The limit applies to the entire route, without separating direction_id values. The finding is
+attached to the first populated member of the group. Whitespace and letter case are preserved.
+
+Rows with an empty route_id are not grouped. The comparison is skipped when this rule is configured as forbidden.
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func TripHeadsignMaxTwoPerRoute(ctx *context.ValidationContext) error {
 	//

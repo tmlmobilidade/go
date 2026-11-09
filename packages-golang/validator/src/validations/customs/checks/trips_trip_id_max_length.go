@@ -8,16 +8,30 @@ import (
 
 /*
 # Attributes
+
   - File: [trips.txt]
   - Field: trip_id
-  - Presence: Required (TML Rule)
-  - Type: Foreign Key referencing trips.trip_id
+  - Presence: Required
+  - Type: Unique ID
 
 # Description
 
-Ensures the trip_id is less than or equal to 36 characters.
+Limits a populated trip identifier to 36 bytes.
 
-[trips.txt]: https://gtfs.org/schedule/reference/#trips
+Validation: Reports trip_id when its encoded byte length is greater than 36. It does not count Unicode characters
+or validate uniqueness. Empty values are skipped, and whitespace counts toward the limit.
+
+Example: A 36-character ASCII identifier passes, but 19 copies of á occupy 38 bytes in UTF-8 and exceed the limit.
+
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func TripIdMaxLength(ctx *context.ValidationContext) error {
 	//

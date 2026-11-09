@@ -6,7 +6,40 @@ import (
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
-// StopSequence validates ordered stop tuples; pattern checks build their own signatures.
+/*
+# Attributes
+
+  - File: [trips.txt], [stop_times.txt]
+  - Field: [trips.trip_id, stop_times.stop_id, stop_times.stop_sequence, stop_times.shape_dist_traveled]
+  - Presence: Required, Conditionally Required, Required, Optional
+  - Type: Unique ID, Foreign ID referencing stops.stop_id, Non-negative integer, Non-negative float
+
+# Description
+
+Checks the ordered stop sequence, adjacent distances and repeated consecutive stops of each trip.
+
+Validation: Skips trips with an empty trip_id. The sequence reader reports unreadable integer sequences or
+unreadable populated distances, then sorts usable rows numerically. For each adjacent pair, reports a
+non-increasing sequence number, a decreasing distance when both are non-negative, or the same non-empty stop_id
+twice in succession, in that order. Only the first diagnostic is emitted per trip. Gaps in sequence numbers and
+equal distances pass. This check does not independently reject negative sequences, negative distances or non-finite
+distances; empty distances are excluded from comparison.
+
+Example: Sequences 1 and 3 with stops S1 and S2 and distances 0 and 0 pass; repeated sequence 1 or consecutive stop
+S1 twice is reported.
+
+The comparison is skipped when this rule is configured as forbidden. Unavailable source or lookup tables skip the
+check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt], [stop_times.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+*/
 func StopSequence(ctx *context.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation

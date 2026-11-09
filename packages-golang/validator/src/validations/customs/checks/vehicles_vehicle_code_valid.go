@@ -14,16 +14,35 @@ import (
 /*
 # Attributes
 
-- File: [vehicles.txt]
-- Field: vehicle_code
-- Presence: Required
-- Type: String
+  - File: [vehicles.txt]
+  - Field: [vehicle_code, vehicle_type]
+  - Presence: Required
+  - Type: Unique ID, Enum
 
 # Description
 
-A public identifier for the vehicle: a registration plate for road vehicles,
-a maritime MMSI for ferries, or another identifier for other transport modes.
-The code must be unique within its vehicle_type.
+Validates a public-facing vehicle code for its transport mode and detects repeated codes within the same type.
+
+Validation: Skips an empty vehicle_code. Parsed vehicle types 3 and 11 require a Portuguese registration-plate
+pattern; type 4 requires a nine-digit MMSI starting with a digit from 2 through 7. Other types, including
+unreadable type text, require only non-whitespace code text. Plate validation uppercases and removes common
+separators, including hyphens, spaces, dots and underscores; MMSI validation trims only surrounding whitespace.
+After format validation, reports a duplicate only when the original vehicle_code and original vehicle_type strings
+both match another row. Neither value is normalized for duplicate detection. This check does not independently
+validate vehicle_type or confirm a real-world registration.
+
+Example: AA-12-BB is accepted for type 3; 263123456 is accepted for type 4. Textually different plate separators or
+type spellings are not merged for duplicate detection.
+
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [vehicles.txt].
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func VehicleCodeValid(ctx *context.ValidationContext) error {
 	//

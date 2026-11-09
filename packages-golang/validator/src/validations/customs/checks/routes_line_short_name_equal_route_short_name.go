@@ -6,6 +6,35 @@ import (
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: [line_short_name, route_short_name]
+  - Presence: Required, Conditionally Required
+  - Type: Text
+
+# Description
+
+Keeps the legacy TML line designation aligned with the route short name.
+
+Validation: Compares line_short_name and route_short_name as exact text. Different values are reported. Two empty
+fields pass; whitespace and letter case are not normalized. This rule does not check references or require either
+field to be populated.
+
+Example: line_short_name=1001 and route_short_name=1001 pass; line_short_name=1002 is reported for the same
+route_short_name.
+
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [routes.txt].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+*/
 func LineShortNameEqualRouteShortName(ctx *context.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation

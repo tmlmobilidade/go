@@ -11,6 +11,33 @@ import (
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: [pattern_id, direction_id]
+  - Presence: Configurable, Optional
+  - Type: ID, Enum
+
+# Description
+
+Keeps a single parsed direction value within each non-empty pattern_id group.
+
+Validation: Collects the distinct integer values of direction_id and reports a group with more than one. Unreadable
+and empty directions are ignored. Numeric spelling is normalized, so 01 and 1 are equivalent. This check does not
+restrict directions to 0 and 1; it only compares the integers that can be read.
+
+Rows with an empty pattern_id are not grouped. The comparison is skipped when this rule is configured as forbidden.
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+*/
 func DirectionIdPatternConsistent(ctx *context.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation

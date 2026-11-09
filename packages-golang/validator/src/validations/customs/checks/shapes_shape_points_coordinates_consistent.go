@@ -16,12 +16,35 @@ import (
 )
 
 /*
-* ShapePointsCoordinatesConsistent compares consecutive shape coordinates using
-* Haversine distances in meters, independently of shape_dist_traveled.
-* Invalid or duplicate sequences skip the shape. Invalid coordinates remain in
-* sequence but their adjacent segments are skipped, so neighbors are never joined.
-* Gaps above the configured tolerance are reported at the later point's source row.
- */
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: [shape_id, shape_pt_sequence, shape_pt_lat, shape_pt_lon]
+  - Presence: Required
+  - Type: ID, Non-negative integer, Latitude, Longitude
+
+# Description
+
+Limits the direct geographic spacing between consecutive points of each shape.
+
+Validation: Groups points by non-empty shape_id and sorts them numerically by sequence. An unreadable, negative or
+repeated sequence skips the entire shape. Adjacent pairs with unreadable or out-of-range coordinates are skipped
+without bridging across the invalid point. Reports a pair only when its Haversine distance is strictly greater than
+the limit, at the later point. Equality passes; recorded shape_dist_traveled values are not used.
+
+Configuration: The first Options value sets a finite, positive maximum distance in meters; the default is 1000.
+Zero, negative, non-finite or unreadable options restore the default.
+
+Rows with an empty shape_id are not grouped. Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [shapes.txt].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+*/
 func ShapePointsCoordinatesConsistent(ctx *context.ValidationContext) error {
 
 	//

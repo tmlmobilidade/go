@@ -15,17 +15,42 @@ import (
 )
 
 /*
-* ShapeDistancesValid compares recorded and Haversine totals within shape blocks.
-* Each block starts at a recorded zero and ends just before the next zero, or at
-* the shape's final point when there is no later reset.
-* Recorded distances use geo.ShapeDistTraveledToMeters with the shape-wide maximum.
-* Missing segment distances or a segment difference above tolerance skip the block.
-* Converted increments below 0.001 meters are omitted from the geometric total;
-* blocks with no accumulated geometry are skipped. Total differences above
-* tolerance are reported at the block's final source row.
-*
-* https://gtfs.org/schedule/reference/#shapestxt
- */
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: [shape_id, shape_pt_sequence, shape_pt_lat, shape_pt_lon, shape_dist_traveled]
+  - Presence: Required, Required, Required, Required, Optional
+  - Type: ID, Non-negative integer, Latitude, Longitude, Non-negative float
+
+# Description
+
+Compares recorded distance totals with geometric lengths of shape blocks beginning at a recorded zero.
+
+Validation: Groups points by non-empty shape_id and sorts them numerically by sequence. Each zero starts a block
+ending before the next zero. Blocks without a following point, with missing segment distances, with an individual
+distance mismatch above tolerance, or with zero accumulated geometric length are not reported. Recorded increments
+below 0.001 meters, including decreases, are excluded from the geometric sum. For other segments, sums direct
+Haversine distances and reports when the final recorded distance differs from that sum by more than the same
+tolerance. Unreadable sequence, coordinate or populated distance text returns a read error rather than this rule's
+distance finding.
+
+Configuration: The first Options value sets a finite, non-negative tolerance in meters; the default is 200. A
+shape-wide maximum recorded distance below 800 is assumed to use kilometers, otherwise meters. Unlike the segment
+check, this rule does not support an explicit unit option.
+
+Example: Small segment differences can pass individually but still accumulate into a block difference above 200
+meters.
+
+Rows with an empty shape_id are not grouped. Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [shapes.txt].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+*/
 func ShapeDistancesValid(ctx *context.ValidationContext) error {
 
 	//

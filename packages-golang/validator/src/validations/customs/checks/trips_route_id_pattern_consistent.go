@@ -12,16 +12,30 @@ import (
 
 /*
 # Attributes
+
   - File: [trips.txt]
-  - Field: route_id
-  - Presence: Optional
-  - Type: ID
+  - Field: [pattern_id, route_id]
+  - Presence: Configurable, Required
+  - Type: ID, Foreign ID referencing routes.route_id
 
 # Description
 
-Validates if route_id is unique within each pattern_id.
-All trips with the same pattern_id must have the same route_id.
-If a pattern_id has trips with different route_ids, report error.
+Keeps a single populated route identifier within each non-empty pattern_id group.
+
+Validation: Collects distinct non-empty route_id strings and reports a group containing more than one. Matching
+preserves whitespace and letter case. Empty route identifiers are ignored; their presence and references are
+checked separately.
+
+Rows with an empty pattern_id are not grouped. The comparison is skipped when this rule is configured as forbidden.
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func RouteIdPatternConsistent(ctx *context.ValidationContext) error {
 	//

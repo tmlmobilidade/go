@@ -17,13 +17,40 @@ import (
 )
 
 /*
-* ShapePointsCoordinatesDistances compares each recorded distance increment with
-* its Haversine segment, including the first segment from a recorded zero.
-* Distances are converted to meters using the configured unit or shape-wide guess.
-* Invalid or duplicate sequences skip the shape; unusable adjacent points and
-* decreasing distances skip the segment. Differences above tolerance are reported
-* at the later point's source row. Decreases belong to the monotonic-distance rule.
- */
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: [shape_id, shape_pt_sequence, shape_pt_lat, shape_pt_lon, shape_dist_traveled]
+  - Presence: Required, Required, Required, Required, Optional
+  - Type: ID, Non-negative integer, Latitude, Longitude, Non-negative float
+
+# Description
+
+Compares each recorded distance increment with the direct geometric distance between consecutive shape points.
+
+Validation: Groups points by non-empty shape_id and sorts them numerically by sequence. An unreadable, negative or
+repeated sequence skips the entire shape. An adjacent pair is skipped when its coordinates are unreadable or out of
+range, its distances are missing, negative or non-finite, or the recorded increment decreases. Other pairs are
+reported when the absolute difference between the Haversine distance and the converted increment exceeds tolerance
+plus 0.000001 meters. Zero increments are compared normally. Findings identify the later point.
+
+Configuration: The first Options value sets a finite, non-negative tolerance in meters; the default is 20. The
+second option can select m or km, ignoring letter case and surrounding whitespace. Without a recognized unit, a
+shape-wide maximum recorded distance below 800 is assumed to use kilometers, otherwise meters.
+
+Example: With the default kilometer assumption, an increment of 0.1111949 matches an approximately 111-meter
+segment; an increment of 0.5 does not.
+
+Rows with an empty shape_id are not grouped. Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [shapes.txt].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+*/
 func ShapePointsCoordinatesDistances(ctx *context.ValidationContext) error {
 
 	//

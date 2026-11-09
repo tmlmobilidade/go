@@ -13,14 +13,31 @@ import (
 
 /*
 # Attributes
-  - File: trips.txt
-  - Field: shape_id
+
+  - File: [trips.txt]
+  - Field: [route_id, direction_id, shape_id]
+  - Presence: Required, Optional, Conditionally Required
+  - Type: Foreign ID referencing routes.route_id, Enum, Foreign ID referencing shapes.shape_id
 
 # Description
 
-Each route_id may have at most two distinct shape_id values.
-Trips with the same route_id and direction_id must share one shape_id.
-Missing values and invalid directions are handled by their own rules.
+Keeps a single populated shape_id for each route and direction combination.
+
+Validation: Groups trips by non-empty route_id and separates parsed direction_id values 0 and 1. Trips with an
+empty shape_id or an unreadable or out-of-domain direction are ignored. More than one distinct string in either
+combination produces a finding at that combination's first populated member. Numeric direction spelling is
+normalized; shape_id text is not.
+
+Rows with an empty route_id are not grouped. The comparison is skipped when this rule is configured as forbidden.
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func ShapeIdRouteDirectionConsistent(ctx *context.ValidationContext) error {
 	//

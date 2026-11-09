@@ -12,10 +12,42 @@ import (
 )
 
 /*
-* StopCoordinates checks each distinct served stop against its trip's sampled shape.
-* Geometry caches shapes and stop-shape results for this invocation, while each
-* trip retains its own findings. Reports identify the closest original shape point.
- */
+# Attributes
+
+  - File: [trips.txt], [stop_times.txt], [stops.txt], [shapes.txt]
+  - Field: [trips.trip_id, trips.shape_id, stop_times.stop_id, stops.stop_lat, stops.stop_lon, shapes.shape_pt_lat, shapes.shape_pt_lon, shapes.shape_pt_sequence]
+  - Presence: Required, Conditionally Required, Conditionally Required, Conditionally Required, Conditionally Required, Required, Required, Required
+  - Type: Unique ID, Foreign ID referencing shapes.shape_id, Foreign ID referencing stops.stop_id, Latitude, Longitude, Latitude, Longitude, Non-negative integer
+
+# Description
+
+Checks the distance between each distinct served stop and the shape assigned to its trip.
+
+Validation: Skips trips without trip_id or shape_id. Uses stop_times.txt to collect distinct non-empty stop
+identifiers, then the first matching stops.txt row with both coordinates filled. Missing or unparseable stop
+coordinates and unavailable shape geometry produce no distance finding. Shape points are ordered and resampled
+approximately every 50 meters; the stop is compared with those discrete samples. A nearest sampled distance
+strictly greater than 100 meters is reported for each affected trip, including when a cached result is reused.
+Exactly 100 meters passes. The closest original shape vertex is supplied for diagnosis and can differ from the
+closest sampled point.
+
+Configuration: The 100-meter limit is fixed; Options do not change it. Distances to samples can overestimate the
+distance to the continuous line. Coordinate-domain and missing-reference checks belong to other rules.
+
+The comparison is skipped when this rule is configured as forbidden. Unavailable source or lookup tables skip the
+check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt], [stop_times.txt], [stops.txt], [shapes.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+*/
 func StopCoordinates(ctx *context.ValidationContext) error {
 
 	//

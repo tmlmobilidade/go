@@ -7,6 +7,33 @@ import (
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: [pattern_id, shape_id]
+  - Presence: Configurable, Conditionally Required
+  - Type: ID, Foreign ID referencing shapes.shape_id
+
+# Description
+
+Allows at most one populated shape_id for each non-empty pattern_id.
+
+Validation: Groups trips by pattern_id, counts distinct non-empty shape_id strings and reports groups with more
+than one. Matching preserves whitespace and letter case. Missing values and reference validity are left to other
+checks.
+
+Rows with an empty pattern_id are not grouped. The comparison is skipped when this rule is configured as forbidden.
+Unavailable source or lookup tables skip the check.
+
+Custom policy documented from the implementation and its tests. Presence and type describe the input fields, not
+the diagnostic severity. The related table references provide field context, not an external specification for this
+policy.
+
+Related tables: [trips.txt].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+*/
 func OneShapePerPattern(ctx *context.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
