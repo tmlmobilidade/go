@@ -3,12 +3,13 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/sqlite"
 )
 
 // ShapeIdForeign checks that trip shape IDs exist in shapes.
 // Missing lookup tables skip the rule, even without a file-presence dependency.
-func ShapeIdForeign(ctx *context.ValidationContext) error {
+func ShapeIdForeign(ctx *types.ValidationContext) error {
 	//
 
 	//
@@ -27,7 +28,7 @@ func ShapeIdForeign(ctx *context.ValidationContext) error {
 	//
 	// 2. Read each trip's shape ID
 
-	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *types.ValidationContext) error {
 		value, err := queries.Field(row.Source, "shape_id")
 		if err != nil {
 			return err

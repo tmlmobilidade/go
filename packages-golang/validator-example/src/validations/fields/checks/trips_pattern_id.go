@@ -3,16 +3,17 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/context"
 )
 
 // PatternIdField checks its own source table using the context released by Kahn.
-func PatternIdField(ctx *context.ValidationContext) error {
+func PatternIdField(ctx *types.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *types.ValidationContext) error {
 		//
 		// 2. Read the current source value
 

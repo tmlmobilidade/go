@@ -3,6 +3,7 @@ package validations
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/context"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/validations"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/i18n"
@@ -18,7 +19,7 @@ func TablesFilePresence(checks validationTypes.RuleChecks) {
 
 	for _, table := range variables.GtfsRuleFiles {
 		id := table + "_file_missing"
-		checks[id] = func(ctx *context.ValidationContext) error {
+		checks[id] = func(ctx *types.ValidationContext) error {
 			//
 			// 2. Pass when the imported table exists
 

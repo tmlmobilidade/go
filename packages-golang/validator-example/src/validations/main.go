@@ -104,11 +104,14 @@ func RunValidations(db *sql.DB, configuration map[string]rules.RuleConfig, messa
 	for _, id := range ids {
 		check := checks[id]
 		config := configuration[id]
+
 		if config.Severity == "" {
 			config.Severity = rules.SEVERITY_IGNORE
 		}
+		
 		ruleContext := context.NewRuleContext(id, db, config.RuleContext, messageService)
 		dependencies := slices.Clone(config.DependsOn)
+		
 		ruleNodes = append(ruleNodes, DAG.Rule[*validationTypes.Execution]{ID: ruleContext.RuleID, DependsOn: dependencies, Run: func(run *validationTypes.Execution) DAG.Status {
 			return execution.RunRule(run, ruleContext, check)
 		}})
