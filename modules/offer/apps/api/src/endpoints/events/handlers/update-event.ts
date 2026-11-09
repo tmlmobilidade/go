@@ -20,7 +20,7 @@ export async function updateEventHandler(request: FastifyRequest<{ Body: UpdateE
 
 	if (!validatedEvent.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedEvent.error.message,
+			error: validatedEvent.error,
 			status_code: '400',
 		});
 	}

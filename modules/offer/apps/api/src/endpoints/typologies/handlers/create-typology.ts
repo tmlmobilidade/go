@@ -20,7 +20,7 @@ export async function createTypologyHandler(request: FastifyRequest<{ Body: Crea
 
 	if (!validatedTypology.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedTypology.error.message,
+			error: validatedTypology.error,
 			status_code: '400',
 		});
 	}

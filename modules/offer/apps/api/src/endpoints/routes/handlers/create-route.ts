@@ -19,7 +19,7 @@ export async function createRouteHandler(request: FastifyRequest<{ Body: CreateR
 	const validatedRoute = CreateRouteSchema.safeParse(request.body);
 
 	if (!validatedRoute.success) {
-		return sendErrorApiResponse(reply, { error: validatedRoute.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedRoute.error, status_code: '400' });
 	}
 
 	//

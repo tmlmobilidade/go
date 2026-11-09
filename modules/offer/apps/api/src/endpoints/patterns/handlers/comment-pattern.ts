@@ -18,7 +18,7 @@ export async function commentPatternHandler(request: FastifyRequest<{ Body: Patt
 
 	const validatedComment = PatternsCommentRequestSchema.safeParse(request.body);
 	if (!validatedComment.success) {
-		return sendErrorApiResponse(reply, { error: validatedComment.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedComment.error, status_code: '400' });
 	}
 
 	const pattern = await goDb.offer.patterns.findById(request.params.id);

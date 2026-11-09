@@ -138,17 +138,30 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 			},
 			{
 				onSuccess: async (_, attachment, session) => {
-					const validatedGtfsValidation = GtfsValidationSchema.parse({
+					const validatedGtfsValidation = GtfsValidationSchema.safeParse({
 						...validationData,
 						_id: validationId,
 						file_id: attachment._id,
 						updated_at: Dates.now('utc').unix_milliseconds,
 					});
 
-					finalValidationData = await goDb.operation.gtfsValidations.insertOne(validatedGtfsValidation, { session });
+					if (!validatedGtfsValidation.success) {
+						return sendErrorApiResponse(reply, {
+							error: validatedGtfsValidation.error,
+							status_code: '400',
+						});
+					}
+
+					finalValidationData = await goDb.operation.gtfsValidations.insertOne(validatedGtfsValidation.data, { session });
 				},
 			},
 		);
+	} catch (error) {
+		Logger.error({ attributes: { error }, message: 'Error uploading file' });
+		return sendErrorApiResponse(reply, {
+			error: error instanceof Error ? error.message : 'Unknown error',
+			status_code: '500',
+		});
 	} finally {
 		try {
 			unlinkSync(tempFilePath);

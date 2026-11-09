@@ -25,7 +25,7 @@ export async function listPublishedReleasesHandler(request: FastifyRequest<{ Que
 
 	if (!query.success) {
 		return sendErrorApiResponse(reply, {
-			error: query.error.message,
+			error: query.error,
 			status_code: '400',
 		});
 	}

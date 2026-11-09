@@ -17,16 +17,9 @@ export async function createBannerHandler(request: FastifyRequest<{ Body: Create
 	//
 	// Validate the editable content
 
-	let content: CreateBannerDto;
-
-	try {
-		content = CreateBannerSchema.parse(request.body);
-	} catch (error) {
-		return sendErrorApiResponse(reply, {
-			error: error instanceof Error ? error.message : 'Invalid banner data',
-			status_code: '400',
-		});
-	}
+	const result = CreateBannerSchema.safeParse(request.body);
+	if (!result.success) return sendErrorApiResponse(reply, { error: result.error, status_code: '400' });
+	const content = result.data;
 
 	//
 	// Create a draft with server-owned audit and publication fields

@@ -20,7 +20,7 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 
 	if (!validatedAnnotation.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedAnnotation.error.message,
+			error: validatedAnnotation.error,
 			status_code: '400',
 		});
 	}

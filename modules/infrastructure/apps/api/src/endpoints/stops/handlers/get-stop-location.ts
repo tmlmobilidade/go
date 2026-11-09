@@ -20,7 +20,7 @@ export async function getStopLocationHandler(request: FastifyRequest<{ Body: Sto
 
 	if (!validatedRequest.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedRequest.error.message,
+			error: validatedRequest.error,
 			status_code: '400',
 		});
 	}

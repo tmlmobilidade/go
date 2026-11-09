@@ -22,7 +22,7 @@ export async function markReleasesSeenHandler(request: FastifyRequest<{ Body: Ch
 
 	if (!validated.success) {
 		return sendErrorApiResponse(reply, {
-			error: validated.error.message,
+			error: validated.error,
 			status_code: '400',
 		});
 	}

@@ -23,7 +23,7 @@ export async function createVehicleHandler(request: FastifyRequest<{ Body: Creat
 
 	if (!validatedVehicle.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedVehicle.error.message,
+			error: validatedVehicle.error,
 			status_code: '400',
 		});
 	}
