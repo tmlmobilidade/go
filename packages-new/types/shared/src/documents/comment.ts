@@ -1,6 +1,7 @@
 /* * */
 
 import { BaseDocumentSchema } from '@/documents/document.js';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -68,14 +69,14 @@ export const CommentSchema = z
 				if (!data.metadata?.changes || data.metadata.changes.length === 0) {
 					ctx.addIssue({
 						code: 'custom',
-						message: 'multiple_fields requires metadata.changes array',
+						...validationParams('custom.documents.changes_required'),
 						path: ['metadata', 'changes'],
 					});
 				}
 				if (data.curr_value !== null || data.prev_value !== null) {
 					ctx.addIssue({
 						code: 'custom',
-						message: 'multiple_fields must have null curr_value and prev_value',
+						...validationParams('custom.documents.null_values'),
 						path: ['curr_value'],
 					});
 				}
@@ -83,7 +84,7 @@ export const CommentSchema = z
 				// If field is NOT 'multiple_fields', curr_value and prev_value must differ
 				ctx.addIssue({
 					code: 'custom',
-					message: 'curr_value and prev_value must differ',
+					...validationParams('custom.documents.different_values'),
 					path: ['curr_value'],
 				});
 			}

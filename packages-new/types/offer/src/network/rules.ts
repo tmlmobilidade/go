@@ -1,5 +1,6 @@
 import { HHMMSchema } from '@/dates/common.js';
 import { MONTHS, OperationalDateIntSchema, WEEKDAYS } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -43,14 +44,14 @@ function validateManualRule(data: z.infer<typeof ManualRuleBaseSchema>, ctx: z.R
 		if (!data.weekdays?.length) {
 			ctx.addIssue({
 				code: 'custom',
-				message: 'Selecione pelo menos um dia da semana.',
+				...validationParams('custom.network.weekdays'),
 				path: ['weekdays'],
 			});
 		}
 		if (!data.year_period_ids?.length) {
 			ctx.addIssue({
 				code: 'custom',
-				message: 'Selecione pelo menos um período do ano.',
+				...validationParams('custom.network.year_periods'),
 				path: ['year_period_ids'],
 			});
 		}

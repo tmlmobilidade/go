@@ -1,3 +1,5 @@
+import '@tmlmobilidade/go-utils-validation';
+
 export * from './events/index.js';
 export * from './fares/index.js';
 export * from './lines/populated-line.js';

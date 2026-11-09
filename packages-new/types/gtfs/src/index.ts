@@ -1,3 +1,5 @@
+import '@tmlmobilidade/go-utils-validation';
+
 export * from './agency/index.js';
 export * from './calendar-dates/index.js';
 export * from './calendar/index.js';

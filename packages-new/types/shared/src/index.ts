@@ -1,3 +1,5 @@
+import '@tmlmobilidade/go-utils-validation';
+
 export * from './api/index.js';
 export * from './conditions/index.js';
 export * from './datetime/index.js';

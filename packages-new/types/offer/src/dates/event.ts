@@ -2,6 +2,7 @@
 
 import { EventRuleSchema } from '@/network/rules.js';
 import { BaseDocumentSchema, OperationalDateIntSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
+import { validationMessage } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -11,7 +12,7 @@ export const EventSchema = BaseDocumentSchema.extend({
 	code: z.string()
 		.min(1)
 		.max(10)
-		.regex(/^[A-Z0-9_]+$/, 'Must be uppercase letters, numbers, or underscores'),
+		.regex(/^[A-Z0-9_]+$/, { error: validationMessage('custom.dates.event_id') }),
 	dates: z.array(OperationalDateIntSchema).default([]),
 	description: z.string().default(''),
 	is_locked: z.boolean().default(false),

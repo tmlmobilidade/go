@@ -37,6 +37,7 @@
 		"@tmlmobilidade/go-types-geo": "*",
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-shared": "*",
+		"@tmlmobilidade/go-utils-validation": "*",
 		"zod": "4.6.7"
 	},
 	"devDependencies": {

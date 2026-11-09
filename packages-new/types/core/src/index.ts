@@ -1,3 +1,5 @@
+import '@tmlmobilidade/go-utils-validation';
+
 export * from './agencies/index.js';
 export * from './app-configs/index.js';
 export * from './attachments/index.js';

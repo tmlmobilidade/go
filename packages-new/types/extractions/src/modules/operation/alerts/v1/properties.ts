@@ -2,6 +2,7 @@
 
 import { AlertCauseSchema, AlertEffectSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
 import { PublishStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -48,14 +49,14 @@ export const OperationAlertsV1ExtractionPropertiesSchema = z.object({
 
 })
 	.refine(properties => properties.publish_date_filter_start <= properties.publish_date_filter_end, {
-		message: 'The publication end date must be on or after the start date',
+		...validationParams('custom.schedule.publication'),
 		path: ['publish_date_filter_end'],
 	})
 	.refine((properties) => {
 		if (properties.active_period_filter_start === undefined || properties.active_period_filter_end === undefined) return true;
 		return properties.active_period_filter_start <= properties.active_period_filter_end;
 	}, {
-		message: 'The active period end date must be on or after the start date',
+		...validationParams('custom.schedule.active_period'),
 		path: ['active_period_filter_end'],
 	});
 

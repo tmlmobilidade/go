@@ -1,6 +1,7 @@
 /* * */
 
 import { BaseDocumentSchema, ModuleScopeSchema, partialWithoutDefaults, PublishStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 import { BannerKindSchema } from './kind.js';
@@ -11,7 +12,7 @@ import { BannerSeveritySchema } from './severity.js';
 
 function validateBannerSchedule(document: { ends_at?: null | number, starts_at?: null | number }, context: z.RefinementCtx): void {
 	if (document.starts_at != null && document.ends_at != null && document.ends_at <= document.starts_at) {
-		context.addIssue({ code: 'custom', message: 'The end must be after the start', path: ['ends_at'] });
+		context.addIssue({ code: 'custom', ...validationParams('custom.schedule.end_after_start'), path: ['ends_at'] });
 	}
 }
 
