@@ -3,7 +3,7 @@
 		"PlanDetailSectionStatistics": {
 			"cost": {
 				"invalid_configuration": "Invalid cost per kilometre",
-				"missing_configuration": "Cost per kilometre not configured",
+				"missing_configuration": "NA",
 				"unavailable": "Cost unavailable"
 			},
 			"description": "GTFS totals and planned kilometres during the plan's validity period.",

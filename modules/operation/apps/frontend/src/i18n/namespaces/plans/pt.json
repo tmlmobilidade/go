@@ -3,7 +3,7 @@
 		"PlanDetailSectionStatistics": {
 			"cost": {
 				"invalid_configuration": "Custo por quilómetro inválido",
-				"missing_configuration": "Custo por quilómetro por configurar",
+				"missing_configuration": "NA",
 				"unavailable": "Custo indisponível"
 			},
 			"description": "Totais do GTFS e quilómetros previstos durante a vigência do plano.",
