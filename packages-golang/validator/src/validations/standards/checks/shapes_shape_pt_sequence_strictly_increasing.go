@@ -6,9 +6,30 @@ import (
 )
 
 /*
-* ShapePtSequenceStrictlyIncreasing compares adjacent points in numeric shape sequence order.
-* Findings retain the later point's original SQLite row; shapes are never joined.
- */
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: [shape_id, shape_pt_sequence]
+  - Presence: Required
+  - Type: ID, Non-negative integer
+
+# Description
+
+  - shape_id: Identifies the shape shared by its constituent points.
+  - shape_pt_sequence: Non-negative sequence number defining how points connect along the shape. Values must increase
+    but need not be consecutive.
+
+Validation: Groups points by non-empty shape_id and sorts them by numeric shape_pt_sequence. Repeated sequence
+numbers are reported; gaps and physical row order are irrelevant. A group with a non-integer or negative sequence
+is skipped for this check.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
 func ShapePtSequenceStrictlyIncreasing(ctx *context.ValidationContext) error {
 	ready, err := context.RequireTables(ctx, "shapes")
 	if err != nil || !ready {

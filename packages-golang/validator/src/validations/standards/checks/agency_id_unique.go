@@ -10,17 +10,27 @@ import (
 
   - File: [agency.txt]
   - Field: agency_id
-  - Presence: Required
+  - Presence: Conditionally Required
   - Type: Unique ID
 
 # Description
 
-Identifies a transit brand which is often synonymous with a transit agency.
-Note that in some cases, such as when a single agency operates multiple separate services, agencies and brands are distinct.
+Identifies the transit agency or brand represented by the record. A dataset can include more than one agency.
 
-This document uses the term "agency" in place of "brand". A dataset may contain data from multiple agencies.
+Conditionally Required:
+- Required when the dataset contains data for multiple transit agencies.
+- Recommended otherwise.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks that each non-empty agency_id occurs only once in agency.txt. It compares the original text
+without trimming whitespace or normalizing letter case. Empty values are skipped; required-field checks handle
+absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyAgencyIdUnique(ctx *context.ValidationContext) error {
 	//

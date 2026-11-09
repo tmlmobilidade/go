@@ -9,18 +9,23 @@ import (
 
 /*
 # Attributes
-- File: [pathways.txt]
-- Field: min_width
-- Presence: optional
-- Type: positive float
+
+  - File: [pathways.txt]
+  - Field: min_width
+  - Presence: Optional
+  - Type: Positive float
 
 # Description
 
-Minimum width of the pathway in meters.
+Minimum pathway width in meters. Providing this field is recommended when the width is below one meter.
 
-This field is recommended if the minimum width is less than 1 meter.
+Validation: Checks that min_width is a finite, non-negative number. Negative values receive the negative-width
+message; values below one meter, including zero, receive the recommendation message. This does not measure the
+actual pathway. Empty values are skipped; required-field checks handle absence.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func MinWidthValid(ctx *context.ValidationContext) error {
 	//

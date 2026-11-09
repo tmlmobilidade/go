@@ -8,16 +8,24 @@ import (
 
 /*
 # Attributes
-- File: [pathways.txt]
-- Field: stair_count
-- Presence: optional
-- Type: non-null integer
+
+  - File: [pathways.txt]
+  - Field: stair_count
+  - Presence: Optional
+  - Type: Non-null integer
 
 # Description
 
-Number of stairs in the pathway.
+Number of stairs along the pathway. A positive value means walking up from from_stop_id to to_stop_id; a negative
+value means walking down. Recommended for pathway_mode=2.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+Validation: Checks for a base-ten unsigned integer between 0 and 65535 inclusive. Unlike the signed field
+definition, the current validator rejects negative values and accepts zero. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func StairCountValid(ctx *context.ValidationContext) error {
 	//

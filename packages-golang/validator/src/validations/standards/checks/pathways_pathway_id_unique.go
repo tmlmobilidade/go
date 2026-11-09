@@ -8,19 +8,22 @@ import (
 /*
 # Attributes
 
-- File: [pathways.txt]
-- Field: pathway_id
-- Presence: Required
-- Type:  unique ID
+  - File: [pathways.txt]
+  - Field: pathway_id
+  - Presence: Required
+  - Type: Unique ID
 
 # Description
 
-Identifies a pathway. Used by systems as an internal identifier for the record. Must be unique in the dataset.
+Unique internal identifier for a pathway. Separate pathways can connect the same pair of locations.
 
-Different pathways may have the same values for from_stop_id and to_stop_id.
-Example: When two escalators are side-by-side in opposite directions, or when a stair set and elevator go from the same place to the same place, different pathway_id may have the same from_stop_id and to_stop_id values.
+Validation: Checks that each non-empty pathway_id occurs only once in pathways.txt. It compares the original text
+without trimming whitespace or normalizing letter case. Empty values are skipped; required-field checks handle
+absence.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func PathwayIdUnique(ctx *context.ValidationContext) error {
 	//

@@ -6,6 +6,29 @@ import (
 	"strconv"
 )
 
+/*
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: shape_pt_sequence
+  - Presence: Required
+  - Type: Non-negative integer
+
+# Description
+
+Non-negative sequence number defining how points connect along the shape. Values must increase but need not be
+consecutive.
+
+Validation: Checks that the populated value is an integer greater than or equal to zero. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
 func ShapePtSequence(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

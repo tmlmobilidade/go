@@ -10,21 +10,25 @@ import (
 /*
 # Attributes
 
-- File: [pathways.txt]
-- Field: to_stop_id
-- Presence: Required
-- Type: Foreign ID referencing [stops.stop_id]
+  - File: [pathways.txt], [stops.txt]
+  - Field: to_stop_id
+  - Presence: Required
+  - Type: Foreign ID referencing stops.stop_id
 
 # Description
 
-Identifies the stop where the pathway ends.
+Location where the pathway ends. It must reference a platform, entrance/exit, generic node or boarding area.
+Stations and platforms with stop_access=1 must not be used.
 
-Must contain a stop_id that identifies a platform (location_type=0 or empty), entrance/exit (location_type=2), generic node (location_type=3) or boarding area (location_type=4).
+Validation: Checks the first matching stops.txt location. Stations are rejected; accepted location types are 0 or
+empty, 2, 3 and 4. A platform with stop_access=1 is rejected; empty access is treated as 0. Malformed location_type
+or stop_access values stop this comparison without a finding. Empty values are skipped; required-field checks
+handle absence.
 
-Values for stop_id that identify stations (location_type=1), or stops (location_type=0 or empty) with stop_access=1, are forbidden.
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
-[stops.stop_id]: https://gtfs.org/schedule/reference/#stopstxt
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 */
 func PathwaysToStopIdForeign(ctx *context.ValidationContext) error {
 	//

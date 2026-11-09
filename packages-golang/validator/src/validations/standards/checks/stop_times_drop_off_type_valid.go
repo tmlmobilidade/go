@@ -6,6 +6,34 @@ import (
 	"strconv"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: drop_off_type
+  - Presence: Conditionally Forbidden
+  - Type: Enum
+
+# Description
+
+Alighting policy: 0 or empty for regular service, 1 unavailable, 2 arrangement by phone or 3 arrangement with the
+driver.
+
+Conditionally Forbidden:
+- `drop_off_type=0` forbidden if `start_pickup_drop_off_window` or `end_pickup_drop_off_window` are defined.
+- Optional otherwise.
+
+Validation: Checks that the populated value represents an integer in 0, 1, 2, 3. Matching uses the parsed integer
+rather than its original spelling. Configured value lists are not applied. Empty values are skipped; required-field
+checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func DropOffTypeValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

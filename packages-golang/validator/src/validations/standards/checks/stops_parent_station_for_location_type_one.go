@@ -5,6 +5,32 @@ import (
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: [parent_station, location_type]
+  - Presence: Conditionally Required, Optional
+  - Type: Foreign ID referencing stops.stop_id, Enum
+
+# Description
+
+  - parent_station: Identifies the parent location. Stops, entrances and generic nodes reference a station; boarding
+    areas reference a platform. A station must not itself have a parent_station.
+  - location_type: Type of location: 0 or empty for a stop/platform, 1 station, 2 entrance/exit, 3 generic node or 4
+    boarding area.
+
+Validation: For a non-empty parent_station, requires the current row to have location_type exactly 1. This is the
+behavior of this implementation: it does not inspect the type of the referenced parent and differs from the usual
+GTFS hierarchy.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func ParentStationForLocationTypeOne(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

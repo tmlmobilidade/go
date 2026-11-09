@@ -10,6 +10,7 @@ import (
 
 /*
 # Attributes
+
   - File: [vehicles.txt]
   - Field: wheelchair_accessible
   - Presence: Required
@@ -17,16 +18,14 @@ import (
 
 # Description
 
-Accessibility status for wheelchairs of the vehicle, which follows the possible values of the wheelchair_accessible field from the trips.txt file.
-Valid values are available in the official GTFS documentation.
+Wheelchair accessibility of the vehicle, using the standard trips.wheelchair_accessible values.
 
-Valid options are:
+Validation: Checks that the populated value represents an integer in 0, 1, 2. Matching uses the parsed integer
+rather than its original spelling. Configured options can further restrict this set; all_options bypasses that
+restriction, while an empty list rejects all populated values. Empty values are skipped; required-field checks
+handle absence.
 
-  - 0 - No accessibility information for the trip.
-  - 1 - Vehicle being used on this particular trip can accommodate at least one rider in a wheelchair.
-  - 2 - No riders in wheelchairs can be accommodated on this trip.
-
-https://gtfs.org/documentation/schedule/reference/#:~:text=wheelchair_accessible
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func VehiclesWheelchairAccessibleValid(ctx *context.ValidationContext) error {
 	//

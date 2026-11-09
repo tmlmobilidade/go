@@ -13,13 +13,22 @@ import (
   - File: [agency.txt]
   - Field: agency_name
   - Presence: Required
-  - Type: String
+  - Type: Text
 
 # Description
 
-Full name of the transit agency.
+Full public name of the transit agency.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks populated values against the configured options. A missing option list or the all_options
+wildcard accepts any value; an explicitly empty list rejects every populated value. Matching preserves the original
+text. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyNameValid(ctx *context.ValidationContext) error {
 	//

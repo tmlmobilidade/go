@@ -8,6 +8,28 @@ import (
 	"strconv"
 )
 
+/*
+# Attributes
+
+  - File: [rider_categories.txt]
+  - Field: is_default_fare_category
+  - Presence: Required
+  - Type: Enum
+
+# Description
+
+Marks the default rider category with 1; 0 or empty means another category. Each fare product with multiple
+eligible categories must have exactly one eligible default category.
+
+Validation: Checks that the populated value represents an integer in 0, 1. Matching uses the parsed integer rather
+than its original spelling. Configured options can further restrict this set; all_options bypasses that
+restriction, while an empty list rejects all populated values. Empty values are skipped; required-field checks
+handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[rider_categories.txt]: https://gtfs.org/documentation/schedule/reference/#rider_categoriestxt
+*/
 func IsDefaultFareCategoryValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

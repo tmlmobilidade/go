@@ -11,13 +11,17 @@ import (
   - File: [vehicles.txt]
   - Field: vehicle_id
   - Presence: Required
-  - Type: unique ID
+  - Type: Unique ID
 
 # Description
 
-Uniquely identifies a vehicle within the operator's fleet.
-It is used to track the vehicle as it circulates throughout the transport network.
-Corresponds to the field in the GTFS-RT specification: FeedMessage › FeedEntity › VehiclePosition › Vehicle in real-time data—serving as the vehicle's internal identifier in the system.
+Unique internal fleet identifier for a vehicle, corresponding to the vehicle identifier used in GTFS Realtime.
+
+Validation: Checks that each non-empty vehicle_id occurs only once in vehicles.txt. It compares the original text
+without trimming whitespace or normalizing letter case. Empty values are skipped; required-field checks handle
+absence.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func VehicleIdUnique(ctx *context.ValidationContext) error {
 	//

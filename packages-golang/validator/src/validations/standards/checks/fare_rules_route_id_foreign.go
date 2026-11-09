@@ -9,26 +9,23 @@ import (
 /*
 # Attributes
 
-  - File: [fare_rules.txt]
+  - File: [fare_rules.txt], [routes.txt]
   - Field: route_id
   - Presence: Optional
-  - Type: Foreign ID referencing [routes.route_id]
+  - Type: Foreign ID referencing routes.route_id
 
 # Description
 
-Identifies a route associated with the fare class. If several routes with the same fare attributes exist, create a record in fare_rules.txt for each route.
+Identifies a route to which the fare applies. Use a separate record for each route sharing the same fare.
 
-# Example
+Validation: Checks that each non-empty route_id exists in routes.route_id. It compares the original text without
+trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its format.
+Empty values are skipped; required-field checks handle absence.
 
-If fare class "b" is valid on route "TSW" and "TSE", the fare_rules.txt file would contain these records for the fare class:
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-	fare_id      route_id
-	--------------------------------
-	b            TSW
-	b            TSE
-
-[fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
-[routes.route_id]: https://gtfs.org/schedule/reference/#routestxt
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 */
 func FareRulesRouteIdForeign(ctx *context.ValidationContext) error {
 	//

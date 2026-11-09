@@ -17,7 +17,13 @@ import (
 
 Identifies a fare class.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+Validation: Checks that each non-empty fare_id occurs only once in fare_attributes.txt. It compares the original
+text without trimming whitespace or normalizing letter case. Empty values are skipped; required-field checks handle
+absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func FareIdUnique(ctx *context.ValidationContext) error {
 	//

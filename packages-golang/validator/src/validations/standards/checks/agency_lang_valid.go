@@ -12,14 +12,22 @@ import (
   - File: [agency.txt]
   - Field: agency_lang
   - Presence: Optional
-  - Type: Language Code
+  - Type: Language code
 
 # Description
 
-Primary language used by this transit agency.
-Should be provided to help GTFS consumers choose capitalization rules and other language-specific settings for the dataset.
+Primary language used by the agency, allowing consumers to select appropriate language-specific presentation rules.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks membership in the supported language-code list without distinguishing letter case. Surrounding
+whitespace is not removed; regional tags are accepted only if listed. Configured value lists are not applied. Empty
+values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyLangValid(ctx *context.ValidationContext) error {
 	//

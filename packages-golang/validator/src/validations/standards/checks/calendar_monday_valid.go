@@ -9,15 +9,24 @@ import (
 # Attributes
 
   - File: [calendar.txt]
-  - Field: [monday]
+  - Field: monday
   - Presence: Required
-  - Type: Boolean
+  - Type: Enum
 
 # Description
 
-Indicates whether service is available on Monday.
+Indicates whether service operates on Mondays between start_date and end_date. Use 1 for service and 0 for no
+service; calendar_dates.txt may override individual dates.
 
-[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+Validation: Checks that the populated value exactly matches one of 0, 1. Whitespace and letter case are preserved.
+Configured value lists are not applied. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendartxt
 */
 func MondayValid(ctx *context.ValidationContext) error {
 	//

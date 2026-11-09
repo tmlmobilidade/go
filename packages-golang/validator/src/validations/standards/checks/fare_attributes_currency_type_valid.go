@@ -16,9 +16,14 @@ import (
 
 # Description
 
-Currency used to pay the fare.
+ISO 4217 currency code used for the fare price.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+Validation: Checks membership in the supported currency-code list without distinguishing letter case. Surrounding
+whitespace is not removed. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func CurrencyTypeValid(ctx *context.ValidationContext) error {
 	//

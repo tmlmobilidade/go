@@ -6,6 +6,29 @@ import (
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_url
+  - Presence: Optional
+  - Type: URL
+
+# Description
+
+Web page specific to the route, distinct from the agency's general website.
+
+Validation: Checks for an HTTP or HTTPS URL with a host, valid percent escapes and no disallowed characters after
+trimming surrounding whitespace. It does not fetch the page or apply configured value lists. Empty values are
+skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RouteUrlValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

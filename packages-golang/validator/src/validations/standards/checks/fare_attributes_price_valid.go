@@ -17,9 +17,14 @@ import (
 
 # Description
 
-Fare price, in the unit specified by currency_type.
+Non-negative fare amount expressed in the currency identified by currency_type.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+Validation: Checks that the populated value is a finite number greater than or equal to zero. Empty values are
+skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func PriceValid(ctx *context.ValidationContext) error {
 	//

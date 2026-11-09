@@ -8,6 +8,7 @@ import (
 
 /*
 # Attributes
+
   - File: [fare_attributes.txt]
   - Field: transfer_duration
   - Presence: Optional
@@ -15,9 +16,15 @@ import (
 
 # Description
 
-Length of time in seconds before a transfer expires. When transfers=0 this field may be used to indicate how long a ticket is valid for or it may be left empty.
+Number of seconds before the right to transfer expires. With transfers=0, this can instead describe ticket validity
+or be left empty.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+Validation: Checks that the populated value is an integer greater than or equal to zero. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func TransferDurationValid(ctx *context.ValidationContext) error {
 	//

@@ -8,6 +8,34 @@ import (
 	"strconv"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: stop_lon
+  - Presence: Conditionally Required
+  - Type: Longitude
+
+# Description
+
+WGS84 longitude of the location in decimal degrees. For boarding locations, use the actual boarding point on the
+sidewalk or platform rather than the vehicle's position on the road or track.
+
+Conditionally Required:
+  - Required for locations which are stops (`location_type=0`), stations (`location_type=1`) or entrances/exits
+    (`location_type=2`).
+  - Optional for locations which are generic nodes (`location_type=3`) or boarding areas (`location_type=4`).
+
+Validation: Checks that the text is numeric and within the inclusive longitude range from -180 to 180 degrees.
+Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func StopLonValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

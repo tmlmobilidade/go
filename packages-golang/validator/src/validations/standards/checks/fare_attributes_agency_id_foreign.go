@@ -9,20 +9,27 @@ import (
 /*
 # Attributes
 
-  - File: [fare_attributes.txt]
+  - File: [fare_attributes.txt], [agency.txt]
   - Field: agency_id
   - Presence: Conditionally Required
   - Type: Foreign ID referencing agency.agency_id
 
 # Description
 
-Identifies the relevant agency for a fare.
+Identifies the agency responsible for the fare.
 
 Conditionally Required:
-  - Required when the dataset contains data for multiple transit [agencies.txt].
-  - Recommended otherwise.
+- Required if multiple agencies are defined in agency.txt.
+- Recommended otherwise.
 
-[agencies.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks that each non-empty agency_id exists in agency.agency_id. It compares the original text without
+trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its format.
+Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 */
 func FareAttributesAgencyIdForeign(ctx *context.ValidationContext) error {
 	//

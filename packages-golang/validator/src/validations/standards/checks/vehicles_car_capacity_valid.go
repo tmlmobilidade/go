@@ -8,16 +8,21 @@ import (
 
 /*
 # Attributes
+
   - File: [vehicles.txt]
   - Field: car_capacity
-  - Presence: Optional
+  - Presence: Conditionally Required
   - Type: Non-negative integer
 
 # Description
 
-Number of light vehicles of normal size that the vehicle unit can transport. It is mainly intended for ferries.
-When it is equal to 0, it means that the vehicle unit does not allow the boarding of light vehicles.
-Required for operators that provide service for light vehicles.
+Number of normal-sized passenger cars the vehicle can carry, primarily for ferries. A value of 0 means cars cannot
+be carried. Required for operators providing car transport and optional otherwise.
+
+Validation: Checks that the populated value is an integer greater than or equal to zero. Empty values are skipped;
+required-field checks handle absence.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func CarCapacityValid(ctx *context.ValidationContext) error {
 	//

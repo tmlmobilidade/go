@@ -7,7 +7,27 @@ import (
 	"strconv"
 )
 
-// LevelIndexValid preserves the existing non-negative float32 index rule.
+/*
+# Attributes
+
+  - File: [levels.txt]
+  - Field: level_index
+  - Presence: Required
+  - Type: Float
+
+# Description
+
+Relative vertical position of the level. Ground level is 0, higher levels use positive values and underground
+levels use negative values.
+
+Validation: Checks for a finite number representable at the supported precision, then rejects negative values.
+Unlike the GTFS field definition for underground levels, the current validator permits only non-negative indices.
+Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[levels.txt]: https://gtfs.org/documentation/schedule/reference/#levelstxt
+*/
 func LevelIndexValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

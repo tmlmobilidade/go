@@ -11,10 +11,25 @@ import (
 )
 
 /*
-* FileMissing is the callback for a configured <table>_file_missing control gate.
-* Missing tables fail the gate even when their diagnostic severity is ignored.
-* A forbidden gate accepts absence and reports a populated table instead.
- */
+# Attributes
+
+  - File: [GTFS dataset]
+  - Field: N/A
+  - Presence: Configurable
+  - Type: File
+
+# Description
+
+Shared availability gate for the GTFS table selected by the configured rule ID ending in _file_missing.
+
+Validation: A forbidden gate accepts an absent table and reports a present table, even when empty. Other gates fail
+on an absent table, including when diagnostic severity is ignored. Conditional messages cover stops without
+locations, missing calendars, elevators without levels, and translations without feed information. An existing
+empty feed_info table also fails when translations has rows. This check reads imported tables rather than opening
+GTFS text files.
+
+[GTFS dataset]: https://gtfs.org/documentation/schedule/reference/#dataset-files
+*/
 func FileMissing(ctx *context.ValidationContext) error {
 	//
 	// 1. Resolve the configured file gate and verify its database connection.

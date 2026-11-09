@@ -9,17 +9,23 @@ import (
 /*
 # Attributes
 
-  - File: [fare_rules.txt]
+  - File: [fare_rules.txt], [fare_attributes.txt]
   - Field: fare_id
   - Presence: Required
-  - Type: Foreign ID referencing [fare_attributes.fare_id]
+  - Type: Foreign ID referencing fare_attributes.fare_id
 
 # Description
 
-Identifies a fare class.
+Identifies the fare class defined in fare_attributes.txt.
 
-[fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
-[fare_attributes.fare_id]: https://gtfs.org/schedule/reference/#fare_attributestxt
+Validation: Checks that each non-empty fare_id exists in fare_attributes.fare_id. It compares the original text
+without trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its
+format. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func FareIdForeign(ctx *context.ValidationContext) error {
 	//

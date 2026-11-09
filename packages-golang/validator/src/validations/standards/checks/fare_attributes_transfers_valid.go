@@ -8,6 +8,7 @@ import (
 
 /*
 # Attributes
+
   - File: [fare_attributes.txt]
   - Field: transfers
   - Presence: Required
@@ -15,14 +16,16 @@ import (
 
 # Description
 
-Indicates the number of transfers permitted on this fare. Valid options are:
+Number of transfers included in the fare: 0 for none, 1 for one, 2 for two or an empty value for unlimited
+transfers.
 
-  - 0 - No transfers permitted on this fare.
-  - 1 - Riders may transfer once.
-  - 2 - Riders may transfer twice.
-  - empty - Unlimited transfers are permitted.
+Validation: Checks that the populated value represents an integer in 0, 1, 2. Matching uses the parsed integer
+rather than its original spelling. Configured value lists are not applied. Empty values are skipped; required-field
+checks handle absence.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func TransfersValid(ctx *context.ValidationContext) error {
 	//

@@ -9,25 +9,23 @@ import (
 /*
 # Attributes
 
-  - File: [fare_rules.txt]
+  - File: [fare_rules.txt], [stops.txt]
   - Field: destination_id
   - Presence: Optional
-  - Type: Foreign ID referencing [stops.zone_id]
+  - Type: Foreign ID referencing stops.zone_id
 
 # Description
 
-Identifies a destination zone. If a fare class has multiple destination zones, create a record in fare_rules.txt for each destination_id.
+Identifies a destination fare zone. Use a separate record for each destination zone associated with the fare.
 
-# Example
+Validation: Checks that each non-empty destination_id exists in stops.zone_id. It compares the original text
+without trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its
+format. Empty values are skipped; required-field checks handle absence.
 
-The destination_id and destination_id fields could be used together to specify that fare class "b" is valid for travel between zones 3 and 4, and for travel between zones 3 and 5, the fare_rules.txt file would contain these records for the fare class:
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-	fare_id,...,destination_id,destination_id
-	b,...,3,4
-	b,...,3,5
-
-[fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
-[stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 */
 func DestinationIdForeign(ctx *context.ValidationContext) error {
 	//

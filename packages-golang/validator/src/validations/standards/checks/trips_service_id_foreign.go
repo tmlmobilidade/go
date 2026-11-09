@@ -7,9 +7,30 @@ import (
 )
 
 /*
-* TripsServiceIdForeign accepts a service found in either available calendar table.
-* Missing calendar sources skip the rule; empty service IDs belong to field checks.
- */
+# Attributes
+
+  - File: [trips.txt], [calendar.txt], [calendar_dates.txt]
+  - Field: service_id
+  - Presence: Required
+  - Type: Foreign ID referencing calendar.service_id or calendar_dates.service_id
+
+# Description
+
+Identifies the operating dates of the trip, as defined by calendar.txt, calendar_dates.txt or both.
+
+Validation: Checks that a populated service_id exists in calendar.txt or calendar_dates.txt. Either calendar is
+sufficient for the lookup; the rule skips when neither table is available. Empty values are skipped; required-field
+checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard trips].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
+[calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
+[GTFS Standard trips]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripsServiceIdForeign(ctx *context.ValidationContext) error {
 	ready, err := context.RequireTables(ctx, "trips")
 	if err != nil || !ready {

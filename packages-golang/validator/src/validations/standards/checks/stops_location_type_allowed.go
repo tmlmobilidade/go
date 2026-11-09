@@ -7,6 +7,29 @@ import (
 	"slices"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: location_type
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Type of location: 0 or empty for a stop/platform, 1 station, 2 entrance/exit, 3 generic node or 4 boarding area.
+
+Validation: Checks populated values against the configured options. A missing option list or the all_options
+wildcard accepts any value; an explicitly empty list rejects every populated value. Matching preserves the original
+text. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func LocationTypeAllowed(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

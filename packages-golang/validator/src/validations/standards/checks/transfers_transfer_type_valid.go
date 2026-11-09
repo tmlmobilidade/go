@@ -10,6 +10,7 @@ import (
 
 /*
 # Attributes
+
   - File: [transfers.txt]
   - Field: transfer_type
   - Presence: Required
@@ -17,16 +18,17 @@ import (
 
 # Description
 
-Indicates the type of connection for the specified (from_stop_id, to_stop_id) pair. Valid options are:
+Connection policy: 0 or empty for a recommended transfer, 1 a timed transfer, 2 a transfer requiring
+min_transfer_time, 3 no transfer, 4 an in-seat transfer or 5 an in-seat transfer that is not allowed.
 
-0 or empty - Recommended transfer point between routes.
-1 - Timed transfer point between two routes. The departing vehicle is expected to wait for the arriving one and leave sufficient time for a rider to transfer between routes.
-2 - Transfer requires a minimum amount of time between arrival and departure to ensure a connection. The time required to transfer is specified by min_transfer_time.
-3 - Transfers are not possible between routes at the location.
-4 - Passengers can transfer from one trip to another by staying onboard the same vehicle (an "in-seat transfer"). More details about this type of transfer below.
-5 - In-seat transfers are not allowed between sequential trips. The passenger must alight from the vehicle and re-board. More details about this type of transfer below.
+Validation: Checks that the populated value represents an integer in 0, 1, 2, 3, 4, 5. Matching uses the parsed
+integer rather than its original spelling. Configured options can further restrict this set; all_options bypasses
+that restriction, while an empty list rejects all populated values. Empty values are skipped; required-field checks
+handle absence.
 
-[transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
 func TransferTypeValid(ctx *context.ValidationContext) error {
 	//

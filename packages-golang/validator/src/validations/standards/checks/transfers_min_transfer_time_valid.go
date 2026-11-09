@@ -8,17 +8,27 @@ import (
 
 /*
 # Attributes
+
   - File: [transfers.txt]
   - Field: min_transfer_time
-  - Presence: Optional
+  - Presence: Conditionally Required
   - Type: Non-negative integer
 
 # Description
 
-Amount of time, in seconds, that must be available to permit a transfer between routes at the specified stops.
-The min_transfer_time should be sufficient to permit a typical rider to move between the two stops, including buffer time to allow for schedule variance on each route.
+Minimum number of seconds available for the transfer, including walking between locations and a margin for schedule
+variation.
 
-[transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
+Conditionally Required:
+- Required if `transfer_type` is `2`.
+- Optional otherwise.
+
+Validation: Checks that the populated value is an integer greater than or equal to zero. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
 func MinTransferTimeValid(ctx *context.ValidationContext) error {
 	//

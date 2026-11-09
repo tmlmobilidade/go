@@ -6,6 +6,34 @@ import (
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt], [route_networks.txt]
+  - Field: network_id
+  - Presence: Conditionally Forbidden
+  - Type: ID
+
+# Description
+
+Identifies the network containing the route. Several routes can share the same network_id.
+
+Conditionally Forbidden:
+- Forbidden if the route_networks.txt or networks.txt file exists.
+- Optional otherwise.
+
+Validation: Checks that each populated network_id exists in route_networks.network_id. The current lookup uses
+route_networks.txt rather than networks.txt, and skips the rule when that table is unavailable. Empty values are
+skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard routes].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[route_networks.txt]: https://gtfs.org/documentation/schedule/reference/#route_networkstxt
+[GTFS Standard routes]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func NetworkIdForeign(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

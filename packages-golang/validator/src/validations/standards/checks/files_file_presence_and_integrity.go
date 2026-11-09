@@ -7,9 +7,34 @@ import (
 )
 
 /*
-* FilePresenceAndIntegrity reports incompatible network files when routes use network_id.
-* Per-file forbidden settings are handled by the corresponding FileMissing gates.
- */
+# Attributes
+
+  - File: [routes.txt], [networks.txt], [route_networks.txt]
+  - Field: network_id
+  - Presence: Conditionally Forbidden
+  - Type: ID
+
+# Description
+
+Identifies the network containing the route. Several routes can share the same network_id.
+
+Conditionally Forbidden:
+- Forbidden if the route_networks.txt or networks.txt file exists.
+- Optional otherwise.
+
+Validation: When any route has a populated network_id, reports each populated networks.txt or route_networks.txt
+table once. Missing or empty network tables do not produce a finding. Per-file forbidden settings are handled by
+the file-presence gates.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard routes].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[networks.txt]: https://gtfs.org/documentation/schedule/reference/#networkstxt
+[route_networks.txt]: https://gtfs.org/documentation/schedule/reference/#route_networkstxt
+[GTFS Standard routes]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func FilePresenceAndIntegrity(ctx *context.ValidationContext) error {
 	reported := map[string]bool{}
 	return context.ForEachRow(ctx, "routes", []string{"network_id"}, func(row *context.ValidationContext) error {

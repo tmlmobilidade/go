@@ -6,6 +6,26 @@ import (
 	"slices"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: public_visible
+  - Presence: Configurable
+  - Type: Enum
+
+# Description
+
+TML extension controlling public visibility of the stop.
+
+This field is not defined by GTFS Standard and has no published presence requirement. Its presence is controlled by
+the validation rule configuration.
+
+Validation: Checks that the populated value exactly matches one of 0, 1. Whitespace and letter case are preserved.
+Configured value lists are not applied. Empty values are skipped; required-field checks handle absence.
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+*/
 func PublicVisibleValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

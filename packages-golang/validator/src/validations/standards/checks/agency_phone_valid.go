@@ -12,16 +12,24 @@ import (
   - File: [agency.txt]
   - Field: agency_phone
   - Presence: Optional
-  - Type: Phone Number
+  - Type: Phone number
 
 # Description
 
-A voice telephone number for the specified agency.
-This field is a string value that presents the telephone number as typical for the agency's service area.
-It may contain punctuation marks to group the digits of the number.
-Dialable text (for example, TriMet's "503-238-RIDE") is permitted, but the field must not contain any other descriptive text.
+Customer service telephone number presented in the agency's usual local format. Dialable letters are allowed, but
+unrelated descriptive text should not be included.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks for at least seven digits and the characters accepted by the phone validator after trimming
+surrounding whitespace. The current character set also allows ASCII letters, hyphens, plus signs, colons and dollar
+signs, but not parentheses. It does not verify that the number can be called. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyPhoneValid(ctx *context.ValidationContext) error {
 	//

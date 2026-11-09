@@ -6,6 +6,30 @@ import (
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt], [booking_rules.txt]
+  - Field: drop_off_booking_rule_id
+  - Presence: Optional
+  - Type: Foreign ID referencing booking_rules.booking_rule_id
+
+# Description
+
+Identifies the booking rule for alighting at this stop time. Recommended when drop_off_type=2.
+
+Validation: Checks that each non-empty drop_off_booking_rule_id exists in booking_rules.booking_rule_id. It
+compares the original text without trimming whitespace or normalizing letter case. The presence of the referenced
+value is separate from its format. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard stop_times].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[booking_rules.txt]: https://gtfs.org/documentation/schedule/reference/#booking_rulestxt
+[GTFS Standard stop_times]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func DropOffBookingRuleIdForeign(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

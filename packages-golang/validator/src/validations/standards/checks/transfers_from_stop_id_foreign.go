@@ -9,21 +9,27 @@ import (
 
 /*
 # Attributes
-  - File: [transfers.txt]
-  - Field: from_stop_id
-  - Presence: Conditionally Required
-  - Type: Foreign ID referencing stops.stop_id
+
+  - File: [transfers.txt], [stops.txt]
+  - Field: [from_stop_id, transfer_type]
+  - Presence: Conditionally Required, Required
+  - Type: Foreign ID referencing stops.stop_id, Enum
 
 # Description
 
-Identifies a stop (location_type=0) or a station (location_type=1) where a connection between routes begins.
-If this field refers to a station, the transfer rule applies to all its child stops. It must refer to a stop (location_type=0) if transfer_type is 4 or 5.
+  - from_stop_id: Identifies the origin stop or station for the connection. A station reference covers its child
+    stops. Transfer types 4 and 5 must reference a stop rather than a station.
+  - transfer_type: Connection policy: 0 or empty for a recommended transfer, 1 a timed transfer, 2 a transfer
+    requiring min_transfer_time, 3 no transfer, 4 an in-seat transfer or 5 an in-seat transfer that is not allowed.
 
-Conditionally Required:
-- Required if transfer_type is 1, 2, or 3.
-- Optional if transfer_type is 4 or 5.
+Validation: Checks the first matching stops.txt location. The location must be a stop/platform or station, with an
+empty location_type treated as 0. Transfer types 4 and 5 require a stop/platform rather than a station. An
+unreadable location type skips these conditions. Empty values are skipped; required-field checks handle absence.
 
-[transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 */
 func TransfersFromStopIdForeign(ctx *context.ValidationContext) error {
 	//

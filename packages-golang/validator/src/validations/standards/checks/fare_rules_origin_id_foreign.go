@@ -9,25 +9,23 @@ import (
 /*
 # Attributes
 
-  - File: [fare_rules.txt]
+  - File: [fare_rules.txt], [stops.txt]
   - Field: origin_id
   - Presence: Optional
-  - Type: Foreign ID referencing [stops.zone_id]
+  - Type: Foreign ID referencing stops.zone_id
 
 # Description
 
-Identifies an origin zone. If a fare class has multiple origin zones, create a record in fare_rules.txt for each origin_id.
+Identifies an origin fare zone. Use a separate record for each origin zone associated with the fare.
 
-# Example
+Validation: Checks that each non-empty origin_id exists in stops.zone_id. It compares the original text without
+trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its format.
+Empty values are skipped; required-field checks handle absence.
 
-If fare class "b" is valid for all travel originating from either zone "2" or zone "8", the fare_rules.txt file would contain these records for the fare class:
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-	fare_id,...,origin_id
-	b,...,2
-	b,...,8
-
-[fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
-[stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 */
 func OriginIdForeign(ctx *context.ValidationContext) error {
 	//

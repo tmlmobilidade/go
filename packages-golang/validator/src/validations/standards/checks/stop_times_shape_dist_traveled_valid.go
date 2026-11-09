@@ -7,6 +7,29 @@ import (
 	"strconv"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: shape_dist_traveled
+  - Presence: Optional
+  - Type: Non-negative float
+
+# Description
+
+Distance along the associated shape to this stop. It must increase with stop_sequence and use the same units as
+shapes.shape_dist_traveled, including for loops or repeated alignment segments.
+
+Validation: Checks that the populated value is a finite number greater than or equal to zero. Empty values are
+skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func StopTimesShapeDistTraveledValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

@@ -6,6 +6,28 @@ import (
 	"slices"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: wheelchair_accessible
+  - Presence: Optional
+  - Type: Enum
+
+# Description
+
+Wheelchair accessibility of the trip: 0 or empty for no information, 1 accessible or 2 not accessible.
+
+Validation: Checks that the populated value exactly matches one of 0, 1, 2. Whitespace and letter case are
+preserved. Configured value lists are not applied. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripsWheelchairAccessibleValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

@@ -9,16 +9,23 @@ import (
 /*
 # Attributes
 
-- File: [pathways.txt]
-- Field: traversal_time
-- Presence: optional
-- Type: Positive integer
+  - File: [pathways.txt]
+  - Field: traversal_time
+  - Presence: Optional
+  - Type: Positive integer
 
 # Description
 
-Time in seconds required to traverse the pathway from the origin location (defined in from_stop_id) to the destination location (defined in to_stop_id).
+Average positive number of seconds needed to travel from from_stop_id to to_stop_id. Recommended for moving
+sidewalks, escalators and elevators, identified by pathway_mode values 3, 4 and 5.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+Validation: Checks that the populated value is an integer greater than or equal to zero. The current validator
+accepts zero even though the standard field type is positive. Empty values are skipped; required-field checks
+handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func TraversalTimeValid(ctx *context.ValidationContext) error {
 	//

@@ -10,22 +10,32 @@ import (
 # Attributes
 
   - File: [stop_times.txt]
-  - Field: start_pickup_drop_off_window
+  - Field: [start_pickup_drop_off_window, arrival_time, departure_time]
   - Presence: Conditionally Required
   - Type: Time
 
 # Description
 
-Time that on-demand service becomes available in a GeoJSON location, location group, or stop.
+  - start_pickup_drop_off_window: Start of the interval during which on-demand boarding or alighting is available at
+    the stop, location group or GeoJSON location.
+  - arrival_time: Arrival time at the stop for this trip, using agency.agency_timezone rather than
+    stops.stop_timezone. Use values beyond 24:00:00 after midnight within the same service day. Arrival and departure
+    are equal when there is no separate dwell time.
+  - departure_time: Departure time from the stop for this trip, using agency.agency_timezone rather than
+    stops.stop_timezone. Use values beyond 24:00:00 after midnight within the same service day. Arrival and departure
+    are equal when there is no separate dwell time.
 
-Conditionally Required:
+Validation: For a populated start_pickup_drop_off_window, first rejects a populated arrival_time or departure_time.
+It then checks for eight characters and three integer components separated by colons, without bounding minutes or
+seconds. Empty windows are skipped, and the two window boundaries are not compared. Empty values are skipped;
+required-field checks handle absence.
 
-  - Required if stop_times.location_group_id or stop_times.location_id is defined.
-  - Required if end_pickup_drop_off_window is defined.
-  - Forbidden if arrival_time or departure_time is defined.
-  - Optional otherwise.
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-[stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
+Field definitions: [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
 func StartPickupDropOffWindowValid(ctx *context.ValidationContext) error {
 	//

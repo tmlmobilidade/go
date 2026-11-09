@@ -9,17 +9,23 @@ import (
 /*
 # Attributes
 
-  - File: frequencies.txt
+  - File: [frequencies.txt], [trips.txt]
   - Field: trip_id
   - Presence: Required
-  - Type: Foreign Key referencing trips.trip_id
+  - Type: Foreign ID referencing trips.trip_id
 
 # Description
 
-Identifies a trip to which the specified headway of service applies.
+Identifies the trip used as the template for this headway interval.
 
-[frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
-[trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
+Validation: Checks that each non-empty trip_id exists in trips.trip_id. It compares the original text without
+trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its format.
+Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func FrequenciesTripIdForeign(ctx *context.ValidationContext) error {
 	//

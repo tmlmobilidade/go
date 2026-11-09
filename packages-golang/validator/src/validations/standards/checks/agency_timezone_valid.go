@@ -11,15 +11,22 @@ import (
 
   - File: [agency.txt]
   - Field: agency_timezone
-  - Presence: optional
+  - Presence: Required
   - Type: Timezone
 
 # Description
 
-Timezone where the transit agency is located.
-If multiple agencies are specified in the dataset, each must have the same 'agency_timezone'.
+Timezone used by the agency. All agencies in the same dataset must use the same agency_timezone.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks whether the timezone can be loaded by the runtime. It neither trims surrounding whitespace nor
+compares the timezone with other rows. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyTimezoneValid(ctx *context.ValidationContext) error {
 	//

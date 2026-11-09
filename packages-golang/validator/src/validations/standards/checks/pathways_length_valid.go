@@ -10,18 +10,22 @@ import (
 /*
 # Attributes
 
-- File: [pathways.txt]
-- Field: length
-- Presence: optional
-- Type: non-negative float
+  - File: [pathways.txt]
+  - Field: length
+  - Presence: Optional
+  - Type: Non-negative float
 
 # Description
 
-Horizontal length in meters of the pathway from the origin location (defined in from_stop_id) to the destination location (defined in to_stop_id).
+Horizontal pathway length in meters between from_stop_id and to_stop_id. Recommended for walkways, fare gates and
+exit gates, identified by pathway_mode values 1, 6 and 7.
 
-This field is recommended for walkways (pathway_mode=1), fare gates (pathway_mode=6) and exit gates (pathway_mode=7).
+Validation: Checks that the populated value is a finite number greater than or equal to zero. Empty values are
+skipped; required-field checks handle absence.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func LengthValid(ctx *context.ValidationContext) error {
 	//

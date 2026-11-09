@@ -5,6 +5,26 @@ import (
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [rider_categories.txt]
+  - Field: rider_category_id
+  - Presence: Required
+  - Type: Unique ID
+
+# Description
+
+Identifies a rider category.
+
+Validation: Checks that each non-empty rider_category_id occurs only once in rider_categories.txt. It compares the
+original text without trimming whitespace or normalizing letter case. Empty values are skipped; required-field
+checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[rider_categories.txt]: https://gtfs.org/documentation/schedule/reference/#rider_categoriestxt
+*/
 func RiderCategoryIdUnique(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

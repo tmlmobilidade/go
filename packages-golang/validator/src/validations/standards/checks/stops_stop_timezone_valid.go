@@ -6,6 +6,29 @@ import (
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: stop_timezone
+  - Presence: Optional
+  - Type: Timezone
+
+# Description
+
+Timezone of the location. Child locations inherit their parent's timezone; stations and parentless stops without a
+value inherit agency.agency_timezone. Stop-time values always use the agency timezone.
+
+Validation: Checks whether the timezone can be loaded by the runtime. It neither trims surrounding whitespace nor
+compares the timezone with other rows. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
+*/
 func StopTimezoneValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

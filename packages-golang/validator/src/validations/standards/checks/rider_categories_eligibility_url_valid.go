@@ -6,6 +6,26 @@ import (
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [rider_categories.txt]
+  - Field: eligibility_url
+  - Presence: Optional
+  - Type: URL
+
+# Description
+
+Web page explaining the rider category and the conditions a passenger must meet to qualify for it.
+
+Validation: Checks for an HTTP or HTTPS URL with a host, valid percent escapes and no disallowed characters after
+trimming surrounding whitespace. It does not fetch the page or apply configured value lists. Empty values are
+skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[rider_categories.txt]: https://gtfs.org/documentation/schedule/reference/#rider_categoriestxt
+*/
 func EligibilityUrlValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

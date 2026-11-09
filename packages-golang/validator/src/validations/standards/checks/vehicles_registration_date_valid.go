@@ -8,6 +8,7 @@ import (
 
 /*
 # Attributes
+
   - File: [vehicles.txt]
   - Field: registration_date
   - Presence: Required
@@ -15,8 +16,13 @@ import (
 
 # Description
 
-Date the vehicle was first registered, in any location.
-It is often used to determine the vehicle's age. In the numeric format yyyymmdd.
+Date when the vehicle was first registered, in any country, written as YYYYMMDD. Used to determine the vehicle's
+age.
+
+Validation: Checks for eight characters representing an existing calendar date in YYYYMMDD format. Surrounding
+whitespace is not removed. Empty values are skipped; required-field checks handle absence.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func RegistrationDateValid(ctx *context.ValidationContext) error {
 	//

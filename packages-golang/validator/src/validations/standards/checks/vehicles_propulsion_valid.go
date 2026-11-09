@@ -10,6 +10,7 @@ import (
 
 /*
 # Attributes
+
   - File: [vehicles.txt]
   - Field: propulsion
   - Presence: Required
@@ -17,27 +18,15 @@ import (
 
 # Description
 
-The propulsion of the vehicle.
+Principal propulsion technology or energy source. For vehicles using several sources, choose the value best
+representing the main propulsion technology.
 
-Valid options are:
+Validation: Checks that the populated value represents an integer in 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 101, 102,
+103, 104, 105, 106. Matching uses the parsed integer rather than its original spelling. Configured options can
+further restrict this set; all_options bypasses that restriction, while an empty list rejects all populated values.
+Empty values are skipped; required-field checks handle absence.
 
-  - 0 - Not applicable
-  - 1 - Gasoline
-  - 2 - Diesel
-  - 3 - Auto LPG
-  - 4 - Mixture
-  - 5 - Electricity
-  - 6 - Battery electric
-  - 7 - Hybrid
-  - 8 - Hydrogen
-  - 9 - Biofuel
-  - 10 - Biofuel / Biodiesel
-  - 101 - Natural Gas
-  - 102 - Natural Gas - CNG
-  - 103 - Natural Gas - LNG
-  - 104 - Aviation Fuel
-  - 105 - Marine Fuel
-  - 106 - Other
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func PropulsionValid(ctx *context.ValidationContext) error {
 	//

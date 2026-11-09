@@ -10,21 +10,32 @@ import (
 # Attributes
 
   - File: [stop_times.txt]
-  - Field: end_pickup_drop_off_window
+  - Field: [end_pickup_drop_off_window, arrival_time, departure_time]
   - Presence: Conditionally Required
   - Type: Time
 
 # Description
 
-Time that on-demand service ends in a GeoJSON location, location group, or stop.
+  - end_pickup_drop_off_window: End of the interval during which on-demand boarding or alighting is available at the
+    stop, location group or GeoJSON location.
+  - arrival_time: Arrival time at the stop for this trip, using agency.agency_timezone rather than
+    stops.stop_timezone. Use values beyond 24:00:00 after midnight within the same service day. Arrival and departure
+    are equal when there is no separate dwell time.
+  - departure_time: Departure time from the stop for this trip, using agency.agency_timezone rather than
+    stops.stop_timezone. Use values beyond 24:00:00 after midnight within the same service day. Arrival and departure
+    are equal when there is no separate dwell time.
 
-Conditionally Required:
-  - Required if stop_times.location_group_id or stop_times.location_id is defined.
-  - Required if start_pickup_drop_off_window is defined.
-  - Forbidden if arrival_time or departure_time is defined.
-  - Optional otherwise.
+Validation: For a populated end_pickup_drop_off_window, first rejects a populated arrival_time or departure_time.
+It then checks for eight characters and three integer components separated by colons, without bounding minutes or
+seconds. Empty windows are skipped, and the two window boundaries are not compared. Empty values are skipped;
+required-field checks handle absence.
 
-[stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
 func EndPickupDropOffWindowValid(ctx *context.ValidationContext) error {
 	//

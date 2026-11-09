@@ -7,6 +7,28 @@ import (
 	"strconv"
 )
 
+/*
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: shape_pt_lon
+  - Presence: Required
+  - Type: Longitude
+
+# Description
+
+WGS84 longitude in decimal degrees of this point on the shape.
+
+Validation: Checks that the text is numeric and within the inclusive longitude range from -180 to 180 degrees.
+Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
 func ShapePtLonValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

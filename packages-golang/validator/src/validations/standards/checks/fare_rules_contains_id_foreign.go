@@ -9,28 +9,24 @@ import (
 /*
 # Attributes
 
-  - File: [fare_rules.txt]
+  - File: [fare_rules.txt], [stops.txt]
   - Field: contains_id
   - Presence: Optional
-  - Type: Foreign ID referencing [stops.zone_id]
+  - Type: Foreign ID referencing stops.zone_id
 
 # Description
 
-Identifies the zones that a rider will enter while using a given fare class. Used in some systems to calculate correct fare class.
+Identifies a zone that an itinerary must enter for this fare to apply. When several zones are listed for the fare,
+the itinerary must match every listed zone.
 
-# Example
+Validation: Checks that each non-empty contains_id exists in stops.zone_id. It compares the original text without
+trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its format.
+Empty values are skipped; required-field checks handle absence.
 
-If fare class "c" is associated with all travel on the GRT route that passes through zones 5, 6, and 7 the fare_rules.txt would contain these records:
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-	fare_id,route_id,...,contains_id
-	c,GRT,...,5
-	c,GRT,...,6
-	c,GRT,...,7
-
-Because all contains_id zones must be matched for the fare to apply, an itinerary that passes through zones 5 and 6 but not zone 7 would not have fare class "c". For more detail, see https://code.google.com/p/googletransitdatafeed/wiki/FareExamples in the GoogleTransitDataFeed project wiki.
-
-[fare_rules.txt]: https://gtfs.org/schedule/reference/#fare_rulestxt
-[stops.zone_id]: https://gtfs.org/schedule/reference/#stopstxt
+[fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 */
 func ContainsIdForeign(ctx *context.ValidationContext) error {
 	//

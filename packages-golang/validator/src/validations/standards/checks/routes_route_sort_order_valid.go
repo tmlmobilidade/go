@@ -6,6 +6,28 @@ import (
 	"strconv"
 )
 
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_sort_order
+  - Presence: Optional
+  - Type: Non-negative integer
+
+# Description
+
+Presentation order for routes. Routes with smaller non-negative values should be displayed first.
+
+Validation: Checks that the populated value is an integer greater than or equal to zero. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
 func RouteSortOrderValid(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

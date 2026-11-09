@@ -16,10 +16,19 @@ import (
 
 # Description
 
-Email address actively monitored by the agency's customer service department.
-This email address should be a direct contact point where transit riders can reach a customer service representative at the agency.
+Email address actively monitored by the agency's customer service department. This address provides a direct way
+for riders to contact customer service.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks the address syntax after trimming surrounding whitespace. Display-name addresses can be
+accepted. It does not verify that the mailbox exists or apply configured value lists. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyEmailValid(ctx *context.ValidationContext) error {
 	//

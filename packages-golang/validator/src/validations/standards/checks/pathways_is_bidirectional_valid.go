@@ -11,23 +11,26 @@ import (
 /*
 # Attributes
 
-- File: [pathways.txt]
-- Field: is_bidirectional
-- Presence: Required
-- Type: Enum
+  - File: [pathways.txt]
+  - Field: [is_bidirectional, pathway_mode]
+  - Presence: Required
+  - Type: Enum
 
 # Description
 
-Indicates whether the pathway is bidirectional.
+  - is_bidirectional: Specifies a one-way pathway from from_stop_id to to_stop_id with 0, or a pathway usable in both
+    directions with 1. Exit gates with pathway_mode=7 must be one-way.
+  - pathway_mode: Type of connection: 1 walkway, 2 stairs, 3 moving sidewalk, 4 escalator, 5 elevator, 6 fare gate or
+    7 exit gate.
 
-Valid options are:
+Validation: Checks that is_bidirectional represents the integer 0 or 1, then applies configured options. A
+pathway_mode of 7 rejects bidirectionality. The all_options wildcard returns before that exit-gate condition is
+evaluated; an empty option list rejects every populated value. Empty values are skipped; required-field checks
+handle absence.
 
-	0 - Unidirectional pathway that can only be used from from_stop_id to to_stop_id.
-	1 - Bidirectional pathway that can be used in both directions.
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-Exit gates (pathway_mode=7) must not be bidirectional.
-
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func IsBidirectionalValid(ctx *context.ValidationContext) error {
 	//

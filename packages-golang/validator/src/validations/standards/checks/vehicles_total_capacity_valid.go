@@ -8,6 +8,7 @@ import (
 
 /*
 # Attributes
+
   - File: [vehicles.txt]
   - Field: total_capacity
   - Presence: Required
@@ -15,7 +16,13 @@ import (
 
 # Description
 
-Total capacity of passengers. When it is equal to 0, it means that the vehicle unit does not allow the boarding of passengers.
+Total passenger capacity of the vehicle. A value of 0 means passengers cannot be carried. This legacy TML field is
+retained by the validator; the current fleet reference documents seating_capacity and standing_capacity separately.
+
+Validation: Checks that the populated value is an integer greater than or equal to zero. Empty values are skipped;
+required-field checks handle absence.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func TotalCapacityValid(ctx *context.ValidationContext) error {
 	//

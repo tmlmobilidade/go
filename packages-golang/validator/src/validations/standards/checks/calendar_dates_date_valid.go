@@ -8,6 +8,7 @@ import (
 
 /*
 # Attributes
+
   - File: [calendar_dates.txt]
   - Field: date
   - Presence: Required
@@ -15,7 +16,17 @@ import (
 
 # Description
 
-Date when service exception occurs.
+Service date on which the exception applies, written as YYYYMMDD.
+
+Validation: Checks for eight characters representing an existing calendar date in YYYYMMDD format. Surrounding
+whitespace is not removed. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendar_datestxt
 */
 func CalendarDatesDateValid(ctx *context.ValidationContext) error {
 	//

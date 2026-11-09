@@ -9,15 +9,24 @@ import (
 # Attributes
 
   - File: [calendar.txt]
-  - Field: [service_id]
+  - Field: service_id
   - Presence: Required
   - Type: Unique ID
 
 # Description
 
-Identifies a set of dates when service is available for one or more routes.
+Identifies a set of dates on which one or more routes operate.
 
-[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+Validation: Checks that each non-empty service_id occurs only once in calendar.txt. It compares the original text
+without trimming whitespace or normalizing letter case. Empty values are skipped; required-field checks handle
+absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendartxt
 */
 func ServiceIdUnique(ctx *context.ValidationContext) error {
 	//

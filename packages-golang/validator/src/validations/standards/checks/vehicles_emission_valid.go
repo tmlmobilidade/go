@@ -9,6 +9,7 @@ import (
 
 /*
 # Attributes
+
   - File: [vehicles.txt]
   - Field: emission
   - Presence: Required
@@ -16,18 +17,15 @@ import (
 
 # Description
 
-The emission of the vehicle.
+Emissions class applicable in the vehicle's operating territory. Accepted classes are Euro I through Euro VII, or
+N/A when not applicable, such as for electric vehicles.
 
-Valid options are:
+Validation: Checks that the populated value exactly matches one of Euro I, Euro II, Euro III, Euro IV, Euro V, Euro
+VI, Euro VII, N/A. Whitespace and letter case are preserved. Configured options can further restrict this set;
+all_options bypasses that restriction, while an empty list rejects all populated values. Empty values are skipped;
+required-field checks handle absence.
 
-  - Euro I
-  - Euro II
-  - Euro III
-  - Euro IV
-  - Euro V
-  - Euro VI
-  - Euro VII
-  - N/A - Not applicable
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func EmissionValid(ctx *context.ValidationContext) error {
 	//

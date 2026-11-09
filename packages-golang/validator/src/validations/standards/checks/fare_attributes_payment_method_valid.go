@@ -16,14 +16,15 @@ import (
 
 # Description
 
-Indicates when the fare must be paid.
+Specifies when payment is required: 0 for payment on board or 1 for payment before boarding.
 
-Valid options are:
+Validation: Checks that the populated value represents an integer in 0, 1. Matching uses the parsed integer rather
+than its original spelling. Configured value lists are not applied. Empty values are skipped; required-field checks
+handle absence.
 
-  - 0 - Fare is paid on board.
-  - 1 - Fare must be paid before boarding.
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-[fare_attributes.txt]: https://gtfs.org/schedule/reference/#fare_attributestxt
+[fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
 func PaymentMethodValid(ctx *context.ValidationContext) error {
 	//

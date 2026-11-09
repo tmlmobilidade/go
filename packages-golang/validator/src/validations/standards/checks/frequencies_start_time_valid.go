@@ -9,16 +9,22 @@ import (
 /*
 # Attributes
 
-  - File: frequencies.txt
+  - File: [frequencies.txt]
   - Field: start_time
   - Presence: Required
   - Type: Time
 
 # Description
 
-Time at which the first vehicle departs from the first stop of the trip with the specified headway.
+Departure time of the first vehicle from the trip's first stop for this headway interval.
 
-[frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
+Validation: Checks for eight characters and three integer components separated by colons. This format check does
+not bound minutes or seconds and therefore accepts values such as 99:99:99. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
 */
 func StartTimeValid(ctx *context.ValidationContext) error {
 	//

@@ -8,6 +8,7 @@ import (
 
 /*
 # Attributes
+
   - File: [vehicles.txt]
   - Field: bicycles_capacity
   - Presence: Required
@@ -15,7 +16,12 @@ import (
 
 # Description
 
-Number of available spaces for non-folding bicycles. When it is equal to 0, it means that the vehicle unit does not allow the boarding of non-folding bicycles.
+Number of spaces for non-folding bicycles. A value of 0 means that non-folding bicycles cannot be carried.
+
+Validation: Checks that the populated value is an integer greater than or equal to zero. Empty values are skipped;
+required-field checks handle absence.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
 func BicyclesCapacityValid(ctx *context.ValidationContext) error {
 	//

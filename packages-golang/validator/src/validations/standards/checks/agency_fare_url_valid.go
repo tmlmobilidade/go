@@ -16,9 +16,18 @@ import (
 
 # Description
 
-URL of a web page where a rider can purchase tickets or other fare instruments for that agency, or a web page containing information about that agency's fares.
+Web page where riders can purchase the agency's tickets or find information about its fares.
 
-[agency.txt]: https://gtfs.org/schedule/reference/#agencytxt
+Validation: Checks for an HTTP or HTTPS URL with a host, valid percent escapes and no disallowed characters after
+trimming surrounding whitespace. It does not fetch the page or apply configured value lists. Empty values are
+skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyFareUrlValid(ctx *context.ValidationContext) error {
 	//

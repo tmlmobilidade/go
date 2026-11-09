@@ -10,29 +10,30 @@ import (
 # Attributes
 
   - File: [stop_times.txt]
-  - Field: continuous_drop_off
-  - Presence: Conditionally Forbidden
-  - Type: Enum
+  - Field: [continuous_drop_off, start_pickup_drop_off_window, end_pickup_drop_off_window]
+  - Presence: Conditionally Forbidden, Conditionally Required, Conditionally Required
+  - Type: Enum, Time, Time
 
 # Description
 
-Indicates that the rider can alight from the transit vehicle at any point along the vehicle's travel path as described by shapes.txt, from this stop_time to the next stop_time in the trip's stop_sequence.
+  - continuous_drop_off: Continuous alighting policy between this stop and the next: 0 allowed, 1 or empty
+    unavailable, 2 arrangement by phone or 3 arrangement with the driver. A populated value overrides the route
+    policy; an empty value inherits it.
+  - start_pickup_drop_off_window: Start of the interval during which on-demand boarding or alighting is available at
+    the stop, location group or GeoJSON location.
+  - end_pickup_drop_off_window: End of the interval during which on-demand boarding or alighting is available at the
+    stop, location group or GeoJSON location.
 
-Valid options are:
+Validation: Checks that continuous_drop_off represents an integer from 0 to 3. If either pickup/drop-off window is
+populated on this row, only 1 or an empty value is accepted. Configured value lists are not applied. Empty values
+are skipped; required-field checks handle absence.
 
-  - 0 - Continuous stopping drop off.
-  - 1 or empty - No continuous stopping drop off.
-  - 2 - Must phone agency to arrange continuous stopping drop off.
-  - 3 - Must coordinate with driver to arrange continuous stopping drop off.
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-If this field is populated, it overrides any continuous drop-off behavior defined in routes.txt. If this field is empty, the stop_time inherits any continuous drop-off behavior defined in routes.txt.
+Field definitions: [GTFS Standard].
 
-Conditionally Forbidden:
-
-  - Any value other than 1 or empty is Forbidden if start_pickup_drop_off_window or end_pickup_drop_off_window are defined.
-  - Optional otherwise.
-
-[stop_times.txt]: https://gtfs.org/schedule/reference/#stoptimetxt
+[stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
 func StopTimesContinuousDropOffValid(ctx *context.ValidationContext) error {
 	//

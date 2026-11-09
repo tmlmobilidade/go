@@ -8,24 +8,28 @@ import (
 
 /*
 # Attributes
-  - File: [transfers.txt]
-  - Field: to_trip_id
-  - Presence: Conditionally Required
-  - Type: Foreign ID referencing trips.trip_id
+
+  - File: [transfers.txt], [trips.txt]
+  - Field: [to_trip_id, to_route_id]
+  - Presence: Conditionally Required, Optional
+  - Type: Foreign ID referencing trips.trip_id, Foreign ID referencing routes.route_id
 
 # Description
 
-Identifies a trip where a connection between routes begins.
+  - to_trip_id: Identifies the departing trip to which the transfer applies. When to_route_id is also supplied, the
+    trip must belong to that route and takes precedence over it.
+  - to_route_id: Identifies the departing route to which the transfer applies. When to_trip_id is also supplied, that
+    trip must belong to this route and takes precedence.
 
-If to_trip_id is defined, the transfer will apply to the arriving trip for the given to_stop_id.
+Validation: Checks that to_trip_id exists in trips.trip_id. When both the corresponding route and trip are
+populated and the trip exists, it checks the first matching trip for a non-empty route_id that differs from the
+transfer route. Missing trips or empty trip route values do not produce a route-mismatch finding. Empty values are
+skipped; required-field checks handle absence.
 
-If both to_trip_id and to_route_id are defined, the trip_id must belong to the route_id, and to_trip_id will take precedence.
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-Conditionally Required:
-- Required if transfer_type is 4 or 5.
-- Optional otherwise.
-
-[transfers.txt]: https://gtfs.org/schedule/reference/#transfertstxt
+[transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
 func ToTripIdForeign(ctx *context.ValidationContext) error {
 	//

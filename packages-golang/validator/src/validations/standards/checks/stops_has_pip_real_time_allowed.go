@@ -7,6 +7,27 @@ import (
 	"slices"
 )
 
+/*
+# Attributes
+
+  - File: [stops.txt]
+  - Field: has_pip_real_time
+  - Presence: Configurable
+  - Type: Enum
+
+# Description
+
+TML extension recording the presence or status of real-time passenger information display at the stop.
+
+This field is not defined by GTFS Standard and has no published presence requirement. Its presence is controlled by
+the validation rule configuration.
+
+Validation: Checks populated values against the configured options. A missing option list or the all_options
+wildcard accepts any value; an explicitly empty list rejects every populated value. Matching preserves the original
+text. Empty values are skipped; required-field checks handle absence.
+
+[stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
+*/
 func HasPipRealTimeAllowed(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

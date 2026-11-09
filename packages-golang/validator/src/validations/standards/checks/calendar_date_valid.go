@@ -15,11 +15,18 @@ import (
 
 # Description
 
-Start service day for the service interval.
+- start_date: First service date included in the calendar's date range, written as YYYYMMDD.
+- end_date: Last service date included in the calendar's date range, written as YYYYMMDD.
 
-End service day for the service interval. This service day is included in the interval.
+Validation: Compares the two populated date strings and reports start_date greater than or equal to end_date. Equal
+dates are rejected by this implementation. Date existence and format are checked separately.
 
-[calendar.txt]: https://gtfs.org/schedule/reference/#calendartxt
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendartxt
 */
 func CalendarDateValid(ctx *context.ValidationContext) error {
 	//

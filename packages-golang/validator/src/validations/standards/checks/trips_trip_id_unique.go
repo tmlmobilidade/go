@@ -5,6 +5,28 @@ import (
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: trip_id
+  - Presence: Required
+  - Type: Unique ID
+
+# Description
+
+Unique identifier for a trip.
+
+Validation: Checks that each non-empty trip_id occurs only once in trips.txt. It compares the original text without
+trimming whitespace or normalizing letter case. Empty values are skipped; required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+Field definitions: [GTFS Standard].
+
+[trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
+*/
 func TripIdUnique(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

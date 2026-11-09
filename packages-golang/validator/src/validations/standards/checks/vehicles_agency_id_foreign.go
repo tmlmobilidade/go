@@ -6,6 +6,25 @@ import (
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
+/*
+# Attributes
+
+  - File: [vehicles.txt], [agency.txt]
+  - Field: agency_id
+  - Presence: Optional
+  - Type: Foreign ID referencing agency.agency_id
+
+# Description
+
+Identifies the agency responsible for the vehicle.
+
+Validation: Checks that each non-empty agency_id exists in agency.agency_id. It compares the original text without
+trimming whitespace or normalizing letter case. The presence of the referenced value is separate from its format.
+Empty values are skipped; required-field checks handle absence.
+
+[vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+*/
 func VehiclesAgencyIdForeign(ctx *context.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.

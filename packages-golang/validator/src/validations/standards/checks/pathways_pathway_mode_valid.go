@@ -11,26 +11,23 @@ import (
 /*
 # Attributes
 
-- File: [pathways.txt]
-- Field: pathway_mode
-- Presence: Required
-- Type: Enum
+  - File: [pathways.txt]
+  - Field: pathway_mode
+  - Presence: Required
+  - Type: Enum
 
 # Description
 
-Indicates the mode of transportation used in the pathway.
+Type of connection: 1 walkway, 2 stairs, 3 moving sidewalk, 4 escalator, 5 elevator, 6 fare gate or 7 exit gate.
 
-Valid options are:
+Validation: Checks that the populated value represents an integer in 1, 2, 3, 4, 5, 6, 7. Matching uses the parsed
+integer rather than its original spelling. Configured options can further restrict this set; all_options bypasses
+that restriction, while an empty list rejects all populated values. Empty values are skipped; required-field checks
+handle absence.
 
-  - 1: Walkway
-  - 2: Stairs
-  - 3: Moving sidewalk travelator
-  - 4: Escalator
-  - 5: Elevator
-  - 6: Fare payment gate
-  - 7: Exit gate
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func PathwayModeValid(ctx *context.ValidationContext) error {
 	//

@@ -11,21 +11,24 @@ import (
 /*
 # Attributes
 
-  - File: frequencies.txt
+  - File: [frequencies.txt]
   - Field: exact_times
-  - Presence: optional
-  - Type: enum
+  - Presence: Optional
+  - Type: Enum
 
 # Description
 
-Indicates whether the headway between vehicles is exactly regular (i.e., there are no variations in headway).
+Specifies frequency-based service with 0 or an empty value, or exact scheduled departures at a fixed headway with
+1. For exact service, end_time is after the last departure and before that departure plus headway_secs.
 
-Valid options are:
+Validation: Checks that the populated value represents an integer in 0, 1. Matching uses the parsed integer rather
+than its original spelling. Configured options can further restrict this set; all_options bypasses that
+restriction, while an empty list rejects all populated values. Empty values are skipped; required-field checks
+handle absence.
 
-  - 0 or empty - Frequency-based trips.
-  - 1 - Schedule-based trips with the exact same headway throughout the day. In this case the end_time value must be greater than the last desired trip start_time but less than the last desired trip start_time + headway_secs.
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-[frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
 */
 func ExactTimesValid(ctx *context.ValidationContext) error {
 	//

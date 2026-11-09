@@ -9,16 +9,22 @@ import (
 /*
 # Attributes
 
-  - File: frequencies.txt
+  - File: [frequencies.txt]
   - Field: end_time
   - Presence: Required
   - Type: Time
 
 # Description
 
-Time at which service changes to a different headway (or ceases) at the first stop in the trip.
+Time at the trip's first stop when this headway interval ends or changes to another interval.
 
-[frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
+Validation: Checks for eight characters and three integer components separated by colons. This format check does
+not bound minutes or seconds and therefore accepts values such as 99:99:99. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
 */
 func EndTimeValid(ctx *context.ValidationContext) error {
 	//

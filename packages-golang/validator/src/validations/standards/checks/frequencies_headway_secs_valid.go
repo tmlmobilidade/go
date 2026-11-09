@@ -9,16 +9,22 @@ import (
 /*
 # Attributes
 
-  - File: frequencies.txt
+  - File: [frequencies.txt]
   - Field: headway_secs
   - Presence: Required
-  - Type: positive integer
+  - Type: Positive integer
 
 # Description
 
-Headway of service in seconds.
+Positive interval in seconds between departures during the period from start_time to end_time. Intervals for the
+same trip must not overlap, but consecutive intervals may share an endpoint.
 
-[frequencies.txt]: https://gtfs.org/schedule/reference/#frequenciestxt
+Validation: Checks that the populated value is an integer strictly greater than zero. Empty values are skipped;
+required-field checks handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
 */
 func HeadwaySecsValid(ctx *context.ValidationContext) error {
 	//

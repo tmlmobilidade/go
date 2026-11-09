@@ -8,21 +8,26 @@ import (
 
 /*
 # Attributes
-- File: [pathways.txt]
-- Field: max_slope
-- Presence: optional
-- Type: float
+
+  - File: [pathways.txt]
+  - Field: [max_slope, pathway_mode]
+  - Presence: Optional, Required
+  - Type: Float, Enum
 
 # Description
 
-Maximum slope ratio of the pathway. Valid options are:
+  - max_slope: Maximum slope ratio along the pathway: positive uphill, negative downhill or 0 or empty for no slope.
+    Applicable to walkways and moving sidewalks, identified by pathway_mode values 1 and 3.
+  - pathway_mode: Type of connection: 1 walkway, 2 stairs, 3 moving sidewalk, 4 escalator, 5 elevator, 6 fare gate or
+    7 exit gate.
 
-0 or empty - No slope.
-Float - Slope ratio of the pathway, positive for upwards, negative for downwards.
+Validation: Checks the pathway mode rather than parsing the slope. Modes 1 and 3 accept any populated slope text;
+other integer modes allow only the exact text 0 or an empty value. An unreadable mode skips this comparison. Empty
+values are skipped; required-field checks handle absence.
 
-This field should only be used with walkways (pathway_mode=1) and moving sidewalks (pathway_mode=3).
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
 
-[pathways.txt]: https://gtfs.org/schedule/reference/#pathwaystxt
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
 func MaxSlopeValid(ctx *context.ValidationContext) error {
 	//
