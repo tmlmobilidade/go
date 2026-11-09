@@ -26,7 +26,7 @@ export async function updateYearPeriodDatesHandler(request: FastifyRequest<{ Bod
 
 	const changes = UpdateYearPeriodDatesSchema.safeParse(request.body);
 	if (!changes.success) {
-		return sendErrorApiResponse(reply, { error: changes.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: changes.error, status_code: '400' });
 	}
 
 	const client = await MongoDatabaseClient.getClient({ prefix: 'GODB', tunnelType: 'GO' });

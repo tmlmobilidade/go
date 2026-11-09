@@ -22,7 +22,7 @@ export async function dismissBannerHandler(request: FastifyRequest<{ Body: Banne
 
 	if (!validated.success) {
 		return sendErrorApiResponse(reply, {
-			error: validated.error.message,
+			error: validated.error,
 			status_code: '400',
 		});
 	}

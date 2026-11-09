@@ -19,7 +19,7 @@ export async function getGeocodeHandler(request: FastifyRequest<{ Querystring: H
 
 	if (!validatedQuery.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedQuery.error.message,
+			error: validatedQuery.error,
 			status_code: '400',
 		});
 	}

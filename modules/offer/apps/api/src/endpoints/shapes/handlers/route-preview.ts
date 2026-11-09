@@ -17,7 +17,7 @@ export async function routePreviewHandler(request: FastifyRequest<{ Body: Shapes
 
 	const validated = ShapesRoutePreviewRequestSchema.safeParse(request.body);
 	if (!validated.success) {
-		return sendErrorApiResponse(reply, { error: validated.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validated.error, status_code: '400' });
 	}
 
 	//

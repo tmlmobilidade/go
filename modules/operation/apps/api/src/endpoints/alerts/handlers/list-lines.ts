@@ -35,7 +35,9 @@ export async function listLines(request: FastifyRequest<{ Body: AlertsLinesFilte
 	//
 	// Validate the filters
 
-	const validatedFilters = AlertsLinesFiltersSchema.parse(request.body);
+	const validatedFiltersResult = AlertsLinesFiltersSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Build query parameters and execute the query

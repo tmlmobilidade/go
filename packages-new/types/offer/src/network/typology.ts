@@ -1,12 +1,13 @@
 /* * */
 
 import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
+import { validationMessage } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
 
 export const TypologySchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).min(1, 'At least one agency ID is required'),
+	agency_ids: z.array(z.string()).min(1, { error: validationMessage('custom.network.agency_required') }),
 	code: z.string().trim().min(1).max(10),
 	color: z.string().trim().min(1).max(7), // Hex color code
 	default_onboard_fare_ids: z.array(z.string()).nullable().default(null),

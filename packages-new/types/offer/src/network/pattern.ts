@@ -3,6 +3,7 @@
 import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
 import { StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { BaseDocumentSchema, CommentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
@@ -56,7 +57,7 @@ export const ShapeAnchorSchema = z.object({
 }).refine(anchor => (
 	(Boolean(anchor.after_path_item_id) && Boolean(anchor.before_path_item_id))
 	|| (!anchor.after_path_item_id && !anchor.before_path_item_id && Boolean(anchor.after_stop_id) && Boolean(anchor.before_stop_id))
-), { message: 'An anchor must identify both ends of one path segment.' });
+), { ...validationParams('custom.network.anchor') });
 
 const CoordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([z.number(), z.number()]);
 const GeoJsonCoordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([
@@ -136,11 +137,11 @@ export const PatternPathParametersSchema = z.object({
 	path: z.array(PathSchema).default([]),
 }).superRefine((value, context) => {
 	if (new Set(value.path.map(item => item._id)).size !== value.path.length) {
-		context.addIssue({ code: 'custom', message: 'Path occurrence IDs must be unique.', path: ['path'] });
+		context.addIssue({ code: 'custom', ...validationParams('custom.network.path_ids'), path: ['path'] });
 	}
 	for (const [parameterIndex, parameter] of (value.parameters ?? []).entries()) {
 		if (parameter.path.length !== value.path.length || parameter.path.some((item, index) => item.stop_id !== value.path[index]?.stop_id)) {
-			context.addIssue({ code: 'custom', message: 'Travel-time parameters must match each path occurrence in order.', path: ['parameters', parameterIndex, 'path'] });
+			context.addIssue({ code: 'custom', ...validationParams('custom.network.parameters_path'), path: ['parameters', parameterIndex, 'path'] });
 		}
 	}
 });

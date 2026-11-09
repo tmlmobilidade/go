@@ -1,5 +1,6 @@
 /* * */
 
+import { validationMessage } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /**
@@ -25,6 +26,6 @@ export type Longitude = number & {
 export const LongitudeSchema: z.ZodType<Longitude> = z
 	.coerce
 	.number()
-	.min(-180, 'Longitude must be between -180 and 180')
-	.max(180, 'Longitude must be between -180 and 180')
+	.min(-180, { error: validationMessage('custom.geo.longitude', { maximum: 180, minimum: -180 }) })
+	.max(180, { error: validationMessage('custom.geo.longitude', { maximum: 180, minimum: -180 }) })
 	.transform(value => Number(value.toFixed(6)) as Longitude);

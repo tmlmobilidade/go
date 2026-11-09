@@ -17,7 +17,7 @@ export async function createPatternHandler(request: FastifyRequest<{ Body: Creat
 
 	const validatedPattern = CreatePatternSchema.safeParse(request.body);
 	if (!validatedPattern.success) {
-		return sendErrorApiResponse(reply, { error: validatedPattern.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedPattern.error, status_code: '400' });
 	}
 
 	//
@@ -40,7 +40,7 @@ export async function createPatternHandler(request: FastifyRequest<{ Body: Creat
 	};
 
 	const pathParameters = PatternPathParametersSchema.safeParse({ parameters: [defaultParameter], path: validatedPattern.data.path });
-	if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error.message, status_code: '400' });
+	if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error, status_code: '400' });
 
 	const newPattern = await goDb.offer.patterns.insertOne({
 		...validatedPattern.data,

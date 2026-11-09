@@ -1,6 +1,7 @@
 /* * */
 
 import { BaseDocumentSchema, ModuleScopeSchema, partialWithoutDefaults, PublishStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 import { ChangelogItemSchema } from './item.js';
@@ -8,7 +9,7 @@ import { ChangelogItemSchema } from './item.js';
 /* * */
 
 export const ChangelogSchema = BaseDocumentSchema.extend({
-	items: z.array(ChangelogItemSchema).default([]).refine(items => new Set(items.map(item => item._id)).size === items.length, 'Change item IDs must be unique within a changelog'),
+	items: z.array(ChangelogItemSchema).default([]).refine(items => new Set(items.map(item => item._id)).size === items.length, validationParams('custom.unique.changelog_items')),
 	publish_status: PublishStatusSchema.default('draft'),
 	scope: ModuleScopeSchema,
 	summary: z.string().trim().default(''),

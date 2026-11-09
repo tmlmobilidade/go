@@ -22,7 +22,7 @@ export async function updateBannerHandler(request: FastifyRequest<{ Body: Update
 
 	if (!validated.success) {
 		return sendErrorApiResponse(reply, {
-			error: validated.error.message,
+			error: validated.error,
 			status_code: '400',
 		});
 	}
@@ -68,7 +68,7 @@ export async function updateBannerHandler(request: FastifyRequest<{ Body: Update
 
 	if (!candidate.success) {
 		return sendErrorApiResponse(reply, {
-			error: candidate.error.message,
+			error: candidate.error,
 			status_code: '400',
 		});
 	}

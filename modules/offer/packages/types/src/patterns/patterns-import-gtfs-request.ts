@@ -1,5 +1,6 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -22,16 +23,16 @@ export const PatternsImportGtfsRequestSchema = z.object({
 	const path = value.path.slice().sort((left, right) => left.stop_sequence - right.stop_sequence);
 	const shape = value.shape.slice().sort((left, right) => left.shape_pt_sequence - right.shape_pt_sequence);
 	if (new Set(path.map(item => item.stop_sequence)).size !== path.length) {
-		context.addIssue({ code: 'custom', message: 'Stop sequences must be unique.', path: ['path'] });
+		context.addIssue({ code: 'custom', ...validationParams('custom.network.stop_sequences'), path: ['path'] });
 	}
 	if (new Set(shape.map(item => item.shape_pt_sequence)).size !== shape.length) {
-		context.addIssue({ code: 'custom', message: 'Shape point sequences must be unique.', path: ['shape'] });
+		context.addIssue({ code: 'custom', ...validationParams('custom.network.shape_sequences'), path: ['shape'] });
 	}
 	if (path.some((item, index) => index > 0 && item.shape_dist_traveled < path[index - 1].shape_dist_traveled)) {
-		context.addIssue({ code: 'custom', message: 'Stop distances must not decrease along the path.', path: ['path'] });
+		context.addIssue({ code: 'custom', ...validationParams('custom.network.stop_distances'), path: ['path'] });
 	}
 	if (shape.some((item, index) => index > 0 && item.shape_dist_traveled < shape[index - 1].shape_dist_traveled)) {
-		context.addIssue({ code: 'custom', message: 'Shape distances must not decrease along the path.', path: ['shape'] });
+		context.addIssue({ code: 'custom', ...validationParams('custom.network.shape_distances'), path: ['shape'] });
 	}
 });
 

@@ -17,7 +17,7 @@ export async function updatePatternHandler(request: FastifyRequest<{ Body: Updat
 
 	const validatedPattern = UpdatePatternSchema.safeParse(request.body);
 	if (!validatedPattern.success) {
-		return sendErrorApiResponse(reply, { error: validatedPattern.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedPattern.error, status_code: '400' });
 	}
 
 	//
@@ -47,7 +47,7 @@ export async function updatePatternHandler(request: FastifyRequest<{ Body: Updat
 	// Path edits and their positional travel-time entries must be saved together.
 	if (validatedPattern.data.path !== undefined || validatedPattern.data.parameters !== undefined) {
 		const pathParameters = PatternPathParametersSchema.safeParse({ ...patternData, ...validatedPattern.data });
-		if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error.message, status_code: '400' });
+		if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error, status_code: '400' });
 	}
 
 	const sanitizedBody = validatedPattern.data;

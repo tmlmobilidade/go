@@ -1,0 +1,226 @@
+{
+	"custom": {
+		"banner": {
+			"link": "As ligações dos avisos devem usar HTTP ou HTTPS"
+		},
+		"dates": {
+			"event_id": "Deve conter letras maiúsculas, números ou underscores",
+			"overlap": "Não é possível adicionar e remover datas no mesmo pedido: {dates}",
+			"period_name": "Introduza um nome para o período",
+			"period_required": "Selecione um período"
+		},
+		"documents": {
+			"changes_required": "multiple_fields requer o array metadata.changes",
+			"different_values": "curr_value e prev_value devem ser diferentes",
+			"null_values": "multiple_fields deve ter curr_value e prev_value nulos"
+		},
+		"feedback": {
+			"duplicate_reason": "O motivo \"{reason}\" não pode ser selecionado mais do que uma vez.",
+			"reason": "O motivo \"{reason}\" não é válido para comentários de {entity}."
+		},
+		"formats": {
+			"date": "Esperada uma data no formato {format}",
+			"hex_color": "Esperada uma cor hexadecimal no formato {format}",
+			"hhmm": "Esperada uma hora no formato {format} entre {minimum} e {maximum}",
+			"operational_date": "Esperada uma data no formato {format} ou {alternative}",
+			"operational_time": "Esperada uma hora no formato {format}, com minutos e segundos entre 00 e 59",
+			"unix_milliseconds": "Esperado um timestamp Unix válido em milissegundos, no mínimo {minimum}",
+			"unix_seconds": "Esperado um timestamp Unix válido em segundos, no mínimo {minimum}"
+		},
+		"geo": {
+			"coordinate": "Coordenada inválida",
+			"encoded_polyline": "Polilinha codificada inválida",
+			"latitude": "A latitude deve estar entre {minimum} e {maximum}",
+			"linear_ring": "O primeiro e o último ponto de um anel devem coincidir",
+			"longitude": "A longitude deve estar entre {minimum} e {maximum}"
+		},
+		"network": {
+			"agency_required": "É obrigatório pelo menos um identificador de agência",
+			"anchor": "Uma âncora deve identificar ambas as extremidades de um segmento do percurso.",
+			"default_required": "É obrigatório existir um parâmetro \"default\".",
+			"default_unique": "Só pode existir um parâmetro \"default\".",
+			"parameters_path": "Os parâmetros de tempo de viagem devem corresponder a cada ocorrência do percurso pela mesma ordem.",
+			"path_ids": "Os identificadores das ocorrências do percurso devem ser únicos.",
+			"shape_distances": "As distâncias do traçado não podem diminuir ao longo do percurso.",
+			"shape_sequences": "As sequências dos pontos do traçado devem ser únicas.",
+			"stop_distances": "As distâncias das paragens não podem diminuir ao longo do percurso.",
+			"stop_sequences": "As sequências das paragens devem ser únicas.",
+			"weekdays": "Selecione pelo menos um dia da semana.",
+			"year_periods": "Selecione pelo menos um período do ano."
+		},
+		"password": {
+			"lowercase": "A palavra-passe deve conter pelo menos uma letra minúscula",
+			"min_length": "A palavra-passe deve ter pelo menos {minimum} caracteres",
+			"mismatch": "As palavras-passe não coincidem",
+			"number": "A palavra-passe deve conter pelo menos um número",
+			"requirements": "Requisitos da palavra-passe",
+			"special": "A palavra-passe deve conter pelo menos um caráter especial",
+			"uppercase": "A palavra-passe deve conter pelo menos uma letra maiúscula"
+		},
+		"schedule": {
+			"active_period": "A data de fim do período ativo deve ser igual ou posterior à data de início",
+			"end_after_start": "O fim deve ser posterior ao início",
+			"publication": "A data de fim de publicação deve ser igual ou posterior à data de início"
+		},
+		"unique": {
+			"changelog_items": "Os identificadores das alterações devem ser únicos num registo de alterações",
+			"module_ids": "Os identificadores dos módulos devem ser únicos",
+			"release_ids": "Os identificadores das versões devem ser únicos"
+		}
+	},
+	"errors": {
+		"custom": "Valor inválido",
+		"invalid_element": "Elemento inválido no valor do tipo {origin}",
+		"invalid_format": {
+			"default": "Formato de {format} inválido",
+			"ends_with": "Tem de terminar em «{suffix}»",
+			"includes": "Tem de incluir «{includes}»",
+			"lowercase": "Tem de estar em minúsculas",
+			"regex": "Formato inválido",
+			"starts_with": "Tem de começar por «{prefix}»",
+			"uppercase": "Tem de estar em maiúsculas"
+		},
+		"invalid_key": "Chave inválida no valor do tipo {origin}",
+		"invalid_type": "O valor tem de ser do tipo {expected} (tipo recebido: {received})",
+		"invalid_type_received_null": "O valor tem de ser do tipo {expected} (tipo recebido: {received})",
+		"invalid_type_received_undefined": "Este campo é obrigatório",
+		"invalid_union": "Valor inválido",
+		"invalid_union_discriminator": "O valor discriminante tem de ser um dos seguintes: {options}",
+		"invalid_union_type": "Esperado {expected}",
+		"invalid_value": "O valor tem de ser um dos seguintes: {options}",
+		"invalid_value_single": "O valor tem de ser {expected}",
+		"not_multiple_of": "O número tem de ser múltiplo de {divisor}",
+		"too_big": {
+			"array": {
+				"exact": "{count, plural, one {A lista tem de conter exatamente {count} elemento} many {A lista tem de conter exatamente {count} elementos} other {A lista tem de conter exatamente {count} elementos}}",
+				"inclusive": "{count, plural, one {A lista tem de conter no máximo {count} elemento} many {A lista tem de conter no máximo {count} elementos} other {A lista tem de conter no máximo {count} elementos}}",
+				"not_inclusive": "{count, plural, one {A lista tem de conter menos de {count} elemento} many {A lista tem de conter menos de {count} elementos} other {A lista tem de conter menos de {count} elementos}}"
+			},
+			"date": {
+				"exact": "A data tem de ser {maximum, date}",
+				"inclusive": "A data tem de ser igual ou anterior a {maximum, date}",
+				"not_inclusive": "A data tem de ser anterior a {maximum, date}"
+			},
+			"file": {
+				"exact": "{count, plural, one {O ficheiro tem de ter exatamente {count} byte} many {O ficheiro tem de ter exatamente {count} bytes} other {O ficheiro tem de ter exatamente {count} bytes}}",
+				"inclusive": "{count, plural, one {O ficheiro tem de ter no máximo {count} byte} many {O ficheiro tem de ter no máximo {count} bytes} other {O ficheiro tem de ter no máximo {count} bytes}}",
+				"not_inclusive": "{count, plural, one {O ficheiro tem de ter menos de {count} byte} many {O ficheiro tem de ter menos de {count} bytes} other {O ficheiro tem de ter menos de {count} bytes}}"
+			},
+			"map": {
+				"exact": "{count, plural, one {O mapa tem de conter exatamente {count} entrada} many {O mapa tem de conter exatamente {count} entradas} other {O mapa tem de conter exatamente {count} entradas}}",
+				"inclusive": "{count, plural, one {O mapa tem de conter no máximo {count} entrada} many {O mapa tem de conter no máximo {count} entradas} other {O mapa tem de conter no máximo {count} entradas}}",
+				"not_inclusive": "{count, plural, one {O mapa tem de conter menos de {count} entrada} many {O mapa tem de conter menos de {count} entradas} other {O mapa tem de conter menos de {count} entradas}}"
+			},
+			"number": {
+				"exact": "O número tem de ser exatamente {maximum}",
+				"inclusive": "O número tem de ser menor ou igual a {maximum}",
+				"not_inclusive": "O número tem de ser menor do que {maximum}"
+			},
+			"set": {
+				"exact": "{count, plural, one {O conjunto tem de conter exatamente {count} elemento} many {O conjunto tem de conter exatamente {count} elementos} other {O conjunto tem de conter exatamente {count} elementos}}",
+				"inclusive": "{count, plural, one {O conjunto tem de conter no máximo {count} elemento} many {O conjunto tem de conter no máximo {count} elementos} other {O conjunto tem de conter no máximo {count} elementos}}",
+				"not_inclusive": "{count, plural, one {O conjunto tem de conter menos de {count} elemento} many {O conjunto tem de conter menos de {count} elementos} other {O conjunto tem de conter menos de {count} elementos}}"
+			},
+			"string": {
+				"exact": "{count, plural, one {O texto tem de conter exatamente {count} carácter} many {O texto tem de conter exatamente {count} caracteres} other {O texto tem de conter exatamente {count} caracteres}}",
+				"inclusive": "{count, plural, one {O texto tem de conter no máximo {count} carácter} many {O texto tem de conter no máximo {count} caracteres} other {O texto tem de conter no máximo {count} caracteres}}",
+				"not_inclusive": "{count, plural, one {O texto tem de conter menos de {count} carácter} many {O texto tem de conter menos de {count} caracteres} other {O texto tem de conter menos de {count} caracteres}}"
+			}
+		},
+		"too_small": {
+			"array": {
+				"exact": "{count, plural, one {A lista tem de conter exatamente {count} elemento} many {A lista tem de conter exatamente {count} elementos} other {A lista tem de conter exatamente {count} elementos}}",
+				"inclusive": "{count, plural, one {A lista tem de conter pelo menos {count} elemento} many {A lista tem de conter pelo menos {count} elementos} other {A lista tem de conter pelo menos {count} elementos}}",
+				"not_inclusive": "{count, plural, one {A lista tem de conter mais de {count} elemento} many {A lista tem de conter mais de {count} elementos} other {A lista tem de conter mais de {count} elementos}}"
+			},
+			"date": {
+				"exact": "A data tem de ser {minimum, date}",
+				"inclusive": "A data tem de ser igual ou posterior a {minimum, date}",
+				"not_inclusive": "A data tem de ser posterior a {minimum, date}"
+			},
+			"file": {
+				"exact": "{count, plural, one {O ficheiro tem de ter exatamente {count} byte} many {O ficheiro tem de ter exatamente {count} bytes} other {O ficheiro tem de ter exatamente {count} bytes}}",
+				"inclusive": "{count, plural, one {O ficheiro tem de ter pelo menos {count} byte} many {O ficheiro tem de ter pelo menos {count} bytes} other {O ficheiro tem de ter pelo menos {count} bytes}}",
+				"not_inclusive": "{count, plural, one {O ficheiro tem de ter mais de {count} byte} many {O ficheiro tem de ter mais de {count} bytes} other {O ficheiro tem de ter mais de {count} bytes}}"
+			},
+			"map": {
+				"exact": "{count, plural, one {O mapa tem de conter exatamente {count} entrada} many {O mapa tem de conter exatamente {count} entradas} other {O mapa tem de conter exatamente {count} entradas}}",
+				"inclusive": "{count, plural, one {O mapa tem de conter pelo menos {count} entrada} many {O mapa tem de conter pelo menos {count} entradas} other {O mapa tem de conter pelo menos {count} entradas}}",
+				"not_inclusive": "{count, plural, one {O mapa tem de conter mais de {count} entrada} many {O mapa tem de conter mais de {count} entradas} other {O mapa tem de conter mais de {count} entradas}}"
+			},
+			"number": {
+				"exact": "O número tem de ser exatamente {minimum}",
+				"inclusive": "O número tem de ser maior ou igual a {minimum}",
+				"not_inclusive": "O número tem de ser maior do que {minimum}"
+			},
+			"set": {
+				"exact": "{count, plural, one {O conjunto tem de conter exatamente {count} elemento} many {O conjunto tem de conter exatamente {count} elementos} other {O conjunto tem de conter exatamente {count} elementos}}",
+				"inclusive": "{count, plural, one {O conjunto tem de conter pelo menos {count} elemento} many {O conjunto tem de conter pelo menos {count} elementos} other {O conjunto tem de conter pelo menos {count} elementos}}",
+				"not_inclusive": "{count, plural, one {O conjunto tem de conter mais de {count} elemento} many {O conjunto tem de conter mais de {count} elementos} other {O conjunto tem de conter mais de {count} elementos}}"
+			},
+			"string": {
+				"exact": "{count, plural, one {O texto tem de conter exatamente {count} carácter} many {O texto tem de conter exatamente {count} caracteres} other {O texto tem de conter exatamente {count} caracteres}}",
+				"inclusive": "{count, plural, one {O texto tem de conter pelo menos {count} carácter} many {O texto tem de conter pelo menos {count} caracteres} other {O texto tem de conter pelo menos {count} caracteres}}",
+				"not_inclusive": "{count, plural, one {O texto tem de conter mais de {count} carácter} many {O texto tem de conter mais de {count} caracteres} other {O texto tem de conter mais de {count} caracteres}}"
+			}
+		},
+		"unrecognized_keys": "{count, plural, one {Chave não reconhecida: {keys}} many {Chaves não reconhecidas: {keys}} other {Chaves não reconhecidas: {keys}}}"
+	},
+	"formats": {
+		"base64": "texto codificado em base64",
+		"base64url": "texto codificado em base64url",
+		"cidrv4": "intervalo IPv4",
+		"cidrv6": "intervalo IPv6",
+		"credit_card": "número de cartão de crédito",
+		"cuid": "cuid",
+		"cuid2": "cuid2",
+		"currency_code": "código de moeda",
+		"date": "data ISO",
+		"datetime": "data e hora ISO",
+		"duration": "duração ISO",
+		"e164": "número de telefone E.164",
+		"email": "endereço de email",
+		"emoji": "emoji",
+		"guid": "GUID",
+		"hash": "hash",
+		"hex": "texto hexadecimal",
+		"hostname": "nome de anfitrião",
+		"iban": "IBAN",
+		"ipv4": "endereço IPv4",
+		"ipv6": "endereço IPv6",
+		"json_string": "texto JSON",
+		"jwt": "JWT",
+		"ksuid": "KSUID",
+		"mac": "endereço MAC",
+		"nanoid": "nanoid",
+		"template_literal": "valor",
+		"time": "hora ISO",
+		"ulid": "ULID",
+		"url": "URL",
+		"uuid": "UUID",
+		"xid": "XID"
+	},
+	"types": {
+		"array": "lista",
+		"bigint": "inteiro grande",
+		"boolean": "booleano",
+		"date": "data",
+		"file": "ficheiro",
+		"function": "função",
+		"int": "número inteiro",
+		"map": "mapa",
+		"nan": "NaN",
+		"never": "never",
+		"null": "nulo",
+		"number": "número",
+		"object": "objeto",
+		"promise": "promessa",
+		"record": "objeto",
+		"set": "conjunto",
+		"string": "texto",
+		"symbol": "símbolo",
+		"tuple": "tupla",
+		"undefined": "indefinido",
+		"void": "void"
+	}
+}

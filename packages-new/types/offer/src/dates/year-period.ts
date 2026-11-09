@@ -1,6 +1,7 @@
 /* * */
 
 import { BaseDocumentSchema, OperationalDateIntSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -29,7 +30,7 @@ export const UpdateYearPeriodDatesSchema = z.object({
 	if (overlappingDates.length > 0) {
 		context.addIssue({
 			code: 'custom',
-			message: `Dates cannot be added and removed in the same request: ${overlappingDates.join(', ')}`,
+			...validationParams('custom.dates.overlap', { dates: overlappingDates.join(', ') }),
 			path: ['remove_dates'],
 		});
 	}

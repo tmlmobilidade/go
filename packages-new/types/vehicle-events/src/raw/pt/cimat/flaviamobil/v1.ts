@@ -1,12 +1,13 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 import { RawVehicleEventBaseSchema } from '../../../raw-vehicle-event-base.js';
 
 /* * */
 
-const coordinateSchema = (limit: number) => z.string().trim().min(1).refine(value => Number.isFinite(Number(value)) && Math.abs(Number(value)) <= limit, 'Invalid coordinate');
+const coordinateSchema = (limit: number) => z.string().trim().min(1).refine(value => Number.isFinite(Number(value)) && Math.abs(Number(value)) <= limit, validationParams('custom.geo.coordinate'));
 
 export const RawVehicleEventPtCimatFlaviamobilV1PayloadSchema = z.object({
 	departure_date: z.string(),

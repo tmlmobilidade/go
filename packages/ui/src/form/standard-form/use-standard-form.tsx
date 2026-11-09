@@ -1,11 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
-import { type DefaultValues, type FieldValues, useForm, type UseFormReturn } from 'react-hook-form';
+import { createValidationErrorMap } from '@tmlmobilidade/go-utils-validation';
+import { useEffect, useRef } from 'react';
+import { type DefaultValues, type FieldPath, type FieldValues, useForm, type UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { type ZodType } from 'zod';
 
 import { usePreventNavigation } from '../../hooks/use-prevent-navigation';
+import { getFormErrorPaths } from './get-form-error-paths';
 
 /* * */
 
@@ -41,12 +44,23 @@ export function useStandardForm<T extends FieldValues, TSchema extends ZodType<T
 	//
 	// Setup form and its related logic
 
+	const { i18n } = useTranslation();
+	const locale = i18n.resolvedLanguage ?? i18n.language;
+	const previousLocale = useRef(locale);
+
 	const form = useForm<T>({
 		defaultValues,
 		mode: 'all',
 		// Form state uses the DTO type. The schema may accept additional inputs for coercion.
-		resolver: schema ? zodResolver(schema as ZodType<T, T>) : undefined,
+		resolver: schema ? zodResolver(schema as ZodType<T, T>, { error: createValidationErrorMap(locale) }) : undefined,
 	});
+
+	useEffect(() => {
+		if (previousLocale.current === locale) return;
+		previousLocale.current = locale;
+		const fields = getFormErrorPaths(form.formState.errors) as FieldPath<T>[];
+		if (schema && fields.length) void form.trigger(fields);
+	}, [locale, form, schema]);
 
 	//
 	// Override the value of "form.formState.isDirty" based

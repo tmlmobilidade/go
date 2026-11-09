@@ -36,7 +36,9 @@ export async function listRides(request: FastifyRequest<{ Body: AlertsRidesFilte
 	//
 	// Validate the filters
 
-	const validatedFilters = AlertsRidesFiltersSchema.parse(request.body);
+	const validatedFiltersResult = AlertsRidesFiltersSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Build query parameters

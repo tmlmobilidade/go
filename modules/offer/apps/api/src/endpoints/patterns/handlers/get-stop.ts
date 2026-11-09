@@ -16,7 +16,7 @@ export async function getPatternStopHandler(request: FastifyRequest<{ Params: { 
 
 	const parsedStopId = StopIdSchema.safeParse(request.params.stopId);
 	if (!parsedStopId.success) {
-		return sendErrorApiResponse(reply, { error: parsedStopId.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: parsedStopId.error, status_code: '400' });
 	}
 
 	const foundStop = await goDb.infrastructure.stops.findById(parsedStopId.data);

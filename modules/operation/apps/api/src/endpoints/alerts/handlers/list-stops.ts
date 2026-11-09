@@ -35,7 +35,9 @@ export async function listStops(request: FastifyRequest<{ Body: AlertsStopsFilte
 	//
 	// Validate the filters
 
-	const validatedFilters = AlertsStopsFiltersSchema.parse(request.body);
+	const validatedFiltersResult = AlertsStopsFiltersSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Build query parameters and execute the query

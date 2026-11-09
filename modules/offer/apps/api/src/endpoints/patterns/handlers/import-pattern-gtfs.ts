@@ -20,7 +20,7 @@ export async function importPatternGtfsHandler(request: FastifyRequest<{ Body: P
 
 	const validatedImport = PatternsImportGtfsRequestSchema.safeParse(request.body);
 	if (!validatedImport.success) {
-		return sendErrorApiResponse(reply, { error: validatedImport.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedImport.error, status_code: '400' });
 	}
 
 	//

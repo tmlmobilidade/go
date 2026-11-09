@@ -21,7 +21,7 @@ export async function listChangelogsHandler(request: FastifyRequest<{ Querystrin
 
 	if (!query.success) {
 		return sendErrorApiResponse(reply, {
-			error: query.error.message,
+			error: query.error,
 			status_code: '400',
 		});
 	}

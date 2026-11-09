@@ -26,7 +26,7 @@ export async function listActiveBannersHandler(request: FastifyRequest<{ Queryst
 
 	if (!query.success) {
 		return sendErrorApiResponse(reply, {
-			error: query.error.message,
+			error: query.error,
 			status_code: '400',
 		});
 	}

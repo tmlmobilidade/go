@@ -1,6 +1,7 @@
 import { DayPeriodSchema } from '@/dates/day-period.js';
 import { StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { WEEKDAYS } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -50,13 +51,13 @@ export const StopsParametersListSchema = z
 		if (defaults.length === 0) {
 			ctx.addIssue({
 				code: 'custom',
-				message: 'É obrigatório existir um parâmetro "default".',
+				...validationParams('custom.network.default_required'),
 			});
 		}
 		if (defaults.length > 1) {
 			ctx.addIssue({
 				code: 'custom',
-				message: 'Só pode existir um parâmetro "default".',
+				...validationParams('custom.network.default_unique'),
 			});
 		}
 	});
