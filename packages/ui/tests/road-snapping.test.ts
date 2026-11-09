@@ -51,7 +51,7 @@ describe('published Maps road contract', { skip: !process.env.GO_MAPS_CONTRACT_T
 			'source-layer': z.string().optional(),
 			'type': z.string(),
 		})),
-		sources: z.record(z.object({ type: z.string() })),
+		sources: z.record(z.string(), z.object({ type: z.string() })),
 	});
 
 	for (const [name, config] of Object.entries(MAP_STYLES)) {

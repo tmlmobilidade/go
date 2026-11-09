@@ -1,11 +1,10 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { calculateAgencyVkm } from '@tmlmobilidade/dates';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CalculateVkmDto, CalculateVkmSchema, type VkmCalculationResult } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { calculateAgencyVkm } from '@tmlmobilidade/go-utils-offer';
 
 /* * */
 
@@ -17,7 +16,7 @@ export class VkmController {
 		const parsed = CalculateVkmSchema.safeParse(request.body);
 
 		if (!parsed.success) {
-			throw new HttpException(HTTP_STATUS.BAD_REQUEST, parsed.error.message);
+			return sendErrorApiResponse(reply, { error: parsed.error.message, status_code: '400' });
 		}
 
 		const payload = parsed.data;
@@ -25,7 +24,7 @@ export class VkmController {
 		const userLinePermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.read);
 
 		if (!userLinePermissions) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to calculate VKM');
+			return sendErrorApiResponse(reply, { error: 'You are not authorized to calculate VKM', status_code: '403' });
 		}
 
 		const hasPermissionForAgency = PermissionCatalog.hasPermissionResource({
@@ -37,17 +36,17 @@ export class VkmController {
 		});
 
 		if (!hasPermissionForAgency) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, 'You are not authorized to calculate VKM for this agency');
+			return sendErrorApiResponse(reply, { error: 'You are not authorized to calculate VKM for this agency', status_code: '403' });
 		}
 
 		if (payload.calculation_method === 'fixed_range' && !payload.end_date) {
-			throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'End date is required for fixed range calculations');
+			return sendErrorApiResponse(reply, { error: 'End date is required for fixed range calculations', status_code: '400' });
 		}
 
 		const agency = await goDb.core.agencies.findById(payload.agency_id);
 
 		if (!agency) {
-			throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Agency not found');
+			return sendErrorApiResponse(reply, { error: 'Agency not found', status_code: '404' });
 		}
 
 		const agencyLines = await goDb.offer.lines.findMany({ agency_id: payload.agency_id }, { projection: { _id: 1 } });
@@ -87,10 +86,6 @@ export class VkmController {
 			request: payload,
 		});
 
-		return reply.send({
-			data: result,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
+		return sendSuccessApiResponse(reply, result);
 	}
 }

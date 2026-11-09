@@ -1,28 +1,27 @@
 'use client';
 
+import { useLinesDetailData } from '@/components/lines/detail/use-lines-detail-data';
+import { useLinesListData } from '@/components/lines/list/use-lines-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine, type RoutesDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+
+import { useRoutesDetailData } from './use-routes-detail-data';
 
 /* * */
 
-interface RouteDetailContextState {
-	actions: DetailContextStateTemplate['actions']
+interface RouteDetailContextState extends StandardFormContextValue<UpdateRouteDto> {
 	data: {
-		form: UseFormReturnType<UpdateRouteDto>
 		id: string
-		line: null | PopulatedLine
-		route: null | RoutesDetail
+		line: PopulatedLine | undefined
+		route: RoutesDetail | undefined
 	}
-	flags: DetailContextStateTemplate['flags'] & {
-		isLockedByLine: boolean
-	}
+	error: null | string
+	isLockedByLine: boolean
 }
 
 /* * */
@@ -31,138 +30,151 @@ const RouteDetailContext = createContext<RouteDetailContextState | undefined>(un
 
 export function useRouteDetailContext() {
 	const context = useContext(RouteDetailContext);
-	if (!context) {
-		throw new Error('useRouteDetailContext must be used within a RouteDetailContextProvider');
-	}
+	if (!context) throw new Error('useRouteDetailContext must be used within a RouteDetailContextProvider');
 	return context;
 }
 
 /* * */
 
-export const RouteDetailContextProvider = ({ children, lineId, routeId }: PropsWithChildren<{ lineId: string, routeId: string }>) => {
+export function RouteDetailContextProvider({ children, lineId, routeId }: PropsWithChildren<{ lineId: string, routeId: string }>) {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const meContext = useMeContext();
+	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { mutate: listMutate } = useLinesListData();
+	const { data: route, error, isLoading: dataLoading, mutate } = useRoutesDetailData(routeId);
+	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);
+	const accessRef = useRef({ deleteEnabled: false, editEnabled: false, lockEnabled: false, updateEnabled: false });
 
 	//
-	// B. Fetch data
+	// B. Setup form
 
-	const { data: routeData, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useSWR<ApiResponse<RoutesDetail>>(API_ROUTES.offer.ROUTES_DETAIL(routeId), {
-		fetcher: async url => await fetchApiData<RoutesDetail>({ url }),
+	const apiData = useMemo(() => route ? { code: route.code, name: route.name, path_type: route.path_type } : undefined, [route]);
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateRouteDto, typeof UpdateRouteSchema>({
+		apiData,
+		schema: UpdateRouteSchema,
 	});
 
-	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
-		refreshInterval: 10_000,
-	});
-
 	//
-	// C. Setup form
+	// C. Handle requests
 
-	const { form } = useTypicalForm<UpdateRouteDto>(UpdateRouteSchema, routeData?.data);
-
-	//
-	// D. Handle actions
-
-	const { action: handleSave, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<RoutesDetail>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
-		onSuccess: (data) => {
-			form.resetDirty();
-			routeMutate(data);
+	const { action: updateRequest, isLoading: isUpdating } = useHandleAction({
+		fetchFn: async () => await fetchApiData<RoutesDetail>({ body: UpdateRouteSchema.parse(form.getValues()), method: 'PUT', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
+		onSuccess: (response) => {
+			form.reset(UpdateRouteSchema.parse(response.data));
+			mutate(response);
+			listMutate();
 			lineMutate();
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
-		fetchFn: async () => await fetchApiData<RoutesDetail>({ body: routeData, method: 'DELETE', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
+	const { action: deleteRequest, isLoading: isDeleting } = useHandleAction({
+		fetchFn: async () => await fetchApiData<undefined>({ method: 'DELETE', url: API_ROUTES.offer.ROUTES_DETAIL(routeId) }),
 		onSuccess: () => {
-			form.resetDirty();
+			form.reset();
+			unblock();
+			listMutate();
 			lineMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_LIST));
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleAction({
+	const { action: lockRequest, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<RoutesDetail>({ url: API_ROUTES.offer.ROUTES_DETAIL_LOCK(routeId) }),
-		onSuccess: (data) => {
-			form.resetDirty();
-			routeMutate(data);
+		onSuccess: (response) => {
+			mutate(response);
+			listMutate();
 			lineMutate();
 		},
 	});
 
 	//
-	// E. Setup permissions
+	// D. Setup capabilities
 
-	const permissions = meContext.actions.getScopePermissions({
+	const permissions = PermissionCatalog.getScopePermissions({
 		actions: PermissionCatalog.all.lines.actions,
-		resource: {
-			key: 'agency_ids',
-			requireAll: false,
-			value: lineData?.data?.agency_id ? [lineData.data.agency_id] : [],
-		},
+		permissions: me?.permissions ?? [],
+		resource: { key: 'agency_ids', requireAll: true, value: line?.agency_id ? [line.agency_id] : [] },
 		scope: PermissionCatalog.all.lines.scope,
 	});
-
-	const { canDelete, canLock, canSave, isReadOnly } = useDetailState({
-		hasError: !!routeError || !!lineError,
-		isDeleted: null,
-		isDeleting,
-		isDirty: form.isDirty(),
-		isLoading: routeLoading || lineLoading || !lineData?.data,
-		isLocked: routeData?.data?.is_locked || lineData?.data?.is_locked,
-		isLocking,
-		isSaving: isSaving,
-		isValid: form.isValid(),
-		permissions: {
-			delete: permissions.delete,
-			lock: permissions.lock && !lineData?.data?.is_locked,
-			read: permissions.read,
-			update: permissions.update,
-		},
+	const hasData = !!line && !!route && route.line_id === lineId;
+	const isLockedByLine = !!line?.is_locked;
+	const isLoading = dataLoading || meLoading || lineLoading;
+	const hasError = !!(error || meError || lineError);
+	const standardCapabilities = useStandardFormCapabilities({
+		delete: { hasPermission: permissions.delete, isDeleting },
+		form: { isDirty, isValid },
+		loading: { isLoading: isLoading || hasError || !hasData || isUpdating || isDeleting || isLocking },
+		locked: { hasPermission: permissions.lock && !isLockedByLine, isLocked: !!route?.is_locked || isLockedByLine, isLocking },
+		update: { hasPermission: permissions.update && permissions.read, isUpdating },
 	});
+	const capabilities = useMemo(() => ({
+		...standardCapabilities,
+		editEnabled: standardCapabilities.editEnabled && permissions.update && permissions.read,
+	}), [standardCapabilities, permissions.update, permissions.read]);
+	accessRef.current = capabilities;
 
 	//
-	// F. Define context value
+	// E. Guard actions against current access
 
-	const contextValue: RouteDetailContextState = useMemo(() => ({
+	const handleUpdate = useCallback(async () => {
+		if (!accessRef.current.updateEnabled) return;
+		await form.handleSubmit(async () => {
+			if (accessRef.current.updateEnabled) await updateRequest();
+		})();
+	}, [form, updateRequest]);
+
+	const handleDelete = useCallback(async () => {
+		if (accessRef.current.deleteEnabled) await deleteRequest();
+	}, [deleteRequest]);
+
+	const handleLock = useCallback(async () => {
+		if (accessRef.current.lockEnabled) await lockRequest();
+	}, [lockRequest]);
+
+	useEffect(() => {
+		accessRef.current = capabilities;
+		return () => {
+			accessRef.current = { deleteEnabled: false, editEnabled: false, lockEnabled: false, updateEnabled: false };
+		};
+	}, [capabilities]);
+
+	//
+	// F. Return context value
+
+	const stateValue: RouteDetailContextState = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
-			save: handleSave,
+			update: handleUpdate,
 		},
+		capabilities,
 		data: {
-			form,
 			id: routeId,
-			line: lineData?.data,
-			route: routeData?.data,
+			line,
+			route,
 		},
-		flags: {
-			canDelete,
-			canLock,
-			canSave,
-			error: routeError,
+		error: error || meError || lineError,
+		form,
+		isDirty,
+		isLockedByLine,
+		isValid,
+		status: {
 			isDeleting,
-			isLoading: routeLoading || lineLoading || !lineData?.data,
-			isLockedByLine: !!lineData?.data?.is_locked,
+			isLoading,
+			isLocked: !!route?.is_locked || isLockedByLine,
 			isLocking,
-			isReadOnly,
-			isSaving: isSaving,
+			isUpdating,
 		},
-	}), [routeData, routeError, routeLoading, routeId, form, isSaving, lineData?.data, canDelete, canLock, canSave, isDeleting, isLocking, isReadOnly, handleDelete, handleLock, handleSave, lineLoading]);
-
-	//
-	// G. Render components
+		unblock,
+	}), [capabilities, handleDelete, handleLock, handleUpdate, line, route, routeId, lineError, error, meError, form, isDirty, isLockedByLine, isValid, isDeleting, isLoading, isLocking, isUpdating, unblock]);
 
 	return (
-		<RouteDetailContext.Provider value={contextValue}>
+		<RouteDetailContext.Provider value={stateValue}>
 			{children}
 		</RouteDetailContext.Provider>
 	);
-
-	//
-};
+}

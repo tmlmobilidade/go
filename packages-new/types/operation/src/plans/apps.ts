@@ -14,6 +14,6 @@ export const PlanAppsSchema = z.object({
 	organizer: PlanAppOrganizerSchema,
 	plans_statistics: PlanAppStatisticsSchema.optional(),
 	rides_feeder: PlanAppRidesFeederSchema,
-}).default({});
+}).prefault({});
 
 export type PlanApps = z.infer<typeof PlanAppsSchema>;

@@ -1,5 +1,6 @@
 /* * */
 
+import { validationTransform } from '@tmlmobilidade/go-utils-validation';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
@@ -13,7 +14,7 @@ export type CalendarDate = string & {
 
 export const CalendarDateSchema = z
 	.string()
-	.transform(validateCalendarDate);
+	.transform(validationTransform(validateCalendarDate, 'custom.formats.date', { format: CALENDAR_DATE_FORMAT }));
 
 /**
  * This function validates if a string is a valid calendar date

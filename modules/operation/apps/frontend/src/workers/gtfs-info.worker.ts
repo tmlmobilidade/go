@@ -1,6 +1,7 @@
 /* * */
 
-import { type GtfsAgency, type GtfsFeedInfo } from '@tmlmobilidade/go-types-gtfs';
+import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
+import { createValidationErrorMap, formatValidationError } from '@tmlmobilidade/go-utils-validation';
 import jszip from 'jszip';
 import papa from 'papaparse';
 
@@ -8,41 +9,37 @@ import papa from 'papaparse';
 
 self.addEventListener('message', async (event) => {
 	try {
-		const { file } = event.data;
-
+		const { file, locale = 'pt' } = event.data;
 		const zip = await jszip.loadAsync(file);
-		const feedInfo = await zip.file('feed_info.txt')?.async('string');
-		const agency = await zip.file('agency.txt')?.async('string');
-		const stopTimes = await zip.file('stop_times.txt')?.async('blob');
-
-		if (!feedInfo || !agency || !stopTimes) {
-			const filesNotFound: string[] = [];
-			if (!feedInfo) filesNotFound.push('feed_info.txt');
-			if (!agency) filesNotFound.push('agency.txt');
-			console.log(filesNotFound);
+		const agencyFile = zip.file('agency.txt');
+		const feedInfoFile = zip.file('feed_info.txt');
+		const stopTimesFile = zip.file('stop_times.txt');
+		if (!agencyFile || !feedInfoFile || !stopTimesFile) {
+			const filesNotFound = ['agency.txt', 'feed_info.txt', 'stop_times.txt'].filter(filename => !zip.file(filename));
 			throw new Error(`${filesNotFound.join(', ')} not found in the GTFS zip file`);
 		}
 
-		const emptyToUndefined = <T extends Record<string, unknown>>(obj: T) =>
-			Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, v === '' ? undefined : v])) as T;
+		const parseCsv = (filename: string, csv: string) => {
+			const result = papa.parse<Record<string, string>>(csv, { header: true, skipEmptyLines: 'greedy' });
+			if (result.errors.length) throw new Error(`${filename}: ${result.errors.map(error => error.message).join('; ')}`);
+			return Object.fromEntries(Object.entries(result.data[0] ?? {}).map(([key, value]) => [key, value === '' ? undefined : value]));
+		};
 
-		const agencyData = papa.parse<GtfsAgency>(agency, {
-			header: true,
-			skipEmptyLines: true,
-		});
+		const agencyRow = parseCsv('agency.txt', await agencyFile.async('string'));
+		const feedInfoRow = parseCsv('feed_info.txt', await feedInfoFile.async('string'));
+		const error = createValidationErrorMap(locale);
+		const agency = GtfsAgencySchema.safeParse(agencyRow, { error });
+		const feedInfo = GtfsFeedInfoSchema.safeParse(feedInfoRow, { error });
+		const errors = [
+			...(!agency.success ? [`agency.txt: ${formatValidationError(agency.error, locale)}`] : []),
+			...(!feedInfo.success ? [`feed_info.txt: ${formatValidationError(feedInfo.error, locale)}`] : []),
+		];
+		if (errors.length) throw new Error(errors.join('\n'));
+		if (!agency.success || !feedInfo.success) return;
 
-		const feedInfoData = papa.parse<GtfsFeedInfo>(feedInfo, {
-			header: true,
-			skipEmptyLines: true,
-		});
-
-		// Return the feed info data
-		self.postMessage({
-			agency: emptyToUndefined(agencyData.data[0]),
-			feed_info: emptyToUndefined(feedInfoData.data[0]),
-		});
+		self.postMessage({ agency: agency.data, error: null, feed_info: feedInfo.data });
 	} catch (error) {
-		console.error('Error parsing GTFS file:', error);
-		self.postMessage({ error: error instanceof Error ? error : new Error('Unknown error') });
+		// Plain objects retain the message reliably across the worker boundary.
+		self.postMessage({ error: { message: error instanceof Error ? error.message : 'Unknown error' } });
 	}
 });

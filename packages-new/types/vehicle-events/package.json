@@ -38,7 +38,8 @@
 		"@tmlmobilidade/go-types-gtfs": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"zod": "3.25.76"
+		"@tmlmobilidade/go-utils-validation": "*",
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

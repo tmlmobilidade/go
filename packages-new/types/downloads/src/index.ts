@@ -1,3 +1,5 @@
+import '@tmlmobilidade/go-utils-validation';
+
 export * from './base.js';
 export * from './file-exports.js';
 export * from './gtfs-export.js';

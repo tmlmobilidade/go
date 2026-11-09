@@ -6,11 +6,11 @@ import { z } from 'zod';
 /* * */
 
 export const AgencyAlertsSchema = z.object({
-	catalog: z.record(
+	catalog: z.partialRecord(
 		AlertCauseSchema,
-		z.record(
+		z.partialRecord(
 			AlertEffectSchema,
-			z.record(
+			z.partialRecord(
 				AlertReferenceTypeSchema,
 				z.boolean().default(true),
 			).default({}),

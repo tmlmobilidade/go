@@ -3,6 +3,8 @@
 import { type FastifyReply } from '@/types.js';
 import { type ApiResponseError } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { createValidationErrorMap, formatValidationError } from '@tmlmobilidade/go-utils-validation';
+import { z } from 'zod';
 
 import { type ApiResponseOptions, getCacheControlHeader } from './response-options.js';
 
@@ -12,9 +14,11 @@ import { type ApiResponseOptions, getCacheControlHeader } from './response-optio
 interface SendErrorResponseOptions extends ApiResponseOptions {
 
 	/**
-	 * The error message to send in the error response.
+	 * A public error message or a Zod validation error with structured field issues.
 	 */
-	error: ApiResponseError['error']
+	error: ApiResponseError['error'] | z.ZodError
+
+	locale?: string
 
 	/**
 	 * The status code to send in the error response.
@@ -51,9 +55,21 @@ export function sendErrorApiResponse<T>(reply: FastifyReply<T>, options: SendErr
 	//
 	// Return with the prepared response
 
+	// Validation details are only returned for explicit client errors. A server-side
+	// schema failure must not expose stored data or internal schema information.
+	const validation = options.error instanceof z.ZodError && ['400', '422'].includes(options.status_code) ? options.error : undefined;
+	const acceptedLanguage = reply.request.headers['accept-language']?.split(',')[0]?.split(';')[0]?.trim();
+	const locale = options.locale ?? acceptedLanguage ?? 'pt';
+	const map = createValidationErrorMap(locale);
+	const issues = validation?.issues.map(issue => ({
+		code: issue.code,
+		message: map.translate(issue),
+		path: issue.path.map(part => typeof part === 'number' ? part : String(part)),
+	}));
 	const response: ApiResponseError = {
 		data: null,
-		error: options.error,
+		error: validation ? formatValidationError(validation, locale) : typeof options.error === 'string' ? options.error : 'Internal server error',
+		...(issues ? { issues } : {}),
 		status_code: options.status_code,
 		timestamp: nowUnixMilliseconds,
 	};

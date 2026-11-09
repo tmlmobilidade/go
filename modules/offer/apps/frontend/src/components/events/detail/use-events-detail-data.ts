@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type EventsDetail } from '@tmlmobilidade/go-offer-pckg-types';
+import { type Event } from '@tmlmobilidade/go-types-offer';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -12,11 +12,11 @@ import { useEventsDetailEventId } from './use-events-detail-event-id';
 /* * */
 
 interface UseEventsDetailDataReturnType {
-	data: EventsDetail | null
+	data: Event | null
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: KeyedMutator<ApiResponse<EventsDetail>>
+	mutate: KeyedMutator<ApiResponse<Event>>
 	timestamp: null | UnixMilliseconds
 }
 
@@ -33,8 +33,8 @@ export function useEventsDetailData(): UseEventsDetailDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<EventsDetail>>(eventId ? API_ROUTES.offer.EVENTS_DETAIL(eventId) : null, {
-		fetcher: async (url: string) => await fetchApiData<EventsDetail>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<Event>>(eventId ? API_ROUTES.offer.EVENTS_DETAIL(eventId) : null, {
+		fetcher: async (url: string) => await fetchApiData<Event>({ url }),
 	});
 
 	//

@@ -32,5 +32,5 @@ export const OperationAlertsV1OutputRowSchema = z.object({
 	updated_by: z.string().catch(''),
 });
 
-export type OperationAlertsV1OutputRowInput = z.input<typeof OperationAlertsV1OutputRowSchema>;
+export type OperationAlertsV1OutputRowInput = Partial<z.input<typeof OperationAlertsV1OutputRowSchema>>;
 export type OperationAlertsV1OutputRow = z.infer<typeof OperationAlertsV1OutputRowSchema>;

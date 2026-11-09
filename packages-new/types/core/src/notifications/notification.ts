@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -26,7 +26,7 @@ export const NotificationSchema = BaseDocumentSchema
 /* * */
 
 export const CreateNotificationSchema = NotificationSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateNotificationSchema = CreateNotificationSchema.omit({ created_by: true }).partial();
+export const UpdateNotificationSchema = partialWithoutDefaults(CreateNotificationSchema.omit({ created_by: true }));
 
 export type CreateNotificationDto = z.infer<typeof CreateNotificationSchema>;
 export type UpdateNotificationDto = z.infer<typeof UpdateNotificationSchema>;
@@ -34,7 +34,7 @@ export type UpdateNotificationDto = z.infer<typeof UpdateNotificationSchema>;
 /* * */
 
 export const NotificationPermissionSchema = z.object({
-	send_mail: z.boolean().default(false).nullish(),
+	send_mail: z.boolean().nullish(),
 });
 
 export type NotificationPermission = z.infer<typeof NotificationPermissionSchema>;

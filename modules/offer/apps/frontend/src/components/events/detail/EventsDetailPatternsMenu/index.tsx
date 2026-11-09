@@ -1,57 +1,59 @@
 'use client';
 
-import { IconEye, IconRouteOff } from '@tabler/icons-react';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type EventsDetail } from '@tmlmobilidade/go-offer-pckg-types';
-import { Menu, MenuItem, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
+import { IconAlertTriangle, IconLoader2, IconRoute, IconRouteOff } from '@tabler/icons-react';
+import { type EventsPatternsResponse } from '@tmlmobilidade/go-offer-pckg-types';
+import { Menu, MenuList, MenuNoContent } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { EventsDetailPatternsMenuItem } from '../EventsDetailPatternsMenuItem';
 
 /* * */
 
 interface EventsDetailPatternsMenuProps {
-	patterns?: EventsDetail['associated_patterns']
+	error: null | string
+	isLoading: boolean
+	patterns: EventsPatternsResponse
 }
 
 /* * */
 
-function EventsDetailPatternsMenuItem({ item: pattern }: { item: EventsDetail['associated_patterns'][number] }) {
-	return (
-		<MenuItem
-			description={pattern.headsign}
-			href={PAGE_ROUTES.offer.PATTERN_DETAIL(pattern.line_id, pattern._id, pattern.route_id)}
-			rel="noopener noreferrer"
-			target="_blank"
-			title={pattern.code}
-		/>
-	);
-}
+export function EventsDetailPatternsMenu({ error, isLoading, patterns }: EventsDetailPatternsMenuProps) {
+	//
 
-/* * */
+	//
+	// A. Setup variables
 
-export function EventsDetailPatternsMenu({ patterns = [] }: EventsDetailPatternsMenuProps) {
 	const { t } = useTranslation();
+	const hasPatterns = !isLoading && !error && patterns.length > 0;
+
+	//
+	// B. Render components
+
+	let emptyState = { icon: IconRouteOff, text: t('events:detail.EventsDetailPatternsMenu.no_patterns') };
+	if (isLoading) {
+		emptyState = { icon: IconLoader2, text: t('events:detail.EventsDetailPatternsMenu.loading') };
+	} else if (error) {
+		emptyState = { icon: IconAlertTriangle, text: t('events:detail.EventsDetailPatternsMenu.error') };
+	}
 
 	return (
 		<Menu
-			counter={patterns.length}
-			icon={IconEye}
-			label={t('default:events.ruleEditor.viewPatterns')}
+			counter={isLoading || error ? undefined : patterns.length}
+			icon={IconRoute}
+			label={t('events:detail.EventsDetailPatternsMenu.view_patterns')}
 			variant="primary"
 			width={320}
 		>
-			{patterns.length === 0 ? (
-				<MenuNoContent
-					icon={IconRouteOff}
-					text={t('default:events.ruleEditor.noPatterns')}
-				/>
-			) : (
+			{hasPatterns ? (
 				<MenuList
 					data={patterns}
 					getItemKey={pattern => pattern._id}
 					itemComponent={EventsDetailPatternsMenuItem}
 					maxHeight={500}
-					title={t('default:events.ruleEditor.patterns')}
+					title={t('events:detail.EventsDetailPatternsMenu.patterns')}
 				/>
+			) : (
+				<MenuNoContent {...emptyState} />
 			)}
 		</Menu>
 	);

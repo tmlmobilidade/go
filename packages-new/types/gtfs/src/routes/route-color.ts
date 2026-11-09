@@ -1,5 +1,6 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /**
@@ -27,5 +28,5 @@ export const RouteColorSchema = z
 	.coerce
 	.string()
 	.transform(value => value.startsWith('#') ? value.slice(1) : value)
-	.refine(value => /^[0-9A-Fa-f]{6}$/.test(value), { message: 'Expected a hex color in the format RRGGBB' })
+	.refine(value => /^[0-9A-Fa-f]{6}$/.test(value), validationParams('custom.formats.hex_color', { format: 'RRGGBB' }))
 	.transform(value => value.toUpperCase() as RouteColor);

@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type SimplifiedUser } from '@tmlmobilidade/go-types-core';
 
@@ -14,13 +13,13 @@ export async function getUserSimplifiedHandler(request: FastifyRequest<{ Params:
 	// Find the user by ID
 	const userData = await goDb.core.users.findById(request.params.id);
 	if (!userData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'User not found');
+		return sendErrorApiResponse(reply, { error: 'User not found', status_code: '404' });
 	}
 
 	// Find the organization data associated with the user
 	const organizationData = await goDb.core.organizations.findById(userData.organization_id);
 	if (!organizationData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Organization not found');
+		return sendErrorApiResponse(reply, { error: 'Organization not found', status_code: '404' });
 	}
 
 	// Simplify the user data by selecting only specific fields
@@ -33,5 +32,5 @@ export async function getUserSimplifiedHandler(request: FastifyRequest<{ Params:
 		seen_last_at: userData.seen_last_at,
 	};
 		// Send the simplified user data in the response
-	reply.send({ data: simplifiedUserData, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, simplifiedUserData);
 }

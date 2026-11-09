@@ -11,7 +11,7 @@ export const OrganizationOpenDataSchema = z.object({
 		hashes: z.array(z.string()).default([]),
 		status: ProcessingStatusSchema.default('skipped'),
 		timestamp: UnixMillisecondsSchema.nullable().default(null),
-	}).default({ hashes: [], status: 'skipped', timestamp: null }),
-}).default({ enabled: false, plans: { hashes: [], status: 'skipped', timestamp: null } });
+	}).prefault({}),
+}).prefault({});
 
 export type OrganizationOpenData = z.infer<typeof OrganizationOpenDataSchema>;

@@ -26,7 +26,7 @@ export async function createStopHandler(request: FastifyRequest<{ Body: StopsCre
 
 	if (!validatedRequest.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedRequest.error.message,
+			error: validatedRequest.error,
 			status_code: '400',
 		});
 	}

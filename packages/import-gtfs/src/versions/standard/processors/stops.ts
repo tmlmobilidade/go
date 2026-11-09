@@ -7,6 +7,8 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { type ImportGtfsContext } from '../../../shared/init-context.js';
 import { type GtfsSQLTables } from '../types.js';
 
+/* * */
+
 /**
  * Processes the stops.txt file from the GTFS dataset.
  * include all of them since we don't have a way to filter them yet like trips/routes/shapes.

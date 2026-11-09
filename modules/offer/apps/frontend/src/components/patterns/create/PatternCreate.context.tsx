@@ -1,102 +1,123 @@
 'use client';
 
+import { useLinesDetailData } from '@/components/lines/detail/use-lines-detail-data';
+import { useLinesListData } from '@/components/lines/list/use-lines-list-data';
 import { closeCreatePatternModal } from '@/components/patterns/create/PatternCreate.modal';
+import { useRoutesDetailData } from '@/components/routes/detail/use-routes-detail-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type CreatePatternDto, CreatePatternSchema, type Pattern, type Route } from '@tmlmobilidade/go-types-offer';
-import { fetchApiData, keepUrlParams, type UseFormReturnType, useHandleAction, useTypicalForm } from '@tmlmobilidade/ui';
+import { type CreatePatternDto, CreatePatternSchema, type Pattern } from '@tmlmobilidade/go-types-offer';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 /* * */
 
-interface PatternCreateContextState {
-	actions: {
-		create: () => Promise<void>
-	}
-	data: {
-		form: UseFormReturnType<CreatePatternDto>
-	}
-	flags: {
-		isSaving: boolean
-		isValid: boolean
-	}
-}
-
-/* * */
-
-const PatternCreateContext = createContext<PatternCreateContextState | undefined>(undefined);
+const PatternCreateContext = createContext<StandardFormContextValue<CreatePatternDto> | undefined>(undefined);
 
 export function usePatternCreateContext() {
 	const context = useContext(PatternCreateContext);
-	if (!context) {
-		throw new Error('usePatternCreateContext must be used within a PatternCreateContextProvider');
-	}
+	if (!context) throw new Error('usePatternCreateContext must be used within a PatternCreateContextProvider');
 	return context;
 }
 
 /* * */
 
-export const PatternCreateContextProvider = ({ children, lineId, routeId }: PropsWithChildren<{ lineId: string, routeId: string }>) => {
+export function PatternCreateContextProvider({ children, lineId, routeId }: PropsWithChildren<{ lineId: string, routeId: string }>) {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
+	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const accessRef = useRef(false);
+	const { mutate: listMutate } = useLinesListData();
+	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);
+	const { data: route, error: routeError, isLoading: routeLoading, mutate: routeMutate } = useRoutesDetailData(routeId);
 
 	//
-	// B. Fetch data
+	// B. Setup form
 
-	const { mutate: routeMutate } = useSWR<Route>(API_ROUTES.offer.ROUTES_DETAIL(routeId));
-
-	//
-	// C. Setup form
-
-	const { flags, form } = useTypicalForm<CreatePatternDto>(CreatePatternSchema, undefined, { code: '', destination: '', headsign: '', line_id: lineId, origin: '', route_id: routeId }, 'controlled');
+	const { form, isDirty, isValid, unblock } = useStandardForm<CreatePatternDto, typeof CreatePatternSchema>({
+		defaultValues: { code: '', destination: '', headsign: '', line_id: lineId, origin: '', route_id: routeId },
+		schema: CreatePatternSchema,
+	});
 
 	//
-	// D. Handle actions
+	// C. Handle requests
 
-	const { action: handleCreate, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Pattern>({ body: form.getValues(), method: 'POST', url: API_ROUTES.offer.PATTERNS_CREATE }),
+	const { action: createRequest, isLoading: isCreating } = useHandleAction({
+		fetchFn: async () => await fetchApiData<Pattern>({ body: CreatePatternSchema.parse(form.getValues()), method: 'POST', url: API_ROUTES.offer.PATTERNS_CREATE }),
 		onSuccess: ({ data }) => {
-			form.resetDirty();
+			form.reset();
+			unblock();
+			listMutate();
+			lineMutate();
 			routeMutate();
 			closeCreatePatternModal();
-			router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(lineId, data._id, routeId)));
+			if (data?._id) router.push(keepUrlParams(PAGE_ROUTES.offer.PATTERN_DETAIL(lineId, data._id, routeId)));
 		},
 	});
 
 	//
-	// E. Define context value
+	// D. Setup capabilities
 
-	const contextValue: PatternCreateContextState = useMemo(() => ({
+	const agencyIds = line?.agency_id ? [line.agency_id] : [];
+	const hasCreatePermission = agencyIds.length > 0 && PermissionCatalog.hasPermissionResourceAll({
+		action: PermissionCatalog.all.lines.actions.create,
+		permissions: me?.permissions ?? [],
+		resource_key: 'agency_ids',
+		scope: PermissionCatalog.all.lines.scope,
+		value: agencyIds,
+	});
+	const isReady = !meLoading && !meError && !lineLoading && !lineError && !!line && !line.is_locked && !routeLoading && !routeError && !!route && route.line_id === lineId && !route.is_locked;
+	const standardCapabilities = useStandardFormCapabilities({
+		create: { hasPermission: hasCreatePermission, isCreating },
+		form: { isDirty, isValid },
+		loading: { isLoading: !isReady },
+	});
+	const createEnabled = standardCapabilities.createEnabled;
+	const editEnabled = standardCapabilities.editEnabled && hasCreatePermission;
+	accessRef.current = createEnabled;
+
+	const handleCreate = useCallback(async () => {
+		if (!accessRef.current) return;
+		await form.handleSubmit(async () => {
+			if (accessRef.current) await createRequest();
+		})();
+	}, [createRequest, form]);
+
+	useEffect(() => {
+		accessRef.current = createEnabled;
+		return () => {
+			accessRef.current = false;
+		};
+	}, [createEnabled]);
+
+	//
+	// E. Return context value
+
+	const stateValue: StandardFormContextValue<CreatePatternDto> = useMemo(() => ({
 		actions: {
 			create: handleCreate,
 		},
-		data: {
-			form,
+		capabilities: {
+			createEnabled,
+			editEnabled,
 		},
-		flags: {
-			isSaving,
-			isValid: flags.isValid,
-		},
-	}), [
 		form,
-		flags.isValid,
-		handleCreate,
-		isSaving,
-	]);
-
-	//
-	// H. Render components
+		isDirty,
+		isValid,
+		status: {
+			isCreating,
+		},
+		unblock,
+	}), [createEnabled, editEnabled, form, handleCreate, isCreating, isDirty, isValid, unblock]);
 
 	return (
-		<PatternCreateContext.Provider value={contextValue}>
+		<PatternCreateContext.Provider value={stateValue}>
 			{children}
 		</PatternCreateContext.Provider>
 	);
-
-	//
-};
+}

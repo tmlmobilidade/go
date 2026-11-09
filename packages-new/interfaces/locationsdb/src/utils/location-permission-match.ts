@@ -9,8 +9,9 @@ import { LOCATION_PERMISSION_SLOTS } from '@tmlmobilidade/go-types-locations';
 export function locationPermissionMatch(allowedOsmIds: string[]) {
 	const ids = allowedOsmIds.map(Number);
 	return {
-		$or: LOCATION_PERMISSION_SLOTS.map(slot => ({
-			[`location.${slot}.osm_id`]: { $in: ids },
-		})),
+		$or: [
+			{ 'location.country.osm_id': { $in: ids } },
+			...LOCATION_PERMISSION_SLOTS.map(slot => ({ [`location.${slot}.osm_id`]: { $in: ids } })),
+		],
 	};
 }

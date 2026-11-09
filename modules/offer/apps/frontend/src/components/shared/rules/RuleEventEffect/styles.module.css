@@ -1,0 +1,10 @@
+.root {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+}
+
+.root[data-inline] {
+	flex-wrap: nowrap;
+}

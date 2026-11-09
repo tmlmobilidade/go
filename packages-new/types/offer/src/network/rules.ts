@@ -1,7 +1,6 @@
 import { HHMMSchema } from '@/dates/common.js';
-import { MONTHS } from '@/dates/months.js';
-import { WEEKDAYS } from '@/dates/weekdays.js';
-import { OperationalDateSchema } from '@tmlmobilidade/go-types-shared';
+import { MONTHS, OperationalDateIntSchema, WEEKDAYS } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -31,32 +30,35 @@ export const ManualRuleBaseSchema = z.object({
 	_id: z.string(),
 	event_id: z.string().optional(),
 	kind: z.literal('manual'),
-	months: z.array(z.nativeEnum(MONTHS)).optional(),
+	months: z.array(z.enum(MONTHS)).optional(),
 	name: z.string().optional(),
 	operating_mode: OperatingModeSchema,
 	timepoints: z.array(HHMMSchema),
-	weekdays: z.array(z.nativeEnum(WEEKDAYS)).optional(),
+	weekdays: z.array(z.enum(WEEKDAYS)).optional(),
 	year_period_ids: z.array(z.string()),
 });
 
-export const ManualRuleSchema = ManualRuleBaseSchema.superRefine((data, ctx) => {
+/** Ordinary rules match weekday AND period; event-linked rules may narrow either. */
+function validateManualRule(data: z.infer<typeof ManualRuleBaseSchema>, ctx: z.RefinementCtx) {
 	if (!data.event_id) {
 		if (!data.weekdays?.length) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: 'Selecione pelo menos um dia da semana.',
+				code: 'custom',
+				...validationParams('custom.network.weekdays'),
 				path: ['weekdays'],
 			});
 		}
 		if (!data.year_period_ids?.length) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: 'Selecione pelo menos um período do ano.',
+				code: 'custom',
+				...validationParams('custom.network.year_periods'),
 				path: ['year_period_ids'],
 			});
 		}
 	}
-});
+}
+
+export const ManualRuleSchema = ManualRuleBaseSchema.superRefine(validateManualRule);
 
 /* * */
 
@@ -66,7 +68,7 @@ export const EventDerivedBaseSchema = z.object({
 	name: z.string().optional(),
 
 	// applies on these operational dates
-	dates: z.array(OperationalDateSchema),
+	dates: z.array(OperationalDateIntSchema),
 
 	lines_mode: LinesModeSchema,
 	lines_to_exclude: z.array(z.string()).optional(),
@@ -107,7 +109,7 @@ export const EventReplacementSchema = EventDerivedBaseSchema.extend({
 	 */
 	same_weekday: z.boolean().optional(),
 
-	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
+	weekdays: z.array(z.enum(WEEKDAYS)),
 	year_period_ids: z.array(z.string()),
 });
 
@@ -126,18 +128,8 @@ export const ScheduleRuleSchema = z.discriminatedUnion('kind', [
 
 export const PatternUpdateRuleBaseSchema = ManualRuleBaseSchema.omit({ name: true });
 
-export const PatternUpdateRuleSchema = PatternUpdateRuleBaseSchema.superRefine((data, ctx) => {
-	const hasEvent = Boolean(data.event_id);
-	const hasWeekdays = Boolean(data.weekdays?.length);
-
-	if (!hasEvent && !hasWeekdays) {
-		ctx.addIssue({
-			code: z.ZodIssueCode.custom,
-			message: 'Selecione pelo menos um dia da semana.',
-			path: ['weekdays'],
-		});
-	}
-});
+// Names are generated for presentation and are not owned by persisted Pattern rules.
+export const PatternUpdateRuleSchema = PatternUpdateRuleBaseSchema.superRefine(validateManualRule);
 
 export const PatternUpdateRulesSchema = z.array(PatternUpdateRuleSchema).optional();
 

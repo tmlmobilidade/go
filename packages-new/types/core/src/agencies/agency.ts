@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, LanguageTagSchema, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, LanguageTagSchema, partialWithoutDefaults, TimezoneIdentifiedSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { AgencyAlertsSchema } from './alerts.js';
@@ -24,10 +24,16 @@ export const AgencySchema = BaseDocumentSchema.extend({
 });
 
 export const CreateAgencySchema = AgencySchema.omit({ created_at: true, updated_at: true });
-export const UpdateAgencySchema = CreateAgencySchema.omit({ created_by: true }).partial();
+export const UpdateAgencySchema = partialWithoutDefaults(CreateAgencySchema.omit({ created_by: true }));
 
 /* * */
 
 export type Agency = z.infer<typeof AgencySchema>;
 export type CreateAgencyDto = z.infer<typeof CreateAgencySchema>;
 export type UpdateAgencyDto = z.infer<typeof UpdateAgencySchema>;
+
+/* * */
+
+/** Basic agency identity shared by selectors and cross-module displays. */
+export const AgencyReferenceSchema = AgencySchema.pick({ _id: true, code: true, name: true, short_name: true });
+export type AgencyReference = z.infer<typeof AgencyReferenceSchema>;

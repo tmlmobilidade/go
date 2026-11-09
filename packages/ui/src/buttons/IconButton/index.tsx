@@ -57,6 +57,7 @@ export function IconButton({ color, icon, isDisabled, isLoading, isReadOnly, too
 	const renderButton = () => {
 		return (
 			<ActionIcon
+				aria-label={tooltip}
 				color={color}
 				component={isLink ? 'a' : 'button'}
 				disabled={isDisabled}

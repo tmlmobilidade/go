@@ -20,6 +20,14 @@ export const PAGE_ROUTES = Object.freeze({
 		// CHANGE_PASSWORD
 		CHANGE_PASSWORD_LIST: `${getModuleConfig('core', 'frontend_url')}/change-password`,
 
+		// DEV_BANNERS
+		DEV_BANNERS_DETAIL: (bannerId: string) => `${getModuleConfig('core', 'frontend_url')}/dev/banners/${encodeURIComponent(bannerId)}`,
+		DEV_BANNERS_LIST: `${getModuleConfig('core', 'frontend_url')}/dev/banners`,
+
+		// DEV_CHANGELOGS
+		DEV_CHANGELOGS_DETAIL: (releaseId: string) => `${getModuleConfig('core', 'frontend_url')}/dev/changelogs/${encodeURIComponent(releaseId)}`,
+		DEV_CHANGELOGS_LIST: `${getModuleConfig('core', 'frontend_url')}/dev/changelogs`,
+
 		// HOME
 		HOME_LIST: `${getModuleConfig('core', 'frontend_url')}/home`,
 
@@ -92,6 +100,9 @@ export const PAGE_ROUTES = Object.freeze({
 		// TYPOLOGIES
 		TYPOLOGIES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/typologies/${encodeURIComponent(id)}`,
 		TYPOLOGIES_LIST: `${getModuleConfig('offer', 'frontend_url')}/typologies`,
+
+		// YEAR_PERIODS_DATES
+		YEAR_PERIODS_DATES_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}/dates`,
 
 		// YEAR_PERIODS
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'frontend_url')}/year-periods/${encodeURIComponent(id)}`,
@@ -170,6 +181,7 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}`,
 		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
 		AGENCIES_LIST: `${getModuleConfig('core', 'api_url')}/agencies`,
+		AGENCIES_LOOKUP: `${getModuleConfig('core', 'api_url')}/platform/agencies/lookup`,
 
 		// APP-CONFIGS
 		APP_CONFIGS_BANNER: `${getModuleConfig('core', 'api_url')}/app-configs/banner`,
@@ -180,12 +192,26 @@ export const API_ROUTES = Object.freeze({
 		AUTH_LOGOUT: `${getModuleConfig('core', 'api_url')}/auth/logout`,
 		AUTH_SEND_PASSWORD_RESET_EMAIL: `${getModuleConfig('core', 'api_url')}/auth/send-password-reset-email`,
 
+		// BANNERS
+		BANNERS_ACTIVE: `${getModuleConfig('core', 'api_url')}/platform/banners/active`,
+		BANNERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/banners/${encodeURIComponent(id)}`,
+		BANNERS_DETAIL_DISMISS: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/banners/${encodeURIComponent(id)}/dismiss`,
+		BANNERS_LIST: `${getModuleConfig('core', 'api_url')}/banners`,
+
+		// CHANGELOGS
+		CHANGELOGS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/changelogs/${encodeURIComponent(id)}`,
+		CHANGELOGS_LIST: `${getModuleConfig('core', 'api_url')}/changelogs`,
+		CHANGELOGS_PUBLISHED: `${getModuleConfig('core', 'api_url')}/platform/changelogs/published`,
+		CHANGELOGS_PUBLISHED_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/changelogs/published/${encodeURIComponent(id)}`,
+		CHANGELOGS_SEEN: `${getModuleConfig('core', 'api_url')}/platform/changelogs/seen`,
+
 		// EXTRACTIONS
 		EXTRACTIONS_CREATE: `${getModuleConfig('core', 'api_url')}/platform/extractions/create`,
 		EXTRACTIONS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/delete/${encodeURIComponent(id)}`,
 		EXTRACTIONS_DOWNLOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/download/${encodeURIComponent(id)}`,
 		EXTRACTIONS_LIST: `${getModuleConfig('core', 'api_url')}/platform/extractions/list`,
 		EXTRACTIONS_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/lock/${encodeURIComponent(id)}`,
+		EXTRACTIONS_RELOAD: (id: string) => `${getModuleConfig('core', 'api_url')}/platform/extractions/reload/${encodeURIComponent(id)}`,
 
 		// HOME
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
@@ -318,6 +344,7 @@ export const API_ROUTES = Object.freeze({
 		// STOPS
 		STOPS_CREATE: `${getModuleConfig('infrastructure', 'api_url')}/stops/create`,
 		STOPS_DELETE: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/delete/${encodeURIComponent(id)}`,
+		STOPS_DETAIL_PATTERNS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/${encodeURIComponent(id)}/patterns`,
 		STOPS_GET: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/get/${encodeURIComponent(id)}`,
 		STOPS_GET_STOP_LOCATION: `${getModuleConfig('infrastructure', 'api_url')}/stops/get-stop-location`,
 		STOPS_GET_TTS: (id: string) => `${getModuleConfig('infrastructure', 'api_url')}/stops/get/tts/${encodeURIComponent(id)}`,
@@ -342,6 +369,7 @@ export const API_ROUTES = Object.freeze({
 		EVENTS_CREATE: `${getModuleConfig('offer', 'api_url')}/events/create`,
 		EVENTS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}`,
 		EVENTS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}/lock`,
+		EVENTS_DETAIL_PATTERNS: (id: string) => `${getModuleConfig('offer', 'api_url')}/events/${encodeURIComponent(id)}/patterns`,
 		EVENTS_LIST: `${getModuleConfig('offer', 'api_url')}/events`,
 		EVENTS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/events/list-agencies`,
 
@@ -394,6 +422,7 @@ export const API_ROUTES = Object.freeze({
 		YEAR_PERIODS_CHECK_CONFLICTS: `${getModuleConfig('offer', 'api_url')}/year-periods/check-conflicts`,
 		YEAR_PERIODS_CREATE: `${getModuleConfig('offer', 'api_url')}/year-periods/create`,
 		YEAR_PERIODS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}`,
+		YEAR_PERIODS_DETAIL_DATES: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/dates`,
 		YEAR_PERIODS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/year-periods/${encodeURIComponent(id)}/lock`,
 		YEAR_PERIODS_LIST: `${getModuleConfig('offer', 'api_url')}/year-periods`,
 		YEAR_PERIODS_LIST_AGENCIES: `${getModuleConfig('offer', 'api_url')}/year-periods/list-agencies`,
