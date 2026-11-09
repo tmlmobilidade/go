@@ -17,7 +17,7 @@ export const PlanStatisticsSchema = z.object({
 	vkm_count: z.number().finite().nonnegative(),
 });
 
-/** Processing metadata and results belonging to the plans-statistics worker. */
+/** Processing metadata and results belonging to the plan statistics task. */
 export const PlanAppStatisticsSchema = z.object({
 	last_hash: z.string().nullable().default(null),
 	message: z.string().nullable().default(null),

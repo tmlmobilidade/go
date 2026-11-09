@@ -7,15 +7,15 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { planStatisticsWriter } from '../../utils/writer.js';
-import { calculateGtfsStatistics, type GtfsStatistics } from '../calculate-statistics/calculate-gtfs-statistics.js';
-import { calculatePlanCost } from '../calculate-statistics/calculate-plan-cost.js';
+import { calculateGtfsStatistics, type GtfsStatistics } from './steps/calculate-gtfs-statistics.js';
+import { calculatePlanCost } from './steps/calculate-plan-cost.js';
 import { importPlanGtfs } from './steps/import-plan-gtfs.js';
+import { planStatisticsWriter } from './writer.js';
 
 /* * */
 
 /** Imports normalized GTFS files, persists their statistics and logs the calculated totals. */
-export async function importPlansTask() {
+export async function calculatePlanStatisticsTask() {
 	//
 	// Select normalized plans whose current hash has not yet been processed.
 

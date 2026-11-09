@@ -29,5 +29,10 @@
 			"title": "Estatísticas do plano",
 			"unavailable": "As estatísticas deste plano ainda não estão disponíveis."
 		}
+	},
+	"list": {
+		"PlansList": {
+			"statistics": "Estatísticas"
+		}
 	}
 }

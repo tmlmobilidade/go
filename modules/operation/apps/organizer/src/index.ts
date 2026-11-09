@@ -4,6 +4,7 @@ import { runOnInterval } from '@tmlmobilidade/go-utils-exec';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { removeOldGtfsValidationsTask } from './tasks/gtfs-validations/remove-old-gtfs-validations.js';
+import { calculatePlanStatisticsTask } from './tasks/plans/calculate-plan-statistics/calculate-plan-statistics.js';
 import { normalizePlansTask } from './tasks/plans/normalize-plans/normalize-plans.js';
 import { updatePlanHashesTask } from './tasks/plans/update-plan-hashes/update-plan-hashes.js';
 import { removeOrphanAnalysesTask } from './tasks/rides/remove-orphan-analyses.js';
@@ -33,6 +34,7 @@ async function reprocessStuckRides() {
 
 	await updatePlanHashesTask();
 	await normalizePlansTask();
+	await calculatePlanStatisticsTask();
 
 	/* * */
 	/* RIDES */

@@ -1,7 +1,7 @@
 'use client';
 
 import { usePlanDetailContext } from '@/components/plans/detail/PlanDetailForm.context';
-import { Collapsible, ErrorDisplay, Grid, NoDataLabel, ProcessingStatusDisplay, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { Collapsible, ErrorDisplay, Grid, NoDataLabel, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -42,8 +42,6 @@ export function PlanDetailSectionStatistics() {
 			defaultOpen
 		>
 			<Section gap="sm">
-				<ProcessingStatusDisplay value={status} />
-
 				{status === 'error' && (
 					<ErrorDisplay message={t('plans:detail.PlanDetailSectionStatistics.error')} />
 				)}
