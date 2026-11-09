@@ -12,6 +12,9 @@ import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 
 import namespaceEffectsEn from '@/i18n/namespaces/effects/en.json' with { type: 'json' };
 import namespaceEffectsEs from '@/i18n/namespaces/effects/es.json' with { type: 'json' };
 import namespaceEffectsPt from '@/i18n/namespaces/effects/pt.json' with { type: 'json' };
+import namespacePlansEn from '@/i18n/namespaces/plans/en.json' with { type: 'json' };
+import namespacePlansEs from '@/i18n/namespaces/plans/es.json' with { type: 'json' };
+import namespacePlansPt from '@/i18n/namespaces/plans/pt.json' with { type: 'json' };
 import namespaceReferenceTypesEn from '@/i18n/namespaces/reference-types/en.json' with { type: 'json' };
 import namespaceReferenceTypesEs from '@/i18n/namespaces/reference-types/es.json' with { type: 'json' };
 import namespaceReferenceTypesPt from '@/i18n/namespaces/reference-types/pt.json' with { type: 'json' };
@@ -36,6 +39,7 @@ export const i18nResourceKeysPt = {
 	causes: namespaceCausesPt,
 	default: namespaceDefaultPt,
 	effects: namespaceEffectsPt,
+	plans: namespacePlansPt,
 	reference_types: namespaceReferenceTypesPt,
 	ride_analysis: namespaceAnalysisPt,
 	ride_status: namespaceStatusPt,
@@ -50,6 +54,7 @@ export const i18nResourceKeysEs = {
 	causes: namespaceCausesEs,
 	default: namespaceDefaultEs,
 	effects: namespaceEffectsEs,
+	plans: namespacePlansEs,
 	reference_types: namespaceReferenceTypesEs,
 	ride_analysis: namespaceAnalysisEs,
 	ride_status: namespaceStatusEs,
@@ -64,6 +69,7 @@ export const i18nResourceKeysEn = {
 	causes: namespaceCausesEn,
 	default: namespaceDefaultEn,
 	effects: namespaceEffectsEn,
+	plans: namespacePlansEn,
 	reference_types: namespaceReferenceTypesEn,
 	ride_analysis: namespaceAnalysisEn,
 	ride_status: namespaceStatusEn,

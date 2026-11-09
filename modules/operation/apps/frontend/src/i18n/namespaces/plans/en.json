@@ -1,0 +1,33 @@
+{
+	"detail": {
+		"PlanDetailSectionStatistics": {
+			"cost": {
+				"invalid_configuration": "Invalid cost per kilometre",
+				"missing_configuration": "Cost per kilometre not configured",
+				"unavailable": "Cost unavailable"
+			},
+			"description": "GTFS totals and planned kilometres during the plan's validity period.",
+			"error": "Unable to calculate statistics for this plan.",
+			"fields": {
+				"cost": {
+					"label": "Estimated cost"
+				},
+				"lines": {
+					"description": "Distinct line names in routes.txt.",
+					"label": "Lines"
+				},
+				"trips": {
+					"description": "Records in trips.txt.",
+					"label": "Trips"
+				},
+				"vkms": {
+					"description": "VKM accumulated from the start to the end of the plan's validity period.",
+					"label": "Total kilometres"
+				}
+			},
+			"outdated": "The plan has changed. Statistics are awaiting reprocessing.",
+			"title": "Plan statistics",
+			"unavailable": "Statistics for this plan are not available yet."
+		}
+	}
+}

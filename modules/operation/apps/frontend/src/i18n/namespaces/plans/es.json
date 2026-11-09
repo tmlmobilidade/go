@@ -1,0 +1,33 @@
+{
+	"detail": {
+		"PlanDetailSectionStatistics": {
+			"cost": {
+				"invalid_configuration": "Coste por kilómetro no válido",
+				"missing_configuration": "Coste por kilómetro sin configurar",
+				"unavailable": "Coste no disponible"
+			},
+			"description": "Totales del GTFS y kilómetros previstos durante la vigencia del plan.",
+			"error": "No se han podido calcular las estadísticas de este plan.",
+			"fields": {
+				"cost": {
+					"label": "Coste estimado"
+				},
+				"lines": {
+					"description": "Nombres de línea distintos en routes.txt.",
+					"label": "Líneas"
+				},
+				"trips": {
+					"description": "Registros en trips.txt.",
+					"label": "Viajes"
+				},
+				"vkms": {
+					"description": "VKM acumulados entre el inicio y el fin de la vigencia del plan.",
+					"label": "Kilómetros totales"
+				}
+			},
+			"outdated": "El plan ha cambiado. Las estadísticas están pendientes de un nuevo procesamiento.",
+			"title": "Estadísticas del plan",
+			"unavailable": "Las estadísticas de este plan aún no están disponibles."
+		}
+	}
+}
