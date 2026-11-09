@@ -15,6 +15,7 @@ import { readFileSync, unlinkSync } from 'node:fs';
 import { finished } from 'node:stream/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
+import { z } from 'zod';
 
 /**
  * Creates a new GTFS Validation from multipart form data.
@@ -145,18 +146,17 @@ export async function createGtfsValidationHandler(request: FastifyRequest, reply
 						updated_at: Dates.now('utc').unix_milliseconds,
 					});
 
-					if (!validatedGtfsValidation.success) {
-						return sendErrorApiResponse(reply, {
-							error: validatedGtfsValidation.error,
-							status_code: '400',
-						});
-					}
+					// Reject the transaction; the outer handler owns the HTTP response.
+					if (!validatedGtfsValidation.success) throw validatedGtfsValidation.error;
 
 					finalValidationData = await goDb.operation.gtfsValidations.insertOne(validatedGtfsValidation.data, { session });
 				},
 			},
 		);
 	} catch (error) {
+		if (error instanceof z.ZodError) {
+			return sendErrorApiResponse(reply, { error, status_code: '400' });
+		}
 		Logger.error({ attributes: { error }, message: 'Error uploading file' });
 		return sendErrorApiResponse(reply, {
 			error: error instanceof Error ? error.message : 'Unknown error',
