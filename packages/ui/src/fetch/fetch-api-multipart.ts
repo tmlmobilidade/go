@@ -2,6 +2,8 @@
 
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 
+import { readApiResponse } from './read-api-response';
+
 /**
  * Sends a multipart form data request to a URL.
  * @param url - The URL to send the request to
@@ -15,11 +17,13 @@ import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
  * const response = await fetchApiMultipart('/api/upload', formData);
  * ```
  */
-export async function fetchApiMultipart<T>(url: string, formData: FormData): Promise<ApiResponse<T>> {
+export async function fetchApiMultipart<T>(url: string, formData: FormData, locale?: string): Promise<ApiResponse<T>> {
+	const language = locale ?? (typeof document !== 'undefined' ? document.documentElement.lang : undefined);
 	const response = await fetch(url, {
 		body: formData,
 		credentials: 'include',
+		headers: language ? { 'Accept-Language': language } : undefined,
 		method: 'POST',
 	});
-	return await response.json();
+	return await readApiResponse<T>(response);
 }
