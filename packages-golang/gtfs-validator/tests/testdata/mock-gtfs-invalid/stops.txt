@@ -1,0 +1,3 @@
+stop_id,stop_name,stop_lat,stop_lon
+stop_a,Mock Origin,38.7223,-9.1393
+stop_b,Mock Destination,38.7323,-9.1493
