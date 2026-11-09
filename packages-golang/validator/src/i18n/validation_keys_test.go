@@ -74,7 +74,6 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 		packages[alias] = filepath.Join("..", filepath.FromSlash(directory))
 	}
 	functionRules := map[string]string{}
-	registeredDirectories := map[string]bool{}
 	ast.Inspect(registrations, func(node ast.Node) bool {
 		batch, ok := node.(*ast.CompositeLit)
 		if !ok {
@@ -99,7 +98,6 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 				t.Fatalf("cannot resolve validation package for %s", id)
 			}
 			functionRules[filepath.Join(packages[alias.Name], function.Sel.Name)] = id
-			registeredDirectories[packages[alias.Name]] = true
 		}
 		return true
 	})
@@ -114,6 +112,9 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 				t.Errorf("%s: missing %s translation %s", position, translator.language, key)
 			}
 		}
+	}
+	for _, id := range functionRules {
+		check(id+".generic", token.Position{Filename: "../validations/registry-rules.go"})
 	}
 	err = filepath.WalkDir("..", func(path string, entry fs.DirEntry, err error) error {
 		if err != nil {
@@ -164,18 +165,14 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 			if !strings.HasPrefix(filepath.ToSlash(path), "../validations/") {
 				return true
 			}
-			// Unregistered packages have no runtime rule IDs yet. Registered
-			// packages still fail below if a callback's mapping is missing.
-			if !registeredDirectories[filepath.Dir(path)] {
+			// Audit callbacks that can execute. Registration completeness is checked
+			// separately in validations tests, including all standard checks.
+			ruleID, ok := ruleForPosition(call.Pos())
+			if !ok {
 				return true
 			}
 			if len(call.Args) == 0 {
 				t.Errorf("%s: missing validation context", positions.Position(call.Pos()))
-				return true
-			}
-			ruleID, ok := ruleForPosition(call.Pos())
-			if !ok {
-				t.Errorf("%s: cannot resolve the registered rule ID", positions.Position(call.Pos()))
 				return true
 			}
 			count := 1
@@ -200,6 +197,17 @@ func TestValidationDetailTranslationsUseRuleIDs(t *testing.T) {
 					t.Errorf("%s: use a detail key without a rule prefix: %s", positions.Position(key.Pos()), value)
 				}
 				check(ruleID+"."+value, positions.Position(key.Pos()))
+				for _, translator := range translators {
+					template, exists := translator.translations[ruleID+"."+value]
+					if !exists {
+						continue
+					}
+					arguments := len(call.Args) - count - 1
+					placeholders := strings.Count(strings.ReplaceAll(template, "%%", ""), "%")
+					if placeholders != arguments {
+						t.Errorf("%s: %s translation %s.%s expects %d formatting arguments, call supplies %d", positions.Position(key.Pos()), translator.language, ruleID, value, placeholders, arguments)
+					}
+				}
 			}
 			return true
 		})
