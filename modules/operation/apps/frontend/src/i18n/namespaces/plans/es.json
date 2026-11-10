@@ -25,6 +25,7 @@
 					"label": "Kilómetros totales"
 				}
 			},
+			"not_available": "NA",
 			"outdated": "El plan ha cambiado. Las estadísticas están pendientes de un nuevo procesamiento.",
 			"title": "Estadísticas del plan",
 			"unavailable": "Las estadísticas de este plan aún no están disponibles."

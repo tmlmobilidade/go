@@ -25,6 +25,7 @@
 					"label": "Total kilometres"
 				}
 			},
+			"not_available": "NA",
 			"outdated": "The plan has changed. Statistics are awaiting reprocessing.",
 			"title": "Plan statistics",
 			"unavailable": "Statistics for this plan are not available yet."

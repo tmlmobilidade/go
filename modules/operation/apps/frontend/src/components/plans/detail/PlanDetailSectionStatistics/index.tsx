@@ -28,8 +28,12 @@ export function PlanDetailSectionStatistics() {
 	const numberFormatter = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 0 });
 	const distanceFormatter = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2, minimumFractionDigits: 2, style: 'unit', unit: 'kilometer' });
 	const currencyFormatter = new Intl.NumberFormat(i18n.language, { currency: 'EUR', style: 'currency' });
+	const notAvailable = t('plans:detail.PlanDetailSectionStatistics.not_available');
+	const formatStatistic = (value: number, formatter: Intl.NumberFormat) => {
+		return value === 0 ? notAvailable : formatter.format(value);
+	};
 	const costValue = cost?.status === 'ready'
-		? currencyFormatter.format(cost.amount)
+		? formatStatistic(cost.amount, currencyFormatter)
 		: t(`plans:detail.PlanDetailSectionStatistics.cost.${cost?.status ?? 'unavailable'}`);
 
 	//
@@ -52,19 +56,19 @@ export function PlanDetailSectionStatistics() {
 							footer={t('plans:detail.PlanDetailSectionStatistics.fields.vkms.description')}
 							isLoading={isProcessing}
 							label={t('plans:detail.PlanDetailSectionStatistics.fields.vkms.label')}
-							value={statistics ? distanceFormatter.format(statistics.vkm_count) : null}
+							value={statistics ? formatStatistic(statistics.vkm_count, distanceFormatter) : null}
 						/>
 						<ValueDisplay
 							footer={t('plans:detail.PlanDetailSectionStatistics.fields.lines.description')}
 							isLoading={isProcessing}
 							label={t('plans:detail.PlanDetailSectionStatistics.fields.lines.label')}
-							value={statistics ? numberFormatter.format(statistics.line_count) : null}
+							value={statistics ? formatStatistic(statistics.line_count, numberFormatter) : null}
 						/>
 						<ValueDisplay
 							footer={t('plans:detail.PlanDetailSectionStatistics.fields.trips.description')}
 							isLoading={isProcessing}
 							label={t('plans:detail.PlanDetailSectionStatistics.fields.trips.label')}
-							value={statistics ? numberFormatter.format(statistics.trip_count) : null}
+							value={statistics ? formatStatistic(statistics.trip_count, numberFormatter) : null}
 						/>
 						<ValueDisplay
 							isLoading={isProcessing}
