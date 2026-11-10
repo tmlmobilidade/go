@@ -32,27 +32,9 @@
 
 ## Ticket formats
 
-Local Markdown ticket:
+Write the issue body yourself in this shape. Do not read GitHub issue templates for the body text.
 
 ```markdown
-# <NN>: <Ticket title>
-
-**What to build:** <complete user-visible behavior>
-
-**Blocked by:** <ticket numbers/titles, or None (can start immediately)>
-
-**Status:** ready-for-agent
-
-- [ ] <Acceptance criterion>
-```
-
-GitHub issue body:
-
-```markdown
-## Parent
-
-<Parent issue reference, only when one exists>
-
 ## What to build
 
 <complete user-visible behavior>
@@ -66,7 +48,7 @@ GitHub issue body:
 - <blocking issue references, or None (can start immediately)>
 ```
 
-Omit **Parent** when there is no parent issue. Omit **Blocked by** when blockers are represented by native dependency links.
+Omit **Blocked by** when blockers are native dependency links. Saved Markdown tickets under `$TMPDIR` use the same section labels.
 
 ## Metadata and publishing
 
