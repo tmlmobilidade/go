@@ -17,4 +17,4 @@ A clear description of the complete user-visible behavior to deliver.
 
 ## Blocked by
 
-- None (can start immediately)
+- None (can start immediately) or reference blocking issues
