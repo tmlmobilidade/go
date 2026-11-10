@@ -78,13 +78,13 @@ func NewManager(db *sql.DB, configuration map[string]rules.RuleConfig, validatio
 	//
 	// 5. Store the nodes and validate their dependency order
 
-	m := &types.Manager[*validationTypes.Execution]{Rules: nodes}
-	if err := Build(m); err != nil {
+	manager := &types.Manager[*validationTypes.Execution]{Rules: nodes}
+	if err := Build(manager); err != nil {
 		return nil, err
 	}
 	
 	//
 	// 6. Return the prepared manager
 
-	return m, nil
+	return manager, nil
 }

@@ -15,13 +15,13 @@ import (
 * Callbacks share row and must synchronize any writes to shared state. All started
 * callbacks finish before this function returns. Scheduling state is local to a run.
  */
-func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error) {
+func RunRules[T any](manager *types.Manager[T], row T) (map[string]types.Status, error) {
 	//
 
 	//
 	// 1. Validate the manager is ready
 
-	if m == nil || len(m.Ordered) != len(m.Rules) {
+	if manager == nil || len(manager.Ordered) != len(manager.Rules) {
 		return nil, fmt.Errorf("build the rule manager before running rows")
 	}
 
@@ -29,15 +29,15 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 	// 2. Validate the callbacks and prepare the dependency counts and the initial ready queue
 
 	// No callbacks start until the entire execution graph has been checked.
-	index := make(map[string]int, len(m.Ordered))
-	pending := make([]int, len(m.Ordered))
-	dependents := make([][]int, len(m.Ordered))
-	queue := make([]int, 0, len(m.Ordered))
+	index := make(map[string]int, len(manager.Ordered))
+	pending := make([]int, len(manager.Ordered))
+	dependents := make([][]int, len(manager.Ordered))
+	queue := make([]int, 0, len(manager.Ordered))
 
 	//
 	// 3. Validate the rules are ready
 
-	for i, rule := range m.Ordered {
+	for i, rule := range manager.Ordered {
 		if _, exists := index[rule.ID]; exists {
 			return nil, fmt.Errorf("duplicate rule id %q", rule.ID)
 		}
@@ -45,7 +45,7 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 		if rule.Run == nil {
 			return nil, fmt.Errorf("rule %q has no run function", rule.ID)
 		}
-		
+
 		for _, dependency := range rule.DependsOn {
 			parent, exists := index[dependency]
 			if !exists {
@@ -63,16 +63,16 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 	//
 	// 4. Initialize this run's results and dependency-failure flags
 
-	statuses := make(map[string]types.Status, len(m.Ordered))
-	blocked := make([]bool, len(m.Ordered))
+	statuses := make(map[string]types.Status, len(manager.Ordered))
+	blocked := make([]bool, len(manager.Ordered))
 
 	//
 	// 5. Define how a completion releases dependent rules
-
 	// Only the coordinator updates statuses, dependency counts, and the queue.
+
 	complete := func(i int, status types.Status) {
 		// Store the final outcome before making dependent rules ready.
-		statuses[m.Ordered[i].ID] = status
+		statuses[manager.Ordered[i].ID] = status
 		for _, child := range dependents[i] {
 			if status != types.Passed {
 				blocked[child] = true
@@ -88,12 +88,7 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 	//
 	// 6. Create the worker completion channel and scheduling counters
 
-	// completion carries one worker's result back to the coordinator.
-	type completion struct {
-		index  int          // Position of the completed rule in m.Ordered
-		status types.Status // Final outcome reported by its callback
-	}
-	done := make(chan completion, len(m.Ordered))
+	done := make(chan types.Completion, len(manager.Ordered))
 	running := 0
 	head := 0
 
@@ -112,18 +107,18 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 			}
 			running++
 			go func(i int) {
-				done <- completion{index: i, status: m.Ordered[i].Run(row)}
+				done <- types.Completion{Index: i, Status: manager.Ordered[i].Run(row)}
 			}(next)
 		}
 		// Process one completion, then immediately reconsider the ready queue.
 		// This lets E start after C finishes while an unrelated rule B is still running.
 		if running > 0 {
-			result := <-done
+			result := <- done
 			running--
-			complete(result.index, result.status)
+			complete(result.Index, result.Status)
 		}
 	}
-	
+
 	//
 	// 8. Return every rule's final status after all workers finish
 
