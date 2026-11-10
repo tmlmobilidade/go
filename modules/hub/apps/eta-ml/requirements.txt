@@ -1,0 +1,2 @@
+-r requirements-runtime.txt
+catboost==1.2.8

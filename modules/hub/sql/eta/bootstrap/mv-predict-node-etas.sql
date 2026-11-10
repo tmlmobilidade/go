@@ -14,145 +14,82 @@ CREATE TABLE IF NOT EXISTS eta.pred_node_etas
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (hashed_shape_id, node_index, period_of_day, weekday, day_type);
 
--- Refreshable MV: rebuilds eta.pred_node_etas every 15 minutes from the last
--- 30 days of aggregates.
---
--- Scope is deliberately narrow so the table stays small enough for the 30 s
--- trip-stop view to hash-join it every refresh:
---   * only shapes that have a ride in the current window (eta.curr_rides);
---   * only the (weekday, day_type) of the current and the next operational day,
---     so the trip-stop view always finds a row for "now" including across the
---     04:00 service-day boundary.
--- Targets are every (shape, node, period) seen in the window crossed with those
--- two day targets, so a prediction exists even when there is no same-weekday
--- history yet (the blend then falls back to the window means).
+ALTER TABLE eta.pred_node_etas
+    ADD COLUMN IF NOT EXISTS effective_sample_count Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS p10_seconds Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS p90_seconds Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS stddev_seconds Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS estimate_source LowCardinality(String) DEFAULT 'legacy';
+
+-- One non-overlapping weight per day: support x recency x calendar similarity.
+-- Statistics are mixtures of daily summaries, not exact pooled quantiles.
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_node_etas
-REFRESH EVERY 15 MINUTE
-TO eta.pred_node_etas
-AS
+REFRESH EVERY 15 MINUTE TO eta.pred_node_etas AS
 WITH
-    -- Operational "today" in local time: before 04:00 the service day is still yesterday.
-    toDate(now() - INTERVAL 4 HOUR, 'Europe/Lisbon') AS today_dt,
-    toUInt32(formatDateTime(today_dt - INTERVAL 1 DAY,  '%Y%m%d')) AS ymd_prev_1d,
-    toUInt32(formatDateTime(today_dt - INTERVAL 3 DAY,  '%Y%m%d')) AS ymd_prev_3d,
-    toUInt32(formatDateTime(today_dt - INTERVAL 7 DAY,  '%Y%m%d')) AS ymd_prev_7d,
-    toUInt32(formatDateTime(today_dt - INTERVAL 14 DAY, '%Y%m%d')) AS ymd_prev_14d,
-    toUInt32(formatDateTime(today_dt - INTERVAL 30 DAY, '%Y%m%d')) AS ymd_prev_30d,
-    weights AS (
-        SELECT
-            toFloat64(1.00) AS w_last_3d,
-            toFloat64(0.90) AS w_last_7d,
-            toFloat64(0.75) AS w_last_14d,
-            toFloat64(0.50) AS w_last_30d,
-            toFloat64(0.85) AS w_same_weekday,
-            toFloat64(0.80) AS w_same_day_type
-    ),
-    active_shapes AS (
-        SELECT DISTINCT hashed_shape_id FROM eta.curr_rides
-    ),
-    -- FINAL: the aggregation is a ReplacingMergeTree that is re-inserted per
-    -- operational day; without FINAL a day re-aggregated between merges would
-    -- count twice in the averages below.
+    toDate(now('Europe/Lisbon') - INTERVAL 4 HOUR) AS service_day,
     base AS (
-        SELECT
-            hashed_shape_id,
-            node_index,
-            operational_date,
-            weekday,
-            day_type,
-            period_of_day,
-            median_travel_time_seconds
+        SELECT *,
+            exp(-dateDiff('day', toDate(parseDateTimeBestEffort(toString(operational_date))), service_day) / 7.)
+                * least(toFloat64(sample_count), 20.) AS support
         FROM eta.hist_node_travel_times_aggregation FINAL
-        WHERE operational_date BETWEEN ymd_prev_30d AND ymd_prev_1d
-          AND hashed_shape_id IN (SELECT hashed_shape_id FROM active_shapes)
+        WHERE sample_count > 0 AND median_travel_time_seconds > 0
+          AND isFinite(median_travel_time_seconds)
+          AND operational_date >= toYYYYMMDD(service_day - INTERVAL 30 DAY)
+          AND operational_date < toYYYYMMDD(service_day)
+          AND hashed_shape_id IN (SELECT hashed_shape_id FROM eta.curr_rides FINAL)
     ),
-    day_targets AS (
-        SELECT
-            multiIf(
-                dow = 1, 'Monday',
-                dow = 2, 'Tuesday',
-                dow = 3, 'Wednesday',
-                dow = 4, 'Thursday',
-                dow = 5, 'Friday',
-                dow = 6, 'Saturday',
-                'Sunday'
-            ) AS weekday,
-            if(dow BETWEEN 1 AND 5, 'Weekday', 'Weekend') AS day_type
-        FROM (
-            SELECT arrayJoin([toDayOfWeek(today_dt), toDayOfWeek(today_dt + INTERVAL 1 DAY)]) AS dow
-        )
+    contexts AS (
+        SELECT DISTINCT
+            arrayElement(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], dow) AS weekday,
+            if(dow <= 5, 'Weekday', 'Weekend') AS day_type,
+            arrayJoin(['Peak AM','Mid','Peak PM','Off Peak']) AS period_of_day
+        FROM (SELECT arrayJoin(if(toHour(now('Europe/Lisbon')) = 4 AND toMinute(now('Europe/Lisbon')) < 5,
+                [toDayOfWeek(service_day - INTERVAL 1 DAY), toDayOfWeek(service_day), toDayOfWeek(service_day + INTERVAL 1 DAY)],
+                [toDayOfWeek(service_day), toDayOfWeek(service_day + INTERVAL 1 DAY)])) AS dow)
     ),
     targets AS (
-        SELECT DISTINCT
-            b.hashed_shape_id AS hashed_shape_id,
-            b.node_index      AS node_index,
-            b.period_of_day   AS period_of_day,
-            d.weekday         AS weekday,
-            d.day_type        AS day_type
-        FROM (SELECT DISTINCT hashed_shape_id, node_index, period_of_day FROM base) AS b
-        CROSS JOIN day_targets AS d
+        SELECT n.hashed_shape_id AS hashed_shape_id, n.node_index AS node_index,
+            c.weekday AS weekday, c.day_type AS day_type, c.period_of_day AS period_of_day
+        FROM eta.hist_shape_nodes AS n FINAL CROSS JOIN contexts AS c
+        WHERE n.hashed_shape_id IN (SELECT hashed_shape_id FROM eta.curr_rides FINAL)
     ),
-    agg_window AS (
-        SELECT
-            hashed_shape_id,
-            node_index,
-            period_of_day,
-            sumIf(median_travel_time_seconds, operational_date >= ymd_prev_3d)
-                / nullIf(countIf(operational_date >= ymd_prev_3d),  0) AS avg_prev_3d,
-            sumIf(median_travel_time_seconds, operational_date >= ymd_prev_7d)
-                / nullIf(countIf(operational_date >= ymd_prev_7d),  0) AS avg_prev_7d,
-            sumIf(median_travel_time_seconds, operational_date >= ymd_prev_14d)
-                / nullIf(countIf(operational_date >= ymd_prev_14d), 0) AS avg_prev_14d,
-            avg(median_travel_time_seconds)                                AS avg_prev_30d
-        FROM base
-        GROUP BY hashed_shape_id, node_index, period_of_day
-    ),
-    agg_weekday AS (
-        SELECT hashed_shape_id, node_index, period_of_day, toString(weekday) AS weekday,
-               avg(median_travel_time_seconds) AS avg_same_weekday
-        FROM base GROUP BY hashed_shape_id, node_index, period_of_day, weekday
-    ),
-    agg_day_type AS (
-        SELECT hashed_shape_id, node_index, period_of_day, toString(day_type) AS day_type,
-               avg(median_travel_time_seconds) AS avg_same_day_type
-        FROM base GROUP BY hashed_shape_id, node_index, period_of_day, day_type
+    prior AS (
+        SELECT hashed_shape_id, period_of_day,
+            sum(median_travel_time_seconds * support) / nullIf(sum(support), 0.) AS seconds
+        FROM base GROUP BY hashed_shape_id, period_of_day
     ),
     weighted AS (
-        SELECT
-            t.hashed_shape_id AS hashed_shape_id,
-            t.node_index      AS node_index,
-            t.period_of_day   AS period_of_day,
-            t.weekday         AS weekday,
-            t.day_type        AS day_type,
-            (
-                if(isNotNull(aw.avg_prev_3d),        w.w_last_3d,       0) +
-                if(isNotNull(aw.avg_prev_7d),        w.w_last_7d,       0) +
-                if(isNotNull(aw.avg_prev_14d),       w.w_last_14d,      0) +
-                if(isNotNull(aw.avg_prev_30d),       w.w_last_30d,      0) +
-                if(isNotNull(awd.avg_same_weekday),  w.w_same_weekday,  0) +
-                if(isNotNull(adt.avg_same_day_type), w.w_same_day_type, 0)
-            ) AS total_weight,
-            (
-                coalesce(aw.avg_prev_3d,        0) * w.w_last_3d        +
-                coalesce(aw.avg_prev_7d,        0) * w.w_last_7d        +
-                coalesce(aw.avg_prev_14d,       0) * w.w_last_14d       +
-                coalesce(aw.avg_prev_30d,       0) * w.w_last_30d       +
-                coalesce(awd.avg_same_weekday,  0) * w.w_same_weekday   +
-                coalesce(adt.avg_same_day_type, 0) * w.w_same_day_type
-            ) AS weighted_sum
+        SELECT t.hashed_shape_id AS hashed_shape_id, t.node_index AS node_index,
+            t.weekday AS weekday, t.day_type AS day_type, t.period_of_day AS period_of_day,
+            b.support * multiIf(b.weekday = t.weekday, 1., b.day_type = t.day_type, 0.7, 0.35) AS weight,
+            b.median_travel_time_seconds AS seconds,
+            b.p10_travel_time_seconds AS p10, b.p90_travel_time_seconds AS p90,
+            b.stddev_travel_time_seconds AS stddev
         FROM targets AS t
-        CROSS JOIN weights AS w
-        LEFT JOIN agg_window   AS aw  ON aw.hashed_shape_id = t.hashed_shape_id  AND aw.node_index = t.node_index  AND aw.period_of_day = t.period_of_day
-        LEFT JOIN agg_weekday  AS awd ON awd.hashed_shape_id = t.hashed_shape_id AND awd.node_index = t.node_index AND awd.period_of_day = t.period_of_day AND awd.weekday  = t.weekday
-        LEFT JOIN agg_day_type AS adt ON adt.hashed_shape_id = t.hashed_shape_id AND adt.node_index = t.node_index AND adt.period_of_day = t.period_of_day AND adt.day_type = t.day_type
+        LEFT JOIN base AS b ON b.hashed_shape_id = t.hashed_shape_id
+            AND b.node_index = t.node_index AND b.period_of_day = t.period_of_day
+    ),
+    pooled AS (
+        SELECT hashed_shape_id, node_index, weekday, day_type, period_of_day,
+            coalesce(sum(weight), 0.) AS effective_sample_count,
+            coalesce(sum(seconds * weight), 0.) AS weighted_seconds,
+            sum(p10 * weight) / nullIf(sum(weight), 0.) AS p10,
+            sum(p90 * weight) / nullIf(sum(weight), 0.) AS p90,
+            sqrt(greatest(0., sum((stddev * stddev + seconds * seconds) * weight) /
+                nullIf(sum(weight), 0.) - pow(weighted_seconds / nullIf(sum(weight), 0.), 2))) AS stddev
+        FROM weighted GROUP BY hashed_shape_id, node_index, weekday, day_type, period_of_day
     )
 SELECT
-    hashed_shape_id,
-    node_index,
-    period_of_day,
-    weekday,
-    day_type,
-    if(total_weight > 0, weighted_sum / total_weight, NULL) AS predicted_travel_time_seconds,
+    a.hashed_shape_id AS hashed_shape_id, a.node_index AS node_index,
+    a.period_of_day AS period_of_day, a.weekday AS weekday, a.day_type AS day_type,
+    (a.weighted_seconds + 5. * coalesce(p.seconds, 25. / 4.)) /
+        (a.effective_sample_count + 5.) AS predicted_travel_time_seconds,
+    a.effective_sample_count AS effective_sample_count,
+    coalesce(a.p10, predicted_travel_time_seconds * 0.5) AS p10_seconds,
+    coalesce(a.p90, predicted_travel_time_seconds * 2.) AS p90_seconds,
+    coalesce(a.stddev, predicted_travel_time_seconds) AS stddev_seconds,
+    if(a.effective_sample_count > 0, 'node_shrunk', if(p.seconds IS NOT NULL, 'shape_time_prior', 'distance_prior')) AS estimate_source,
     now() AS refreshed_at
-FROM weighted
+FROM pooled AS a
+LEFT JOIN prior AS p ON p.hashed_shape_id = a.hashed_shape_id AND p.period_of_day = a.period_of_day
 SETTINGS join_use_nulls = 1;

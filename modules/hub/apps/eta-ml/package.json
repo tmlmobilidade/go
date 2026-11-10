@@ -1,0 +1,12 @@
+{
+  "name": "@tmlmobilidade/go-hub-eta-ml",
+  "version": "1.0.0",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "build": "python3 -m compileall -q src",
+    "dev": "PYTHONPATH=src python3 -m eta_ml.serve",
+    "lint": "PYTHONPATH=src python3 -m unittest discover -s tests -v",
+    "start": "PYTHONPATH=src python3 -m eta_ml.serve"
+  }
+}
