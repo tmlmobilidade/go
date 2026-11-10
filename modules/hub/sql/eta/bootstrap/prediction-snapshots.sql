@@ -48,7 +48,7 @@ ALTER TABLE eta.prediction_snapshots
     ADD COLUMN IF NOT EXISTS historical_eta_at Nullable(Int64);
 
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_prediction_snapshots
-REFRESH EVERY 30 SECOND DEPENDS ON eta.mv_pred_trip_stop_etas
+REFRESH EVERY 30 SECOND DEPENDS ON eta.mv_pred_trip_stop_etas_v2
 APPEND TO eta.prediction_snapshots AS
 SELECT
     refreshed_at AS generated_at,

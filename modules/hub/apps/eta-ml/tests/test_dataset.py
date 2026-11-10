@@ -39,3 +39,13 @@ class DatasetTest(unittest.TestCase):
         result = metrics([10, 20], [10, None])
         self.assertEqual(result['coverage'], .5)
         self.assertIsNone(metrics([10], [None])['mae'])
+
+    def test_example_budget_and_whole_ride_sampling_are_deterministic(self):
+        rows = [row(ride='ride'+str(i)) for i in range(20)]
+        with self.assertRaisesRegex(ValueError,'example budget'):
+            build(rows,10000,20000,30000,40000,max_examples=1)
+        first,_=build(rows,10000,20000,30000,40000,sample_modulus=2)
+        second,_=build(list(reversed(rows)),10000,20000,30000,40000,sample_modulus=2)
+        self.assertEqual([r['ride_id'] for r in first['train']],[r['ride_id'] for r in second['train']])
+        self.assertGreater(len(first['train']),0)
+        self.assertLess(len(first['train']),len(rows))

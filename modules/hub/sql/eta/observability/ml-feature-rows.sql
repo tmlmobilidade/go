@@ -26,7 +26,7 @@ SELECT
     p.future_dwell_seconds AS future_dwell_seconds,
     sin(toHour(fromUnixTimestamp64Milli(p.generated_at, 'Europe/Lisbon')) * pi() / 12.) AS hour_sin,
     cos(toHour(fromUnixTimestamp64Milli(p.generated_at, 'Europe/Lisbon')) * pi() / 12.) AS hour_cos,
-    toDayOfWeek(toDate(parseDateTimeBestEffort(toString(p.operational_date)))) AS operational_weekday,
+    toDayOfWeek(toDate(fromUnixTimestamp64Milli(p.position_created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR)) AS operational_weekday,
     a.arrival_at AS actual_arrival_at, a.known_at AS label_known_at,
     a.confidence AS label_confidence,
     if(a.arrival_at > p.generated_at AND a.confidence >= 0.7 AND a.known_at <= {as_of:Int64},

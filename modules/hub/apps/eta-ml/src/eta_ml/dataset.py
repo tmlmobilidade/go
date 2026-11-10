@@ -21,9 +21,11 @@ def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
 
 
-def build(rows, train_before, validation_before, test_before, as_of):
+def build(rows, train_before, validation_before, test_before, as_of, max_examples=250000, sample_modulus=1):
     if not train_before < validation_before < test_before <= as_of:
         raise ValueError('cutoffs must be increasing and no later than export as_of')
+    if max_examples < 1 or sample_modulus < 1:
+        raise ValueError('example budget and sampling modulus must be positive')
     counts = Counter()
     chosen = {}
     for source in rows:
@@ -31,6 +33,10 @@ def build(rows, train_before, validation_before, test_before, as_of):
         row = dict(source)
         if row.get('feature_schema') != FEATURE_SCHEMA:
             counts['schema_mismatch'] += 1
+            continue
+        ride_key = str(row.get('agency_id',''))+'\0'+str(row.get('ride_id',''))
+        if int.from_bytes(hashlib.sha256(ride_key.encode()).digest()[:8],'big') % sample_modulus:
+            counts['sampled_out'] += 1
             continue
         required = ('generated_at', 'baseline_eta_at', 'actual_arrival_at', 'label_known_at', 'baseline_seconds')
         if any(number(row.get(k)) is None for k in required):
@@ -59,9 +65,11 @@ def build(rows, train_before, validation_before, test_before, as_of):
         bucket = horizon(row['baseline_seconds'])
         # One refresh per stop/horizon; deterministic closest-to-horizon choice.
         key = (row['ride_id'], row['vehicle_id'], row['stop_sequence'], bucket, row['prediction_version'])
-        rank = (abs(row['baseline_seconds'] - bucket * 60), -gen, canonical(row))
+        rank = (abs(row['baseline_seconds'] - bucket * 60), -gen, hashlib.sha256(canonical(row).encode()).digest())
         if key not in chosen or rank < chosen[key][0]:
             chosen[key] = (rank, row)
+            if len(chosen) > max_examples:
+                raise ValueError('dataset exceeds example budget; increase --sample-modulus or narrow the export')
     selected = [entry[1] for entry in chosen.values()]
     ride_splits = defaultdict(set)
     for row in selected:
@@ -78,7 +86,7 @@ def build(rows, train_before, validation_before, test_before, as_of):
     return datasets, dict(counts)
 
 
-def write_dataset(output, datasets, counts, cutoffs, input_sha):
+def write_dataset(output, datasets, counts, cutoffs, input_sha, configuration=None):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
     files, benchmarks = {}, {}
@@ -91,7 +99,7 @@ def write_dataset(output, datasets, counts, cutoffs, input_sha):
             forecasts = [(r[field] - r['generated_at']) / 1000. if number(r.get(field)) is not None else None for r in rows]
             benchmarks[split][name] = evaluate(rows, forecasts)
     manifest = dict(feature_schema=FEATURE_SCHEMA, features=list(FEATURES), files=files,
-                    counts=counts, cutoffs=cutoffs, input_sha256=input_sha,
+                    counts=counts, cutoffs=cutoffs, input_sha256=input_sha, configuration=configuration or {},
                     target='(actual_arrival_at - baseline_eta_at) / 1000; ADD residual to baseline',
                     benchmarks=benchmarks)
     manifest['dataset_version'] = hashlib.sha256(canonical(manifest).encode()).hexdigest()
@@ -105,12 +113,19 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     for name in ('train-before', 'validation-before', 'test-before', 'as-of'):
         parser.add_argument('--' + name, type=timestamp, required=True)
+    parser.add_argument('--max-examples', type=int, default=250000)
+    parser.add_argument('--sample-modulus', type=int, default=1)
     args = parser.parse_args()
-    payload = args.input.read_bytes()
-    rows = [json.loads(line) for line in payload.splitlines() if line.strip()]
+    digest = hashlib.sha256()
+    def rows():
+        with args.input.open('rb') as stream:
+            for line in stream:
+                digest.update(line)
+                if line.strip():
+                    yield json.loads(line)
     cutoffs = {k: getattr(args, k) for k in ('train_before', 'validation_before', 'test_before', 'as_of')}
-    datasets, counts = build(rows, **cutoffs)
-    manifest = write_dataset(args.output, datasets, counts, cutoffs, hashlib.sha256(payload).hexdigest())
+    datasets, counts = build(rows(), **cutoffs, max_examples=args.max_examples, sample_modulus=args.sample_modulus)
+    manifest = write_dataset(args.output, datasets, counts, cutoffs, digest.hexdigest(), {'max_examples':args.max_examples,'sample_modulus':args.sample_modulus})
     print(canonical({'dataset_version': manifest['dataset_version'], 'counts': counts}))
 
 

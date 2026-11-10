@@ -16,7 +16,8 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint ./src --fix"
+		"lint:fix": "eslint ./src --fix",
+		"migrate": "tsx src/migrate.ts"
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-clients-clickhouse": "*",

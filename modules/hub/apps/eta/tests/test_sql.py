@@ -56,25 +56,15 @@ class EtaSQLTest(unittest.TestCase):
             _id String, latitude Float64, longitude Float64,
             legacy_ids Array(String), is_deleted Bool
         ) ENGINE=ReplacingMergeTree ORDER BY _id''')
-        for path in ['eta/bootstrap/create-tables.sql',
-                     'eta/bootstrap/runtime-policy.sql',
-                     'eta/bootstrap/map-match-quality.sql',
-                     'eta/bootstrap/shared-road-segments.sql',
-                     'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
-                     'eta/bootstrap/valid-vehicle-events.sql',
-                     'eta/bootstrap/dwell-tables.sql',
-                     'eta/bootstrap/live-traffic.sql',
-                     'eta/bootstrap/mv-predict-node-etas.sql',
-                     'eta/bootstrap/calibration-table.sql',
-                     'eta/bootstrap/mv-predict-trip-stop-etas.sql',
-                     'eta/bootstrap/prediction-snapshots.sql',
-                     'eta/bootstrap/arrival-labels.sql',
-                     'eta/bootstrap/bias-calibration.sql',
-                     'eta/bootstrap/stop-dwell.sql',
-                     'eta/bootstrap/publishable-etas.sql']:
+        for path in cls.bootstrap_paths():
             for stmt in statements(path):
                 if 'MATERIALIZED VIEW' not in stmt:
                     cls.db.query(stmt)
+
+    @staticmethod
+    def bootstrap_paths():
+        source = (Path(__file__).resolve().parents[1] / 'src/tasks/bootstrap.ts').read_text()
+        return re.findall(r"'(eta/bootstrap/[^']+\.sql)'", source)
 
     @classmethod
     def tearDownClass(cls):
@@ -399,3 +389,83 @@ class EtaSQLTest(unittest.TestCase):
         self.assertTrue(all(r['target_residual_seconds'] is None for r in rows))
         self.assertTrue(all(r['feature_schema']=='eta-features-v1' for r in rows))
         self.assertTrue(all(r['remaining_stops'] > 0 for r in rows))
+
+    def test_ml_quality_and_active_feature_queries_execute(self):
+        self.rows(view_select('eta/bootstrap/ml-quality-gates.sql'))
+        self.rows((SQL/'eta/ml/select-active-features.sql').read_text())
+
+    def test_ml_canary_requires_exact_generation_health_and_quality(self):
+        now = self.seed_live_trip()
+        self.insert_select('eta.pred_trip_stop_etas_v2', view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
+        baseline = sorted(self.rows('SELECT * FROM eta.publishable_trip_stop_etas'), key=lambda r:r['stop_sequence'])
+        self.db.query(f"INSERT INTO eta.ml_deployment VALUES ('active','model',1,100.,{now})")
+        self.db.query(f"INSERT INTO eta.model_health VALUES ('model',{now},{now},'ok','shadow',2,10.,0.,0.,1)")
+        self.db.query(f"""INSERT INTO eta.ml_quality_gates SELECT 'model','a','route',toUInt8(number),100,30,1.,30.,10.,60.,20.,1,toInt64({now}) FROM numbers(3) WHERE number IN (0,2)""")
+        for row in baseline:
+            self.db.query(f"""INSERT INTO eta.model_predictions VALUES
+                ({row['refreshed_at']},{now},'ride','v',{row['stop_sequence']},'a','route',
+                 {row['baseline_eta_at']},{row['eta_at']},{row['eta_at']+10000},'model','eta-features-v1','ok',0.)""")
+        promoted = sorted(self.rows('SELECT * FROM eta.publishable_trip_stop_etas'), key=lambda r:r['stop_sequence'])
+        self.assertTrue(all(r['prediction_version']=='ml:model' for r in promoted))
+        self.assertTrue(all(p['eta_at']==b['eta_at']+10000 for p,b in zip(promoted,baseline)))
+        self.db.query(f"INSERT INTO eta.model_health VALUES ('model',{now+1000},{now},'error','shadow',2,10.,1.,0.,1)")
+        fallback = sorted(self.rows('SELECT * FROM eta.publishable_trip_stop_etas'), key=lambda r:r['stop_sequence'])
+        self.assertEqual([r['eta_at'] for r in fallback], [r['eta_at'] for r in baseline])
+
+    def test_materialized_view_definitions_compile_in_bootstrap_order(self):
+        created = []
+        try:
+            for path in self.bootstrap_paths():
+                for statement in statements(path):
+                    if 'MATERIALIZED VIEW' not in statement:
+                        continue
+                    name = re.search(r'MATERIALIZED VIEW (\w+\.\w+)',statement)[1]
+                    self.db.query(statement)
+                    created.append(name)
+                    self.db.query('SYSTEM STOP VIEW '+name)
+        finally:
+            for name in reversed(created):
+                self.db.query('DROP VIEW IF EXISTS '+name)
+
+    def test_ride_identity_survives_the_four_am_service_day_boundary(self):
+        now = self.seed_live_trip()
+        boundary = self.rows("SELECT toUnixTimestamp64Milli(toDateTime64(concat(formatDateTime(now('Europe/Lisbon'),'%F'),' 04:01:00'),3,'Europe/Lisbon')) AS t")[0]['t']
+        previous_date = self.rows("SELECT toYYYYMMDD(toDate(now('Europe/Lisbon'))-1) AS d")[0]['d']
+        current_date = self.rows("SELECT toYYYYMMDD(toDate(now('Europe/Lisbon'))) AS d")[0]['d']
+        self.db.query(f"ALTER TABLE eta.curr_rides UPDATE start_time_scheduled={boundary-360000}, end_time_scheduled={boundary+1200000}, operational_date={previous_date} WHERE _id='ride' SETTINGS mutations_sync=1")
+        self.db.query(f"""INSERT INTO operation.simplified_vehicle_events
+            (_id,agency_id,trip_id,vehicle_id,latitude,longitude,speed,bearing,created_at,received_at,operational_date)
+            VALUES ('boundary','a','trip','v',38.70045,-9.1,20,0,{boundary},{now},{current_date})""")
+        rows = self.rows(view_select('eta/bootstrap/mv-sync-curr-vehicle-events.sql'))
+        self.assertEqual(len(rows),1)
+        self.assertEqual(rows[0]['ride_id'],'ride')
+
+    def test_coverage_denominator_includes_suppressed_vehicles(self):
+        self.seed_live_trip()
+        self.db.query('TRUNCATE eta.curr_vehicle_events')
+        rows=self.rows((SQL/'eta/observability/prediction-coverage.sql').read_text())
+        self.assertEqual(rows[0]['scheduled_active_stop_pairs'],2)
+        self.assertEqual(rows[0]['publication_coverage'],0.)
+        self.rows((SQL/'eta/observability/position-health.sql').read_text())
+
+    def test_traffic_separates_vehicle_ids_reused_by_different_agencies(self):
+        now=self.seed_live_trip()
+        self.db.query("INSERT INTO eta.curr_rides SELECT * REPLACE ('ride-b' AS _id,'b' AS agency_id) FROM eta.curr_rides WHERE _id='ride'")
+        self.db.query("INSERT INTO eta.road_segment_assignments SELECT 'hs',toUInt32(number+1),'road','ground','road-v1',1,'review',1 FROM numbers(3)")
+        self.db.query("""INSERT INTO eta.pred_node_etas
+            (hashed_shape_id,node_index,period_of_day,weekday,day_type,predicted_travel_time_seconds,effective_sample_count)
+            SELECT 'hs',toUInt32(2),period,weekday,if(weekday IN ('Saturday','Sunday'),'Weekend','Weekday'),10.,20.
+            FROM (SELECT arrayJoin(['Peak AM','Mid','Peak PM','Off Peak']) AS period,
+                arrayJoin(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']) AS weekday)""")
+        self.db.query('TRUNCATE eta.curr_vehicle_events')
+        for agency,ride in [('a','ride'),('b','ride-b')]:
+            for index in range(3):
+                timestamp=now-60000+index*20000
+                self.db.query(f"""INSERT INTO eta.curr_vehicle_events
+                    (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,match_confidence,speed,created_at,received_at)
+                    VALUES ('{agency}{index}','{ride}','{agency}','trip','shared-vehicle','hs',{index},1.,20,{timestamp},{timestamp})""")
+        query=view_select('eta/bootstrap/live-traffic.sql')
+        rows=self.rows(query)
+        self.assertEqual(len(rows),2)
+        self.assertEqual(len({r['vehicle_id'] for r in rows}),2)
+        self.assertTrue(all(r['ratio']==2. for r in rows))

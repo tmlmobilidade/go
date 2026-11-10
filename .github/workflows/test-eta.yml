@@ -1,0 +1,34 @@
+name: Test ETA
+on:
+  pull_request:
+    paths:
+      - 'modules/hub/apps/eta/**'
+      - 'modules/hub/apps/eta-ml/**'
+      - 'modules/hub/apps/publish-eta/**'
+      - 'modules/hub/sql/**'
+      - '.github/workflows/test-eta.yml'
+  workflow_dispatch:
+jobs:
+  regression:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r modules/hub/apps/eta-ml/requirements.txt chdb==4.4.0
+      - run: python -m unittest discover -s modules/hub/apps/eta/tests -v
+      - run: PYTHONPATH=modules/hub/apps/eta-ml/src python -m unittest discover -s modules/hub/apps/eta-ml/tests -v
+      - run: bash scripts/generate-sql-registry.sh --check
+  source:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund --workspace @tmlmobilidade/go-hub-eta --workspace @tmlmobilidade/go-hub-publish-eta --workspace @tmlmobilidade/eslint
+      - run: npx --yes turbo@2.11.10 run build --filter=@tmlmobilidade/go-hub-eta --filter=@tmlmobilidade/go-hub-publish-eta --filter=@tmlmobilidade/eslint
+      - run: npm run lint --workspace @tmlmobilidade/go-hub-eta
+      - run: npm run lint --workspace @tmlmobilidade/go-hub-publish-eta
+      - run: node --experimental-test-module-mocks --import tsx --test modules/hub/apps/publish-eta/tests/agency-cache.test.ts modules/hub/apps/publish-eta/tests/eta-snapshot.test.ts

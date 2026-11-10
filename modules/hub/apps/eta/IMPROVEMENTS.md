@@ -3,6 +3,8 @@
 Parent: #945. Feature PRs target `feat/945-eta-improvements`. Apply them in issue
 order: each branch includes the prerequisite commits, so later PR diffs shrink
 as earlier PRs merge. The parent remains separate from `prd` until review.
+Merge commits preserve stack ancestry. The ML worker and migration commands
+are documented in `../eta-ml/README.md`; advanced publication starts disabled.
 
 ## Measurement (#946)
 
@@ -75,8 +77,7 @@ bounds generation age (90 s default), GPS age, confidence, completed rides and
 passed stops. Every simplified/GTFS SQL reader uses this view. GTFS joins the
 exact ride and preserves repeated stop sequences.
 
-Snaps now carry the actual ride ID, with agency, vehicle assignment and local
-04:00 service date checks; prediction state is keyed by ride+vehicle, avoiding
+Snaps now carry the actual ride ID, with agency, vehicle assignment and ride time-window checks; prediction state is keyed by ride+vehicle, avoiding
 trip IDs shared by agencies or reused on consecutive days. Existing snap rows
 with empty ride IDs age out; allow two minutes to warm after migration.
 
@@ -209,3 +210,17 @@ precedence over calibration: baseline-trained bias is not added to dwell until
 a dedicated cohort is validated. Real urban-line labels and short-horizon
 accuracy remain promotion gates; passenger validation/APC data is optional and
 not assumed available.
+
+## Integration (#960)
+
+Live ride assignment ranks plausible schedule windows within an agency/vehicle
+assignment, rather than deriving ride identity from the GPS fix service date.
+A ride starting before 04:00 retains its identity after the cutoff. Calendar
+features follow the observation's local operational day. Vehicle support keys
+also include agency, so identical bus IDs from different operators remain
+independent. The v2 trip-stop MV is installed alongside the legacy MV, preserving
+legacy output during warmup.
+
+The prediction-coverage query uses scheduled-active pairs as a denominator,
+including suppressed/missing vehicles. Snapshot-only coverage describes emitted
+rows. The position-health query also includes stale source positions.

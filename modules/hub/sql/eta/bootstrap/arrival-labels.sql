@@ -61,8 +61,6 @@ WITH
           AND e.created_at <= now_ms - 120000
           AND e.created_at >= r.start_time_scheduled - 3600000
           AND e.created_at <= r.end_time_scheduled + 4 * 3600000
-          AND toYYYYMMDD(toDate(fromUnixTimestamp64Milli(e.created_at, 'Europe/Lisbon')
-                               - INTERVAL 4 HOUR)) = r.operational_date
     ),
     gps AS (
         SELECT ride_id, vehicle_id, stop_sequence, any(source_stop_id) AS source_stop_id,

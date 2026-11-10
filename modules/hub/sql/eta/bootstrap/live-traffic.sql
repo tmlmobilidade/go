@@ -27,7 +27,7 @@ WITH
         GROUP BY ride_id
     ),
     observed_steps AS (
-        SELECT s.vehicle_id AS vehicle_id, m.segment_id AS segment_id,
+        SELECT toJSONString(tuple(s.agency_id, s.vehicle_id)) AS vehicle_id, m.segment_id AS segment_id,
             s.created_at AS observed_at, s._id AS event_id,
             any(s.position_confidence) AS confidence,
             (s.created_at - s.prev_at) / 1000. * count() /
@@ -42,7 +42,7 @@ WITH
         INNER JOIN eta.pred_node_etas AS p FINAL
             ON p.hashed_shape_id = s.hashed_shape_id AND p.node_index = m.node_index
             AND p.weekday = arrayElement(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-                toDayOfWeek(toDate(parseDateTimeBestEffort(toString(r.operational_date)))))
+                toDayOfWeek(toDate(fromUnixTimestamp64Milli(s.created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR)))
             AND p.period_of_day = multiIf(
                 toHour(fromUnixTimestamp64Milli(s.created_at, 'Europe/Lisbon')) BETWEEN 7 AND 9, 'Peak AM',
                 toHour(fromUnixTimestamp64Milli(s.created_at, 'Europe/Lisbon')) BETWEEN 10 AND 16, 'Mid',
@@ -53,7 +53,7 @@ WITH
           AND s.speed >= 5 AND s.prev_speed >= 5
           AND NOT arrayExists(x -> x.1 < s.created_at AND x.2 > s.prev_at, dwell.intervals)
           AND p.effective_sample_count > 0 AND p.predicted_travel_time_seconds > 0
-        GROUP BY s.vehicle_id, m.segment_id, s.created_at, s._id, s.prev_at, s.node_index, s.prev_node
+        GROUP BY s.agency_id, s.vehicle_id, m.segment_id, s.created_at, s._id, s.prev_at, s.node_index, s.prev_node
     )
 SELECT segment_id, vehicle_id,
     medianExact(observed_seconds / expected_seconds) AS ratio,

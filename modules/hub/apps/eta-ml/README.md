@@ -72,3 +72,67 @@ Synthetic fixture tests exercise both actual libraries and artifact reload;
 they do not establish production accuracy. No production dataset or trained
 production model was available. Collect frozen snapshots/labels, train, inspect
 failure slices, and run shadow evaluation before any canary deployment.
+
+
+## Batch serving and rollback (#960)
+
+The Python worker runs every ten seconds, reads the small atomic current
+prediction frame, scores batches outside HTTP requests, and writes matching
+generation/model-version predictions into ClickHouse. It never scans snapshot
+history on the serving path. Model history is ordered by generation so public
+reads can prune to 90 seconds. Training and serving share one encoder and
+frozen feature contract. Serving does not load CatBoost.
+
+Configure LABDB_HOST, LABDB_PORT, LABDB_USERNAME, LABDB_PASSWORD, or use
+ETA_ML_CLICKHOUSE_URL for an HTTPS/local forwarded endpoint. SSH tunnels are
+external. Mount the immutable model read-only at /model, or set ETA_ML_MODEL_DIR.
+ETA_ML_SQL_DIR defaults to the module SQL directory and is /app/sql in the image.
+
+Run from the app directory:
+
+    PYTHONPATH=src python -m eta_ml.serve --once
+    PYTHONPATH=src python -m eta_ml.serve
+    PYTHONPATH=src python -m eta_ml.serve --healthcheck
+
+The app-local Dockerfile is discovered by the module build workflow. It runs
+as a non-root user with a heartbeat health check. Missing models, stale
+generations/GPS, changed schemas, mostly unknown categories, missing features,
+invalid outputs, models older than seven days and training data older than
+fourteen days all fall back. Corrections are bounded and stop order remains
+monotonic. The budget is 50,000 rows and ten seconds per batch. Failed writes,
+exceeded budgets and expired heartbeats also lead to baseline fallback.
+Restart the worker to load another immutable model.
+
+The ml_deployment table starts empty. The worker only writes predictions and
+health; shadow writes cannot enable publication. After real shadow validation,
+an operator inserts slot='active', the exact model version, enabled=1, a small
+canary_percent and a newer updated_at. Ride hashing keeps a bus in one cohort.
+Promotion also requires a frozen holdout pass, current worker health and live
+route/horizon gates: >=100 examples, >=30 independent rides, >=95% coverage and
+bounded MAE/P90 regression. Gates refresh every five minutes and expire after
+ten; insufficient support keeps that cohort on baseline.
+
+Roll back with a newer active deployment row with enabled=0. The next publisher
+cycle uses statistical ETAs. Public JSON and GTFS-RT shapes are unchanged. No
+canary is activated here. The ml-health query reports latency, missing features,
+fallbacks and version clocks; ml_quality_gates contains paired MAE/P90/support.
+
+For large offline exports, eta_ml.export streams to a new file; dataset
+creation hashes input incrementally. The retained-example budget defaults to
+250,000. --sample-modulus 10 retains a deterministic one-in-ten set of whole
+rides. The manifest records sampling settings and excluded counts. This bounds
+preparation without randomly mixing train/test rows.
+
+## Applying the schema
+
+Build the ETA app and run its migrate script with the intended environment
+loaded. It creates additive schema, reaggregates retained 30-day node samples
+to populate real support counts, installs views in dependency order and warms
+geometry/node/snap/prediction views. The v2 trip-stop MV has a new name, allowing
+the old MV/table to serve during warmup. Check v2 freshness and coverage before
+switching publishers. No database truncation or full raw GPS rebuild occurs.
+
+Old road samples may contain dwell until rebuilt or aged out; leave dwell
+promotion disabled until the intended history is rebuilt and validated.
+Road assignments, label audits, peak timings, production model training and
+image build/deployment remain operational validation steps.

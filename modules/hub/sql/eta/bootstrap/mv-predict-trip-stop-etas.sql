@@ -52,7 +52,7 @@ ALTER TABLE eta.pred_trip_stop_etas_v2
     ADD COLUMN IF NOT EXISTS node_dispersion_seconds Nullable(Float64),
     ADD COLUMN IF NOT EXISTS historical_eta_at Nullable(Int64);
 
-CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
+CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas_v2
 REFRESH EVERY 30 SECOND TO eta.pred_trip_stop_etas_v2 AS
 WITH
     toUnixTimestamp64Milli(now64(3)) AS now_ms,
@@ -78,7 +78,7 @@ WITH
             toHour(fromUnixTimestamp64Milli(l.position_created_at, 'Europe/Lisbon')) AS local_hour,
             multiIf(local_hour BETWEEN 7 AND 9, 'Peak AM', local_hour BETWEEN 10 AND 16, 'Mid',
                     local_hour BETWEEN 17 AND 19, 'Peak PM', 'Off Peak') AS period_of_day,
-            toDayOfWeek(toDate(parseDateTimeBestEffort(toString(r.operational_date)))) AS dow,
+            toDayOfWeek(toDate(fromUnixTimestamp64Milli(l.position_created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR)) AS dow,
             arrayElement(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], dow) AS weekday,
             if(dow <= 5, 'Weekday', 'Weekend') AS day_type
         FROM latest AS l
@@ -279,7 +279,7 @@ SELECT
     e.node_dispersion_seconds AS node_dispersion_seconds,
     e.history_coverage AS history_coverage,
     e.prediction_confidence AS prediction_confidence, e.freshness_tier AS freshness_tier,
-    if((SELECT enable_spatial_traffic FROM eta.policy) = 1, 'spatial-traffic-v5', 'statistical-lifecycle-v4') AS prediction_version, now_ms AS refreshed_at
+    if((SELECT enable_spatial_traffic FROM eta.policy) = 1, 'spatial-traffic-v6', 'statistical-v6') AS prediction_version, now_ms AS refreshed_at
 FROM estimates AS e
 LEFT JOIN stop_dwells AS dw ON dw.ride_id = e.ride_id AND dw.vehicle_id = e.vehicle_id
     AND dw.stop_sequence = e.stop_sequence

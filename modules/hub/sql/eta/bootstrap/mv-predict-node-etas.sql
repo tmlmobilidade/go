@@ -43,7 +43,9 @@ WITH
             arrayElement(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], dow) AS weekday,
             if(dow <= 5, 'Weekday', 'Weekend') AS day_type,
             arrayJoin(['Peak AM','Mid','Peak PM','Off Peak']) AS period_of_day
-        FROM (SELECT arrayJoin([toDayOfWeek(service_day), toDayOfWeek(service_day + INTERVAL 1 DAY)]) AS dow)
+        FROM (SELECT arrayJoin(if(toHour(now('Europe/Lisbon')) = 4 AND toMinute(now('Europe/Lisbon')) < 5,
+                [toDayOfWeek(service_day - INTERVAL 1 DAY), toDayOfWeek(service_day), toDayOfWeek(service_day + INTERVAL 1 DAY)],
+                [toDayOfWeek(service_day), toDayOfWeek(service_day + INTERVAL 1 DAY)])) AS dow)
     ),
     targets AS (
         SELECT n.hashed_shape_id AS hashed_shape_id, n.node_index AS node_index,

@@ -82,6 +82,21 @@ WITH
         WHERE operational_date >= toYYYYMMDD(today() - 1)
           AND received_at > (SELECT ms FROM since)
           AND _id NOT IN (SELECT _id FROM eta.curr_vehicle_events WHERE received_at > (SELECT ms FROM since))
+    ),
+    ride_assignments AS (
+        SELECT s._id AS event_id,
+            argMin(d._id, tuple(
+                d.start_time_scheduled > s.created_at + 15 * 60000,
+                greatest(toInt64(0), s.created_at - d.end_time_scheduled),
+                abs(s.created_at - d.start_time_scheduled), d._id
+            )) AS ride_id
+        FROM fresh_events AS s
+        INNER JOIN eta.curr_rides AS d FINAL
+            ON s.trip_id = d.trip_id AND s.agency_id = d.agency_id
+            AND s.created_at >= d.start_time_scheduled - 3600000
+            AND s.created_at <= d.end_time_scheduled + 4 * 3600000
+            AND (empty(d.vehicle_ids) OR has(d.vehicle_ids, s.vehicle_id))
+        GROUP BY s._id
     )
 SELECT
     s._id AS _id,
@@ -104,10 +119,8 @@ SELECT
     exp(-match_distance_m / 30.) * if(heading_difference_degrees IS NULL, 0.7,
         greatest(0.2, 1. - heading_difference_degrees / 180.)) AS match_confidence
 FROM fresh_events AS s
-INNER JOIN eta.curr_rides AS d FINAL ON s.trip_id = d.trip_id
-    AND s.agency_id = d.agency_id
-    AND toYYYYMMDD(toDate(fromUnixTimestamp64Milli(s.created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR)) = d.operational_date
-    AND (empty(d.vehicle_ids) OR has(d.vehicle_ids, s.vehicle_id))
+INNER JOIN ride_assignments AS assignments ON assignments.event_id = s._id
+INNER JOIN eta.curr_rides AS d FINAL ON d._id = assignments.ride_id
 INNER JOIN eta.cached_shape_node_geometry AS n
     ON  d.hashed_shape_id = n.hashed_shape_id
     AND s.cell            = n.geohash

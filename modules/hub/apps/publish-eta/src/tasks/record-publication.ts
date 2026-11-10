@@ -10,8 +10,7 @@ export async function recordPublication(agencyId: string, format: 'gtfs' | 'simp
 			table: 'eta.publication_runs',
 			values: [{ agency_id: agencyId, format, published_at: Date.now() }],
 		});
-	}
-	catch (error) {
+	} catch (error) {
 		Logger.error({ message: `Could not record ETA publication: ${String(error)}` });
 	}
 }
