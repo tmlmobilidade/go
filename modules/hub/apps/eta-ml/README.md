@@ -41,3 +41,34 @@ dispersion, a feature rather than a calibrated prediction interval. Missing
 features stay missing. Route and other categorical vocabularies must be learned
 from training only. Historical-only, vehicle-live and corridor predictions are frozen side by side
 and compared on the same labelled population in the dataset manifest.
+
+## Training and validation (#959)
+
+Use Python 3.12 and `pip install -r requirements.txt`. Native LightGBM is the
+primary residual model; CatBoost is trained as an independent comparator.
+
+```bash
+PYTHONPATH=src python -m eta_ml.train --dataset datasets/run-1 --output artifacts/run-1
+```
+
+The job verifies immutable split hashes, feature order, label clocks, target
+sign and whole-ride isolation again. Training needs >=1000 rows, validation and
+test >=200 each. Training-only categorical vocabularies map unseen values to a
+missing/unknown category. Weights limit repeated ride/horizon influence. Native
+model files, parameters, package versions, dataset hashes, feature importance,
+all cohort metrics and a checksummed model manifest are saved together. There
+is no pickle deserialization and no online training in the serving job.
+
+Residual corrections are clipped to +/-120 s and 25% of baseline remaining
+time. Validation controls early stopping; the untouched temporal test is a
+final rejection gate. Promotion requires >=2% overall MAE improvement, no
+coverage regression, bounded P90 regression, and no material agency/route/
+horizon/quality regression in cohorts with >=50 observations. Small cohorts
+remain explicitly under-supported. Route/day slices are included for manual
+failure analysis. An empirical validation P90 error radius is recorded as an
+uncertainty diagnostic, not a calibrated interval guarantee.
+
+Synthetic fixture tests exercise both actual libraries and artifact reload;
+they do not establish production accuracy. No production dataset or trained
+production model was available. Collect frozen snapshots/labels, train, inspect
+failure slices, and run shadow evaluation before any canary deployment.

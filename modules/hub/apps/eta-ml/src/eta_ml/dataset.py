@@ -38,6 +38,8 @@ def build(rows, train_before, validation_before, test_before, as_of):
             continue
         for key in ('generated_at', 'baseline_eta_at', 'actual_arrival_at', 'label_known_at'):
             row[key] = int(number(row[key]))
+        for key in ('historical_eta_at', 'incumbent_eta_at', 'traffic_eta_at'):
+            row[key] = int(number(row[key])) if number(row.get(key)) is not None else None
         row['baseline_seconds'] = number(row['baseline_seconds'])
         gen, actual, known = row['generated_at'], row['actual_arrival_at'], row['label_known_at']
         if not gen < actual <= known <= as_of or (number(row.get('label_confidence')) or 0) < .7:
