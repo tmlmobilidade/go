@@ -450,7 +450,12 @@ class EtaSQLTest(unittest.TestCase):
 
     def test_traffic_separates_vehicle_ids_reused_by_different_agencies(self):
         now=self.seed_live_trip()
-        self.db.query("INSERT INTO eta.curr_rides SELECT * REPLACE ('ride-b' AS _id,'b' AS agency_id) FROM eta.curr_rides WHERE _id='ride'")
+        self.db.query("""INSERT INTO eta.curr_rides
+            (_id,trip_id,agency_id,plan_id,route_id,hashed_trip_id,hashed_shape_id,
+             operational_date,start_time_scheduled,end_time_scheduled)
+            SELECT 'ride-b',trip_id,'b',plan_id,route_id,hashed_trip_id,hashed_shape_id,
+                operational_date,start_time_scheduled,end_time_scheduled
+            FROM eta.curr_rides FINAL WHERE _id='ride'""")
         self.db.query("INSERT INTO eta.road_segment_assignments SELECT 'hs',toUInt32(number+1),'road','ground','road-v1',1,'review',1 FROM numbers(3)")
         self.db.query("""INSERT INTO eta.pred_node_etas
             (hashed_shape_id,node_index,period_of_day,weekday,day_type,predicted_travel_time_seconds,effective_sample_count)
@@ -466,6 +471,6 @@ class EtaSQLTest(unittest.TestCase):
                     VALUES ('{agency}{index}','{ride}','{agency}','trip','shared-vehicle','hs',{index},1.,20,{timestamp},{timestamp})""")
         query=view_select('eta/bootstrap/live-traffic.sql')
         rows=self.rows(query)
-        self.assertEqual(len(rows),2, {'observed':rows,'rides':self.rows('SELECT _id,agency_id FROM eta.curr_rides FINAL'),'valid':self.rows('SELECT ride_id,agency_id,vehicle_id,node_index FROM eta.valid_vehicle_events')})
+        self.assertEqual(len(rows),2)
         self.assertEqual(len({r['vehicle_id'] for r in rows}),2)
         self.assertTrue(all(r['ratio']==2. for r in rows))
