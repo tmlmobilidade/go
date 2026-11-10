@@ -30,6 +30,9 @@ func NewManager(db *sql.DB, configuration map[string]rules.RuleConfig, validatio
 		callbacks[id] = nil
 	}
 	
+	//
+	// 2. Validate the rules are registered
+
 	for id, config := range configuration {
 		if _, exists := callbacks[id]; !exists {
 			if config.Severity != "" && config.Severity != rules.SEVERITY_IGNORE {
@@ -40,7 +43,7 @@ func NewManager(db *sql.DB, configuration map[string]rules.RuleConfig, validatio
 	}
 
 	//
-	// 2. Include configured rules and their declared prerequisites
+	// 3. Include configured rules and their declared prerequisites
 
 	// Unrelated file-presence gates stay outside the graph.
 	required := make(map[string]bool, len(configuration))
@@ -52,7 +55,7 @@ func NewManager(db *sql.DB, configuration map[string]rules.RuleConfig, validatio
 	}
 
 	//
-	// 3. Create each node with its context, dependencies, and validation function
+	// 4. Create each node with its context, dependencies, and validation function
 
 	nodes := make([]types.Rule[*validationTypes.Execution], 0, len(required))
 	for id, validate := range callbacks {
@@ -72,14 +75,15 @@ func NewManager(db *sql.DB, configuration map[string]rules.RuleConfig, validatio
 	}
 
 	//
-	// 4. Store the nodes and validate their dependency order
+	// 5. Store the nodes and validate their dependency order
 
 	m := &types.Manager[*validationTypes.Execution]{Rules: nodes}
 	if err := Build(m); err != nil {
 		return nil, err
 	}
+	
 	//
-	// 5. Return the prepared manager
+	// 6. Return the prepared manager
 
 	return m, nil
 }
