@@ -58,6 +58,7 @@ func NewManager(db *sql.DB, configuration map[string]rules.RuleConfig, validatio
 	// 4. Create each node with its context, dependencies, and validation function
 
 	nodes := make([]types.Rule[*validationTypes.Execution], 0, len(required))
+	
 	for id, validate := range callbacks {
 		if !required[id] {
 			continue

@@ -16,6 +16,7 @@ func Order[T any](m *types.Manager[T]) []string {
 	for i, r := range m.Ordered {
 		ids[i] = r.ID
 	}
+	
 	//
 	// 2. Return the IDs for inspection
 

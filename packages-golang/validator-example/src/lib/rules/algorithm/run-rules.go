@@ -19,20 +19,23 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 	//
 
 	//
-	// 1. Validate the prepared manager before starting any callbacks
+	// 1. Validate the manager is ready
 
 	if m == nil || len(m.Ordered) != len(m.Rules) {
 		return nil, fmt.Errorf("build the rule manager before running rows")
 	}
 
 	//
-	// 2. Validate callbacks and prepare dependency counts and the initial ready queue
+	// 2. Validate the callbacks and prepare the dependency counts and the initial ready queue
 
 	// No callbacks start until the entire execution graph has been checked.
 	index := make(map[string]int, len(m.Ordered))
 	pending := make([]int, len(m.Ordered))
 	dependents := make([][]int, len(m.Ordered))
 	queue := make([]int, 0, len(m.Ordered))
+
+	//
+	// 3. Validate the rules are ready
 
 	for i, rule := range m.Ordered {
 		if _, exists := index[rule.ID]; exists {
@@ -58,13 +61,13 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 	}
 
 	//
-	// 3. Initialize this run's results and dependency-failure flags
+	// 4. Initialize this run's results and dependency-failure flags
 
 	statuses := make(map[string]types.Status, len(m.Ordered))
 	blocked := make([]bool, len(m.Ordered))
 
 	//
-	// 4. Define how a completion releases dependent rules
+	// 5. Define how a completion releases dependent rules
 
 	// Only the coordinator updates statuses, dependency counts, and the queue.
 	complete := func(i int, status types.Status) {
@@ -81,8 +84,9 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 			}
 		}
 	}
+
 	//
-	// 5. Create the worker completion channel and scheduling counters
+	// 6. Create the worker completion channel and scheduling counters
 
 	// completion carries one worker's result back to the coordinator.
 	type completion struct {
@@ -92,8 +96,9 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 	done := make(chan completion, len(m.Ordered))
 	running := 0
 	head := 0
+
 	//
-	// 6. Process ready rules and completions until all started work finishes
+	// 7. Process ready rules and completions until all started work finishes
 
 	for head < len(queue) || running > 0 {
 		// Start every ready rule. Skipped rules do not need a worker.
@@ -118,8 +123,9 @@ func RunRules[T any](m *types.Manager[T], row T) (map[string]types.Status, error
 			complete(result.index, result.status)
 		}
 	}
+	
 	//
-	// 7. Return every rule's final status after all workers finish
+	// 8. Return every rule's final status after all workers finish
 
 	return statuses, nil
 }
