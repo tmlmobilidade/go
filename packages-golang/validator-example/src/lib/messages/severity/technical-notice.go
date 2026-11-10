@@ -2,8 +2,6 @@ package severity
 
 import (
 	"strings"
-
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
 // isTechnicalNotice identifies parser and file-level diagnostics that can be emitted
@@ -16,5 +14,5 @@ func isTechnicalNotice(id string) bool {
 
 	return strings.HasSuffix(id, "_values_parse") || strings.HasSuffix(id, "_file_missing") ||
 		id == "file_validation" || id == "file_not_found_in_rules" ||
-		id == rules.RuleIDGtfsFeedFilePresenceAndIntegrity
+		id == "file_validation_gtfs_feed_file_presence_and_integrity_rule"
 }

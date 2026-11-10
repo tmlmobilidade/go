@@ -24,7 +24,7 @@ func ConfigureMessageSeverities(config map[string]rules.RuleConfig) {
 
 	values := make(map[string]rules.Severities, len(config))
 	for id, rule := range config {
-		if id == "file_validation" || id == "file_not_found_in_rules" || id == rules.RuleIDGtfsFeedFilePresenceAndIntegrity {
+		if id == "file_validation" || id == "file_not_found_in_rules" || id == "file_validation_gtfs_feed_file_presence_and_integrity_rule" {
 			continue
 		}
 		severity := rule.Severity

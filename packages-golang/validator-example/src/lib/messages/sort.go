@@ -7,12 +7,12 @@ import (
 	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
 )
 
-// sortedMessages orders a report deterministically without mutating the input.
+// sortedMessages orders a report without mutating the input, preserving input order for ties.
 func sortedMessages(messages []types.Message) []types.Message {
 	//
 
 	//
-	// 1. Sort a copy by file, rule, severity, description, field, and first row
+	// 1. Sort a copy by file, rule, severity, description, and field
 
 	sorted := slices.Clone(messages)
 
@@ -32,22 +32,8 @@ func sortedMessages(messages []types.Message) []types.Message {
 		if c := cmp.Compare(a.Field, b.Field); c != 0 {
 			return c
 		}
-		return cmp.Compare(firstRow(a.Rows), firstRow(b.Rows))
+		return 0
 	})
 
 	return sorted
-}
-
-// firstRow provides a stable sort key for findings without row locations.
-func firstRow(rows []int) int {
-	//
-
-	//
-	// 1. Return the first row or zero when none exists
-
-	if len(rows) == 0 {
-		return 0
-	}
-
-	return rows[0]
 }
