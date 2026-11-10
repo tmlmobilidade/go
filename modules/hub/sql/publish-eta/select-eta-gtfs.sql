@@ -50,17 +50,17 @@ stops AS (
                 )
             )
         )                                                                        AS scheduled_arrival_unix
-    FROM eta.pred_trip_stop_etas AS e FINAL
+    FROM eta.publishable_trip_stop_etas AS e
     LEFT JOIN eta.curr_waypoints_snapped AS w
         ON w.hashed_trip_id = e.hashed_trip_id AND w.stop_sequence = e.stop_sequence
-    LEFT JOIN eta.curr_rides AS r
-        ON r.trip_id = e.trip_id
+    LEFT JOIN eta.curr_rides AS r FINAL
+        ON r._id = e.ride_id
     LEFT JOIN trip_summary AS ts
         ON ts.hashed_trip_id = e.hashed_trip_id
     WHERE estimated_arrival_unix IS NOT NULL
       AND e.agency_id = {agency_id:String}
     ORDER BY trip_id, stop_sequence, stop_id
-    LIMIT 1 BY trip_id, stop_id
+    LIMIT 1 BY trip_id, vehicle_id, stop_sequence
 ),
 
 trip_agg AS (

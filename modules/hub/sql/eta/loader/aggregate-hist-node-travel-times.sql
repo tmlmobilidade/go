@@ -33,7 +33,8 @@ INSERT INTO eta.hist_node_travel_times_aggregation (
     min_travel_time_seconds,
     max_travel_time_seconds,
     median_travel_time_seconds,
-    inserted_at
+    inserted_at,
+    sample_count, p10_travel_time_seconds, p90_travel_time_seconds, stddev_travel_time_seconds
 )
 WITH
 
@@ -109,7 +110,11 @@ SELECT
     min(travel_time_seconds)           AS min_travel_time_seconds,
     max(travel_time_seconds)           AS max_travel_time_seconds,
     quantile(0.5)(travel_time_seconds) AS median_travel_time_seconds,
-    now()                              AS inserted_at
+    now()                              AS inserted_at,
+    toUInt32(count())                   AS sample_count,
+    quantile(0.1)(travel_time_seconds)   AS p10_travel_time_seconds,
+    quantile(0.9)(travel_time_seconds)   AS p90_travel_time_seconds,
+    stddevPop(travel_time_seconds)      AS stddev_travel_time_seconds
 FROM classified
 GROUP BY
     hashed_shape_id,

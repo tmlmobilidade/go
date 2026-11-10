@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS eta.curr_vehicle_events
 (
     _id String,
+    ride_id String,
     agency_id String,
     trip_id String,
     vehicle_id String,
@@ -32,15 +33,21 @@ TTL toDateTime(intDiv(created_at, 1000), 'UTC') + INTERVAL 2 HOUR;
 --
 -- The snap uses the same geohash-6 bucketing as the historical build: a ping is
 -- compared only with nodes of its shape inside the cells its ±0.001° bbox
--- touches (~30 candidates instead of ~700 per shape). Pings more than ~110 m
--- from their shape therefore get no node and are not ingested; they were never
--- usable for an ETA anyway.
+-- touches (~30 candidates instead of ~700 per shape). Pings more than 30 m
+-- from their shape or contradictory moving headings are rejected. Distances and
+-- heading agreement are retained for quality monitoring.
 --
 -- Each refresh takes events received after the newest one already snapped,
 -- minus a 60 s overlap (the tracker streams insert independently, so an event
 -- can land after a newer one was already processed). The overlap is deduped on
 -- _id. The 10-minute floor bounds the catch-up work after a bootstrap or a
 -- refresh outage.
+ALTER TABLE eta.curr_vehicle_events
+    ADD COLUMN IF NOT EXISTS ride_id String,
+    ADD COLUMN IF NOT EXISTS match_distance_m Float64 DEFAULT 999.,
+    ADD COLUMN IF NOT EXISTS heading_difference_degrees Nullable(Float64),
+    ADD COLUMN IF NOT EXISTS match_confidence Float64 DEFAULT 0;
+
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_curr_vehicle_events
 REFRESH EVERY 15 SECOND APPEND TO eta.curr_vehicle_events AS
 WITH
@@ -78,26 +85,40 @@ WITH
     )
 SELECT
     s._id AS _id,
+    d._id AS ride_id,
     s.agency_id AS agency_id,
     s.trip_id AS trip_id,
     s.vehicle_id AS vehicle_id,
     d.hashed_shape_id AS hashed_shape_id,
-    argMin(n.node_index, greatCircleDistance(s.longitude, s.latitude, n.longitude, n.latitude)) AS node_index,
+    argMin(n.node_index, tuple(greatCircleDistance(s.longitude, s.latitude, n.longitude, n.latitude), n.node_index)) AS node_index,
     s.latitude AS latitude,
     s.longitude AS longitude,
     s.speed AS speed,
     s.bearing AS bearing,
     s.created_at AS created_at,
-    s.received_at AS received_at
+    s.received_at AS received_at,
+    min(greatCircleDistance(s.longitude, s.latitude, n.longitude, n.latitude)) AS match_distance_m,
+    argMin(if(s.bearing IS NULL OR coalesce(s.speed, 0) < 5, NULL,
+        abs(modulo(toFloat64(s.bearing) - n.heading_degrees + 540., 360.) - 180.)),
+        tuple(greatCircleDistance(s.longitude, s.latitude, n.longitude, n.latitude), n.node_index)) AS heading_difference_degrees,
+    exp(-match_distance_m / 30.) * if(heading_difference_degrees IS NULL, 0.7,
+        greatest(0.2, 1. - heading_difference_degrees / 180.)) AS match_confidence
 FROM fresh_events AS s
-INNER JOIN eta.curr_rides AS d ON s.trip_id = d.trip_id
-INNER JOIN eta.hist_shape_nodes AS n
+INNER JOIN eta.curr_rides AS d FINAL ON s.trip_id = d.trip_id
+    AND s.agency_id = d.agency_id
+    AND toYYYYMMDD(toDate(fromUnixTimestamp64Milli(s.created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR)) = d.operational_date
+    AND (empty(d.vehicle_ids) OR has(d.vehicle_ids, s.vehicle_id))
+INNER JOIN eta.cached_shape_node_geometry AS n
     ON  d.hashed_shape_id = n.hashed_shape_id
     AND s.cell            = n.geohash
     AND n.latitude  BETWEEN s.latitude  - bbox_deg AND s.latitude  + bbox_deg
     AND n.longitude BETWEEN s.longitude - bbox_deg AND s.longitude + bbox_deg
+    AND greatCircleDistance(s.longitude, s.latitude, n.longitude, n.latitude) <= 30.
+    AND (s.bearing IS NULL OR s.speed IS NULL OR s.speed < 5
+         OR abs(modulo(toFloat64(s.bearing) - n.heading_degrees + 540., 360.) - 180.) <= 90.)
 GROUP BY
     s._id,
+    d._id,
     s.agency_id,
     s.trip_id,
     s.vehicle_id,
