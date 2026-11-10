@@ -39,17 +39,17 @@ func PrepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) err
 		if !exists {
 			continue
 		}
-		prefix := "idx_validation_foreign_"
+		indexName := lookup[0] + "_" + lookup[1]
 		expression := dbops.SanitizeName(lookup[1])
 		if coalesce {
-			prefix = "idx_validation_"
+			indexName += "_coalesce"
 			expression = "COALESCE(" + expression + ", '')"
 		}
 
 		//
 		// 2. Create the index only when it does not already exist
 
-		name := dbops.SanitizeName(prefix + lookup[0] + "_" + lookup[1])
+		name := dbops.SanitizeName(indexName)
 		query := "CREATE INDEX IF NOT EXISTS " + name + " ON " + dbops.SanitizeName(tableName) + " (" + expression + ")"
 		if _, err := transaction.Exec(query); err != nil {
 			return fmt.Errorf("prepare lookup index for %s.%s: %w", tableName, lookup[1], err)
