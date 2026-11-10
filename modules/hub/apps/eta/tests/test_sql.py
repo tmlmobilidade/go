@@ -58,7 +58,9 @@ class EtaSQLTest(unittest.TestCase):
         ) ENGINE=ReplacingMergeTree ORDER BY _id''')
         for path in ['eta/bootstrap/create-tables.sql',
                      'eta/bootstrap/runtime-policy.sql',
+                     'eta/bootstrap/map-match-quality.sql',
                      'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
+                     'eta/bootstrap/valid-vehicle-events.sql',
                      'eta/bootstrap/mv-predict-node-etas.sql',
                      'eta/bootstrap/mv-predict-trip-stop-etas.sql',
                      'eta/bootstrap/prediction-snapshots.sql',
@@ -92,7 +94,7 @@ class EtaSQLTest(unittest.TestCase):
         self.db.query('TRUNCATE eta.prediction_snapshots')
         self.db.query('''INSERT INTO eta.prediction_snapshots
             (generated_at, ride_id, vehicle_id, stop_sequence, prediction_version)
-            VALUES (1000, 'r', 'v', 1, 'v1'), (2000, 'r', 'v', 1, 'v1')''')
+            SELECT toUnixTimestamp64Milli(now64(3)) - toInt64(number) * 1000, 'r','v',toUInt16(1),'v1' FROM numbers(2)''')
         self.assertEqual(self.rows('SELECT count() AS n FROM eta.prediction_snapshots')[0]['n'], 2)
 
     def test_snapshot_select_compiles(self):
@@ -106,13 +108,14 @@ class EtaSQLTest(unittest.TestCase):
              operational_date,start_time_scheduled,end_time_scheduled)
             VALUES ('ride','trip','a','plan','route','ht','hs',{op},{now-600000},{now+600000})""")
         self.db.query("""INSERT INTO eta.hist_shape_nodes
-            SELECT 'hs', toUInt32(number), 38.7 + number * 0.000225, -9.1, '' FROM numbers(11)""")
+            SELECT 'hs', toUInt32(number), 38.7 + number * 0.000225, -9.1, geohashEncode(-9.1, 38.7 + number * 0.000225, 6) FROM numbers(11)""")
         self.db.query("""INSERT INTO eta.curr_waypoints_snapped
             (hashed_trip_id,hashed_shape_id,stop_sequence,stop_id,node_index,arrival_time)
             VALUES ('ht','hs',1,'s1',5,'12:00:00'),('ht','hs',2,'s2',10,'12:05:00')""")
         self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-            VALUES ('e','ride','a','trip','v','hs',0,{now-1000},{now-500})""")
+            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,match_confidence,created_at,received_at)
+            VALUES ('e0','ride','a','trip','v','hs',0,1.,{now-31000},{now-30500}),
+                   ('e','ride','a','trip','v','hs',0,1.,{now-1000},{now-500})""")
         return now
 
     def test_missing_history_never_yields_zero_for_positive_distance(self):
@@ -159,9 +162,9 @@ class EtaSQLTest(unittest.TestCase):
             (hashed_trip_id,hashed_shape_id,stop_sequence,stop_id,node_index)
             VALUES ('ht','hs',1,'stop',5),('ht','hs',2,'stop',7)""")
         self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-            VALUES ('e1','ride','a','trip','v','hs',4,{now-300000},{now-299000}),
-                   ('e2','ride','a','trip','v','hs',6,{now-270000},{now-269000})""")
+            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,match_confidence,created_at,received_at)
+            VALUES ('e1','ride','a','trip','v','hs',4,1.,{now-300000},{now-299000}),
+                   ('e2','ride','a','trip','v','hs',6,1.,{now-270000},{now-269000})""")
         query = view_select('eta/bootstrap/arrival-labels.sql')
         rows = self.rows(query)
         self.assertEqual(len(rows), 1)
@@ -174,16 +177,17 @@ class EtaSQLTest(unittest.TestCase):
         for offset in [-300000, 60000]:
             self.db.query('TRUNCATE eta.curr_vehicle_events')
             self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-                (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-                VALUES ('e','ride','a','trip','v','hs',0,{now+offset},{now+offset})""")
+                (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,match_confidence,created_at,received_at)
+                VALUES ('e','ride','a','trip','v','hs',0,1.,{now+offset},{now+offset})""")
             self.assertEqual(self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql')), [])
 
     def test_aging_gps_has_decaying_confidence_and_bounded_extrapolation(self):
         now = self.seed_live_trip()
         self.db.query('TRUNCATE eta.curr_vehicle_events')
         self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-            VALUES ('e','ride','a','trip','v','hs',0,{now-90000},{now-89000})""")
+            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,match_confidence,created_at,received_at)
+            VALUES ('e0','ride','a','trip','v','hs',0,1.,{now-120000},{now-119000}),
+                   ('e','ride','a','trip','v','hs',0,1.,{now-90000},{now-89000})""")
         rows = self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
         self.assertTrue(all(r['freshness_tier'] == 'aging' for r in rows))
         self.assertTrue(all(0 < r['prediction_confidence'] < 0.4 for r in rows))
@@ -235,3 +239,36 @@ class EtaSQLTest(unittest.TestCase):
         row = self.rows('SELECT * FROM eta.hist_node_travel_times_aggregation')[0]
         self.assertEqual(row['sample_count'], 2)
         self.assertGreater(row['stddev_travel_time_seconds'], 0)
+
+    def test_forward_outlier_recovers_without_running_max(self):
+        now = self.seed_live_trip()
+        self.db.query(f"""INSERT INTO eta.curr_vehicle_events
+            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,match_confidence,created_at,received_at)
+            VALUES ('jump','ride','a','trip','v','hs',10000,1.,{now+100},{now+100}),
+                   ('recover','ride','a','trip','v','hs',1,1.,{now+1100},{now+1100})""")
+        rows = self.rows('SELECT * FROM eta.valid_vehicle_events ORDER BY created_at')
+        self.assertNotIn(10000, [r['node_index'] for r in rows])
+        self.assertEqual(rows[-1]['node_index'], 1)
+        self.assertLess(rows[-1]['position_confidence'], 1.)
+
+    def test_live_snapper_rejects_off_shape_and_opposite_heading(self):
+        now = self.seed_live_trip()
+        op = self.rows('SELECT operational_date FROM eta.curr_rides LIMIT 1')[0]['operational_date']
+        self.db.query(f"""INSERT INTO operation.simplified_vehicle_events
+            (_id,agency_id,trip_id,vehicle_id,latitude,longitude,speed,bearing,created_at,received_at,operational_date)
+            VALUES ('good','a','trip','v',38.70045,-9.1,20,0,{now},{now},{op}),
+                   ('wrong','a','trip','v',38.70045,-9.1,20,180,{now},{now},{op}),
+                   ('far','a','trip','v',38.70045,-9.101,20,0,{now},{now},{op})""")
+        rows = self.rows(view_select('eta/bootstrap/mv-sync-curr-vehicle-events.sql'))
+        self.assertEqual([r['_id'] for r in rows], ['good'])
+        self.assertLess(rows[0]['match_distance_m'], 1.)
+
+    def test_historical_snapper_builds_plausible_traversals(self):
+        now = self.seed_live_trip()
+        self.db.query(f"""INSERT INTO eta.hist_vehicle_events
+            (_id,ride_id,hashed_shape_id,vehicle_id,latitude,longitude,created_at,received_at)
+            VALUES ('h1','ride','hs','v',38.7,-9.1,{now-60000},{now-60000}),
+                   ('h2','ride','hs','v',38.7009,-9.1,{now-30000},{now-30000})""")
+        query = (SQL / 'eta/loader/build-hist-node-travel-times.sql').read_text()
+        self.db.query(query.replace('$chunk_start', str(now-120000)).replace('$chunk_end', str(now)))
+        self.assertEqual(self.rows('SELECT count() AS n FROM eta.hist_node_travel_times')[0]['n'], 4)

@@ -51,8 +51,9 @@ WITH
         SELECT ride_id, vehicle_id, hashed_shape_id,
             argMax(node_index, tuple(created_at, _id)) AS current_node_index,
             argMax(received_at, tuple(created_at, _id)) AS position_received_at,
-            max(created_at) AS position_created_at
-        FROM eta.curr_vehicle_events FINAL
+            max(created_at) AS position_created_at,
+            argMax(position_confidence, tuple(created_at, _id)) AS position_confidence
+        FROM eta.valid_vehicle_events
         WHERE created_at >= now_ms - (SELECT max_gps_seconds FROM eta.policy) * 1000
           AND created_at <= now_ms + (SELECT future_tolerance_seconds FROM eta.policy) * 1000
           AND received_at - created_at <= (SELECT max_ingestion_lag_seconds FROM eta.policy) * 1000
@@ -60,7 +61,7 @@ WITH
         GROUP BY ride_id, vehicle_id, hashed_shape_id
     ),
     positions AS (
-        SELECT l.ride_id AS ride_id, l.vehicle_id AS vehicle_id, l.hashed_shape_id AS hashed_shape_id, l.current_node_index AS current_node_index, l.position_received_at AS position_received_at, l.position_created_at AS position_created_at, r.trip_id AS trip_id, r.agency_id AS agency_id,
+        SELECT l.ride_id AS ride_id, l.vehicle_id AS vehicle_id, l.hashed_shape_id AS hashed_shape_id, l.current_node_index AS current_node_index, l.position_received_at AS position_received_at, l.position_created_at AS position_created_at, l.position_confidence AS position_confidence, r.trip_id AS trip_id, r.agency_id AS agency_id,
             r.plan_id AS plan_id, r.route_id AS route_id,
             r.hashed_trip_id AS hashed_trip_id, r.operational_date AS operational_date,
             cn.latitude AS current_node_latitude, cn.longitude AS current_node_longitude,
@@ -82,7 +83,7 @@ WITH
             e.hashed_shape_id AS hashed_shape_id, e.node_index AS node_index, e.created_at AS created_at,
             lagInFrame(toNullable(e.node_index)) OVER w AS prev_node,
             lagInFrame(toNullable(e.created_at)) OVER w AS prev_at
-        FROM eta.curr_vehicle_events AS e FINAL
+        FROM eta.valid_vehicle_events AS e
         WHERE e.created_at >= now_ms - 600000
         WINDOW w AS (PARTITION BY ride_id, vehicle_id, hashed_shape_id ORDER BY created_at, _id)
     ),
@@ -149,7 +150,7 @@ WITH
             ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
     ),
     upcoming AS (
-        SELECT p.ride_id AS ride_id, p.vehicle_id AS vehicle_id, p.hashed_shape_id AS hashed_shape_id, p.current_node_index AS current_node_index, p.position_received_at AS position_received_at, p.position_created_at AS position_created_at, p.trip_id AS trip_id, p.agency_id AS agency_id, p.plan_id AS plan_id, p.route_id AS route_id, p.hashed_trip_id AS hashed_trip_id, p.operational_date AS operational_date, p.current_node_latitude AS current_node_latitude, p.current_node_longitude AS current_node_longitude, p.local_hour AS local_hour, p.period_of_day AS period_of_day, p.dow AS dow, p.weekday AS weekday, p.day_type AS day_type, w.stop_sequence AS stop_sequence, w.stop_id AS source_stop_id,
+        SELECT p.ride_id AS ride_id, p.vehicle_id AS vehicle_id, p.hashed_shape_id AS hashed_shape_id, p.current_node_index AS current_node_index, p.position_received_at AS position_received_at, p.position_created_at AS position_created_at, p.position_confidence AS position_confidence, p.trip_id AS trip_id, p.agency_id AS agency_id, p.plan_id AS plan_id, p.route_id AS route_id, p.hashed_trip_id AS hashed_trip_id, p.operational_date AS operational_date, p.current_node_latitude AS current_node_latitude, p.current_node_longitude AS current_node_longitude, p.local_hour AS local_hour, p.period_of_day AS period_of_day, p.dow AS dow, p.weekday AS weekday, p.day_type AS day_type, w.stop_sequence AS stop_sequence, w.stop_id AS source_stop_id,
             w.stop_name AS stop_name, w.node_index AS stop_node_index,
             w.stop_lat AS stop_node_latitude, w.stop_lon AS stop_node_longitude
         FROM positions AS p
@@ -158,12 +159,12 @@ WITH
         WHERE w.node_index >= p.current_node_index
     ),
     estimates AS (
-        SELECT u.ride_id AS ride_id, u.vehicle_id AS vehicle_id, u.hashed_shape_id AS hashed_shape_id, u.current_node_index AS current_node_index, u.position_received_at AS position_received_at, u.position_created_at AS position_created_at, u.trip_id AS trip_id, u.agency_id AS agency_id, u.plan_id AS plan_id, u.route_id AS route_id, u.hashed_trip_id AS hashed_trip_id, u.operational_date AS operational_date, u.current_node_latitude AS current_node_latitude, u.current_node_longitude AS current_node_longitude, u.local_hour AS local_hour, u.period_of_day AS period_of_day, u.dow AS dow, u.weekday AS weekday, u.day_type AS day_type, u.stop_sequence AS stop_sequence, u.source_stop_id AS source_stop_id, u.stop_name AS stop_name, u.stop_node_index AS stop_node_index, u.stop_node_latitude AS stop_node_latitude, u.stop_node_longitude AS stop_node_longitude,
+        SELECT u.ride_id AS ride_id, u.vehicle_id AS vehicle_id, u.hashed_shape_id AS hashed_shape_id, u.current_node_index AS current_node_index, u.position_received_at AS position_received_at, u.position_created_at AS position_created_at, u.position_confidence AS position_confidence, u.trip_id AS trip_id, u.agency_id AS agency_id, u.plan_id AS plan_id, u.route_id AS route_id, u.hashed_trip_id AS hashed_trip_id, u.operational_date AS operational_date, u.current_node_latitude AS current_node_latitude, u.current_node_longitude AS current_node_longitude, u.local_hour AS local_hour, u.period_of_day AS period_of_day, u.dow AS dow, u.weekday AS weekday, u.day_type AS day_type, u.stop_sequence AS stop_sequence, u.source_stop_id AS source_stop_id, u.stop_name AS stop_name, u.stop_node_index AS stop_node_index, u.stop_node_latitude AS stop_node_latitude, u.stop_node_longitude AS stop_node_longitude,
             if(u.stop_node_index = u.current_node_index, 0., coalesce(c.seconds, 0.) +
                 greatest(toInt64(0), toInt64(u.stop_node_index) - coalesce(toInt64(c.node_index), toInt64(u.current_node_index))) * 25. / 4.) AS raw_seconds,
             least(1., coalesce(c.known_nodes / nullIf(toFloat64(u.stop_node_index - u.current_node_index), 0.), 0.)) AS history_coverage,
             greatest(0., (now_ms - u.position_created_at) / 1000.) AS gps_age_seconds,
-            (0.4 + 0.6 * history_coverage) * exp(-gps_age_seconds / 120.) AS prediction_confidence,
+            (0.4 + 0.6 * history_coverage) * exp(-gps_age_seconds / 120.) * u.position_confidence AS prediction_confidence,
             if(gps_age_seconds <= (SELECT fresh_gps_seconds FROM eta.policy), 'fresh', 'aging') AS freshness_tier,
             greatest(if(u.stop_node_index > u.current_node_index, 1., 0.),
                 raw_seconds - least(gps_age_seconds, (SELECT max_extrapolation_seconds FROM eta.policy)) *

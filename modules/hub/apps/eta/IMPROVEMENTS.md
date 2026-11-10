@@ -106,3 +106,22 @@ Existing aggregate rows default to zero support until rebuilt. Rebuild the
 30-day aggregation window before enabling this view. Compare a temporally held
 out replay with the saved incumbent snapshots; inspect sparse routes and P90.
 Measure aggregation/refresh runtime and bytes read on a peak-sized dataset.
+
+## Map-match quality (#952)
+
+Live candidates now require the historical 30 m distance bound, correct moving
+heading (circular difference <=90 degrees) and deterministic distance/node tie
+breaks. Stationary headings are ignored. `curr_vehicle_events` stores match
+distance, heading difference and confidence. `valid_vehicle_events` additionally
+reports time gap, progression speed and position confidence; two physically
+plausible observations confirm cold starts. A two-ping lookback recovers after
+one forward spike. There is no permanent running-max progress latch. Gaps over
+120 s require reconfirmation. Out-of-order arrivals are ordered by GPS time/ID.
+
+Historical traversal filtering also caps gaps at 120 s and wraps angular
+differences correctly. Historical labels use displacement heading, while live
+matching uses vehicle bearing where reliable. Ambiguous self-intersections may
+reduce coverage until forward movement disambiguates them; this is preferable
+to inventing progress. Audit looping and parallel-road traces before promotion.
+The existing stop snapper still needs route-specific review when the same
+coordinates occur multiple times on one shape.
