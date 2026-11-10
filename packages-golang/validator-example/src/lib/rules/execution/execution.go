@@ -13,8 +13,8 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
 )
 
-// ExecuteValidation calls the validation function and returns its context outcome.
-func ExecuteValidation(run *validationTypes.Execution, ctx *types.ValidationContext, validate validationTypes.Check) (status DAG.Status) {
+// ExecuteRule calls the validation function and returns its context outcome.
+func ExecuteRule(run *validationTypes.Execution, ctx *types.ValidationContext, validate validationTypes.Check) (status DAG.Status) {
 	//
 
 	//

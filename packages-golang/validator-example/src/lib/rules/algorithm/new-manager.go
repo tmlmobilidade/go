@@ -70,7 +70,7 @@ func NewManager(db *sql.DB, configuration map[string]rules.RuleConfig, validatio
 			ID:        ruleContext.RuleID,
 			DependsOn: slices.Clone(config.DependsOn),
 			Run: func(run *validationTypes.Execution) types.Status {
-				return execution.ExecuteValidation(run, ruleContext, validate)
+				return execution.ExecuteRule(run, ruleContext, validate)
 			},
 		})
 	}
