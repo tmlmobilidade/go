@@ -145,13 +145,17 @@ WITH
             AND prev_ts IS NOT NULL
             AND curr_idx > prev_idx
             AND (curr_ts - prev_ts) > 0
+            AND (curr_ts - prev_ts) <= 120000
             AND ((curr_idx - prev_idx) * segment_length_m)
                 / ((curr_ts - prev_ts) / 1000.0) * 3.6
                 BETWEEN 1 AND 120
-            AND abs(
+            AND abs(atan2(sin(
                     atan2(curr_lat       - prev_lat,       curr_lon       - prev_lon) -
                     atan2(curr_node_lat  - prev_node_lat,  curr_node_lon  - prev_node_lon)
-                ) < (bearing_threshold_deg * pi() / 180)
+                ), cos(
+                    atan2(curr_lat - prev_lat, curr_lon - prev_lon) -
+                    atan2(curr_node_lat - prev_node_lat, curr_node_lon - prev_node_lon)
+                ))) < (bearing_threshold_deg * pi() / 180)
     )
 
 SELECT

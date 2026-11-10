@@ -13,6 +13,8 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * change, so once a trip is in `eta.curr_waypoints` it is never sent again.
  */
 export async function loadCurrentWaypoints(): Promise<void> {
+	await labDb.command({ query: 'SYSTEM REFRESH VIEW eta.mv_cached_shape_node_geometry' });
+	await labDb.command({ query: 'SYSTEM WAIT VIEW eta.mv_cached_shape_node_geometry' });
 	await labDb.queryFromFile(sqlPath('hub', 'eta/loader/load-current-waypoints.sql'));
 	Logger.progress({ message: 'Loaded current waypoints: curr_waypoints' });
 

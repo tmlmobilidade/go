@@ -8,11 +8,14 @@ const queries: { path: string, agencyId: string }[] = [];
 const eta = { trip_id: 'trip', stop_id: 'shared-stop', stop_sequence: 1, stop_name: 'Stop', vehicle_id: 'vehicle', eta_at: 1700000000000, eta_seconds: 30 };
 
 mock.module('@tmlmobilidade/go-interfaces-cachedb', { namedExports: { cacheDb: {
+	scan: async (pattern: string) => [...values.keys()].filter(key => key.startsWith(pattern.slice(0, -1))),
+	deleteMany: async (keys: string[]) => { keys.forEach(key => values.delete(key)); },
 	get: async (key: string) => values.get(key) ?? null,
 	getNew: async (key: string) => values.has(key) ? JSON.parse(values.get(key)!) : undefined,
 	set: async (key: string, value: string, ttl: number) => { values.set(key, value); writes.push({ key, ttl }); },
 } } });
 mock.module('@tmlmobilidade/go-interfaces-labdb', { namedExports: { labDb: {
+	insert: async () => {},
 	queryFromFile: async (path: string, params: { agency_id: string }) => {
 		assert.ok(params.agency_id);
 		queries.push({ path, agencyId: params.agency_id });
@@ -36,8 +39,8 @@ it('publishes simplified and GTFS ETA data exclusively under each agency, includ
 		assert.equal(JSON.parse(values.get(`hub:v1:${agencyId}:realtime:eta:all:gtfs`)!).entity[0].trip_update.vehicle.id, agencyId);
 	}
 	assert.equal(writes.length, 8);
-	assert.ok(writes.every(write => /^hub:v1:[ab]:realtime:eta:/.test(write.key) && write.ttl === 600));
-	assert.deepEqual(queries.map(query => query.agencyId), ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b']);
+	assert.ok(writes.every(write => /^hub:v1:[ab]:realtime:eta:/.test(write.key) && write.ttl === 60));
+	assert.deepEqual(queries.map(query => query.agencyId), ['a', 'a', 'b', 'b']);
 	for (const query of queries) {
 		const sql = await readFile(query.path, 'utf8');
 		assert.match(sql, /(?:e\.)?agency_id = \{agency_id:String\}/);
