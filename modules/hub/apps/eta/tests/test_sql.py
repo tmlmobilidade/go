@@ -208,3 +208,30 @@ class EtaSQLTest(unittest.TestCase):
         stale = view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql').replace('now_ms AS refreshed_at', '(now_ms - 120000) AS refreshed_at')
         self.insert_select('eta.pred_trip_stop_etas_v2', stale)
         self.assertEqual(self.rows('SELECT * FROM eta.publishable_trip_stop_etas'), [])
+
+    def test_historical_prediction_uses_support_and_exposes_dispersion(self):
+        self.seed_live_trip()
+        self.db.query("""INSERT INTO eta.hist_node_travel_times_aggregation
+            (hashed_shape_id,node_index,operational_date,period_of_day,weekday,day_type,
+             median_travel_time_seconds,sample_count,p10_travel_time_seconds,p90_travel_time_seconds)
+            SELECT 'hs',toUInt32(5),toYYYYMMDD(toDate(now('Europe/Lisbon') - INTERVAL 4 HOUR) - number - 1),
+                'Mid','Tuesday','Weekday',if(number=0,100.,10.),if(number=0,1,100),5.,150.
+            FROM numbers(2)""")
+        rows = self.rows(view_select('eta/bootstrap/mv-predict-node-etas.sql'))
+        measured = [r for r in rows if r['node_index'] == 5 and r['period_of_day'] == 'Mid']
+        self.assertTrue(measured)
+        self.assertTrue(all(0 < r['predicted_travel_time_seconds'] < 30 for r in measured))
+        self.assertTrue(all(r['effective_sample_count'] > 0 for r in measured))
+        self.assertTrue(all(r['p90_seconds'] >= r['p10_seconds'] for r in measured))
+
+    def test_historical_aggregation_writes_actual_sample_counts(self):
+        now = self.seed_live_trip()
+        self.db.query(f"""INSERT INTO eta.hist_node_travel_times VALUES
+            ('r1','hs',1,{now-86400000},5.),('r2','hs',1,{now-86400000},15.)""")
+        day = self.rows("SELECT toYYYYMMDD(toDate(now('Europe/Lisbon') - INTERVAL 4 HOUR) - 1) AS d")[0]['d']
+        query = (SQL / 'eta/loader/aggregate-hist-node-travel-times.sql').read_text()
+        query = query.replace('$scan_start', str(now-2*86400000)).replace('$scan_end', str(now)).replace('$chunk_date', str(day))
+        self.db.query(query)
+        row = self.rows('SELECT * FROM eta.hist_node_travel_times_aggregation')[0]
+        self.assertEqual(row['sample_count'], 2)
+        self.assertGreater(row['stddev_travel_time_seconds'], 0)

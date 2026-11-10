@@ -120,6 +120,7 @@ WITH
             if(h.predicted_travel_time_seconds > 0 AND isFinite(h.predicted_travel_time_seconds),
                h.predicted_travel_time_seconds, NULL) AS direct_seconds,
             sp.shape_seconds AS shape_seconds,
+            coalesce(h.effective_sample_count > 0, false) AS observed_support,
             coalesce(lf.factor, 1.) AS vehicle_factor
         FROM positions AS p
         INNER JOIN eta.hist_shape_nodes AS n FINAL
@@ -132,7 +133,7 @@ WITH
         LEFT JOIN live_factor AS lf ON lf.ride_id = p.ride_id AND lf.vehicle_id = p.vehicle_id
     ),
     node_times AS (
-        SELECT ride_id, vehicle_id, node_index, direct_seconds IS NOT NULL AS has_history,
+        SELECT ride_id, vehicle_id, node_index, observed_support AS has_history,
             coalesce(direct_seconds,
                 avgOrNull(direct_seconds) OVER (PARTITION BY ride_id, vehicle_id ORDER BY node_index
                     ROWS BETWEEN 4 PRECEDING AND 4 FOLLOWING),

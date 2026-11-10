@@ -119,3 +119,9 @@ CREATE TABLE IF NOT EXISTS eta.curr_waypoints_snapped
 )
 ENGINE = ReplacingMergeTree()
 ORDER BY (hashed_trip_id, stop_sequence, stop_id);
+-- Existing rows have zero support until rebuilt; never invent observations.
+ALTER TABLE eta.hist_node_travel_times_aggregation
+    ADD COLUMN IF NOT EXISTS sample_count UInt32 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS p10_travel_time_seconds Float64 DEFAULT median_travel_time_seconds,
+    ADD COLUMN IF NOT EXISTS p90_travel_time_seconds Float64 DEFAULT median_travel_time_seconds,
+    ADD COLUMN IF NOT EXISTS stddev_travel_time_seconds Float64 DEFAULT 0;

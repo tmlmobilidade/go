@@ -91,3 +91,18 @@ The replacement target is `pred_trip_stop_etas_v2`, keyed by ride, vehicle and
 stop sequence. Changing only ORDER BY on the populated legacy table would not
 be a safe migration. The old table is retained for inspection/rollback; do not
 read it from new publishers, and remove it only after the rollout is accepted.
+
+## Historical support (#951)
+
+Daily aggregates include count, p10/p50/p90 and population standard deviation.
+Each day contributes once, weighted by seven-day exponential recency, calendar
+similarity and min(count,20). Capping daily support limits one day's influence.
+Five pseudo-observations shrink node estimates toward the shape/time prior;
+absent shapes use the distance prior. Effective support and mixed dispersion
+are exposed in `pred_node_etas`. Mixed daily p10/p90 are descriptive bounds,
+not calibrated pooled quantiles or prediction intervals.
+
+Existing aggregate rows default to zero support until rebuilt. Rebuild the
+30-day aggregation window before enabling this view. Compare a temporally held
+out replay with the saved incumbent snapshots; inspect sparse routes and P90.
+Measure aggregation/refresh runtime and bytes read on a peak-sized dataset.
