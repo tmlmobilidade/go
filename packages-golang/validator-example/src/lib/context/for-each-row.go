@@ -28,6 +28,9 @@ func ForEachRow(ctx *types.ValidationContext, tableName string, fields []string,
 		ctx.Field = fields[0]
 	}
 
+	//
+	// 2. Check if the table exists
+
 	exists, err := queries.TableExists(ctx.DB, tableName)
 	if err != nil {
 		return err
@@ -36,23 +39,29 @@ func ForEachRow(ctx *types.ValidationContext, tableName string, fields []string,
 		ctx.Skipped = true
 		return nil
 	}
+
+	//
+	// 3. Create a SQLite table
+
 	table := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: tableName}
 
 	//
-	// 2. Read bounded batches, releasing SQLite cursors before each callback
+	// 4. Read bounded batches, releasing SQLite cursors before each callback
 
 	checked := 0
 	lastProgress := time.Now()
 	err = queries.ForEachRowFields(table, fields, func(source *sqliteTypes.SQLiteRow) (err error) {
+		//
+		// 5. Create a child context for the current row
+
 		child := *ctx
-		child.Config = cloneConfig(ctx.Config)
 		child.Source = source
 		child.Row = source.Row
 		child.Failed = false
 		child.Skipped = false
 
 		//
-		// 3. Preserve source locations and propagate child findings to the whole rule
+		// 4. Preserve source locations and propagate child findings to the whole rule
 
 		defer func() {
 			if recovered := recover(); recovered != nil {
@@ -66,12 +75,20 @@ func ForEachRow(ctx *types.ValidationContext, tableName string, fields []string,
 			}
 			if err != nil {
 				ctx.Failed = true
-				err = &rowError{details: types.RowError{Table: tableName, Row: source.Row, Field: child.Field, Err: err}}
+				err = &types.RowError{Table: tableName, Row: source.Row, Field: child.Field, Err: err}
 			}
 		}()
+
+		//
+		// 5. Execute the check
+
 		if err = check(&child); err != nil {
 			return err
 		}
+
+		//
+		// 6. Update the progress
+
 		checked++
 		if time.Since(lastProgress) >= 5*time.Second {
 			logger.AppLogger.Progress(telemetry.LogEntry{Message: fmt.Sprintf("Running %s: %d rows checked", ctx.RuleID, checked), Attributes: map[string]any{"rule_id": ctx.RuleID, "table": tableName, "checked_rows": checked}})
@@ -79,6 +96,10 @@ func ForEachRow(ctx *types.ValidationContext, tableName string, fields []string,
 		}
 		return nil
 	})
+
+	//
+	// 7. Return the error
+
 	if err != nil {
 		ctx.Failed = true
 	}

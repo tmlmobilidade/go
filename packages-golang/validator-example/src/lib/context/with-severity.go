@@ -15,5 +15,9 @@ func WithSeverity(context *types.ValidationContext, severity rules.Severities) *
 	if severity != "" {
 		context.Config.Severity = severity
 	}
+
+	//
+	// 2. Return the context
+
 	return context
 }
