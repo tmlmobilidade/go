@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/validate/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
@@ -38,7 +39,7 @@ func ValidateStructure(data []byte) (map[string]rules.RuleConfig, error) {
 	// 2. Decode each rule, rejecting invalid IDs, settings, and unknown fields
 
 	config := make(map[string]rules.RuleConfig, len(entries))
-	for _, id := range sortedIDs(entries) {
+	for _, id := range utils.SortedIDs(entries) {
 		if strings.TrimSpace(id) == "" {
 			return nil, fmt.Errorf("rule ID must not be empty")
 		}
@@ -50,14 +51,14 @@ func ValidateStructure(data []byte) (map[string]rules.RuleConfig, error) {
 		if err := json.Unmarshal(raw, &fields); err != nil {
 			return nil, fmt.Errorf("rule %q: %w", id, err)
 		}
-		for _, field := range sortedIDs(fields) {
+		for _, field := range utils.SortedIDs(fields) {
 			switch field {
 			case "severity":
 				if bytes.Equal(bytes.TrimSpace(fields[field]), []byte("null")) {
 					return nil, fmt.Errorf("rule %q: severity must be a string", id)
 				}
 			case "options", "compare", "depends_on":
-				if err := validateArraySetting(field, fields[field]); err != nil {
+				if err := utils.ValidateArraySetting(field, fields[field]); err != nil {
 					return nil, fmt.Errorf("rule %q: %w", id, err)
 				}
 			default:
@@ -73,41 +74,4 @@ func ValidateStructure(data []byte) (map[string]rules.RuleConfig, error) {
 		config[id] = entry
 	}
 	return config, nil
-}
-
-// validateArraySetting rejects null elements that encoding/json would otherwise
-// silently turn into zero-valued strings or comparison structs.
-func validateArraySetting(field string, raw json.RawMessage) error {
-	if bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		return nil
-	}
-	var values []json.RawMessage
-	if err := json.Unmarshal(raw, &values); err != nil {
-		return fmt.Errorf("%s: %w", field, err)
-	}
-	for index, value := range values {
-		value = bytes.TrimSpace(value)
-		if field != "compare" {
-			if len(value) == 0 || value[0] != '"' {
-				return fmt.Errorf("%s[%d] must be a string", field, index)
-			}
-			continue
-		}
-		if len(value) == 0 || value[0] != '{' {
-			return fmt.Errorf("compare[%d] must be an object", index)
-		}
-		var comparison map[string]json.RawMessage
-		if err := json.Unmarshal(value, &comparison); err != nil {
-			return err
-		}
-		for _, key := range []string{"key", "value"} {
-			if setting, exists := comparison[key]; exists {
-				setting = bytes.TrimSpace(setting)
-				if len(setting) == 0 || setting[0] != '"' {
-					return fmt.Errorf("compare[%d].%s must be a string", index, key)
-				}
-			}
-		}
-	}
-	return nil
 }

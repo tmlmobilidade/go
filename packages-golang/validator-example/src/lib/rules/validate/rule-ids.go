@@ -3,6 +3,7 @@ package validate
 import (
 	"fmt"
 
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/validate/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
@@ -14,7 +15,7 @@ func ValidateRuleIDs(config map[string]rules.RuleConfig, known map[string]bool) 
 	//
 	// 1. Check every configured ID against the discovered rule IDs
 
-	for _, id := range sortedIDs(config) {
+	for _, id := range utils.SortedIDs(config) {
 		if !known[id] {
 			return fmt.Errorf("unknown rule %q", id)
 		}

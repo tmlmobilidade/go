@@ -3,6 +3,7 @@ package validate
 import (
 	"fmt"
 
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/validate/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
@@ -13,7 +14,7 @@ func ValidateSeverities(config map[string]rules.RuleConfig) error {
 	//
 	// 1. Accept every severity defined by the validation rule type
 
-	for _, id := range sortedIDs(config) {
+	for _, id := range utils.SortedIDs(config) {
 		switch config[id].Severity {
 		case rules.SEVERITY_IGNORE, rules.SEVERITY_INFO, rules.SEVERITY_WARNING, rules.SEVERITY_ERROR, rules.SEVERITY_FORBIDDEN:
 		default:

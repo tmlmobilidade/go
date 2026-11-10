@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/validate/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 )
 
@@ -44,7 +45,7 @@ func ValidateCycles(config map[string]rules.RuleConfig) error {
 	//
 	// 2. Check every component, including ignored rules and disconnected cycles
 
-	for _, id := range sortedIDs(config) {
+	for _, id := range utils.SortedIDs(config) {
 		if err := visit(id); err != nil {
 			return err
 		}
