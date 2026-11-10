@@ -12,9 +12,13 @@ func Checks() map[string]validationTypes.Check {
 	//
 
 	//
-	// 1. Return a clone of the registered checks
+	// 1. Acquire a read lock on the registered rules
 
 	variables.RegisteredRules.RLock()
 	defer variables.RegisteredRules.RUnlock()
+
+	//
+	// 2. Return a clone of the registered checks
+
 	return maps.Clone(variables.RegisteredRules.Checks)
 }
