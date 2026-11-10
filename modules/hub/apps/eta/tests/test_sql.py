@@ -57,6 +57,7 @@ class EtaSQLTest(unittest.TestCase):
             legacy_ids Array(String), is_deleted Bool
         ) ENGINE=ReplacingMergeTree ORDER BY _id''')
         for path in ['eta/bootstrap/create-tables.sql',
+                     'eta/bootstrap/runtime-policy.sql',
                      'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
                      'eta/bootstrap/mv-predict-node-etas.sql',
                      'eta/bootstrap/mv-predict-trip-stop-etas.sql',
@@ -72,7 +73,7 @@ class EtaSQLTest(unittest.TestCase):
         cls.tmp.cleanup()
 
     def setUp(self):
-        for row in self.rows("SELECT database, name FROM system.tables WHERE database IN ('eta','operation','infrastructure') AND engine LIKE '%MergeTree%'"):
+        for row in self.rows("SELECT database, name FROM system.tables WHERE database IN ('eta','operation','infrastructure') AND engine LIKE '%MergeTree%' AND name != 'runtime_policy'"):
             self.db.query(f"TRUNCATE {row['database']}.{row['name']}")
 
     def rows(self, sql):
@@ -162,3 +163,23 @@ class EtaSQLTest(unittest.TestCase):
         self.assertEqual(rows[0]['arrival_at'], now - 285000)
         self.db.query('INSERT INTO eta.actual_arrivals ' + query)
         self.assertEqual(self.rows(query), [])
+
+    def test_stale_and_future_gps_are_suppressed(self):
+        now = self.seed_live_trip()
+        for offset in [-300000, 60000]:
+            self.db.query('TRUNCATE eta.curr_vehicle_events')
+            self.db.query(f"""INSERT INTO eta.curr_vehicle_events
+                (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+                VALUES ('e','a','trip','v','hs',0,{now+offset},{now+offset})""")
+            self.assertEqual(self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql')), [])
+
+    def test_aging_gps_has_decaying_confidence_and_bounded_extrapolation(self):
+        now = self.seed_live_trip()
+        self.db.query('TRUNCATE eta.curr_vehicle_events')
+        self.db.query(f"""INSERT INTO eta.curr_vehicle_events
+            (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+            VALUES ('e','a','trip','v','hs',0,{now-90000},{now-89000})""")
+        rows = self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
+        self.assertTrue(all(r['freshness_tier'] == 'aging' for r in rows))
+        self.assertTrue(all(0 < r['prediction_confidence'] < 0.4 for r in rows))
+        self.assertTrue(all(r['eta_at'] > now for r in rows))

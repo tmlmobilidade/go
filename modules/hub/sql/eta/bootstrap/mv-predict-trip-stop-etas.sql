@@ -39,13 +39,16 @@ ALTER TABLE eta.pred_trip_stop_etas
     ADD COLUMN IF NOT EXISTS position_received_at Int64,
     ADD COLUMN IF NOT EXISTS baseline_eta_at Nullable(Int64) DEFAULT eta_at,
     ADD COLUMN IF NOT EXISTS prediction_version String DEFAULT 'statistical-v1',
-    ADD COLUMN IF NOT EXISTS history_coverage Float64 DEFAULT 0;
+    ADD COLUMN IF NOT EXISTS history_coverage Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS freshness_tier LowCardinality(String) DEFAULT 'unknown',
+    ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0;
 
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
 TO eta.pred_trip_stop_etas
 AS
 WITH
+    toUnixTimestamp64Milli(now64(3)) AS now_ms,
     -- Newest GPS fix per (trip, vehicle): anchors the clock and the shape.
     latest_fix AS (
         SELECT
@@ -55,7 +58,9 @@ WITH
             argMax(received_at, tuple(created_at, _id)) AS position_received_at,
             max(created_at)                     AS position_created_at
         FROM eta.curr_vehicle_events
-        WHERE created_at >= toUnixTimestamp64Milli(now64(3)) - 30 * 60 * 1000
+        WHERE created_at >= now_ms - (SELECT max_gps_seconds FROM eta.policy) * 1000
+          AND created_at <= now_ms + (SELECT future_tolerance_seconds FROM eta.policy) * 1000
+          AND received_at - created_at <= (SELECT max_ingestion_lag_seconds FROM eta.policy) * 1000
         GROUP BY trip_id, vehicle_id
     ),
     -- Current node = furthest-forward node observed in the last 2 minutes before
@@ -443,7 +448,13 @@ WITH
             stop_node_longitude,
             history_coverage,
             if(eta_seconds_raw IS NOT NULL AND isFinite(assumeNotNull(eta_seconds_raw)) AND eta_seconds_raw BETWEEN 0 AND 65535,
-               toUInt16(ceil(assumeNotNull(eta_seconds_raw))), NULL) AS eta_seconds
+               toUInt16(ceil(greatest(
+                   if(stop_node_index > current_node_index, 1., 0.),
+                   assumeNotNull(eta_seconds_raw) - least(
+                       greatest(0., (now_ms - position_created_at) / 1000.),
+                       (SELECT max_extrapolation_seconds FROM eta.policy)) *
+                       exp(-greatest(0., (now_ms - position_created_at) / 1000.) / 120.)
+               ))), NULL) AS eta_seconds
         FROM eta_calc
     ),
     -- Match GO IDs directly, or resolve agency IDs through legacy_ids. Legacy
@@ -525,11 +536,14 @@ SELECT
     stop_node_longitude,
     eta_seconds,
     history_coverage,
-    'statistical-fallback-v2' AS prediction_version,
+    'statistical-fresh-v3' AS prediction_version,
+    if((now_ms - position_created_at) / 1000. <= (SELECT fresh_gps_seconds FROM eta.policy),
+       'fresh', 'aging') AS freshness_tier,
+    (0.4 + 0.6 * history_coverage) * exp(-greatest(0., (now_ms - position_created_at) / 1000.) / 120.) AS prediction_confidence,
     if(
         eta_seconds IS NULL,
         NULL,
-        position_created_at + toInt64(assumeNotNull(eta_seconds)) * 1000
+        now_ms + toInt64(assumeNotNull(eta_seconds)) * 1000
     ) AS eta_at,
     toUnixTimestamp64Milli(now64(3)) AS refreshed_at
 FROM eta_resolved

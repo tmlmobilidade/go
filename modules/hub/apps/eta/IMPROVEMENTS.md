@@ -52,3 +52,16 @@ stored with the prediction (fallbacks do not masquerade as measured support).
 A missing cumulative stop match uses positive remaining distance; only a stop at
 the current node may have a zero ETA. Durations outside UInt16 are suppressed
 rather than wrapping. Public fields retain their existing types.
+
+## GPS freshness (#949)
+
+`runtime_policy` defaults to fresh <=60 s, aging <=180 s, ingestion lag <=120 s
+and future-clock tolerance 5 s. Configuration is versioned and bounded by the
+`policy` view; tune from operator latency distributions. Older fixes are
+suppressed. Aging predictions expose exponential confidence decay. Remaining
+time extrapolation is capped at 30 s and weighted by freshness, with a positive
+floor for stops ahead; geometry is never advanced through unobserved turns.
+Prediction clocks anchor at refresh time. Set max_extrapolation_seconds=0 to
+disable. Publication filtering is centralised in #950. The health query exposes
+GPS age, lag and suppression; these defaults require a latency-distribution
+review before production promotion.
