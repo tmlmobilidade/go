@@ -3,6 +3,7 @@
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { EXTERNAL_FEEDS } from '../external-feeds.js';
+import { recordPublication } from '../record-publication.js';
 import { cacheEtasByAll } from './cache-etas-by-all.js';
 import { cacheEtasByStop } from './cache-etas-by-stop.js';
 import { cacheEtasByTrip } from './cache-etas-by-trip.js';
@@ -40,6 +41,8 @@ export async function publishEtas(agencyId: string) {
 		await cacheEtasByStop(etas, agencyId);
 		await cacheEtasByAll(etas, agencyId);
 	}
+
+	await recordPublication(agencyId, 'simplified');
 
 	Logger.success(`Finished publishing trip stop ETAs (${globalTimer.get()})`);
 

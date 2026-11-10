@@ -5,6 +5,10 @@
 
 CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 (
+    ride_id String,
+    route_id String,
+    operational_date UInt32,
+    position_received_at Int64,
     trip_id String,
     agency_id String,
     plan_id String,
@@ -28,6 +32,15 @@ CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
 
+ALTER TABLE eta.pred_trip_stop_etas
+    ADD COLUMN IF NOT EXISTS ride_id String,
+    ADD COLUMN IF NOT EXISTS route_id String,
+    ADD COLUMN IF NOT EXISTS operational_date UInt32,
+    ADD COLUMN IF NOT EXISTS position_received_at Int64,
+    ADD COLUMN IF NOT EXISTS baseline_eta_at Nullable(Int64) DEFAULT eta_at,
+    ADD COLUMN IF NOT EXISTS prediction_version String DEFAULT 'statistical-v1',
+    ADD COLUMN IF NOT EXISTS history_coverage Float64 DEFAULT 0;
+
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
 TO eta.pred_trip_stop_etas
@@ -39,6 +52,7 @@ WITH
             trip_id,
             vehicle_id,
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
+            argMax(received_at, tuple(created_at, _id)) AS position_received_at,
             max(created_at)                     AS position_created_at
         FROM eta.curr_vehicle_events
         WHERE created_at >= toUnixTimestamp64Milli(now64(3)) - 30 * 60 * 1000
@@ -54,6 +68,7 @@ WITH
             lf.vehicle_id          AS vehicle_id,
             lf.hashed_shape_id     AS hashed_shape_id,
             max(e.node_index)      AS current_node_index,
+            lf.position_received_at AS position_received_at,
             lf.position_created_at AS position_created_at
         FROM latest_fix AS lf
         INNER JOIN eta.curr_vehicle_events AS e
@@ -65,13 +80,18 @@ WITH
             lf.trip_id,
             lf.vehicle_id,
             lf.hashed_shape_id,
-            lf.position_created_at
+            lf.position_created_at,
+            lf.position_received_at
     ),
     pos_with_trip AS (
         SELECT
             lp.trip_id                  AS trip_id,
             lp.vehicle_id               AS vehicle_id,
             lp.hashed_shape_id          AS hashed_shape_id,
+            d._id                       AS ride_id,
+            d.route_id                  AS route_id,
+            d.operational_date          AS ride_operational_date,
+            lp.position_received_at     AS position_received_at,
             d.agency_id                 AS agency_id,
             d.plan_id                   AS plan_id,
             d.hashed_trip_id            AS hashed_trip_id,
@@ -97,7 +117,7 @@ WITH
     pos_classified AS (
         SELECT
             *,
-            toUInt32(formatDateTime(operational_dt, '%Y%m%d')) AS operational_date,
+            ride_operational_date AS operational_date,
             toDayOfWeek(operational_dt)                        AS dow,
             multiIf(
                 event_hour BETWEEN 7  AND 9,  'Peak AM',
@@ -263,6 +283,10 @@ WITH
         SELECT
             pf.trip_id                  AS trip_id,
             pf.vehicle_id               AS vehicle_id,
+            pf.ride_id                  AS ride_id,
+            pf.route_id                 AS route_id,
+            pf.operational_date         AS operational_date,
+            pf.position_received_at     AS position_received_at,
             pf.agency_id                AS agency_id,
             pf.plan_id                  AS plan_id,
             pf.hashed_shape_id          AS hashed_shape_id,
@@ -355,6 +379,10 @@ WITH
         SELECT
             u.trip_id             AS trip_id,
             u.vehicle_id          AS vehicle_id,
+            u.ride_id             AS ride_id,
+            u.route_id            AS route_id,
+            u.operational_date    AS operational_date,
+            u.position_received_at AS position_received_at,
             u.agency_id           AS agency_id,
             u.plan_id             AS plan_id,
             u.hashed_trip_id      AS hashed_trip_id,
@@ -380,6 +408,10 @@ WITH
         SELECT
             trip_id,
             vehicle_id,
+            ride_id,
+            route_id,
+            operational_date,
+            position_received_at,
             agency_id,
             plan_id,
             hashed_trip_id,
@@ -427,6 +459,10 @@ WITH
     eta_resolved AS (
         SELECT
             ec.trip_id,
+            ec.ride_id,
+            ec.route_id,
+            ec.operational_date,
+            ec.position_received_at,
             ec.agency_id,
             ec.plan_id,
             ec.vehicle_id,
@@ -451,6 +487,10 @@ WITH
     )
 SELECT
     trip_id,
+    ride_id,
+    route_id,
+    operational_date,
+    position_received_at,
     agency_id,
     plan_id,
     vehicle_id,
