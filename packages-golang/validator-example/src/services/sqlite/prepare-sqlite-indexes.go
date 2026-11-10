@@ -1,11 +1,8 @@
-package queries
+package sqlite
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
-
-	dbops "github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/database"
 )
 
 // PrepareSQLiteIndexes creates validation lookup indexes before concurrent checks start.
@@ -32,7 +29,7 @@ func PrepareSQLiteIndexes(db *sql.DB) error {
 	//
 	// 3. Index NULL-as-empty lookups used by matching-row and grouping queries
 
-	if err := prepareIndexes(transaction, [][2]string{
+	if err := PrepareIndexes(transaction, [][2]string{
 		{"stop_times", "trip_id"},
 		{"stops", "stop_id"},
 		{"shapes", "shape_id"},
@@ -48,7 +45,7 @@ func PrepareSQLiteIndexes(db *sql.DB) error {
 	// 4. Index raw equality lookups used by foreign-reference checks
 
 	// Equality on a column cannot use an index on COALESCE(column, ''), so both forms are needed.
-	if err := prepareIndexes(transaction, [][2]string{
+	if err := PrepareIndexes(transaction, [][2]string{
 		{"agency", "agency_id"},
 		{"calendar", "service_id"},
 		{"calendar_dates", "service_id"},
@@ -70,48 +67,6 @@ func PrepareSQLiteIndexes(db *sql.DB) error {
 
 	if err := transaction.Commit(); err != nil {
 		return fmt.Errorf("commit SQLite index preparation: %w", err)
-	}
-	return nil
-}
-
-// prepareIndexes applies one lookup strategy to the available tables and columns.
-func prepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) error {
-	//
-
-	//
-	// 1. Check tables and columns inside the transaction, without a schema cache
-
-	for _, lookup := range lookups {
-		var tableName string
-		err := transaction.QueryRow("SELECT name FROM sqlite_schema WHERE type = 'table' AND name = ? COLLATE NOCASE", lookup[0]).Scan(&tableName)
-		if errors.Is(err, sql.ErrNoRows) {
-			continue
-		}
-		if err != nil {
-			return fmt.Errorf("find SQLite table %q for index preparation: %w", lookup[0], err)
-		}
-		exists, err := columnExists(transaction, tableName, lookup[1])
-		if err != nil {
-			return err
-		}
-		if !exists {
-			continue
-		}
-		prefix := "idx_validation_foreign_"
-		expression := dbops.SanitizeName(lookup[1])
-		if coalesce {
-			prefix = "idx_validation_"
-			expression = "COALESCE(" + expression + ", '')"
-		}
-
-		//
-		// 2. Create the index only when it does not already exist
-
-		name := dbops.SanitizeName(prefix + lookup[0] + "_" + lookup[1])
-		query := "CREATE INDEX IF NOT EXISTS " + name + " ON " + dbops.SanitizeName(tableName) + " (" + expression + ")"
-		if _, err := transaction.Exec(query); err != nil {
-			return fmt.Errorf("prepare lookup index for %s.%s: %w", tableName, lookup[1], err)
-		}
 	}
 	return nil
 }

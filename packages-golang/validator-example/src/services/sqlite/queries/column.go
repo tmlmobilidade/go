@@ -26,7 +26,7 @@ func column(table *types.SQLiteTable, alias, field string) (string, error) {
 	//
 	// 2. Use a quoted column identifier only when the field exists
 
-	exists, err := columnExists(table.DB, table.Name, field)
+	exists, err := ColumnExists(table.DB, table.Name, field)
 	if err != nil {
 		return "", err
 	}
@@ -36,9 +36,9 @@ func column(table *types.SQLiteTable, alias, field string) (string, error) {
 	return alias + "." + dbops.SanitizeName(field), nil
 }
 
-// columnExists includes generated columns and excludes hidden virtual-table columns,
+// ColumnExists includes generated columns and excludes hidden virtual-table columns,
 // matching the columns exposed by SELECT *. The result is never cached.
-func columnExists(db rowQuerier, table, field string) (bool, error) {
+func ColumnExists(db rowQuerier, table, field string) (bool, error) {
 	var exists bool
 	err := db.QueryRow("SELECT EXISTS(SELECT 1 FROM pragma_table_xinfo(?) WHERE name = ? AND hidden != 1)", table, field).Scan(&exists)
 	if err != nil {

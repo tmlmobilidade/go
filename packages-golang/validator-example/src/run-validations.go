@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/messages"
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite"
 	messageTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/messages"
 	ruleTypes "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
@@ -20,7 +20,7 @@ func runValidations(db *sql.DB, rules map[string]ruleTypes.RuleConfig, messageSe
 	// 1. Prepare query indexes before concurrent validation starts
 
 	preparation := logger.AppLogger.StartPerformanceTracker("Preparing SQLite validation indexes")
-	err := queries.PrepareSQLiteIndexes(db)
+	err := sqlite.PrepareSQLiteIndexes(db)
 	preparation.End(err)
 	if err != nil {
 		messageService.AddMessage(messageTypes.Message{

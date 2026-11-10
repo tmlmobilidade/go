@@ -18,10 +18,14 @@ func ExecuteValidation(run *validationTypes.Execution, ctx *types.ValidationCont
 	//
 
 	//
-	// 1. Turn unexpected callback panics into reported operational failures
+	// 1. Turn unexpected validation panics into reported operational failures
 
 	id := ctx.RuleID
 	status = DAG.Failed
+
+	//
+	// 2. Recover from panics and report as operational failures
+
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			CollectErrors(run, id, ctx, fmt.Errorf("rule %q panicked: %v", id, recovered))
@@ -30,7 +34,7 @@ func ExecuteValidation(run *validationTypes.Execution, ctx *types.ValidationCont
 	}()
 
 	//
-	// 2. Skip disabled validations, preserving file-presence control behavior
+	// 3. Skip disabled validations, preserving file-presence control behavior
 
 	if validate == nil {
 		ctx.Skipped = true
@@ -43,7 +47,7 @@ func ExecuteValidation(run *validationTypes.Execution, ctx *types.ValidationCont
 	}
 
 	//
-	// 3. Track timing and progress
+	// 4. Track timing and progress
 
 	timing := telemetry.NewTimer()
 	logger.AppLogger.Progress(telemetry.LogEntry{
@@ -56,7 +60,7 @@ func ExecuteValidation(run *validationTypes.Execution, ctx *types.ValidationCont
 	}()
 
 	//
-	// 4. Execute the validation and report any operational error
+	// 5. Execute the validation and report any operational error
 
 	if err := validate(ctx); err != nil {
 		CollectErrors(run, id, ctx, fmt.Errorf("rule %q: %w", id, err))
@@ -64,7 +68,7 @@ func ExecuteValidation(run *validationTypes.Execution, ctx *types.ValidationCont
 	}
 
 	//
-	// 5. Return the outcome recorded by the validation
+	// 6. Return the outcome recorded by the validation
 
 	status = context.Status(ctx)
 	return status
