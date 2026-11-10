@@ -42,3 +42,13 @@ Run `observability/prediction-errors.sql` with millisecond `since`/`until` bound
 Positive signed error means late predictions; errors join labels strictly after
 prediction time. Audit a sample of real traces (including loops and skipped
 stops) and report label coverage before using GPS crossings for promotion.
+
+## Missing history (#948)
+
+Remaining geometry, not the available statistical rows, drives the node scan.
+Missing/nonpositive/nonfinite estimates use a +/-4-node local prior, then the
+shape/time prior, then 4 m/s over each 25 m chunk. Direct-history coverage is
+stored with the prediction (fallbacks do not masquerade as measured support).
+A missing cumulative stop match uses positive remaining distance; only a stop at
+the current node may have a zero ETA. Durations outside UInt16 are suppressed
+rather than wrapping. Public fields retain their existing types.

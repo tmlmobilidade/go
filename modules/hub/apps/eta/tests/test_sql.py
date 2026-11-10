@@ -92,6 +92,41 @@ class EtaSQLTest(unittest.TestCase):
     def test_snapshot_select_compiles(self):
         self.rows(view_select('eta/bootstrap/prediction-snapshots.sql'))
 
+    def seed_live_trip(self):
+        now = self.rows('SELECT toUnixTimestamp64Milli(now64(3)) AS t')[0]['t']
+        op = self.rows("SELECT toYYYYMMDD(toDate(now('Europe/Lisbon') - INTERVAL 4 HOUR)) AS d")[0]['d']
+        self.db.query(f"""INSERT INTO eta.curr_rides
+            (_id,trip_id,agency_id,plan_id,route_id,hashed_trip_id,hashed_shape_id,
+             operational_date,start_time_scheduled,end_time_scheduled)
+            VALUES ('ride','trip','a','plan','route','ht','hs',{op},{now-600000},{now+600000})""")
+        self.db.query("""INSERT INTO eta.hist_shape_nodes
+            SELECT 'hs', toUInt32(number), 38.7 + number * 0.000225, -9.1, '' FROM numbers(11)""")
+        self.db.query("""INSERT INTO eta.curr_waypoints_snapped
+            (hashed_trip_id,hashed_shape_id,stop_sequence,stop_id,node_index,arrival_time)
+            VALUES ('ht','hs',1,'s1',5,'12:00:00'),('ht','hs',2,'s2',10,'12:05:00')""")
+        self.db.query(f"""INSERT INTO eta.curr_vehicle_events
+            (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+            VALUES ('e','a','trip','v','hs',0,{now-1000},{now-500})""")
+        return now
+
+    def test_missing_history_never_yields_zero_for_positive_distance(self):
+        self.seed_live_trip()
+        rows = self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
+        self.assertEqual(len(rows), 2)
+        by_stop = sorted(rows, key=lambda r: r['stop_sequence'])
+        self.assertGreater(by_stop[0]['eta_seconds'], 0)
+        self.assertGreater(by_stop[1]['eta_seconds'], by_stop[0]['eta_seconds'])
+        self.assertEqual(by_stop[1]['history_coverage'], 0)
+
+    def test_sparse_history_preserves_unobserved_nodes(self):
+        self.seed_live_trip()
+        self.db.query("""INSERT INTO eta.pred_node_etas
+            (hashed_shape_id,node_index,period_of_day,weekday,day_type,predicted_travel_time_seconds)
+            SELECT 'hs',toUInt32(5), 'Mid','Tuesday','Weekday',10.""")
+        rows = self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
+        self.assertTrue(all(r['eta_seconds'] > 0 for r in rows))
+        self.assertTrue(all(0 <= r['history_coverage'] <= 1 for r in rows))
+
     def test_bootstrap_preserves_data_on_rerun(self):
         self.db.query("INSERT INTO eta.hist_shape_nodes (hashed_shape_id,node_index) VALUES ('keep',1)")
         for stmt in statements('eta/bootstrap/create-tables.sql'):
