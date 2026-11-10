@@ -38,6 +38,7 @@ export const SQL_FILES = {
 		'eta/loader/load-historical-vehicle-events.sql',
 		'eta/loader/load-rides.sql',
 		'eta/loader/snap-waypoints.sql',
+		'eta/observability/ml-feature-rows.sql',
 		'eta/observability/prediction-errors.sql',
 		'eta/observability/prediction-health.sql',
 		'eta/observability/road-segment-coverage.sql',

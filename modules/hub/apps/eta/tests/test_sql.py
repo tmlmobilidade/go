@@ -388,3 +388,14 @@ class EtaSQLTest(unittest.TestCase):
         self.assertEqual(rows[0]['source'], 'verified_door')
         self.insert_select('eta.stop_dwell_labels', query)
         self.assertEqual(self.rows(query), [])
+
+    def test_ml_export_uses_frozen_features_and_strict_labels(self):
+        now = self.seed_live_trip()
+        self.insert_select('eta.pred_trip_stop_etas_v2', view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
+        self.insert_select('eta.prediction_snapshots', view_select('eta/bootstrap/prediction-snapshots.sql'))
+        query = (SQL / 'eta/observability/ml-feature-rows.sql').read_text().replace('{since:Int64}',str(now-1000)).replace('{until:Int64}',str(now+60000)).replace('{as_of:Int64}',str(now+60000))
+        rows = self.rows(query)
+        self.assertEqual(len(rows),2)
+        self.assertTrue(all(r['target_residual_seconds'] is None for r in rows))
+        self.assertTrue(all(r['feature_schema']=='eta-features-v1' for r in rows))
+        self.assertTrue(all(r['remaining_stops'] > 0 for r in rows))

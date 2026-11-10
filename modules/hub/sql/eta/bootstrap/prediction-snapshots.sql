@@ -38,7 +38,14 @@ ALTER TABLE eta.prediction_snapshots
     ADD COLUMN IF NOT EXISTS traffic_eta_at Nullable(Int64),
     ADD COLUMN IF NOT EXISTS calibrated_eta_at Nullable(Int64),
     ADD COLUMN IF NOT EXISTS future_dwell_seconds Float64 DEFAULT 0,
-    ADD COLUMN IF NOT EXISTS dwell_eta_at Nullable(Int64);
+    ADD COLUMN IF NOT EXISTS dwell_eta_at Nullable(Int64),
+    ADD COLUMN IF NOT EXISTS feature_schema LowCardinality(String) DEFAULT 'legacy',
+    ADD COLUMN IF NOT EXISTS scheduled_arrival_at Nullable(Int64),
+    ADD COLUMN IF NOT EXISTS position_confidence Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS recent_speed_mps Nullable(Float64),
+    ADD COLUMN IF NOT EXISTS node_dispersion_seconds Nullable(Float64),
+    ADD COLUMN IF NOT EXISTS remaining_stops UInt16 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS historical_eta_at Nullable(Int64);
 
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_prediction_snapshots
 REFRESH EVERY 30 SECOND DEPENDS ON eta.mv_pred_trip_stop_etas
@@ -50,8 +57,11 @@ SELECT
     position_received_at,
     ride_id, operational_date, trip_id, agency_id, route_id, plan_id, vehicle_id,
     hashed_trip_id, hashed_shape_id, stop_sequence, stop_id,
-    current_node_index, stop_node_index, baseline_eta_at, traffic_eta_at, calibrated_eta_at, dwell_eta_at, future_dwell_seconds, eta_at,
+    current_node_index, stop_node_index, historical_eta_at, baseline_eta_at, traffic_eta_at, calibrated_eta_at, dwell_eta_at, future_dwell_seconds, eta_at,
     prediction_version, history_coverage, freshness_tier, prediction_confidence,
+    'eta-features-v1' AS feature_schema, scheduled_arrival_at, position_confidence,
+    recent_speed_mps, node_dispersion_seconds,
+    toUInt16(row_number() OVER (PARTITION BY ride_id, vehicle_id ORDER BY stop_sequence)) AS remaining_stops,
     toInt32(ifNull((eta_at - refreshed_at) / 1000, -1)) AS horizon_seconds,
     greatest(0., (refreshed_at - position_created_at) / 1000.) AS gps_age_seconds,
     greatest(0., (position_received_at - position_created_at) / 1000.) AS ingestion_lag_seconds
