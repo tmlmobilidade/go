@@ -158,3 +158,20 @@ Moving endpoint checks reduce stop-dwell contamination; verified dwell overlap
 exclusion is added with #957. GPS cannot always distinguish traffic queues from
 boarding. Inspect urban stop areas and independent vehicle support in shadow
 metrics before promotion. Neither refresh scans the full raw event history.
+
+## Spatial traffic (#955)
+
+Remaining nodes join only their approved directional road factor. Baseline and
+traffic arrivals are captured side by side; `enable_spatial_traffic=0` keeps the
+baseline published until shadow metrics pass. Unmapped/unaffected nodes retain
+statistical time. Historical time buckets approximate future traversal using
+remaining geometry at 4 m/s, avoiding a circular dependency on predicted times.
+
+The old uniform vehicle ratio is preserved in the incumbent baseline. Traffic
+candidates default to no additional vehicle multiplier, preventing network
+congestion from being counted twice. An optional vehicle residual is clipped
+to 0.9-1.1, shrunk by one minus corridor confidence, and multiplied by
+vehicle_residual_strength (default 0). Enable it only after independent evidence
+supports it. All node times stay nonnegative, so cumulative stops are monotonic.
+Measure refresh duration at peak and compare paired shadow cohorts before
+setting enable_spatial_traffic=1; the target cadence remains 30 seconds.

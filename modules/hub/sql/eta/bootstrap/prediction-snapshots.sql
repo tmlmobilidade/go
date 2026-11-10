@@ -34,7 +34,8 @@ TTL fromUnixTimestamp64Milli(generated_at, 'UTC') + INTERVAL 35 DAY;
 
 ALTER TABLE eta.prediction_snapshots
     ADD COLUMN IF NOT EXISTS freshness_tier LowCardinality(String) DEFAULT 'unknown',
-    ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0;
+    ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS traffic_eta_at Nullable(Int64);
 
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_prediction_snapshots
 REFRESH EVERY 30 SECOND DEPENDS ON eta.mv_pred_trip_stop_etas
@@ -46,7 +47,7 @@ SELECT
     position_received_at,
     ride_id, operational_date, trip_id, agency_id, route_id, plan_id, vehicle_id,
     hashed_trip_id, hashed_shape_id, stop_sequence, stop_id,
-    current_node_index, stop_node_index, baseline_eta_at, eta_at,
+    current_node_index, stop_node_index, baseline_eta_at, traffic_eta_at, eta_at,
     prediction_version, history_coverage, freshness_tier, prediction_confidence,
     toInt32(ifNull((eta_at - refreshed_at) / 1000, -1)) AS horizon_seconds,
     greatest(0., (refreshed_at - position_created_at) / 1000.) AS gps_age_seconds,

@@ -41,7 +41,8 @@ ALTER TABLE eta.pred_trip_stop_etas_v2
     ADD COLUMN IF NOT EXISTS prediction_version String DEFAULT 'statistical-v1',
     ADD COLUMN IF NOT EXISTS history_coverage Float64 DEFAULT 0,
     ADD COLUMN IF NOT EXISTS freshness_tier LowCardinality(String) DEFAULT 'unknown',
-    ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0;
+    ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS traffic_eta_at Nullable(Int64);
 
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND TO eta.pred_trip_stop_etas_v2 AS
@@ -122,28 +123,46 @@ WITH
                h.predicted_travel_time_seconds, NULL) AS direct_seconds,
             sp.shape_seconds AS shape_seconds,
             coalesce(h.effective_sample_count > 0, false) AS observed_support,
-            coalesce(lf.factor, 1.) AS vehicle_factor
+            coalesce(lf.factor, 1.) AS vehicle_factor,
+            coalesce(tf.factor, 1.) AS traffic_factor,
+            coalesce(tf.current_confidence, 0.) AS traffic_confidence
         FROM positions AS p
         INNER JOIN eta.hist_shape_nodes AS n FINAL
             ON n.hashed_shape_id = p.hashed_shape_id AND n.node_index > p.current_node_index
         LEFT JOIN eta.pred_node_etas AS h FINAL
             ON h.hashed_shape_id = n.hashed_shape_id AND h.node_index = n.node_index
-            AND h.period_of_day = p.period_of_day AND h.weekday = p.weekday AND h.day_type = p.day_type
+            AND h.period_of_day = multiIf(toHour(fromUnixTimestamp64Milli(p.position_created_at + toInt64(n.node_index - p.current_node_index) * 6250, 'Europe/Lisbon')) BETWEEN 7 AND 9, 'Peak AM', toHour(fromUnixTimestamp64Milli(p.position_created_at + toInt64(n.node_index - p.current_node_index) * 6250, 'Europe/Lisbon')) BETWEEN 10 AND 16, 'Mid', toHour(fromUnixTimestamp64Milli(p.position_created_at + toInt64(n.node_index - p.current_node_index) * 6250, 'Europe/Lisbon')) BETWEEN 17 AND 19, 'Peak PM', 'Off Peak') AND h.weekday = p.weekday AND h.day_type = p.day_type
         LEFT JOIN shape_priors AS sp ON sp.hashed_shape_id = p.hashed_shape_id
-            AND sp.period_of_day = p.period_of_day AND sp.weekday = p.weekday AND sp.day_type = p.day_type
+            AND sp.period_of_day = multiIf(toHour(fromUnixTimestamp64Milli(p.position_created_at + toInt64(n.node_index - p.current_node_index) * 6250, 'Europe/Lisbon')) BETWEEN 7 AND 9, 'Peak AM', toHour(fromUnixTimestamp64Milli(p.position_created_at + toInt64(n.node_index - p.current_node_index) * 6250, 'Europe/Lisbon')) BETWEEN 10 AND 16, 'Mid', toHour(fromUnixTimestamp64Milli(p.position_created_at + toInt64(n.node_index - p.current_node_index) * 6250, 'Europe/Lisbon')) BETWEEN 17 AND 19, 'Peak PM', 'Off Peak') AND sp.weekday = p.weekday AND sp.day_type = p.day_type
         LEFT JOIN live_factor AS lf ON lf.ride_id = p.ride_id AND lf.vehicle_id = p.vehicle_id
+        LEFT JOIN eta.shape_node_road_segments AS roads
+            ON roads.hashed_shape_id = n.hashed_shape_id AND roads.node_index = n.node_index
+        LEFT JOIN eta.current_traffic_factors AS tf ON tf.segment_id = roads.segment_id
     ),
-    node_times AS (
+    node_baselines AS (
         SELECT ride_id, vehicle_id, node_index, observed_support AS has_history,
+            vehicle_factor, traffic_factor, traffic_confidence,
             coalesce(direct_seconds,
                 avgOrNull(direct_seconds) OVER (PARTITION BY ride_id, vehicle_id ORDER BY node_index
                     ROWS BETWEEN 4 PRECEDING AND 4 FOLLOWING),
-                shape_seconds, 25. / 4.) * vehicle_factor AS node_seconds
+                shape_seconds, 25. / 4.) AS base_seconds
         FROM node_inputs
+    ),
+    node_times AS (
+        SELECT ride_id, vehicle_id, node_index, has_history,
+            base_seconds * vehicle_factor AS baseline_node_seconds,
+            base_seconds * traffic_factor * (1. +
+                (SELECT vehicle_residual_strength FROM eta.policy) * (1. - least(1., traffic_confidence)) *
+                (greatest(0.9, least(1.1, vehicle_factor)) - 1.)) AS traffic_node_seconds,
+            if((SELECT enable_spatial_traffic FROM eta.policy) = 1,
+               traffic_node_seconds, baseline_node_seconds) AS node_seconds
+        FROM node_baselines
     ),
     cumulative AS (
         SELECT ride_id, vehicle_id, node_index,
             sum(node_seconds) OVER w AS seconds,
+            sum(baseline_node_seconds) OVER w AS baseline_seconds,
+            sum(traffic_node_seconds) OVER w AS traffic_seconds,
             countIf(has_history) OVER w AS known_nodes
         FROM node_times
         WINDOW w AS (PARTITION BY ride_id, vehicle_id ORDER BY node_index
@@ -162,13 +181,23 @@ WITH
         SELECT u.ride_id AS ride_id, u.vehicle_id AS vehicle_id, u.hashed_shape_id AS hashed_shape_id, u.current_node_index AS current_node_index, u.position_received_at AS position_received_at, u.position_created_at AS position_created_at, u.position_confidence AS position_confidence, u.trip_id AS trip_id, u.agency_id AS agency_id, u.plan_id AS plan_id, u.route_id AS route_id, u.hashed_trip_id AS hashed_trip_id, u.operational_date AS operational_date, u.current_node_latitude AS current_node_latitude, u.current_node_longitude AS current_node_longitude, u.local_hour AS local_hour, u.period_of_day AS period_of_day, u.dow AS dow, u.weekday AS weekday, u.day_type AS day_type, u.stop_sequence AS stop_sequence, u.source_stop_id AS source_stop_id, u.stop_name AS stop_name, u.stop_node_index AS stop_node_index, u.stop_node_latitude AS stop_node_latitude, u.stop_node_longitude AS stop_node_longitude,
             if(u.stop_node_index = u.current_node_index, 0., coalesce(c.seconds, 0.) +
                 greatest(toInt64(0), toInt64(u.stop_node_index) - coalesce(toInt64(c.node_index), toInt64(u.current_node_index))) * 25. / 4.) AS raw_seconds,
+            if(u.stop_node_index = u.current_node_index, 0., coalesce(c.baseline_seconds, 0.) +
+                greatest(toInt64(0), toInt64(u.stop_node_index) - coalesce(toInt64(c.node_index), toInt64(u.current_node_index))) * 25. / 4.) AS baseline_raw_seconds,
+            if(u.stop_node_index = u.current_node_index, 0., coalesce(c.traffic_seconds, 0.) +
+                greatest(toInt64(0), toInt64(u.stop_node_index) - coalesce(toInt64(c.node_index), toInt64(u.current_node_index))) * 25. / 4.) AS traffic_raw_seconds,
             least(1., coalesce(c.known_nodes / nullIf(toFloat64(u.stop_node_index - u.current_node_index), 0.), 0.)) AS history_coverage,
             greatest(0., (now_ms - u.position_created_at) / 1000.) AS gps_age_seconds,
             (0.4 + 0.6 * history_coverage) * exp(-gps_age_seconds / 120.) * u.position_confidence AS prediction_confidence,
             if(gps_age_seconds <= (SELECT fresh_gps_seconds FROM eta.policy), 'fresh', 'aging') AS freshness_tier,
             greatest(if(u.stop_node_index > u.current_node_index, 1., 0.),
                 raw_seconds - least(gps_age_seconds, (SELECT max_extrapolation_seconds FROM eta.policy)) *
-                    exp(-gps_age_seconds / 120.)) AS remaining_seconds
+                    exp(-gps_age_seconds / 120.)) AS remaining_seconds,
+            greatest(if(u.stop_node_index > u.current_node_index, 1., 0.),
+                baseline_raw_seconds - least(gps_age_seconds, (SELECT max_extrapolation_seconds FROM eta.policy)) *
+                    exp(-gps_age_seconds / 120.)) AS baseline_remaining_seconds,
+            greatest(if(u.stop_node_index > u.current_node_index, 1., 0.),
+                traffic_raw_seconds - least(gps_age_seconds, (SELECT max_extrapolation_seconds FROM eta.policy)) *
+                    exp(-gps_age_seconds / 120.)) AS traffic_remaining_seconds
         FROM upcoming AS u
         ASOF LEFT JOIN cumulative AS c ON c.ride_id = u.ride_id AND c.vehicle_id = u.vehicle_id
             AND c.node_index <= u.stop_node_index
@@ -199,10 +228,13 @@ SELECT
     if(isFinite(e.remaining_seconds) AND e.remaining_seconds BETWEEN 0 AND 65535,
        toUInt16(ceil(e.remaining_seconds)), NULL) AS eta_seconds,
     if(eta_seconds IS NULL, NULL, now_ms + toInt64(eta_seconds) * 1000) AS eta_at,
-    eta_at AS baseline_eta_at,
+    if(isFinite(e.baseline_remaining_seconds) AND e.baseline_remaining_seconds BETWEEN 0 AND 65535,
+       now_ms + toInt64(ceil(e.baseline_remaining_seconds)) * 1000, NULL) AS baseline_eta_at,
+    if(isFinite(e.traffic_remaining_seconds) AND e.traffic_remaining_seconds BETWEEN 0 AND 65535,
+       now_ms + toInt64(ceil(e.traffic_remaining_seconds)) * 1000, NULL) AS traffic_eta_at,
     e.history_coverage AS history_coverage,
     e.prediction_confidence AS prediction_confidence, e.freshness_tier AS freshness_tier,
-    'statistical-lifecycle-v4' AS prediction_version, now_ms AS refreshed_at
+    if((SELECT enable_spatial_traffic FROM eta.policy) = 1, 'spatial-traffic-v5', 'statistical-lifecycle-v4') AS prediction_version, now_ms AS refreshed_at
 FROM estimates AS e
 LEFT JOIN go_stop_map AS g ON g.hashed_trip_id = e.hashed_trip_id AND g.stop_sequence = e.stop_sequence
 SETTINGS join_use_nulls = 1;

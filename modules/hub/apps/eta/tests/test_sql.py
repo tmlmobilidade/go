@@ -78,8 +78,9 @@ class EtaSQLTest(unittest.TestCase):
         cls.tmp.cleanup()
 
     def setUp(self):
-        for row in self.rows("SELECT database, name FROM system.tables WHERE database IN ('eta','operation','infrastructure') AND engine LIKE '%MergeTree%' AND name != 'runtime_policy'"):
+        for row in self.rows("SELECT database, name FROM system.tables WHERE database IN ('eta','operation','infrastructure') AND engine LIKE '%MergeTree%' "):
             self.db.query(f"TRUNCATE {row['database']}.{row['name']}")
+        self.db.query(next(s for s in statements('eta/bootstrap/runtime-policy.sql') if s.startswith('INSERT')))
 
     def rows(self, sql):
         result = str(self.db.query(sql, 'JSONEachRow'))
@@ -311,3 +312,19 @@ class EtaSQLTest(unittest.TestCase):
         self.db.query('TRUNCATE eta.live_traffic_factors')
         self.db.query(f"INSERT INTO eta.live_traffic_factors VALUES ('segment',3.,2,1.,{now-600000},{now-120000})")
         self.assertEqual(self.rows('SELECT factor FROM eta.current_traffic_factors')[0]['factor'], 1.)
+
+    def test_spatial_traffic_changes_only_the_affected_future_segment(self):
+        now = self.seed_live_trip()
+        self.db.query("""INSERT INTO eta.road_segment_assignments
+            SELECT 'hs',toUInt32(number+6),'congested-road','ground','road-v1',1,'review',1 FROM numbers(5)""")
+        segment = self.rows('SELECT segment_id FROM eta.shape_node_road_segments LIMIT 1')[0]['segment_id']
+        self.db.query(f"INSERT INTO eta.live_traffic_factors VALUES ('{segment}',2.,3,0.8,{now},{now})")
+        query = view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql')
+        rows = sorted(self.rows(query), key=lambda r:r['stop_sequence'])
+        self.assertEqual(rows[0]['traffic_eta_at'], rows[0]['baseline_eta_at'])
+        self.assertGreater(rows[1]['traffic_eta_at'], rows[1]['baseline_eta_at'])
+        self.assertTrue(all(r['eta_at'] == r['baseline_eta_at'] for r in rows))
+        self.db.query(f"INSERT INTO eta.runtime_policy VALUES ('enable_spatial_traffic',1.,{now+1000})")
+        rows = sorted(self.rows(query), key=lambda r:r['stop_sequence'])
+        self.assertEqual(rows[1]['eta_at'], rows[1]['traffic_eta_at'])
+        self.assertGreaterEqual(rows[1]['eta_at'], rows[0]['eta_at'])
