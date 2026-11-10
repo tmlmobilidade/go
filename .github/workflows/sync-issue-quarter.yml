@@ -1,0 +1,293 @@
+name: Sync Issue Quarter
+
+on:
+  schedule:
+    # At least every 30 minutes; event triggers below are the fast path.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  issues:
+    types: [opened, field_added, field_removed]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sync-quarter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Populate Quarter from Target date
+        env:
+          GH_TOKEN: ${{ secrets.GO_REPO_TOKEN_ISSUES }}
+          ORG: tmlmobilidade
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action || '' }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id || '' }}
+          ISSUE_URL: ${{ github.event.issue.html_url || '' }}
+          CHANGED_FIELD_NAME: ${{ github.event.issue_field.name || '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Fast path only reacts to Target date changes. Setting Quarter also
+          # emits field_added; ignoring non-Target-date fields prevents loops.
+          if [[ "$EVENT_NAME" == "issues" ]]; then
+            case "$EVENT_ACTION" in
+              opened) ;;
+              field_added|field_removed)
+                if [[ "$CHANGED_FIELD_NAME" != "Target date" ]]; then
+                  echo "Ignoring field change: ${CHANGED_FIELD_NAME:-<none>}"
+                  exit 0
+                fi
+                ;;
+              *)
+                echo "Unsupported issue action: $EVENT_ACTION"
+                exit 0
+                ;;
+            esac
+          fi
+
+          fields_json=$(gh api graphql \
+            -H "GraphQL-Features: issue_fields" \
+            -f query='
+              query($login: String!) {
+                organization(login: $login) {
+                  issueFields(first: 50) {
+                    nodes {
+                      __typename
+                      ... on IssueFieldSingleSelect {
+                        id
+                        name
+                        options { id name }
+                      }
+                      ... on IssueFieldDate {
+                        id
+                        name
+                      }
+                    }
+                  }
+                }
+              }' \
+            -f login="$ORG")
+
+          quarter_field_id=$(jq -r '
+            .data.organization.issueFields.nodes[]?
+            | select(.name == "Quarter" and .__typename == "IssueFieldSingleSelect")
+            | .id
+          ' <<<"$fields_json")
+          target_date_field_id=$(jq -r '
+            .data.organization.issueFields.nodes[]?
+            | select(.name == "Target date" and .__typename == "IssueFieldDate")
+            | .id
+          ' <<<"$fields_json")
+          option_map_json=$(jq -c '
+            [
+              .data.organization.issueFields.nodes[]?
+              | select(.name == "Quarter" and .__typename == "IssueFieldSingleSelect")
+              | .options[]?
+              | {key: .name, value: .id}
+            ]
+            | from_entries
+          ' <<<"$fields_json")
+
+          if [[ -z "$quarter_field_id" || "$quarter_field_id" == "null" ]]; then
+            echo "Error: organization Quarter single-select field not found."
+            exit 1
+          fi
+          if [[ -z "$target_date_field_id" || "$target_date_field_id" == "null" ]]; then
+            echo "Error: organization Target date field not found."
+            exit 1
+          fi
+
+          quarter_label_for_date() {
+            local date="$1"
+            local year month q
+            year=$(date -u -d "$date" +%y)
+            month=$(date -u -d "$date" +%-m)
+            q=$(( (month - 1) / 3 + 1 ))
+            printf '%sQ%s' "$year" "$q"
+          }
+
+          option_id_for_label() {
+            jq -r --arg label "$1" '.[$label] // empty' <<<"$option_map_json"
+          }
+
+          set_quarter() {
+            gh api graphql \
+              -H "GraphQL-Features: issue_fields" \
+              -f query='
+                mutation($issueId: ID!, $fieldId: ID!, $optionId: ID!) {
+                  setIssueFieldValue(input: {
+                    issueId: $issueId
+                    issueFields: [{
+                      fieldId: $fieldId
+                      singleSelectOptionId: $optionId
+                    }]
+                  }) {
+                    issue { id title }
+                  }
+                }' \
+              -f issueId="$1" \
+              -f fieldId="$quarter_field_id" \
+              -f optionId="$2" \
+              >/dev/null
+          }
+
+          sync_issue() {
+            local issue_json="$1"
+            local issue_id issue_url target_date current_quarter desired_label option_id
+
+            issue_id=$(jq -r '.id' <<<"$issue_json")
+            issue_url=$(jq -r '.url // empty' <<<"$issue_json")
+            [[ -z "$issue_url" || "$issue_url" == "null" ]] && issue_url="$issue_id"
+
+            target_date=$(jq -r --arg fieldId "$target_date_field_id" '
+              [
+                .issueFieldValues.nodes[]?
+                | select(.field.id == $fieldId)
+                | .value
+              ]
+              | first // ""
+            ' <<<"$issue_json")
+
+            current_quarter=$(jq -r --arg fieldId "$quarter_field_id" '
+              [
+                .issueFieldValues.nodes[]?
+                | select(.field.id == $fieldId)
+                | .name
+              ]
+              | first // ""
+            ' <<<"$issue_json")
+
+            if [[ -n "$target_date" ]]; then
+              desired_label=$(quarter_label_for_date "$target_date")
+            else
+              desired_label=$(quarter_label_for_date "$(date -u +%Y-%m-%d)")
+            fi
+
+            if [[ "$current_quarter" == "$desired_label" ]]; then
+              echo "Skip: $issue_url already $desired_label"
+              return 2
+            fi
+
+            option_id=$(option_id_for_label "$desired_label")
+            if [[ -z "$option_id" ]]; then
+              echo "Skip: $issue_url needs $desired_label but that Quarter option does not exist"
+              return 3
+            fi
+
+            if set_quarter "$issue_id" "$option_id"; then
+              echo "Set: $issue_url -> $desired_label (target=${target_date:-<none>})"
+              return 0
+            fi
+
+            echo "Failed: $issue_url"
+            return 1
+          }
+
+          issue_fields_fragment='
+            issueFieldValues(first: 50) {
+              nodes {
+                ... on IssueFieldDateValue {
+                  value
+                  field { ... on IssueFieldDate { id } }
+                }
+                ... on IssueFieldSingleSelectValue {
+                  name
+                  field { ... on IssueFieldSingleSelect { id } }
+                }
+              }
+            }
+          '
+
+          updated=0
+          skipped=0
+          failed=0
+          missing_option=0
+
+          if [[ "$EVENT_NAME" == "issues" ]]; then
+            issue_json=$(gh api graphql \
+              -H "GraphQL-Features: issue_fields" \
+              -f query="
+                query(\$id: ID!) {
+                  node(id: \$id) {
+                    ... on Issue {
+                      id
+                      url
+                      ${issue_fields_fragment}
+                    }
+                  }
+                }" \
+              -f id="$ISSUE_NODE_ID" \
+              | jq -c '.data.node')
+
+            if [[ -z "$issue_json" || "$issue_json" == "null" ]]; then
+              echo "Error: issue not found: ${ISSUE_URL:-$ISSUE_NODE_ID}"
+              exit 1
+            fi
+
+            rc=0
+            sync_issue "$issue_json" || rc=$?
+            case "$rc" in
+              0) updated=1 ;;
+              2) skipped=1 ;;
+              3) missing_option=1 ;;
+              *) failed=1 ;;
+            esac
+          else
+            search_query="org:${ORG} is:issue is:open"
+            cursor=""
+            query="
+              query(\$searchQuery: String!, \$cursor: String) {
+                search(query: \$searchQuery, type: ISSUE, first: 50, after: \$cursor) {
+                  pageInfo { hasNextPage endCursor }
+                  nodes {
+                    ... on Issue {
+                      id
+                      url
+                      ${issue_fields_fragment}
+                    }
+                  }
+                }
+              }"
+
+            while true; do
+              if [[ -n "$cursor" ]]; then
+                page=$(gh api graphql \
+                  -H "GraphQL-Features: issue_fields" \
+                  -f query="$query" \
+                  -f searchQuery="$search_query" \
+                  -f cursor="$cursor")
+              else
+                page=$(gh api graphql \
+                  -H "GraphQL-Features: issue_fields" \
+                  -f query="$query" \
+                  -f searchQuery="$search_query" \
+                  -F cursor=null)
+              fi
+
+              while IFS= read -r issue; do
+                [[ -z "$issue" || "$issue" == "null" ]] && continue
+                rc=0
+                sync_issue "$issue" || rc=$?
+                case "$rc" in
+                  0) updated=$((updated + 1)) ;;
+                  2) skipped=$((skipped + 1)) ;;
+                  3) missing_option=$((missing_option + 1)) ;;
+                  *) failed=$((failed + 1)) ;;
+                esac
+              done < <(jq -c '.data.search.nodes[]?' <<<"$page")
+
+              has_next=$(jq -r '.data.search.pageInfo.hasNextPage' <<<"$page")
+              if [[ "$has_next" != "true" ]]; then
+                break
+              fi
+              cursor=$(jq -r '.data.search.pageInfo.endCursor' <<<"$page")
+            done
+          fi
+
+          echo "Done. updated=$updated skipped=$skipped missing_option=$missing_option failed=$failed"
+          if (( failed > 0 )); then
+            exit 1
+          fi
