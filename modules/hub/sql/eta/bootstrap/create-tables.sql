@@ -1,4 +1,4 @@
-TRUNCATE DATABASE eta;
+CREATE DATABASE IF NOT EXISTS eta ENGINE = Atomic;
 
 -- ========================
 -- Historical Rides
@@ -10,15 +10,15 @@ AS operation.rides;
 -- Shape geometry is NOT stored per ride: eta.hist_shape_nodes is built straight
 -- from operation.hashed_shapes for the shapes referenced here.
 ALTER TABLE eta.hist_rides
-ADD COLUMN first_stop_id String,
-ADD COLUMN first_stop_name String,
-ADD COLUMN first_stop_coordinates Tuple(Float64, Float64),
-ADD COLUMN first_stop_geohash String DEFAULT geohashEncode(first_stop_coordinates.2, first_stop_coordinates.1, 7),
-ADD COLUMN last_stop_id String,
-ADD COLUMN last_stop_name String,
-ADD COLUMN last_stop_coordinates Tuple(Float64, Float64),
-ADD COLUMN last_stop_geohash String DEFAULT geohashEncode(last_stop_coordinates.2, last_stop_coordinates.1, 7),
-ADD COLUMN analysis_expected_vehicle_event_coverage_geo_grade Nullable(String);
+ADD COLUMN IF NOT EXISTS first_stop_id String,
+ADD COLUMN IF NOT EXISTS first_stop_name String,
+ADD COLUMN IF NOT EXISTS first_stop_coordinates Tuple(Float64, Float64),
+ADD COLUMN IF NOT EXISTS first_stop_geohash String DEFAULT geohashEncode(first_stop_coordinates.2, first_stop_coordinates.1, 7),
+ADD COLUMN IF NOT EXISTS last_stop_id String,
+ADD COLUMN IF NOT EXISTS last_stop_name String,
+ADD COLUMN IF NOT EXISTS last_stop_coordinates Tuple(Float64, Float64),
+ADD COLUMN IF NOT EXISTS last_stop_geohash String DEFAULT geohashEncode(last_stop_coordinates.2, last_stop_coordinates.1, 7),
+ADD COLUMN IF NOT EXISTS analysis_expected_vehicle_event_coverage_geo_grade Nullable(String);
 
 -- ========================
 -- Current Rides
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS eta.hist_vehicle_events
 AS operation.simplified_vehicle_events;
 
 ALTER TABLE eta.hist_vehicle_events
-ADD COLUMN ride_id String,
-ADD COLUMN hashed_shape_id String;
+ADD COLUMN IF NOT EXISTS ride_id String,
+ADD COLUMN IF NOT EXISTS hashed_shape_id String;
 
 -- Rows age out with the historical window instead of being deleted by mutation.
 ALTER TABLE eta.hist_vehicle_events
@@ -119,3 +119,9 @@ CREATE TABLE IF NOT EXISTS eta.curr_waypoints_snapped
 )
 ENGINE = ReplacingMergeTree()
 ORDER BY (hashed_trip_id, stop_sequence, stop_id);
+-- Existing rows have zero support until rebuilt; never invent observations.
+ALTER TABLE eta.hist_node_travel_times_aggregation
+    ADD COLUMN IF NOT EXISTS sample_count UInt32 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS p10_travel_time_seconds Float64 DEFAULT median_travel_time_seconds,
+    ADD COLUMN IF NOT EXISTS p90_travel_time_seconds Float64 DEFAULT median_travel_time_seconds,
+    ADD COLUMN IF NOT EXISTS stddev_travel_time_seconds Float64 DEFAULT 0;
