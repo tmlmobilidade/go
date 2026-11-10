@@ -64,8 +64,8 @@ export async function listRidesHandler(request: FastifyRequest<{ Body: Controlle
 		validatedFilters.ticketing_statuses,
 	].some(value => Array.isArray(value) && value.length === 0);
 
-	if (hasEmptyFilter && !exactRideSearch) return [];
-	if (hasEmptyFilter && !validatedFilters.agency_ids.length) return [];
+	if (hasEmptyFilter && !exactRideSearch) return sendSuccessApiResponse(reply, []);
+	if (hasEmptyFilter && !validatedFilters.agency_ids.length) return sendSuccessApiResponse(reply, []);
 
 	//
 	// Build query parameters

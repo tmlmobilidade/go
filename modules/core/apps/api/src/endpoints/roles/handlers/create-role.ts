@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateRoleDto, type Role } from '@tmlmobilidade/go-types-core';
 
@@ -22,8 +21,8 @@ export async function createRoleHandler(request: FastifyRequest<{ Body: CreateRo
 	const role = await goDb.core.roles.insertOne(request.body);
 
 	if (!role) {
-		throw new HttpException(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Error creating role');
+		return sendErrorApiResponse(reply, { error: 'Error creating role', status_code: '500' });
 	}
 
-	reply.send({ data: role, error: null, statusCode: HTTP_STATUS.CREATED });
+	return sendSuccessApiResponse(reply, role, { status_code: '201' });
 }

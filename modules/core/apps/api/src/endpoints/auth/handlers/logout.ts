@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
 
 /**
@@ -12,7 +11,7 @@ export async function logoutHandler(request: FastifyRequest, reply: FastifyReply
 	// and call the authProvider to log out the user.
 	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
 	if (!sessionToken) {
-		return reply.send({ data: undefined, error: 'Session token not found', statusCode: HTTP_STATUS.BAD_REQUEST });
+		return sendErrorApiResponse(reply, { error: 'Session token not found', status_code: '400' });
 	}
 	await authProvider.logout(sessionToken);
 	// Clear the session token by expiring the cookie
@@ -24,5 +23,5 @@ export async function logoutHandler(request: FastifyRequest, reply: FastifyReply
 		secure: true,
 	});
 	// Send a success response
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, undefined);
 }
