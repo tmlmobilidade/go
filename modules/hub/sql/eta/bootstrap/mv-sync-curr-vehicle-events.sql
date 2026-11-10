@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS eta.curr_vehicle_events
 (
     _id String,
+    ride_id String,
     agency_id String,
     trip_id String,
     vehicle_id String,
@@ -41,6 +42,8 @@ TTL toDateTime(intDiv(created_at, 1000), 'UTC') + INTERVAL 2 HOUR;
 -- can land after a newer one was already processed). The overlap is deduped on
 -- _id. The 10-minute floor bounds the catch-up work after a bootstrap or a
 -- refresh outage.
+ALTER TABLE eta.curr_vehicle_events ADD COLUMN IF NOT EXISTS ride_id String;
+
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_curr_vehicle_events
 REFRESH EVERY 15 SECOND APPEND TO eta.curr_vehicle_events AS
 WITH
@@ -78,6 +81,7 @@ WITH
     )
 SELECT
     s._id AS _id,
+    d._id AS ride_id,
     s.agency_id AS agency_id,
     s.trip_id AS trip_id,
     s.vehicle_id AS vehicle_id,
@@ -90,7 +94,10 @@ SELECT
     s.created_at AS created_at,
     s.received_at AS received_at
 FROM fresh_events AS s
-INNER JOIN eta.curr_rides AS d ON s.trip_id = d.trip_id
+INNER JOIN eta.curr_rides AS d FINAL ON s.trip_id = d.trip_id
+    AND s.agency_id = d.agency_id
+    AND toYYYYMMDD(toDate(fromUnixTimestamp64Milli(s.created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR)) = d.operational_date
+    AND (empty(d.vehicle_ids) OR has(d.vehicle_ids, s.vehicle_id))
 INNER JOIN eta.hist_shape_nodes AS n
     ON  d.hashed_shape_id = n.hashed_shape_id
     AND s.cell            = n.geohash
@@ -98,6 +105,7 @@ INNER JOIN eta.hist_shape_nodes AS n
     AND n.longitude BETWEEN s.longitude - bbox_deg AND s.longitude + bbox_deg
 GROUP BY
     s._id,
+    d._id,
     s.agency_id,
     s.trip_id,
     s.vehicle_id,
