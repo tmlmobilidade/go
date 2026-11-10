@@ -43,7 +43,7 @@ Before drafting, summarize the agreed problem, outcome, constraints, and importa
 
 Prefer one ticket when one complete outcome is the right scope. Split only when distinct vertical slices each deliver independently useful, verifiable behavior that fits a fresh work context.
 
-For every proposed ticket show **Title**, **Blocked by**, and **What it delivers**. Ask whether the split is too coarse or fine, whether blockers are genuine, and whether to merge or split. Iterate until approved.
+For every proposed ticket show **Title**, **What to build**, **Acceptance criteria**, and **Blocked by** (the Issue request fields). Ask whether the split is too coarse or fine, whether blockers are genuine, and whether to merge or split. Iterate until approved.
 
 - Real blockers only — nothing that does not gate starting the work.
 - Outcome-oriented titles and bodies. Avoid file paths and code snippets unless a decision cannot be expressed in prose.
@@ -51,15 +51,48 @@ For every proposed ticket show **Title**, **Blocked by**, and **What it delivers
 
 ## 4. Build each issue body from templates
 
-1. List `.github/ISSUE_TEMPLATE/` and read the candidate files.
-2. Pick the template that matches the selected issue type using frontmatter, in this order of preference:
-   - `type` equals the selected type (e.g. `type: Bug`)
-   - `name` or `about` clearly names that type (e.g. `name: Feature request` → Feature)
-3. Use that template's markdown sections as the body shape. Fill every section from the agreed understanding. Replace placeholder examples with real content. Omit a section only when it truly does not apply, and say so briefly in that section if leaving it empty would be confusing.
-4. Strip YAML frontmatter from the published body unless the create tool requires it. Keep frontmatter values in mind for native fields when the tool can set them (`type`, labels, assignees).
-5. If no template matches the type, tell the user which templates exist and draft a plain body from the agreed understanding — no skill-defined section scaffolding.
+Always read the live files under `.github/ISSUE_TEMPLATE/` before drafting. Do not invent a body structure in this skill when a template matches.
 
-Do not substitute a skill-authored outline (for example custom "What to build" / "Acceptance criteria" headings) when a template matches.
+### Template map
+
+| Selected type | Template to use | File |
+|---|---|---|
+| Bug | Bug report | `bug_report.md` |
+| Feature | Issue request | `issue_request.md` |
+| Documentation | Issue request | `issue_request.md` |
+| Routine | Issue request | `issue_request.md` |
+| Tooling | Issue request | `issue_request.md` |
+| Infrastructure | Issue request | `issue_request.md` |
+| Question | Issue request | `issue_request.md` |
+
+Matching rules when the folder changes:
+
+1. Prefer frontmatter `type` equal to the selected type.
+2. Else prefer `name` / `about` that clearly names that type.
+3. Else use **Issue request** (`issue_request.md`) — including for Feature. Do not use `feature_request.md` for agent-created Feature tickets; that file is the legacy GitHub UI template.
+4. If Issue request is missing and nothing else matches, tell the user which templates exist and draft a plain body with no skill-defined scaffolding.
+
+### Filling Issue request
+
+Read `issue_request.md` and fill its sections from the agreed understanding:
+
+| Section | Write |
+|---|---|
+| **What to build** | Complete user-visible (or operational) behavior to deliver. One coherent outcome, not an implementation plan. |
+| **Acceptance criteria** | Checklist of observable checks. Each item must be verifiable without prescribing code structure. |
+| **Blocked by** | Real blocking issue references, or `None (can start immediately)`. Omit this section only when blockers are represented as native dependency links. |
+
+For Question issues, adapt **What to build** to state the question and what a useful answer should resolve; keep acceptance criteria only if the user wants a verification checklist for the answer, otherwise a single criterion that the question is answered is enough.
+
+### Filling Bug report
+
+Read `bug_report.md` and fill Describe the bug, To Reproduce, Expected behavior, and the context sections that apply. Skip Desktop/Smartphone blocks when they are irrelevant; say so briefly rather than inventing device details.
+
+### Publishing the body
+
+- Strip YAML frontmatter from the published body unless the create tool requires it.
+- Keep frontmatter values in mind for native fields when the tool can set them (`type`, labels, assignees).
+- Replace placeholder examples with real content. Do not leave template boilerplate in the final body.
 
 ## 5. Metadata
 

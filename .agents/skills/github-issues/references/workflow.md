@@ -30,15 +30,15 @@ Supporting procedure for [github-issues](../SKILL.md). The skill owns type intak
 - Split multi-part work into narrow, end-to-end tracer bullets that can be verified independently and fit a fresh work context. Prefer one ticket when one complete behavior is the right scope.
 - Give every ticket its real blockers. Do not add dependencies that do not gate work.
 - For a mechanical, broad refactor that cannot land green in vertical slices, use expand–migrate–contract: add the compatible new form, migrate callers in bounded batches, then remove the old form. Make each migration depend on expansion and contraction depend on all migrations. Use a shared integration branch only when batches cannot remain independently green.
-- Present a numbered proposal. For each ticket include **Title**, **Blocked by**, and **What it delivers**. Ask whether the granularity is too coarse/fine, whether blockers are genuine, and whether to merge or split tickets. Iterate until approved.
+- Present a numbered proposal. For each ticket include **Title**, **What to build**, **Acceptance criteria**, and **Blocked by**. Ask whether the granularity is too coarse/fine, whether blockers are genuine, and whether to merge or split tickets. Iterate until approved.
 - Keep final ticket text outcome-oriented; avoid file paths and code snippets unless a prototype captured a decision that prose cannot express.
 
 ## Ticket body from templates
 
-1. List `.github/ISSUE_TEMPLATE/` and read templates that could match the selected issue type.
-2. Match by frontmatter: prefer `type`, then `name` / `about` that clearly refer to the selected type.
-3. Fill the template sections from the agreed understanding. Do not replace the template with a skill-defined structure.
-4. If no template matches, tell the user which templates exist and draft a plain body from the agreed understanding without skill-defined section scaffolding.
+1. List and read `.github/ISSUE_TEMPLATE/` before drafting.
+2. Use the skill's template map: Bug → `bug_report.md`; Feature and every other type → `issue_request.md`. Prefer frontmatter `type`, then `name` / `about`, then Issue request. Do not use `feature_request.md` for agent-created Feature tickets.
+3. Fill the chosen template from the agreed understanding. For Issue request, complete **What to build**, **Acceptance criteria**, and **Blocked by**. Do not replace the template with a skill-defined structure.
+4. If nothing matches and Issue request is missing, tell the user which templates exist and draft a plain body without skill-defined section scaffolding.
 5. Saved Markdown tickets under `$TMPDIR` use the same filled body as would be published.
 
 ## Metadata and publishing
