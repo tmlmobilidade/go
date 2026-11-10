@@ -11,6 +11,7 @@ const BOOTSTRAP_FILES = [
 	'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
 	'eta/bootstrap/mv-predict-node-etas.sql',
 	'eta/bootstrap/mv-predict-trip-stop-etas.sql',
+	'eta/bootstrap/prediction-snapshots.sql',
 ] as const;
 
 /* * */
