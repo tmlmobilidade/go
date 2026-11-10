@@ -22,10 +22,7 @@ func ResolveMessageSeverity(id string, fallback rules.Severities) rules.Severiti
 	}
 
 	//
-	// 2. Report forbidden content as an error, including fallback severities
+	// 2. Return the resolved severity
 
-	if severity == rules.SEVERITY_FORBIDDEN {
-		severity = rules.SEVERITY_ERROR
-	}
 	return severity
 }

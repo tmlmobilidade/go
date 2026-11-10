@@ -22,7 +22,7 @@ func PatternIdSameShapeId(ctx *types.ValidationContext) error {
 		//
 		// 2. Compare populated IDs using the scoped configuration
 
-		if values["pattern_id"] == "" || values["shape_id"] == "" || context.ShouldSkip(row) {
+		if values["pattern_id"] == "" || values["shape_id"] == "" || context.ShouldIgnore(row) {
 			return nil
 		}
 		if values["pattern_id"] != values["shape_id"] {

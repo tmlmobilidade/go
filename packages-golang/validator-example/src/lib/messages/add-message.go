@@ -19,9 +19,6 @@ func (service *MessageService) AddMessage(message types.Message) {
 	if !message.SeverityResolved {
 		message.Severity = severity.ResolveMessageSeverity(message.RuleID, message.Severity)
 	}
-	if message.Severity == rules.SEVERITY_FORBIDDEN {
-		message.Severity = rules.SEVERITY_ERROR
-	}
 	if message.Severity == rules.SEVERITY_IGNORE {
 		return
 	}

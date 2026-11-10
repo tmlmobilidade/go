@@ -8,5 +8,4 @@ const (
 	SEVERITY_INFO Severities = "info"
 	SEVERITY_WARNING Severities = "warning"
 	SEVERITY_ERROR Severities = "error"
-	SEVERITY_FORBIDDEN Severities = "forbidden"
 )

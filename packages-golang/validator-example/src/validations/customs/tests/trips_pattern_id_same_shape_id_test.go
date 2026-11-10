@@ -11,7 +11,7 @@ import (
 )
 
 func TestPatternIdSameShapeId(t *testing.T) {
-	for _, severity := range []rules.Severities{rules.SEVERITY_ERROR, rules.SEVERITY_WARNING, rules.SEVERITY_INFO, rules.SEVERITY_IGNORE, rules.SEVERITY_FORBIDDEN} {
+	for _, severity := range []rules.Severities{rules.SEVERITY_ERROR, rules.SEVERITY_WARNING, rules.SEVERITY_INFO, rules.SEVERITY_IGNORE} {
 		for _, tc := range []struct {
 			name           string
 			pattern, shape any
@@ -28,7 +28,7 @@ func TestPatternIdSameShapeId(t *testing.T) {
 					t.Fatal(err)
 				}
 				count := tc.count
-				if severity == rules.SEVERITY_IGNORE || severity == rules.SEVERITY_FORBIDDEN {
+				if severity == rules.SEVERITY_IGNORE {
 					count = 0
 				}
 				testutil.AssertMessages(t, c, "trips_pattern_id_same_shape_id", "pattern_id", severity, count)
