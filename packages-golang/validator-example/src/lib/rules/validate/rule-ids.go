@@ -3,8 +3,8 @@ package validate
 import (
 	"fmt"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/validate/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validate"
 )
 
 // ValidateRuleIDs rejects unknown IDs, including entries configured as ignore.

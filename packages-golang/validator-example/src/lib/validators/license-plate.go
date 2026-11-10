@@ -1,8 +1,8 @@
 package validators
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/validators/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validators"
 )
 
 func ValidateLicensePlate(licensePlate string) bool {

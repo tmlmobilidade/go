@@ -6,8 +6,8 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/context"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validations"
 	custom "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/customs/checks"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator-example/src/validations/utils"
 )
 
 func TestPatternIdSameShapeId(t *testing.T) {

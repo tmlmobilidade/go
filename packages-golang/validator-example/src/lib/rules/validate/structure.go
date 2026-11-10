@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/validate/utils"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validate"
 )
 
 // ValidateStructure decodes a flat rule object or a validation_rules wrapper.

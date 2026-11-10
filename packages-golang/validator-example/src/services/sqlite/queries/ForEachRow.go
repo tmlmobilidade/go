@@ -2,8 +2,8 @@ package queries
 
 import (
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/database"
-	utils "github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/sqlite"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/sqlite"
 )
 
 // ForEachRow reads row IDs only. Callbacks may query fields through the row context.

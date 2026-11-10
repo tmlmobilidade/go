@@ -7,7 +7,7 @@ import (
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/rules/discover"
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/script/typescript/consts"
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/script/typescript/utils"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/typescript"
 )
 
 // RenderTypeScript generates the rule-ID values, Zod schema, and inferred type.

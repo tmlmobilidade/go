@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/lib/validators/utils"
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validators"
 )
 
 func ValidateUrl(u string) bool {
