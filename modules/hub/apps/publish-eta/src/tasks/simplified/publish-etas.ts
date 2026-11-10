@@ -1,50 +1,27 @@
-/* * */
-
+import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
+import { TTL_REALTIME } from '../../config.js';
 import { EXTERNAL_FEEDS } from '../external-feeds.js';
 import { recordPublication } from '../record-publication.js';
-import { cacheEtasByAll } from './cache-etas-by-all.js';
-import { cacheEtasByStop } from './cache-etas-by-stop.js';
-import { cacheEtasByTrip } from './cache-etas-by-trip.js';
-import { cacheAllEtasFromClickHouse } from './cache-etas-from-clickhouse-all.js';
-import { cacheEtasFromClickHouseByStop } from './cache-etas-from-clickhouse-by-stop.js';
-import { cacheEtasFromClickHouseByTrip } from './cache-etas-from-clickhouse-by-trip.js';
+import { getClickHouseEtas } from './get-clickhouse-etas.js';
 import { getExternalEtas } from './get-external-etas.js';
+import { writeEtaSnapshot } from './write-eta-snapshot.js';
 
-/* * */
-
-/**
- * Publishes the simplified (non-GTFS) trip-stop ETA caches.
- *
- * Writes only the requested agency under `hub:v1:{agencyId}:realtime:eta`.
- *
- * Rebuilds `eta:all`, `eta:by-trip:*`, and `eta:by-stop:*` from ClickHouse.
- * External feeds can later merge into those same keys via
- * {@link cacheEtasByTrip}, {@link cacheEtasByStop}, and {@link cacheEtasByAll}.
- */
-export async function publishEtas(agencyId: string) {
-	//
-
-	Logger.title('Publishing trip stop ETAs...');
-
-	const globalTimer = new Timer();
-
-	// Rebuild ETA caches from ClickHouse SQL aggregations
-	await cacheAllEtasFromClickHouse(agencyId);
-	await cacheEtasFromClickHouseByTrip(agencyId);
-	await cacheEtasFromClickHouseByStop(agencyId);
-
+/** Publish one complete agency snapshot, including external feeds, so removed
+ * trips disappear from both grouped caches on the next successful cycle. */
+export async function publishEtas(agencyId: string): Promise<void> {
+	const timer = new Timer();
+	const rows = await getClickHouseEtas(agencyId);
 	for (const feed of EXTERNAL_FEEDS.filter(feed => feed.agencyId === agencyId)) {
-		const etas = await getExternalEtas(feed);
-		await cacheEtasByTrip(etas, agencyId);
-		await cacheEtasByStop(etas, agencyId);
-		await cacheEtasByAll(etas, agencyId);
+		const external = await getExternalEtas(feed);
+		const externalTrips = new Set(external.map(row => row.trip_id));
+		for (let i = rows.length - 1; i >= 0; i--) {
+			if (externalTrips.has(rows[i].trip_id)) rows.splice(i, 1);
+		}
+		rows.push(...external);
 	}
-
+	await writeEtaSnapshot(cacheDb, agencyId, rows, TTL_REALTIME);
 	await recordPublication(agencyId, 'simplified');
-
-	Logger.success(`Finished publishing trip stop ETAs (${globalTimer.get()})`);
-
-	//
-};
+	Logger.success(`Finished publishing trip stop ETAs (${timer.get()})`);
+}

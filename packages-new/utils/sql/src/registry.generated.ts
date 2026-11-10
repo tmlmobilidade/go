@@ -16,6 +16,7 @@ export const SQL_FILES = {
 		'eta/bootstrap/mv-predict-trip-stop-etas.sql',
 		'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
 		'eta/bootstrap/prediction-snapshots.sql',
+		'eta/bootstrap/publishable-etas.sql',
 		'eta/bootstrap/runtime-policy.sql',
 		'eta/cleanup/1-delete-out-of-window-curr-rides.sql',
 		'eta/cleanup/2-delete-orphan-curr-waypoints.sql',

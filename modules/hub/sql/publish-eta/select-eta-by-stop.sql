@@ -27,7 +27,7 @@ SELECT
             )
         )
     ) AS value
-FROM eta.pred_trip_stop_etas FINAL
+FROM eta.publishable_trip_stop_etas
 WHERE agency_id = {agency_id:String}
 GROUP BY stop_id
 ORDER BY key;

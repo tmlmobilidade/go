@@ -1,6 +1,6 @@
 """Execute the production SQL against an isolated embedded ClickHouse.
 
-python -m pip install chdb==4.1.0
+python -m pip install chdb==4.4.0
 python -m unittest discover -s modules/hub/apps/eta/tests -v
 No network, production credentials or running ClickHouse server are needed.
 """
@@ -62,7 +62,8 @@ class EtaSQLTest(unittest.TestCase):
                      'eta/bootstrap/mv-predict-node-etas.sql',
                      'eta/bootstrap/mv-predict-trip-stop-etas.sql',
                      'eta/bootstrap/prediction-snapshots.sql',
-                     'eta/bootstrap/arrival-labels.sql']:
+                     'eta/bootstrap/arrival-labels.sql',
+                     'eta/bootstrap/publishable-etas.sql']:
             for stmt in statements(path):
                 if 'MATERIALIZED VIEW' not in stmt:
                     cls.db.query(stmt)
@@ -79,6 +80,10 @@ class EtaSQLTest(unittest.TestCase):
     def rows(self, sql):
         result = str(self.db.query(sql, 'JSONEachRow'))
         return [json.loads(line) for line in result.splitlines() if line]
+
+    def insert_select(self, table, query):
+        columns = ','.join('`' + row['name'] + '`' for row in self.rows('DESCRIBE TABLE (' + query + ')'))
+        self.db.query('INSERT INTO ' + table + ' (' + columns + ') ' + query)
 
     def test_prediction_query_executes_on_empty_database(self):
         self.assertEqual(self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql')), [])
@@ -106,8 +111,8 @@ class EtaSQLTest(unittest.TestCase):
             (hashed_trip_id,hashed_shape_id,stop_sequence,stop_id,node_index,arrival_time)
             VALUES ('ht','hs',1,'s1',5,'12:00:00'),('ht','hs',2,'s2',10,'12:05:00')""")
         self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-            (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-            VALUES ('e','a','trip','v','hs',0,{now-1000},{now-500})""")
+            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+            VALUES ('e','ride','a','trip','v','hs',0,{now-1000},{now-500})""")
         return now
 
     def test_missing_history_never_yields_zero_for_positive_distance(self):
@@ -154,9 +159,9 @@ class EtaSQLTest(unittest.TestCase):
             (hashed_trip_id,hashed_shape_id,stop_sequence,stop_id,node_index)
             VALUES ('ht','hs',1,'stop',5),('ht','hs',2,'stop',7)""")
         self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-            (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-            VALUES ('e1','a','trip','v','hs',4,{now-300000},{now-299000}),
-                   ('e2','a','trip','v','hs',6,{now-270000},{now-269000})""")
+            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+            VALUES ('e1','ride','a','trip','v','hs',4,{now-300000},{now-299000}),
+                   ('e2','ride','a','trip','v','hs',6,{now-270000},{now-269000})""")
         query = view_select('eta/bootstrap/arrival-labels.sql')
         rows = self.rows(query)
         self.assertEqual(len(rows), 1)
@@ -169,17 +174,37 @@ class EtaSQLTest(unittest.TestCase):
         for offset in [-300000, 60000]:
             self.db.query('TRUNCATE eta.curr_vehicle_events')
             self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-                (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-                VALUES ('e','a','trip','v','hs',0,{now+offset},{now+offset})""")
+                (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+                VALUES ('e','ride','a','trip','v','hs',0,{now+offset},{now+offset})""")
             self.assertEqual(self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql')), [])
 
     def test_aging_gps_has_decaying_confidence_and_bounded_extrapolation(self):
         now = self.seed_live_trip()
         self.db.query('TRUNCATE eta.curr_vehicle_events')
         self.db.query(f"""INSERT INTO eta.curr_vehicle_events
-            (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
-            VALUES ('e','a','trip','v','hs',0,{now-90000},{now-89000})""")
+            (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+            VALUES ('e','ride','a','trip','v','hs',0,{now-90000},{now-89000})""")
         rows = self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
         self.assertTrue(all(r['freshness_tier'] == 'aging' for r in rows))
         self.assertTrue(all(0 < r['prediction_confidence'] < 0.4 for r in rows))
         self.assertTrue(all(r['eta_at'] > now for r in rows))
+
+    def test_all_public_queries_use_lifecycle_filter(self):
+        self.seed_live_trip()
+        query = view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql')
+        self.insert_select('eta.pred_trip_stop_etas_v2', query)
+        self.assertGreater(len(self.rows('SELECT * FROM eta.publishable_trip_stop_etas')), 0)
+        for path in (SQL / 'publish-eta').glob('*.sql'):
+            self.rows(path.read_text().replace('{agency_id:String}', "'a'"))
+        self.db.query('ALTER TABLE eta.curr_rides UPDATE end_time_observed = 1 WHERE _id = \'ride\' SETTINGS mutations_sync=1')
+        self.assertEqual(self.rows('SELECT * FROM eta.publishable_trip_stop_etas'), [])
+        for path in (SQL / 'publish-eta').glob('*.sql'):
+            self.assertEqual(self.rows(path.read_text().replace('{agency_id:String}', "'a'")), [])
+
+    def test_expired_generation_is_not_publishable(self):
+        now = self.seed_live_trip()
+        self.insert_select('eta.pred_trip_stop_etas_v2', view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
+        self.db.query('TRUNCATE eta.pred_trip_stop_etas_v2')
+        stale = view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql').replace('now_ms AS refreshed_at', '(now_ms - 120000) AS refreshed_at')
+        self.insert_select('eta.pred_trip_stop_etas_v2', stale)
+        self.assertEqual(self.rows('SELECT * FROM eta.publishable_trip_stop_etas'), [])

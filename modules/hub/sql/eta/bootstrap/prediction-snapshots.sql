@@ -51,7 +51,7 @@ SELECT
     toInt32(ifNull((eta_at - refreshed_at) / 1000, -1)) AS horizon_seconds,
     greatest(0., (refreshed_at - position_created_at) / 1000.) AS gps_age_seconds,
     greatest(0., (position_received_at - position_created_at) / 1000.) AS ingestion_lag_seconds
-FROM eta.pred_trip_stop_etas FINAL;
+FROM eta.pred_trip_stop_etas_v2 FINAL;
 
 -- This records an actual publisher read, separate from generation/capture.
 -- A failed cache write is not a publication. Call only after successful writes.

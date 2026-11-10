@@ -50,7 +50,7 @@ WITH
                     (w.node_index - e.prev_node) / node_delta)), NULL) AS crossing_at
         FROM events AS e
         INNER JOIN eta.curr_rides AS r FINAL
-            ON e.trip_id = r.trip_id AND e.agency_id = r.agency_id
+            ON e.ride_id = r._id AND e.agency_id = r.agency_id
             AND e.hashed_shape_id = r.hashed_shape_id
         INNER JOIN eta.curr_waypoints_snapped AS w FINAL
             ON w.hashed_trip_id = r.hashed_trip_id

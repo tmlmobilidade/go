@@ -65,3 +65,29 @@ Prediction clocks anchor at refresh time. Set max_extrapolation_seconds=0 to
 disable. Publication filtering is centralised in #950. The health query exposes
 GPS age, lag and suppression; these defaults require a latency-distribution
 review before production promotion.
+
+## Lifecycle and publication (#950)
+
+Non-APPEND refreshable views atomically replace the complete target, so removed
+rows do not accumulate between successful refreshes. `FINAL` alone only merges
+versions; it is not an expiry policy. `publishable_trip_stop_etas` additionally
+bounds generation age (90 s default), GPS age, confidence, completed rides and
+passed stops. Every simplified/GTFS SQL reader uses this view. GTFS joins the
+exact ride and preserves repeated stop sequences.
+
+Snaps now carry the actual ride ID, with agency, vehicle assignment and local
+04:00 service date checks; prediction state is keyed by ride+vehicle, avoiding
+trip IDs shared by agencies or reused on consecutive days. Existing snap rows
+with empty ride IDs age out; allow two minutes to warm after migration.
+
+The simplified publisher reads one dataset, includes external feeds, writes
+all/grouped keys with concurrency 25, then prunes missing groups within the
+agency prefix. A failed write does not trigger pruning. One publisher must own
+an agency. Cache TTL is 60 s (publisher cadence 15 s); during outages, stale
+cache exposure is bounded to generation limit + TTL, approximately 150 s with
+default policy. Cross-key Redis writes are not an atomic transaction.
+
+The replacement target is `pred_trip_stop_etas_v2`, keyed by ride, vehicle and
+stop sequence. Changing only ORDER BY on the populated legacy table would not
+be a safe migration. The old table is retained for inspection/rollback; do not
+read it from new publishers, and remove it only after the rollout is accepted.

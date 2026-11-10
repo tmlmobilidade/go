@@ -14,6 +14,7 @@ const BOOTSTRAP_FILES = [
 	'eta/bootstrap/mv-predict-trip-stop-etas.sql',
 	'eta/bootstrap/prediction-snapshots.sql',
 	'eta/bootstrap/arrival-labels.sql',
+	'eta/bootstrap/publishable-etas.sql',
 ] as const;
 
 /* * */
