@@ -35,16 +35,10 @@ func (service *MessageService) AddMessage(message types.Message) {
 	}
 
 	//
-	// 3. Count every finding before deduplication for dependency decisions
+	// 3. Lock the collector while merging and counting diagnostics
 
 	service.mu.Lock()
 	defer service.mu.Unlock()
-	if message.Severity == rules.SEVERITY_ERROR || message.Severity == rules.SEVERITY_WARNING || message.Severity == rules.SEVERITY_INFO {
-		if service.issues == nil {
-			service.issues = make(map[string]uint64)
-		}
-		service.issues[message.RuleID]++
-	}
 
 	//
 	// 4. Merge identical diagnostics, retaining the first 49 rows and latest row

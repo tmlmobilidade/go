@@ -58,8 +58,9 @@ func run() error {
 			return DAGTypes.Passed
 		}
 	}
-	manager, err := algorithm.NewManager(nodes...)
-	if err != nil {
+	// This scheduler-only demo supplies its nodes directly.
+	manager := &DAGTypes.Manager[struct{}]{Rules: nodes}
+	if err := algorithm.Build(manager); err != nil {
 		return err
 	}
 

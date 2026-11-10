@@ -76,6 +76,11 @@ and version values. Logger and translator instances live in its `logger` and
 
 ### High-Level Flow
 
+`algorithm.NewManager` receives the registered validations and configuration,
+selects the required rules and prerequisites, creates their execution contexts,
+and builds the dependency graph. The orchestrator then calls `algorithm.RunRules`
+to execute the prepared manager.
+
 ```mermaid
 flowchart LR
     SQLite[Existing GTFS SQLite] --> Prepared[Lookup index preparation]
@@ -206,11 +211,11 @@ The `MessageService` collects all validation messages throughout the execution:
 - **Deduplication**: Findings with the same file, rule, field, severity, and text
   are merged, retaining at most 50 row examples: the first 49 source rows and the latest occurrence
 - **Severity Tracking**: Counts distinct error and warning diagnostics in the report
-- **Dependency Outcomes**: Counts every emitted info, warning, and error finding
-  before deduplication so repeated findings still fail the rule
+- **Dependency Outcomes**: The validation context records findings before collection,
+  so repeated findings still fail the rule when diagnostics are deduplicated
 
-The shared collector interface exposes `AddMessage`, `GetSummary`, and
-`RuleIssueCount`. The concrete collector also provides `OutputSummary` for the CLI.
+The shared collector interface exposes `AddMessage` and `GetSummary`.
+The concrete collector also provides `OutputSummary` for the CLI.
 Each run owns its collector, and report snapshots can be changed without changing
 stored findings. `AllMessages` flattens grouped reports for callers such as tests.
 

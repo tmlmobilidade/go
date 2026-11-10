@@ -11,7 +11,6 @@ import (
 // The zero value is ready to use; create one collector for each validation run.
 type MessageService struct {
 	mu           sync.RWMutex
-	issues       map[string]uint64
 	errorCount   int
 	warningCount int
 	messages     []types.Message

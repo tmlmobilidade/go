@@ -13,8 +13,8 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
 )
 
-// RunRule executes a callback released by Kahn; each rule owns its data access.
-func RunRule(run *validationTypes.Execution, ctx *types.ValidationContext, check validationTypes.Check) (status DAG.Status) {
+// ExecuteValidation calls the validation function and returns its context outcome.
+func ExecuteValidation(run *validationTypes.Execution, ctx *types.ValidationContext, validate validationTypes.Check) (status DAG.Status) {
 	//
 
 	//
@@ -30,9 +30,9 @@ func RunRule(run *validationTypes.Execution, ctx *types.ValidationContext, check
 	}()
 
 	//
-	// 2. Skip disabled checks, preserving file-presence control behavior
+	// 2. Skip disabled validations, preserving file-presence control behavior
 
-	if check == nil {
+	if validate == nil {
 		ctx.Skipped = true
 		return DAG.Skipped
 	}
@@ -43,9 +43,8 @@ func RunRule(run *validationTypes.Execution, ctx *types.ValidationContext, check
 	}
 
 	//
-	// 3. Track findings, timing, and progress
+	// 3. Track timing and progress
 
-	issuesBefore := run.Messages.RuleIssueCount(id)
 	timing := telemetry.NewTimer()
 	logger.AppLogger.Progress(telemetry.LogEntry{
 		Message:    "Running " + id,
@@ -57,20 +56,16 @@ func RunRule(run *validationTypes.Execution, ctx *types.ValidationContext, check
 	}()
 
 	//
-	// 4. Run the check and report any operational error
+	// 4. Execute the validation and report any operational error
 
-	if err := check(ctx); err != nil {
+	if err := validate(ctx); err != nil {
 		CollectErrors(run, id, ctx, fmt.Errorf("rule %q: %w", id, err))
 		return DAG.Failed
 	}
 
 	//
-	// 5. Determine the result, including findings emitted directly to the collector
+	// 5. Return the outcome recorded by the validation
 
 	status = context.Status(ctx)
-	if status == DAG.Passed && run.Messages.RuleIssueCount(id) > issuesBefore {
-		ctx.Failed = true
-		return DAG.Failed
-	}
 	return status
 }
