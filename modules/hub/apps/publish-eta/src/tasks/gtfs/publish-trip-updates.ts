@@ -7,6 +7,7 @@ import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 import { TTL_REALTIME } from '../../config.js';
 import { EXTERNAL_FEEDS } from '../external-feeds.js';
+import { recordPublication } from '../record-publication.js';
 import { getClickHouseTripUpdates } from './get-clickhouse-trip-updates.js';
 import { getExternalTripUpdates } from './get-external-trip-updates.js';
 
@@ -44,6 +45,8 @@ export async function publishTripUpdates(agencyId: string) {
 	//
 	// Cache the feed result
 	await cacheDb.set(`${prefix}:all:gtfs`, JSON.stringify(feedResult), TTL_REALTIME);
+
+	await recordPublication(agencyId, 'gtfs');
 
 	Logger.success(`Finished publishing GTFS-RT TripUpdate feed (${globalTimer.get()})`);
 
