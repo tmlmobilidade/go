@@ -9,6 +9,7 @@
 
 export const SQL_FILES = {
 	hub: [
+		'eta/bootstrap/arrival-labels.sql',
 		'eta/bootstrap/create-tables.sql',
 		'eta/bootstrap/migrate-2026-09-eta-loader-p0.sql',
 		'eta/bootstrap/mv-predict-node-etas.sql',
@@ -27,6 +28,7 @@ export const SQL_FILES = {
 		'eta/loader/load-historical-vehicle-events.sql',
 		'eta/loader/load-rides.sql',
 		'eta/loader/snap-waypoints.sql',
+		'eta/observability/prediction-errors.sql',
 		'eta/observability/prediction-health.sql',
 		'publish-eta/select-eta-by-stop.sql',
 		'publish-eta/select-eta-by-trip.sql',

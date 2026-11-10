@@ -25,3 +25,20 @@ before replacing the corresponding views.
 Accuracy metrics require independent arrival labels (#947); empty datasets must
 report missing coverage, never claim zero error. Real trace validation, peak-load
 timing and shadow accuracy are rollout gates, not assertions inferred from tests.
+
+## Independent arrival labels (#947)
+
+A minute job interpolates plausible forward GPS crossings (<=120 s gaps,
+<=120 km/h) into `actual_arrivals`. These are `crossing_only`, confidence 0.7;
+they prove a passage, not boarding or an open door. Gaps stay `unobservable`.
+The optional `verified_stop_events` ingestion table accepts authoritative door
+observations (>=0.8), which supersede GPS. No door adapter is assumed to exist.
+Labels wait two minutes for late events, keep their first known-at time on
+replay, and never join stops by ID alone: ride+vehicle+sequence handles loops.
+Stops never crossed have no label and count against label coverage. Route
+deviations and GPS gaps are excluded from scored errors, not silently imputed.
+
+Run `observability/prediction-errors.sql` with millisecond `since`/`until` bounds.
+Positive signed error means late predictions; errors join labels strictly after
+prediction time. Audit a sample of real traces (including loops and skipped
+stops) and report label coverage before using GPS crossings for promotion.

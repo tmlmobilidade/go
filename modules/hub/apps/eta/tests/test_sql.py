@@ -60,7 +60,8 @@ class EtaSQLTest(unittest.TestCase):
                      'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
                      'eta/bootstrap/mv-predict-node-etas.sql',
                      'eta/bootstrap/mv-predict-trip-stop-etas.sql',
-                     'eta/bootstrap/prediction-snapshots.sql']:
+                     'eta/bootstrap/prediction-snapshots.sql',
+                     'eta/bootstrap/arrival-labels.sql']:
             for stmt in statements(path):
                 if 'MATERIALIZED VIEW' not in stmt:
                     cls.db.query(stmt)
@@ -69,6 +70,10 @@ class EtaSQLTest(unittest.TestCase):
     def tearDownClass(cls):
         cls.db.close()
         cls.tmp.cleanup()
+
+    def setUp(self):
+        for row in self.rows("SELECT database, name FROM system.tables WHERE database IN ('eta','operation','infrastructure') AND engine LIKE '%MergeTree%'"):
+            self.db.query(f"TRUNCATE {row['database']}.{row['name']}")
 
     def rows(self, sql):
         result = str(self.db.query(sql, 'JSONEachRow'))
@@ -92,3 +97,33 @@ class EtaSQLTest(unittest.TestCase):
         for stmt in statements('eta/bootstrap/create-tables.sql'):
             self.db.query(stmt)
         self.assertEqual(self.rows("SELECT count() AS n FROM eta.hist_shape_nodes WHERE hashed_shape_id='keep'")[0]['n'], 1)
+
+    def test_arrival_query_executes(self):
+        self.rows(view_select('eta/bootstrap/arrival-labels.sql'))
+
+    def test_metrics_query_executes(self):
+        query = (SQL / 'eta/observability/prediction-errors.sql').read_text()
+        self.rows(query.replace('{since:Int64}', '0').replace('{until:Int64}', '9999999999999'))
+
+    def test_arrival_crossings_are_interpolated_and_replay_safe(self):
+        for table in ['curr_rides', 'curr_vehicle_events', 'curr_waypoints_snapped', 'actual_arrivals']:
+            self.db.query('TRUNCATE eta.' + table)
+        now = self.rows('SELECT toUnixTimestamp64Milli(now64(3)) AS t')[0]['t']
+        op = self.rows("SELECT toYYYYMMDD(toDate(now('Europe/Lisbon') - INTERVAL 4 HOUR)) AS d")[0]['d']
+        self.db.query(f"""INSERT INTO eta.curr_rides
+            (_id,trip_id,agency_id,hashed_trip_id,hashed_shape_id,operational_date,
+             start_time_scheduled,end_time_scheduled)
+            VALUES ('ride','trip','a','ht','hs',{op},{now-600000},{now+600000})""")
+        self.db.query("""INSERT INTO eta.curr_waypoints_snapped
+            (hashed_trip_id,hashed_shape_id,stop_sequence,stop_id,node_index)
+            VALUES ('ht','hs',1,'stop',5),('ht','hs',2,'stop',7)""")
+        self.db.query(f"""INSERT INTO eta.curr_vehicle_events
+            (_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,created_at,received_at)
+            VALUES ('e1','a','trip','v','hs',4,{now-300000},{now-299000}),
+                   ('e2','a','trip','v','hs',6,{now-270000},{now-269000})""")
+        query = view_select('eta/bootstrap/arrival-labels.sql')
+        rows = self.rows(query)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['arrival_at'], now - 285000)
+        self.db.query('INSERT INTO eta.actual_arrivals ' + query)
+        self.assertEqual(self.rows(query), [])
