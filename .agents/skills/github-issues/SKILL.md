@@ -1,14 +1,39 @@
 ---
 name: github-issues
-description: Turn a request into reviewed, well-scoped GitHub issue tickets for the TML GO repository. Use when the user asks to create or plan a GitHub issue and has not already selected a specific issue type.
+description: >-
+  Turn a request into reviewed, well-scoped GitHub issue tickets for the TML GO
+  repository. Use when the user asks to create or plan a GitHub issue of any
+  type (Bug, Feature, Documentation, Routine, Tooling, Infrastructure, Question).
 ---
 
 # Create GitHub issues
 
-Route the request through a type-specific workflow. Ask the user to choose an issue type before gathering issue details, unless they already specified it. Offer **Bug, Feature, Documentation, Routine, Tooling, Infrastructure, and Question**. Use the question delivery and waiting procedure in [the shared workflow](references/workflow.md#asking-and-waiting). The type selection is required: keep the selector pending until the user actually answers.
+Follow [the shared workflow](references/workflow.md) and [the field catalog](references/issue-fields.md).
 
-After the user chooses, read the matching skill in `../github-issue-<type>/SKILL.md` (use `github-issue-documentation` for Documentation). Follow it together with [the shared workflow](references/workflow.md) and [the field catalog](references/issue-fields.md). If a type-specific skill was invoked directly, follow its workflow without asking the type again.
+## Type
 
-Follow the shared question delivery and waiting procedure for every interview question. Investigate repository facts yourself; do not ask the user to find facts available in the workspace or connected tools. Continue until the user and agent share an explicit understanding. Do not draft final tickets or publish them before the user confirms that understanding.
+Offer **Bug, Feature, Documentation, Routine, Tooling, Infrastructure, and Question** when the user has not already chosen one. Keep the type selector pending until they answer. Once the type is known, do not ask for another.
 
-Draft tickets as complete, independently useful vertical slices when the work warrants multiple tickets. Show each ticket's title, blockers, and delivered user-visible behavior. Iterate on granularity and blocking edges until the user approves. Then prepare the final issue bodies and metadata for review; publish only after the user explicitly approves the concrete drafts. If publishing is unavailable or cannot faithfully represent the requested metadata, save approved Markdown tickets under the OS temporary directory and report their paths.
+## Body from templates
+
+Read the matching file under `.github/ISSUE_TEMPLATE/` and use it as the issue body shape. Match by template frontmatter (`name`, `about`, `type`) to the selected issue type. Fill every section from the agreed understanding; leave a section blank only when it truly does not apply. Do not invent a different body structure in the skill.
+
+If no template exists for the selected type, say so and draft a plain body from the agreed understanding without adding skill-defined section scaffolding.
+
+## Type-specific intake
+
+Investigate repository facts yourself. Use `.agents/skills/go-architecture/SKILL.md` to keep proposed work inside module boundaries. Confirm shared understanding before drafting.
+
+| Type | Focus the interview on |
+|---|---|
+| Bug | Affected user or system, expected vs actual behavior, impact, reproducible steps; ask for logs or environment only when they affect diagnosis |
+| Feature | Who needs it, the problem, desired behavior, constraints, and how success is observed |
+| Documentation | Audience, what they cannot find or trust, authoritative behavior, and where readers expect it |
+| Routine | Maintenance need, cleanup scope, and the observable done condition; avoid turning it into a broad refactor unless evidence requires it |
+| Tooling | Workflow or system, who uses it, current friction, expected repeatable outcome |
+| Infrastructure | Environment or system, current vs desired state, operational impact, rollout or recovery constraints; never request secrets |
+| Question | Exact question, why an answer is needed, context, and who is affected; do not invent implementation tickets or acceptance criteria |
+
+## Drafting and publishing
+
+Split only when distinct vertical slices deliver independently useful outcomes. Show each ticket's title, blockers, and delivered outcome; iterate until approved. Show the final title, body, and metadata, then publish only after explicit approval. Create with the selected issue type when the write tool supports it; otherwise put a labeled **Issue metadata** section in the body and say those values are body-only.
