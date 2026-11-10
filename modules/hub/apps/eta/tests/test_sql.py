@@ -62,6 +62,7 @@ class EtaSQLTest(unittest.TestCase):
                      'eta/bootstrap/shared-road-segments.sql',
                      'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
                      'eta/bootstrap/valid-vehicle-events.sql',
+                     'eta/bootstrap/dwell-tables.sql',
                      'eta/bootstrap/live-traffic.sql',
                      'eta/bootstrap/mv-predict-node-etas.sql',
                      'eta/bootstrap/calibration-table.sql',
@@ -69,6 +70,7 @@ class EtaSQLTest(unittest.TestCase):
                      'eta/bootstrap/prediction-snapshots.sql',
                      'eta/bootstrap/arrival-labels.sql',
                      'eta/bootstrap/bias-calibration.sql',
+                     'eta/bootstrap/stop-dwell.sql',
                      'eta/bootstrap/publishable-etas.sql']:
             for stmt in statements(path):
                 if 'MATERIALIZED VIEW' not in stmt:
@@ -361,3 +363,28 @@ class EtaSQLTest(unittest.TestCase):
         self.assertTrue(first)
         self.assertEqual([r['independent_rides'] for r in first], [r['independent_rides'] for r in second])
         self.assertTrue(all(r['bias_seconds'] > 0 for r in second))
+
+    def test_dwell_label_query_executes(self):
+        self.rows(view_select('eta/bootstrap/stop-dwell.sql'))
+
+    def test_dwell_is_added_only_before_intermediate_stops(self):
+        now = self.seed_live_trip()
+        self.db.query(f"""INSERT INTO eta.stop_dwell_model
+            SELECT 'ht',toUInt16(1),arrayJoin(['Peak AM','Mid','Peak PM','Off Peak']),30.,60.,10,toInt64({now})""")
+        rows = sorted(self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql')), key=lambda r:r['stop_sequence'])
+        self.assertEqual(rows[0]['future_dwell_seconds'], 0)
+        self.assertGreater(rows[1]['future_dwell_seconds'], 0)
+        self.assertEqual(rows[0]['dwell_eta_at'], rows[0]['eta_at'])
+        self.assertGreater(rows[1]['dwell_eta_at'], rows[1]['eta_at'])
+
+    def test_verified_dwell_labels_are_replay_safe(self):
+        now = self.seed_live_trip()
+        self.db.query(f"""INSERT INTO eta.actual_arrivals VALUES
+            ('ride','v',1,'s1',{now-210000},{now-180000},{now-120000},'door',1.,'verified',1)""")
+        query = view_select('eta/bootstrap/stop-dwell.sql')
+        rows = self.rows(query)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['dwell_seconds'], 30.)
+        self.assertEqual(rows[0]['source'], 'verified_door')
+        self.insert_select('eta.stop_dwell_labels', query)
+        self.assertEqual(self.rows(query), [])

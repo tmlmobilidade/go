@@ -19,6 +19,13 @@ WITH
         WHERE created_at >= now_ms - 600000 AND created_at <= now_ms
         WINDOW w AS (PARTITION BY ride_id, vehicle_id, hashed_shape_id ORDER BY created_at, _id)
     ),
+    dwell_by_ride AS (
+        SELECT ride_id, groupArray(tuple(arrival_at, assumeNotNull(departure_at))) AS intervals
+        FROM eta.stop_dwell_labels FINAL
+        WHERE status = 'observed' AND confidence >= 0.8 AND departure_at IS NOT NULL
+          AND departure_at >= now_ms - 600000
+        GROUP BY ride_id
+    ),
     observed_steps AS (
         SELECT s.vehicle_id AS vehicle_id, m.segment_id AS segment_id,
             s.created_at AS observed_at, s._id AS event_id,
@@ -27,6 +34,7 @@ WITH
                 (s.node_index - s.prev_node) AS observed_seconds,
             sum(p.predicted_travel_time_seconds) AS expected_seconds
         FROM steps AS s
+        LEFT JOIN dwell_by_ride AS dwell ON dwell.ride_id = s.ride_id
         INNER JOIN eta.shape_node_road_segments AS m
             ON m.hashed_shape_id = s.hashed_shape_id
             AND m.node_index > s.prev_node AND m.node_index <= s.node_index
@@ -43,6 +51,7 @@ WITH
           AND s.created_at - s.prev_at <= 120000
           AND (s.node_index - s.prev_node) * 25. / ((s.created_at - s.prev_at) / 1000.) BETWEEN 1 AND 33.34
           AND s.speed >= 5 AND s.prev_speed >= 5
+          AND NOT arrayExists(x -> x.1 < s.created_at AND x.2 > s.prev_at, dwell.intervals)
           AND p.effective_sample_count > 0 AND p.predicted_travel_time_seconds > 0
         GROUP BY s.vehicle_id, m.segment_id, s.created_at, s._id, s.prev_at, s.node_index, s.prev_node
     )

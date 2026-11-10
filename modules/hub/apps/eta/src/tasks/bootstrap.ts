@@ -13,6 +13,7 @@ const BOOTSTRAP_FILES = [
 	'eta/bootstrap/shared-road-segments.sql',
 	'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
 	'eta/bootstrap/valid-vehicle-events.sql',
+	'eta/bootstrap/dwell-tables.sql',
 	'eta/bootstrap/live-traffic.sql',
 	'eta/bootstrap/mv-predict-node-etas.sql',
 	'eta/bootstrap/calibration-table.sql',
@@ -20,6 +21,7 @@ const BOOTSTRAP_FILES = [
 	'eta/bootstrap/prediction-snapshots.sql',
 	'eta/bootstrap/arrival-labels.sql',
 	'eta/bootstrap/bias-calibration.sql',
+	'eta/bootstrap/stop-dwell.sql',
 	'eta/bootstrap/publishable-etas.sql',
 ] as const;
 

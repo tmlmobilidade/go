@@ -157,6 +157,20 @@ WITH
                     atan2(curr_node_lat - prev_node_lat, curr_node_lon - prev_node_lon)
                 ))) < (bearing_threshold_deg * pi() / 180)
     )
+,
+    dwell_by_ride AS (
+        SELECT ride_id, groupArray(tuple(arrival_at, assumeNotNull(departure_at))) AS intervals
+        FROM eta.stop_dwell_labels FINAL
+        WHERE status = 'observed' AND confidence >= 0.8 AND departure_at IS NOT NULL
+          AND departure_at >= $chunk_start AND arrival_at < $chunk_end
+        GROUP BY ride_id
+    ),
+    road_segments AS (
+        SELECT f.ride_id AS ride_id, f.hashed_shape_id AS hashed_shape_id,
+            f.prev_idx AS prev_idx, f.prev_ts AS prev_ts, f.curr_idx AS curr_idx, f.curr_ts AS curr_ts
+        FROM filtered_segments AS f LEFT JOIN dwell_by_ride AS d ON d.ride_id = f.ride_id
+        WHERE NOT arrayExists(x -> x.1 < f.curr_ts AND x.2 > f.prev_ts, d.intervals)
+    )
 
 SELECT
     ride_id,
@@ -172,6 +186,6 @@ FROM (
         prev_ts,
         curr_ts,
         toUInt32(curr_idx - prev_idx) AS nodes_count
-    FROM filtered_segments
+    FROM road_segments
 )
 ARRAY JOIN range(1, nodes_count + 1) AS i;

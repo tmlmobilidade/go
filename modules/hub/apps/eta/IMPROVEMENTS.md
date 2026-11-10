@@ -192,3 +192,20 @@ neutral. `calibrated_eta_at` is recorded in shadow; enable_bias_calibration
 (default 0) controls promotion. Validate signed-bias reduction and P90 by temporal
 replay before enabling. A bounded recomputation is used instead of message-wise
 EWMA state to make late labels and retries deterministic.
+
+## Stop dwell (#957)
+
+Door-backed arrival/departure events and complete low-speed occupancy windows
+produce dwell labels. GPS requires multiple near-stop samples, <=60 s gaps and
+an observed departure; incomplete occupancy is uncertain and excluded. Dwell
+intervals are removed from historical road-travel and live-traffic evidence.
+The loader's rolling rebuild replaces recent affected partitions.
+
+Pattern/stop/period models require five independent rides and shrink their
+median toward zero. Future dwell is added only at intermediate stops, never to
+the arrival time at the destination stop itself. `dwell_eta_at` and dwell seconds
+are recorded in shadow. enable_dwell_prediction defaults to 0 and takes
+precedence over calibration: baseline-trained bias is not added to dwell until
+a dedicated cohort is validated. Real urban-line labels and short-horizon
+accuracy remain promotion gates; passenger validation/APC data is optional and
+not assumed available.

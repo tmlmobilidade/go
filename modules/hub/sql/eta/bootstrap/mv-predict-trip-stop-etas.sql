@@ -43,7 +43,9 @@ ALTER TABLE eta.pred_trip_stop_etas_v2
     ADD COLUMN IF NOT EXISTS freshness_tier LowCardinality(String) DEFAULT 'unknown',
     ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0,
     ADD COLUMN IF NOT EXISTS traffic_eta_at Nullable(Int64),
-    ADD COLUMN IF NOT EXISTS calibrated_eta_at Nullable(Int64);
+    ADD COLUMN IF NOT EXISTS calibrated_eta_at Nullable(Int64),
+    ADD COLUMN IF NOT EXISTS future_dwell_seconds Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS dwell_eta_at Nullable(Int64);
 
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND TO eta.pred_trip_stop_etas_v2 AS
@@ -178,6 +180,15 @@ WITH
             AND w.hashed_shape_id = p.hashed_shape_id
         WHERE w.node_index >= p.current_node_index
     ),
+    stop_dwells AS (
+        SELECT u.ride_id AS ride_id, u.vehicle_id AS vehicle_id, u.stop_sequence AS stop_sequence,
+            coalesce(sumIf(d.seconds, u.stop_node_index > u.current_node_index) OVER (
+                PARTITION BY u.ride_id, u.vehicle_id ORDER BY u.stop_sequence
+                ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0.) AS future_dwell_seconds
+        FROM upcoming AS u
+        LEFT JOIN eta.current_stop_dwell AS d ON d.hashed_trip_id = u.hashed_trip_id
+            AND d.stop_sequence = u.stop_sequence AND d.period_of_day = u.period_of_day
+    ),
     estimates AS (
         SELECT u.ride_id AS ride_id, u.vehicle_id AS vehicle_id, u.hashed_shape_id AS hashed_shape_id, u.current_node_index AS current_node_index, u.position_received_at AS position_received_at, u.position_created_at AS position_created_at, u.position_confidence AS position_confidence, u.trip_id AS trip_id, u.agency_id AS agency_id, u.plan_id AS plan_id, u.route_id AS route_id, u.hashed_trip_id AS hashed_trip_id, u.operational_date AS operational_date, u.current_node_latitude AS current_node_latitude, u.current_node_longitude AS current_node_longitude, u.local_hour AS local_hour, u.period_of_day AS period_of_day, u.dow AS dow, u.weekday AS weekday, u.day_type AS day_type, u.stop_sequence AS stop_sequence, u.source_stop_id AS source_stop_id, u.stop_name AS stop_name, u.stop_node_index AS stop_node_index, u.stop_node_latitude AS stop_node_latitude, u.stop_node_longitude AS stop_node_longitude,
             if(u.stop_node_index = u.current_node_index, 0., coalesce(c.seconds, 0.) +
@@ -227,6 +238,7 @@ SELECT
     coalesce(nullIf(g.go_stop_id, ''), e.source_stop_id) AS stop_id, e.stop_name AS stop_name,
     e.stop_node_index AS stop_node_index,
     e.stop_node_latitude AS stop_node_latitude, e.stop_node_longitude AS stop_node_longitude,
+    coalesce(dw.future_dwell_seconds, 0.) AS future_dwell_seconds,
     if(isFinite(e.remaining_seconds) AND e.remaining_seconds BETWEEN 0 AND 65535,
        toUInt16(ceil(e.remaining_seconds)), NULL) AS eta_seconds,
     if(eta_seconds IS NULL, NULL, now_ms + toInt64(eta_seconds) * 1000) AS eta_at,
@@ -234,10 +246,13 @@ SELECT
        now_ms + toInt64(ceil(e.baseline_remaining_seconds)) * 1000, NULL) AS baseline_eta_at,
     if(isFinite(e.traffic_remaining_seconds) AND e.traffic_remaining_seconds BETWEEN 0 AND 65535,
        now_ms + toInt64(ceil(e.traffic_remaining_seconds)) * 1000, NULL) AS traffic_eta_at,
+    if(eta_at IS NULL, NULL, eta_at + toInt64(ceil(future_dwell_seconds)) * 1000) AS dwell_eta_at,
     e.history_coverage AS history_coverage,
     e.prediction_confidence AS prediction_confidence, e.freshness_tier AS freshness_tier,
     if((SELECT enable_spatial_traffic FROM eta.policy) = 1, 'spatial-traffic-v5', 'statistical-lifecycle-v4') AS prediction_version, now_ms AS refreshed_at
 FROM estimates AS e
+LEFT JOIN stop_dwells AS dw ON dw.ride_id = e.ride_id AND dw.vehicle_id = e.vehicle_id
+    AND dw.stop_sequence = e.stop_sequence
 LEFT JOIN go_stop_map AS g ON g.hashed_trip_id = e.hashed_trip_id AND g.stop_sequence = e.stop_sequence
 ), calibration_inputs AS (
     SELECT *,
@@ -246,7 +261,7 @@ LEFT JOIN go_stop_map AS g ON g.hashed_trip_id = e.hashed_trip_id AND g.stop_seq
         if((SELECT enable_spatial_traffic FROM eta.policy) = 1, 'traffic', 'baseline') AS calibration_source
     FROM uncalibrated
 ), corrected AS (
-    SELECT e.ride_id AS ride_id, e.route_id AS route_id, e.operational_date AS operational_date, e.position_received_at AS position_received_at, e.trip_id AS trip_id, e.agency_id AS agency_id, e.plan_id AS plan_id, e.vehicle_id AS vehicle_id, e.hashed_trip_id AS hashed_trip_id, e.hashed_shape_id AS hashed_shape_id, e.current_node_index AS current_node_index, e.current_node_latitude AS current_node_latitude, e.current_node_longitude AS current_node_longitude, e.position_created_at AS position_created_at, e.stop_sequence AS stop_sequence, e.stop_id AS stop_id, e.stop_name AS stop_name, e.stop_node_index AS stop_node_index, e.stop_node_latitude AS stop_node_latitude, e.stop_node_longitude AS stop_node_longitude, e.eta_seconds AS eta_seconds, e.eta_at AS eta_at, e.baseline_eta_at AS baseline_eta_at, e.traffic_eta_at AS traffic_eta_at, e.history_coverage AS history_coverage, e.prediction_confidence AS prediction_confidence, e.freshness_tier AS freshness_tier, e.prediction_version AS prediction_version, e.refreshed_at AS refreshed_at, e.local_period AS local_period, e.horizon_minutes AS horizon_minutes, e.calibration_source AS calibration_source,
+    SELECT e.ride_id AS ride_id, e.route_id AS route_id, e.operational_date AS operational_date, e.position_received_at AS position_received_at, e.trip_id AS trip_id, e.agency_id AS agency_id, e.plan_id AS plan_id, e.vehicle_id AS vehicle_id, e.hashed_trip_id AS hashed_trip_id, e.hashed_shape_id AS hashed_shape_id, e.current_node_index AS current_node_index, e.current_node_latitude AS current_node_latitude, e.current_node_longitude AS current_node_longitude, e.position_created_at AS position_created_at, e.stop_sequence AS stop_sequence, e.stop_id AS stop_id, e.stop_name AS stop_name, e.stop_node_index AS stop_node_index, e.stop_node_latitude AS stop_node_latitude, e.stop_node_longitude AS stop_node_longitude, e.eta_seconds AS eta_seconds, e.eta_at AS eta_at, e.baseline_eta_at AS baseline_eta_at, e.traffic_eta_at AS traffic_eta_at, e.history_coverage AS history_coverage, e.prediction_confidence AS prediction_confidence, e.freshness_tier AS freshness_tier, e.prediction_version AS prediction_version, e.refreshed_at AS refreshed_at, e.future_dwell_seconds AS future_dwell_seconds, e.dwell_eta_at AS dwell_eta_at, e.local_period AS local_period, e.horizon_minutes AS horizon_minutes, e.calibration_source AS calibration_source,
         greatest(-120., least(120., coalesce(cr.bias_seconds, ca.bias_seconds, cg.bias_seconds, 0.))) AS bias,
         if(e.eta_at IS NULL, NULL, greatest(now_ms + if(e.stop_node_index > e.current_node_index, 1000, 0),
             e.eta_at - toInt64(least(toFloat64(e.eta_seconds) * 0.25, greatest(-toFloat64(e.eta_seconds) * 0.25, bias)) * 1000))) AS corrected_at
@@ -268,11 +283,15 @@ LEFT JOIN go_stop_map AS g ON g.hashed_trip_id = e.hashed_trip_id AND g.stop_seq
 )
 SELECT * EXCEPT (local_period, horizon_minutes, calibration_source, bias)
     REPLACE (
-        if((SELECT enable_bias_calibration FROM eta.policy) = 1, calibrated_eta_at, eta_at) AS eta_at,
-        if((SELECT enable_bias_calibration FROM eta.policy) = 1,
-           if(intDiv(calibrated_eta_at - now_ms, 1000) BETWEEN 0 AND 65535,
-              toNullable(toUInt16(intDiv(calibrated_eta_at - now_ms, 1000))), NULL), eta_seconds) AS eta_seconds,
-        if((SELECT enable_bias_calibration FROM eta.policy) = 1, concat('calibrated:', prediction_version), prediction_version) AS prediction_version
+        multiIf((SELECT enable_dwell_prediction FROM eta.policy) = 1, dwell_eta_at,
+            (SELECT enable_bias_calibration FROM eta.policy) = 1, calibrated_eta_at, eta_at) AS eta_at,
+        if((SELECT enable_dwell_prediction FROM eta.policy) = 1,
+            if((dwell_eta_at - now_ms) / 1000 BETWEEN 0 AND 65535,
+               toNullable(toUInt16(ceil((dwell_eta_at - now_ms) / 1000.))), NULL),
+            if((SELECT enable_bias_calibration FROM eta.policy) = 1,
+                if((calibrated_eta_at - now_ms) / 1000 BETWEEN 0 AND 65535,
+                   toNullable(toUInt16(ceil((calibrated_eta_at - now_ms) / 1000.))), NULL), eta_seconds)) AS eta_seconds,
+        multiIf((SELECT enable_dwell_prediction FROM eta.policy) = 1, concat('dwell:', prediction_version), (SELECT enable_bias_calibration FROM eta.policy) = 1, concat('calibrated:', prediction_version), prediction_version) AS prediction_version
     )
 FROM monotonic
 SETTINGS join_use_nulls = 1;
