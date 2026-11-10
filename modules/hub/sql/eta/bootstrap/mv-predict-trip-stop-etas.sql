@@ -5,6 +5,10 @@
 
 CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 (
+    ride_id String,
+    route_id String,
+    operational_date UInt32,
+    position_received_at Int64,
     trip_id String,
     agency_id String,
     plan_id String,
@@ -28,20 +32,35 @@ CREATE TABLE IF NOT EXISTS eta.pred_trip_stop_etas
 ENGINE = ReplacingMergeTree(refreshed_at)
 ORDER BY (trip_id, vehicle_id, stop_sequence);
 
+ALTER TABLE eta.pred_trip_stop_etas
+    ADD COLUMN IF NOT EXISTS ride_id String,
+    ADD COLUMN IF NOT EXISTS route_id String,
+    ADD COLUMN IF NOT EXISTS operational_date UInt32,
+    ADD COLUMN IF NOT EXISTS position_received_at Int64,
+    ADD COLUMN IF NOT EXISTS baseline_eta_at Nullable(Int64) DEFAULT eta_at,
+    ADD COLUMN IF NOT EXISTS prediction_version String DEFAULT 'statistical-v1',
+    ADD COLUMN IF NOT EXISTS history_coverage Float64 DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS freshness_tier LowCardinality(String) DEFAULT 'unknown',
+    ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0;
+
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND
 TO eta.pred_trip_stop_etas
 AS
 WITH
+    toUnixTimestamp64Milli(now64(3)) AS now_ms,
     -- Newest GPS fix per (trip, vehicle): anchors the clock and the shape.
     latest_fix AS (
         SELECT
             trip_id,
             vehicle_id,
             argMax(hashed_shape_id, created_at) AS hashed_shape_id,
+            argMax(received_at, tuple(created_at, _id)) AS position_received_at,
             max(created_at)                     AS position_created_at
         FROM eta.curr_vehicle_events
-        WHERE created_at >= toUnixTimestamp64Milli(now64(3)) - 30 * 60 * 1000
+        WHERE created_at >= now_ms - (SELECT max_gps_seconds FROM eta.policy) * 1000
+          AND created_at <= now_ms + (SELECT future_tolerance_seconds FROM eta.policy) * 1000
+          AND received_at - created_at <= (SELECT max_ingestion_lag_seconds FROM eta.policy) * 1000
         GROUP BY trip_id, vehicle_id
     ),
     -- Current node = furthest-forward node observed in the last 2 minutes before
@@ -54,6 +73,7 @@ WITH
             lf.vehicle_id          AS vehicle_id,
             lf.hashed_shape_id     AS hashed_shape_id,
             max(e.node_index)      AS current_node_index,
+            lf.position_received_at AS position_received_at,
             lf.position_created_at AS position_created_at
         FROM latest_fix AS lf
         INNER JOIN eta.curr_vehicle_events AS e
@@ -65,13 +85,18 @@ WITH
             lf.trip_id,
             lf.vehicle_id,
             lf.hashed_shape_id,
-            lf.position_created_at
+            lf.position_created_at,
+            lf.position_received_at
     ),
     pos_with_trip AS (
         SELECT
             lp.trip_id                  AS trip_id,
             lp.vehicle_id               AS vehicle_id,
             lp.hashed_shape_id          AS hashed_shape_id,
+            d._id                       AS ride_id,
+            d.route_id                  AS route_id,
+            d.operational_date          AS ride_operational_date,
+            lp.position_received_at     AS position_received_at,
             d.agency_id                 AS agency_id,
             d.plan_id                   AS plan_id,
             d.hashed_trip_id            AS hashed_trip_id,
@@ -97,7 +122,7 @@ WITH
     pos_classified AS (
         SELECT
             *,
-            toUInt32(formatDateTime(operational_dt, '%Y%m%d')) AS operational_date,
+            ride_operational_date AS operational_date,
             toDayOfWeek(operational_dt)                        AS dow,
             multiIf(
                 event_hour BETWEEN 7  AND 9,  'Peak AM',
@@ -263,6 +288,10 @@ WITH
         SELECT
             pf.trip_id                  AS trip_id,
             pf.vehicle_id               AS vehicle_id,
+            pf.ride_id                  AS ride_id,
+            pf.route_id                 AS route_id,
+            pf.operational_date         AS operational_date,
+            pf.position_received_at     AS position_received_at,
             pf.agency_id                AS agency_id,
             pf.plan_id                  AS plan_id,
             pf.hashed_shape_id          AS hashed_shape_id,
@@ -302,59 +331,74 @@ WITH
             day_type
         FROM pos_full
     ),
-    -- Per (trip, vehicle) node travel times for every node still AHEAD of the
-    -- vehicle, with the live adjustment applied. The node_index > current_node
-    -- predicate is on the pred_node_etas ORDER BY prefix, so this scans only the
-    -- remaining slice of each shape rather than the whole shape per stop.
-    trip_nodes AS (
-        SELECT
-            lt.trip_id        AS trip_id,
-            lt.vehicle_id     AS vehicle_id,
-            p.node_index      AS node_index,
-            p.predicted_travel_time_seconds
-                * coalesce(lf.live_adjustment, toFloat64(1)) AS node_seconds
-        FROM live_trips AS lt
-        INNER JOIN eta.pred_node_etas AS p
-            ON p.hashed_shape_id = lt.hashed_shape_id
-           AND p.period_of_day   = lt.period_of_day
-           AND p.weekday         = lt.weekday
-           AND p.day_type        = lt.day_type
-           AND p.node_index      > lt.current_node_index
-        LEFT JOIN live_factor AS lf
-            ON lf.trip_id    = lt.trip_id
-           AND lf.vehicle_id = lt.vehicle_id
+    -- Geometry drives coverage: an absent statistical row must not erase road.
+    shape_priors AS (
+        SELECT hashed_shape_id, period_of_day, weekday, day_type,
+            avgOrNullIf(predicted_travel_time_seconds,
+                predicted_travel_time_seconds > 0 AND isFinite(predicted_travel_time_seconds)) AS shape_seconds
+        FROM eta.pred_node_etas FINAL
+        GROUP BY hashed_shape_id, period_of_day, weekday, day_type
     ),
-    -- Running cumulative travel time from current_node up to (and including)
-    -- each node. NULL node predictions contribute 0, matching the original
-    -- sumIf semantics. Computing this once per node turns the old
-    -- O(stops x nodes) join into an O(nodes) window scan.
+    node_inputs AS (
+        SELECT lt.trip_id AS trip_id, lt.vehicle_id AS vehicle_id, n.node_index AS node_index,
+            if(p.predicted_travel_time_seconds > 0 AND isFinite(p.predicted_travel_time_seconds),
+               p.predicted_travel_time_seconds, NULL) AS direct_seconds,
+            sp.shape_seconds,
+            coalesce(lf.live_adjustment, 1.) AS live_adjustment
+        FROM live_trips AS lt
+        INNER JOIN eta.hist_shape_nodes AS n FINAL
+            ON n.hashed_shape_id = lt.hashed_shape_id AND n.node_index > lt.current_node_index
+        LEFT JOIN eta.pred_node_etas AS p FINAL
+            ON p.hashed_shape_id = n.hashed_shape_id AND p.node_index = n.node_index
+            AND p.period_of_day = lt.period_of_day
+            AND p.weekday = lt.weekday AND p.day_type = lt.day_type
+        LEFT JOIN shape_priors AS sp
+            ON sp.hashed_shape_id = lt.hashed_shape_id AND sp.period_of_day = lt.period_of_day
+            AND sp.weekday = lt.weekday AND sp.day_type = lt.day_type
+        LEFT JOIN live_factor AS lf ON lf.trip_id = lt.trip_id AND lf.vehicle_id = lt.vehicle_id
+    ),
+    trip_nodes AS (
+        SELECT trip_id, vehicle_id, node_index,
+            direct_seconds IS NOT NULL AS has_history,
+            -- Nearby nodes -> shape/time prior -> conservative 4 m/s geometry.
+            coalesce(direct_seconds,
+                avgOrNull(direct_seconds) OVER (
+                    PARTITION BY trip_id, vehicle_id ORDER BY node_index
+                    ROWS BETWEEN 4 PRECEDING AND 4 FOLLOWING),
+                shape_seconds, 25. / 4.) * live_adjustment AS node_seconds
+        FROM node_inputs
+    ),
     trip_node_cum AS (
         SELECT
             trip_id,
             vehicle_id,
             node_index,
-            sum(coalesce(node_seconds, toFloat64(0))) OVER (
+            sum(node_seconds) OVER (
                 PARTITION BY trip_id, vehicle_id
                 ORDER BY node_index
                 ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
             ) AS cum_seconds,
-            countIf(node_seconds IS NOT NULL) OVER (
+            countIf(has_history) OVER (
                 PARTITION BY trip_id, vehicle_id
                 ORDER BY node_index
                 ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-            ) AS cum_known_nodes
+            ) AS cum_known_nodes,
+            count() OVER (
+                PARTITION BY trip_id, vehicle_id ORDER BY node_index
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+            ) AS cum_total_nodes
         FROM trip_nodes
     ),
-    -- Each stop's ETA is the cumulative sum at the last predicted node at or
-    -- before the stop. Stop node_indexes come from hist_shape_nodes and need not
-    -- exist in pred_node_etas, so an ASOF (<=) match picks the nearest preceding
-    -- predicted node, exactly like the original sumIf over node_index <= stop.
-    -- Stops sitting at/behind current_node_index find no preceding row and fall
-    -- through to 0.
+    -- ASOF tolerates an incomplete geometry tail; uncovered distance is filled
+    -- explicitly, and direct historical support stays visible.
     eta_calc AS (
         SELECT
             u.trip_id             AS trip_id,
             u.vehicle_id          AS vehicle_id,
+            u.ride_id             AS ride_id,
+            u.route_id            AS route_id,
+            u.operational_date    AS operational_date,
+            u.position_received_at AS position_received_at,
             u.agency_id           AS agency_id,
             u.plan_id             AS plan_id,
             u.hashed_trip_id      AS hashed_trip_id,
@@ -369,7 +413,11 @@ WITH
             u.stop_node_index         AS stop_node_index,
             u.stop_node_latitude      AS stop_node_latitude,
             u.stop_node_longitude     AS stop_node_longitude,
-            if(c.cum_known_nodes > 0, c.cum_seconds, toFloat64(0)) AS eta_seconds_raw
+            if(u.stop_node_index = u.current_node_index, 0.,
+                coalesce(c.cum_seconds, 0.) + greatest(toInt64(0),
+                    toInt64(u.stop_node_index) - coalesce(toInt64(c.node_index), toInt64(u.current_node_index))) * 25. / 4.
+            ) AS eta_seconds_raw,
+            coalesce(c.cum_known_nodes / nullIf(toFloat64(u.stop_node_index - u.current_node_index), 0.), 0.) AS history_coverage
         FROM upcoming AS u
         ASOF LEFT JOIN trip_node_cum AS c
             ON c.trip_id     = u.trip_id
@@ -380,6 +428,10 @@ WITH
         SELECT
             trip_id,
             vehicle_id,
+            ride_id,
+            route_id,
+            operational_date,
+            position_received_at,
             agency_id,
             plan_id,
             hashed_trip_id,
@@ -394,8 +446,15 @@ WITH
             stop_node_index,
             stop_node_latitude,
             stop_node_longitude,
-            if(eta_seconds_raw IS NOT NULL AND isFinite(assumeNotNull(eta_seconds_raw)),
-               toUInt16(ceil(assumeNotNull(eta_seconds_raw))), NULL) AS eta_seconds
+            history_coverage,
+            if(eta_seconds_raw IS NOT NULL AND isFinite(assumeNotNull(eta_seconds_raw)) AND eta_seconds_raw BETWEEN 0 AND 65535,
+               toUInt16(ceil(greatest(
+                   if(stop_node_index > current_node_index, 1., 0.),
+                   assumeNotNull(eta_seconds_raw) - least(
+                       greatest(0., (now_ms - position_created_at) / 1000.),
+                       (SELECT max_extrapolation_seconds FROM eta.policy)) *
+                       exp(-greatest(0., (now_ms - position_created_at) / 1000.) / 120.)
+               ))), NULL) AS eta_seconds
         FROM eta_calc
     ),
     -- Match GO IDs directly, or resolve agency IDs through legacy_ids. Legacy
@@ -427,6 +486,10 @@ WITH
     eta_resolved AS (
         SELECT
             ec.trip_id,
+            ec.ride_id,
+            ec.route_id,
+            ec.operational_date,
+            ec.position_received_at,
             ec.agency_id,
             ec.plan_id,
             ec.vehicle_id,
@@ -442,7 +505,8 @@ WITH
             ec.stop_node_index,
             ec.stop_node_latitude,
             ec.stop_node_longitude,
-            ec.eta_seconds
+            ec.eta_seconds,
+            ec.history_coverage
         FROM eta_clean AS ec
         LEFT JOIN go_stop_map AS gs
             ON gs.hashed_trip_id = ec.hashed_trip_id
@@ -451,6 +515,10 @@ WITH
     )
 SELECT
     trip_id,
+    ride_id,
+    route_id,
+    operational_date,
+    position_received_at,
     agency_id,
     plan_id,
     vehicle_id,
@@ -467,10 +535,16 @@ SELECT
     stop_node_latitude,
     stop_node_longitude,
     eta_seconds,
+    history_coverage,
+    'statistical-fresh-v3' AS prediction_version,
+    if((now_ms - position_created_at) / 1000. <= (SELECT fresh_gps_seconds FROM eta.policy),
+       'fresh', 'aging') AS freshness_tier,
+    (0.4 + 0.6 * history_coverage) * exp(-greatest(0., (now_ms - position_created_at) / 1000.) / 120.) AS prediction_confidence,
     if(
         eta_seconds IS NULL,
         NULL,
-        position_created_at + toInt64(assumeNotNull(eta_seconds)) * 1000
+        now_ms + toInt64(assumeNotNull(eta_seconds)) * 1000
     ) AS eta_at,
     toUnixTimestamp64Milli(now64(3)) AS refreshed_at
-FROM eta_resolved;
+FROM eta_resolved
+SETTINGS join_use_nulls = 1;

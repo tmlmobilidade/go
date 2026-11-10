@@ -8,9 +8,12 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 const BOOTSTRAP_FILES = [
 	'eta/bootstrap/create-tables.sql',
+	'eta/bootstrap/runtime-policy.sql',
 	'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
 	'eta/bootstrap/mv-predict-node-etas.sql',
 	'eta/bootstrap/mv-predict-trip-stop-etas.sql',
+	'eta/bootstrap/prediction-snapshots.sql',
+	'eta/bootstrap/arrival-labels.sql',
 ] as const;
 
 /* * */
