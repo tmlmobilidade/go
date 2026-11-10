@@ -21,6 +21,7 @@ func ValidateRulesJSON(path string) (map[string]rules.RuleConfig, error) {
 	if path == "" {
 		return map[string]rules.RuleConfig{}, nil
 	}
+
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("read rules file %q: %w", path, err)
@@ -33,17 +34,22 @@ func ValidateRulesJSON(path string) (map[string]rules.RuleConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("discover rule IDs: %w", err)
 	}
+	
 	known := make(map[string]bool, len(ids))
 	for _, id := range ids {
 		known[id] = true
 	}
 
 	//
-	// 3. Run every validation step and return the decoded configuration
+	// 3. Run every validation step
 
 	config, err := Parse(data, known)
 	if err != nil {
 		return nil, fmt.Errorf("rules file %q: %w", path, err)
 	}
+
+	//
+	// 4. Return the decoded configuration
+
 	return config, nil
 }

@@ -21,5 +21,9 @@ func ValidateSeverities(config map[string]rules.RuleConfig) error {
 			return fmt.Errorf("rule %q: invalid severity %q", id, config[id].Severity)
 		}
 	}
+
+	//
+	// 2. Return nil if all severities are valid
+
 	return nil
 }

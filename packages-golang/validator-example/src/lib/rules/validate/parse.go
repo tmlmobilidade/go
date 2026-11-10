@@ -49,5 +49,9 @@ func Parse(data []byte, known map[string]bool) (map[string]rules.RuleConfig, err
 	if err := ValidateCycles(config); err != nil {
 		return nil, err
 	}
+
+	//
+	// 7. Return the decoded configuration
+
 	return config, nil
 }

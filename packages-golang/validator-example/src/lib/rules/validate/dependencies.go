@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validate"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validate"
 )
 
 // ValidateDependencies checks references against configured and source-discovered IDs.
@@ -23,5 +23,9 @@ func ValidateDependencies(config map[string]rules.RuleConfig, known map[string]b
 			}
 		}
 	}
+
+	//
+	// 2. Return nil if all dependencies are valid
+
 	return nil
 }

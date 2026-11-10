@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/rules"
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validate"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator-example/src/utils/validate"
 )
 
 // ValidateStructure decodes a flat rule object or a validation_rules wrapper.
@@ -22,9 +22,11 @@ func ValidateStructure(data []byte) (map[string]rules.RuleConfig, error) {
 	if err := json.Unmarshal(data, &entries); err != nil {
 		return nil, fmt.Errorf("rules must be an object: %w", err)
 	}
+
 	if entries == nil {
 		return nil, fmt.Errorf("rules must be an object")
 	}
+	
 	if wrapped, exists := entries["validation_rules"]; exists {
 		entries = nil
 		if err := json.Unmarshal(wrapped, &entries); err != nil {
@@ -43,14 +45,17 @@ func ValidateStructure(data []byte) (map[string]rules.RuleConfig, error) {
 		if strings.TrimSpace(id) == "" {
 			return nil, fmt.Errorf("rule ID must not be empty")
 		}
+		
 		raw := bytes.TrimSpace(entries[id])
 		if len(raw) == 0 || raw[0] != '{' {
 			return nil, fmt.Errorf("rule %q: expected a rule object", id)
 		}
+		
 		var fields map[string]json.RawMessage
 		if err := json.Unmarshal(raw, &fields); err != nil {
 			return nil, fmt.Errorf("rule %q: %w", id, err)
 		}
+		
 		for _, field := range utils.SortedIDs(fields) {
 			switch field {
 			case "severity":
@@ -65,13 +70,19 @@ func ValidateStructure(data []byte) (map[string]rules.RuleConfig, error) {
 				return nil, fmt.Errorf("rule %q: unknown field %q", id, field)
 			}
 		}
+		
 		entry := rules.RuleConfig{RuleContext: rules.RuleContext{Severity: rules.SEVERITY_IGNORE}}
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		decoder.DisallowUnknownFields()
+		
 		if err := decoder.Decode(&entry); err != nil {
 			return nil, fmt.Errorf("rule %q: %w", id, err)
 		}
 		config[id] = entry
 	}
+
+	//
+	// 3. Return the decoded configuration
+
 	return config, nil
 }
