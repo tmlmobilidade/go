@@ -38,10 +38,3 @@ func Register(checks validationTypes.RuleChecks) {
 		variables.RegisteredRules.Checks[id] = checks[id]
 	}
 }
-
-// Checks returns a private callback map; execution never mutates registrations.
-func Checks() map[string]validationTypes.Check {
-	variables.RegisteredRules.RLock()
-	defer variables.RegisteredRules.RUnlock()
-	return maps.Clone(variables.RegisteredRules.Checks)
-}
