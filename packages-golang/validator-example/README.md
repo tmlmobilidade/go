@@ -62,8 +62,8 @@ The GTFS Validator follows a modular, concurrent architecture designed for effic
 
 Shared data types and contracts live under `src/types`, grouped into `cli`,
 `logger`, `messages`, `rules`, `algorithm`, `sqlite`,
-`context`, and `validations`. `RowError` and its standard error methods live in
-`types/context`; source-detail extraction lives in `lib/context`, and report
+`context`, and `validations`. `RowError` data lives in `types/context`; its error
+wrapper and source-detail extraction live in `lib/context`, and report
 helpers live in `lib/messages`. Query and execution logic stays in
 `services` and `lib`. Service implementations that own methods and private state,
 such as the logger and message collector, keep those together in their package.

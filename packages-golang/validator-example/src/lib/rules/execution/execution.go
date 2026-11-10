@@ -13,7 +13,9 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/variables/logger"
 )
 
-// ExecuteRule calls the validation function and returns its context outcome.
+/*
+* ExecuteRule calls the validation function and returns its context outcome.
+ */
 func ExecuteRule(run *validationTypes.Execution, ctx *types.ValidationContext, validate validationTypes.Check) (status DAG.Status) {
 	//
 
@@ -34,7 +36,7 @@ func ExecuteRule(run *validationTypes.Execution, ctx *types.ValidationContext, v
 	}()
 
 	//
-	// 3. Skip disabled validations, preserving file-presence control behavior
+	// 3. Skip disabled validations
 
 	if validate == nil {
 		ctx.Skipped = true
