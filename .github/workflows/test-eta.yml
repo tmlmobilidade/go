@@ -27,6 +27,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
+          package-manager-cache: false
       - run: npm install --ignore-scripts --no-audit --no-fund --workspace @tmlmobilidade/go-hub-eta --workspace @tmlmobilidade/go-hub-publish-eta --workspace @tmlmobilidade/eslint
       - run: npx --yes turbo@2.11.10 run build --filter=@tmlmobilidade/go-hub-eta --filter=@tmlmobilidade/go-hub-publish-eta --filter=@tmlmobilidade/eslint
       - run: npm run lint --workspace @tmlmobilidade/go-hub-eta

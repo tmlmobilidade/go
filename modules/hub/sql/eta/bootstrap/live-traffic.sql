@@ -27,7 +27,7 @@ WITH
         GROUP BY ride_id
     ),
     observed_steps AS (
-        SELECT toJSONString(tuple(s.agency_id, s.vehicle_id)) AS vehicle_id, m.segment_id AS segment_id,
+        SELECT toJSONString(tuple(s.agency_id, s.vehicle_id)) AS vehicle_key, m.segment_id AS segment_id,
             s.created_at AS observed_at, s._id AS event_id,
             any(s.position_confidence) AS confidence,
             (s.created_at - s.prev_at) / 1000. * count() /
@@ -55,14 +55,14 @@ WITH
           AND p.effective_sample_count > 0 AND p.predicted_travel_time_seconds > 0
         GROUP BY s.agency_id, s.vehicle_id, m.segment_id, s.created_at, s._id, s.prev_at, s.node_index, s.prev_node
     )
-SELECT segment_id, vehicle_id,
+SELECT segment_id, vehicle_key AS vehicle_id,
     medianExact(observed_seconds / expected_seconds) AS ratio,
     toUInt32(count()) AS traversal_samples, max(observed_at) AS last_observed_at,
     avg(confidence) AS confidence, now_ms AS known_at
 FROM observed_steps
 WHERE expected_seconds > 0 AND isFinite(observed_seconds / expected_seconds)
   AND observed_seconds / expected_seconds BETWEEN 0.3 AND 5.
-GROUP BY segment_id, vehicle_id;
+GROUP BY segment_id, vehicle_key;
 
 CREATE TABLE IF NOT EXISTS eta.live_traffic_factors
 (

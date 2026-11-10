@@ -466,6 +466,6 @@ class EtaSQLTest(unittest.TestCase):
                     VALUES ('{agency}{index}','{ride}','{agency}','trip','shared-vehicle','hs',{index},1.,20,{timestamp},{timestamp})""")
         query=view_select('eta/bootstrap/live-traffic.sql')
         rows=self.rows(query)
-        self.assertEqual(len(rows),2)
+        self.assertEqual(len(rows),2, {'observed':rows,'rides':self.rows('SELECT _id,agency_id FROM eta.curr_rides FINAL'),'valid':self.rows('SELECT ride_id,agency_id,vehicle_id,node_index FROM eta.valid_vehicle_events')})
         self.assertEqual(len({r['vehicle_id'] for r in rows}),2)
         self.assertTrue(all(r['ratio']==2. for r in rows))
