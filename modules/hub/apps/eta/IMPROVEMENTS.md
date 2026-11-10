@@ -142,3 +142,19 @@ Different lines then share evidence only on the same approved directional road.
 Opposite directions and bridge layers stay separate. The coverage query reports
 the rollout gap. No reviewed road data was available in this repository; until
 it is supplied, traffic features stay neutral and the baseline remains usable.
+
+## Live congestion (#954)
+
+A 30-second snapshot scans only ten minutes of validated traversal evidence on
+approved directional segments. Steps require positive movement, <=120 s gaps,
+1-120 km/h progression, moving endpoint speeds and supported historical nodes.
+Each vehicle contributes one median ratio per segment, regardless of ping rate
+or number of rides. Ratios outside 0.3-5 are rejected; factors are clipped,
+require two independent vehicles, shrink by n/(n+3), and decay with a 120-second
+time constant. A stalled factor snapshot becomes neutral after 90 s on read.
+Confidence, sample/vehicle counts and observation clocks remain available.
+
+Moving endpoint checks reduce stop-dwell contamination; verified dwell overlap
+exclusion is added with #957. GPS cannot always distinguish traffic queues from
+boarding. Inspect urban stop areas and independent vehicle support in shadow
+metrics before promotion. Neither refresh scans the full raw event history.

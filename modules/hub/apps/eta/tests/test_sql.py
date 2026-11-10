@@ -62,6 +62,7 @@ class EtaSQLTest(unittest.TestCase):
                      'eta/bootstrap/shared-road-segments.sql',
                      'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
                      'eta/bootstrap/valid-vehicle-events.sql',
+                     'eta/bootstrap/live-traffic.sql',
                      'eta/bootstrap/mv-predict-node-etas.sql',
                      'eta/bootstrap/mv-predict-trip-stop-etas.sql',
                      'eta/bootstrap/prediction-snapshots.sql',
@@ -292,3 +293,21 @@ class EtaSQLTest(unittest.TestCase):
         self.db.query("INSERT INTO eta.road_segment_assignments VALUES ('reverse',1,'road-100m','ground','road-v1',1,'review',1)")
         opposite = self.rows("SELECT segment_id FROM eta.shape_node_road_segments WHERE hashed_shape_id='reverse'")[0]['segment_id']
         self.assertNotEqual(opposite, rows[0]['segment_id'])
+
+    def test_traffic_measurement_query_executes(self):
+        self.rows(view_select('eta/bootstrap/live-traffic.sql'))
+
+    def test_congestion_requires_independent_vehicles_and_expires(self):
+        now = self.seed_live_trip()
+        self.db.query(f"INSERT INTO eta.traffic_vehicle_observations VALUES ('segment','v1',2.,100,{now},1.,{now})")
+        statements_ = statements('eta/bootstrap/live-traffic.sql')
+        factor_query = next(re.split(r'\bAS\s+(?=WITH\b|SELECT\b)', s, maxsplit=1)[1] for s in statements_ if 'MATERIALIZED VIEW eta.mv_live_traffic_factors' in s)
+        self.insert_select('eta.live_traffic_factors', factor_query)
+        self.assertEqual(self.rows('SELECT factor FROM eta.current_traffic_factors')[0]['factor'], 1.)
+        self.db.query(f"INSERT INTO eta.traffic_vehicle_observations VALUES ('segment','v2',2.,1,{now},1.,{now})")
+        self.db.query('TRUNCATE eta.live_traffic_factors')
+        self.insert_select('eta.live_traffic_factors', factor_query)
+        self.assertGreater(self.rows('SELECT factor FROM eta.current_traffic_factors')[0]['factor'], 1.)
+        self.db.query('TRUNCATE eta.live_traffic_factors')
+        self.db.query(f"INSERT INTO eta.live_traffic_factors VALUES ('segment',3.,2,1.,{now-600000},{now-120000})")
+        self.assertEqual(self.rows('SELECT factor FROM eta.current_traffic_factors')[0]['factor'], 1.)

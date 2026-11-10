@@ -13,6 +13,7 @@ const BOOTSTRAP_FILES = [
 	'eta/bootstrap/shared-road-segments.sql',
 	'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
 	'eta/bootstrap/valid-vehicle-events.sql',
+	'eta/bootstrap/live-traffic.sql',
 	'eta/bootstrap/mv-predict-node-etas.sql',
 	'eta/bootstrap/mv-predict-trip-stop-etas.sql',
 	'eta/bootstrap/prediction-snapshots.sql',

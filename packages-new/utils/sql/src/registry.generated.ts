@@ -11,6 +11,7 @@ export const SQL_FILES = {
 	hub: [
 		'eta/bootstrap/arrival-labels.sql',
 		'eta/bootstrap/create-tables.sql',
+		'eta/bootstrap/live-traffic.sql',
 		'eta/bootstrap/map-match-quality.sql',
 		'eta/bootstrap/migrate-2026-09-eta-loader-p0.sql',
 		'eta/bootstrap/mv-predict-node-etas.sql',
