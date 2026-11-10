@@ -64,9 +64,11 @@ class EtaSQLTest(unittest.TestCase):
                      'eta/bootstrap/valid-vehicle-events.sql',
                      'eta/bootstrap/live-traffic.sql',
                      'eta/bootstrap/mv-predict-node-etas.sql',
+                     'eta/bootstrap/calibration-table.sql',
                      'eta/bootstrap/mv-predict-trip-stop-etas.sql',
                      'eta/bootstrap/prediction-snapshots.sql',
                      'eta/bootstrap/arrival-labels.sql',
+                     'eta/bootstrap/bias-calibration.sql',
                      'eta/bootstrap/publishable-etas.sql']:
             for stmt in statements(path):
                 if 'MATERIALIZED VIEW' not in stmt:
@@ -328,3 +330,34 @@ class EtaSQLTest(unittest.TestCase):
         rows = sorted(self.rows(query), key=lambda r:r['stop_sequence'])
         self.assertEqual(rows[1]['eta_at'], rows[1]['traffic_eta_at'])
         self.assertGreaterEqual(rows[1]['eta_at'], rows[0]['eta_at'])
+
+    def test_bias_recomputation_query_executes(self):
+        self.rows(view_select('eta/bootstrap/bias-calibration.sql'))
+
+    def test_positive_bias_is_subtracted_and_correction_is_bounded(self):
+        now = self.seed_live_trip()
+        period = self.rows("SELECT intDiv(toHour(now('Europe/Lisbon')),2) AS p")[0]['p']
+        self.db.query(f"INSERT INTO eta.bias_calibration VALUES ('baseline','route','a','route',{period},2,120.,10,10.,{now-1000},{now})")
+        rows = self.rows(view_select('eta/bootstrap/mv-predict-trip-stop-etas.sql'))
+        self.assertTrue(all(r['calibrated_eta_at'] < r['baseline_eta_at'] for r in rows))
+        self.assertTrue(all(r['baseline_eta_at'] - r['calibrated_eta_at'] <= r['eta_seconds'] * 250 + 1000 for r in rows))
+        self.assertTrue(all(r['eta_at'] == r['baseline_eta_at'] for r in rows))
+
+    def test_calibration_replay_does_not_double_independent_support(self):
+        now = self.rows('SELECT toUnixTimestamp64Milli(now64(3)) AS t')[0]['t']
+        self.db.query(f"""INSERT INTO eta.prediction_snapshots
+            (generated_at,captured_at,ride_id,vehicle_id,agency_id,route_id,stop_sequence,
+             baseline_eta_at,traffic_eta_at,prediction_version)
+            SELECT {now-300000},{now-299000},concat('r',toString(number)),'v','a','route',1,
+                {now-10000},{now-10000},'baseline' FROM numbers(10)""")
+        self.db.query(f"""INSERT INTO eta.actual_arrivals
+            SELECT concat('r',toString(number)),'v',toUInt16(1),'s',toNullable(toInt64({now-100000})),
+                CAST(NULL,'Nullable(Int64)'),toInt64({now-50000}),'door',1.,'verified',toUInt16(1)
+            FROM numbers(10)""")
+        query = view_select('eta/bootstrap/bias-calibration.sql')
+        first = sorted(self.rows(query), key=lambda r:(r['source'],r['scope']))
+        self.db.query('INSERT INTO eta.prediction_snapshots SELECT * FROM eta.prediction_snapshots')
+        second = sorted(self.rows(query), key=lambda r:(r['source'],r['scope']))
+        self.assertTrue(first)
+        self.assertEqual([r['independent_rides'] for r in first], [r['independent_rides'] for r in second])
+        self.assertTrue(all(r['bias_seconds'] > 0 for r in second))

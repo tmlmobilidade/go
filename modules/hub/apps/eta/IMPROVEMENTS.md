@@ -175,3 +175,20 @@ vehicle_residual_strength (default 0). Enable it only after independent evidence
 supports it. All node times stay nonnegative, so cumulative stops are monotonic.
 Measure refresh duration at peak and compare paired shadow cohorts before
 setting enable_spatial_traffic=1; the target cadence remains 30 seconds.
+
+## Online bias calibration (#956)
+
+Each minute recomputes a seven-day bounded exponential average (six-hour decay)
+from final independent arrivals. One prediction per source/ride/vehicle/horizon
+limits correlated updates; retries cannot increment state. Baseline and traffic
+candidates train separate cohorts. Route/two-hour/horizon cohorts fall back to
+agency then global, with effective-support thresholds 5/10/30 and 20 zero-bias
+pseudo-observations. Bias is clipped to +/-120 s; label outliers to +/-600 s.
+
+The sign is predicted minus actual: corrected = predicted - bias. Correction
+is also bounded to 25% of remaining time, never moves an upcoming stop behind
+now, and preserves monotonic arrival order. Stale calibration (>120 s) becomes
+neutral. `calibrated_eta_at` is recorded in shadow; enable_bias_calibration
+(default 0) controls promotion. Validate signed-bias reduction and P90 by temporal
+replay before enabling. A bounded recomputation is used instead of message-wise
+EWMA state to make late labels and retries deterministic.

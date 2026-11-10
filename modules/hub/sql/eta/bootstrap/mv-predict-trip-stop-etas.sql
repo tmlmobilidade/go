@@ -42,7 +42,8 @@ ALTER TABLE eta.pred_trip_stop_etas_v2
     ADD COLUMN IF NOT EXISTS history_coverage Float64 DEFAULT 0,
     ADD COLUMN IF NOT EXISTS freshness_tier LowCardinality(String) DEFAULT 'unknown',
     ADD COLUMN IF NOT EXISTS prediction_confidence Float64 DEFAULT 0,
-    ADD COLUMN IF NOT EXISTS traffic_eta_at Nullable(Int64);
+    ADD COLUMN IF NOT EXISTS traffic_eta_at Nullable(Int64),
+    ADD COLUMN IF NOT EXISTS calibrated_eta_at Nullable(Int64);
 
 CREATE OR REPLACE MATERIALIZED VIEW eta.mv_pred_trip_stop_etas
 REFRESH EVERY 30 SECOND TO eta.pred_trip_stop_etas_v2 AS
@@ -214,6 +215,7 @@ WITH
         ) AS s ON s.source_stop_id = w.stop_id
         WHERE w.stop_id != '' GROUP BY w.hashed_trip_id, w.stop_sequence
     )
+, uncalibrated AS (
 SELECT
     e.ride_id AS ride_id, e.route_id AS route_id, e.operational_date AS operational_date,
     e.position_received_at AS position_received_at, e.trip_id AS trip_id,
@@ -237,4 +239,40 @@ SELECT
     if((SELECT enable_spatial_traffic FROM eta.policy) = 1, 'spatial-traffic-v5', 'statistical-lifecycle-v4') AS prediction_version, now_ms AS refreshed_at
 FROM estimates AS e
 LEFT JOIN go_stop_map AS g ON g.hashed_trip_id = e.hashed_trip_id AND g.stop_sequence = e.stop_sequence
+), calibration_inputs AS (
+    SELECT *,
+        toUInt8(intDiv(toHour(fromUnixTimestamp64Milli(refreshed_at, 'Europe/Lisbon')), 2)) AS local_period,
+        toUInt8(multiIf(eta_seconds <= 120, 2, eta_seconds <= 300, 5, eta_seconds <= 600, 10, 20)) AS horizon_minutes,
+        if((SELECT enable_spatial_traffic FROM eta.policy) = 1, 'traffic', 'baseline') AS calibration_source
+    FROM uncalibrated
+), corrected AS (
+    SELECT e.ride_id AS ride_id, e.route_id AS route_id, e.operational_date AS operational_date, e.position_received_at AS position_received_at, e.trip_id AS trip_id, e.agency_id AS agency_id, e.plan_id AS plan_id, e.vehicle_id AS vehicle_id, e.hashed_trip_id AS hashed_trip_id, e.hashed_shape_id AS hashed_shape_id, e.current_node_index AS current_node_index, e.current_node_latitude AS current_node_latitude, e.current_node_longitude AS current_node_longitude, e.position_created_at AS position_created_at, e.stop_sequence AS stop_sequence, e.stop_id AS stop_id, e.stop_name AS stop_name, e.stop_node_index AS stop_node_index, e.stop_node_latitude AS stop_node_latitude, e.stop_node_longitude AS stop_node_longitude, e.eta_seconds AS eta_seconds, e.eta_at AS eta_at, e.baseline_eta_at AS baseline_eta_at, e.traffic_eta_at AS traffic_eta_at, e.history_coverage AS history_coverage, e.prediction_confidence AS prediction_confidence, e.freshness_tier AS freshness_tier, e.prediction_version AS prediction_version, e.refreshed_at AS refreshed_at, e.local_period AS local_period, e.horizon_minutes AS horizon_minutes, e.calibration_source AS calibration_source,
+        greatest(-120., least(120., coalesce(cr.bias_seconds, ca.bias_seconds, cg.bias_seconds, 0.))) AS bias,
+        if(e.eta_at IS NULL, NULL, greatest(now_ms + if(e.stop_node_index > e.current_node_index, 1000, 0),
+            e.eta_at - toInt64(least(toFloat64(e.eta_seconds) * 0.25, greatest(-toFloat64(e.eta_seconds) * 0.25, bias)) * 1000))) AS corrected_at
+    FROM calibration_inputs AS e
+    LEFT JOIN eta.current_bias_calibration AS cr ON cr.source = e.calibration_source
+        AND cr.scope = 'route' AND cr.agency_id = e.agency_id AND cr.route_id = e.route_id
+        AND cr.local_period = e.local_period AND cr.horizon_minutes = e.horizon_minutes
+    LEFT JOIN eta.current_bias_calibration AS ca ON ca.source = e.calibration_source
+        AND ca.scope = 'agency' AND ca.agency_id = e.agency_id AND ca.route_id = ''
+        AND ca.local_period = e.local_period AND ca.horizon_minutes = e.horizon_minutes
+    LEFT JOIN eta.current_bias_calibration AS cg ON cg.source = e.calibration_source
+        AND cg.scope = 'global' AND cg.agency_id = '' AND cg.route_id = ''
+        AND cg.local_period = e.local_period AND cg.horizon_minutes = e.horizon_minutes
+), monotonic AS (
+    SELECT * EXCEPT corrected_at,
+        if(corrected_at IS NULL, NULL, max(corrected_at) OVER (PARTITION BY ride_id, vehicle_id ORDER BY stop_sequence
+            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)) AS calibrated_eta_at
+    FROM corrected
+)
+SELECT * EXCEPT (local_period, horizon_minutes, calibration_source, bias)
+    REPLACE (
+        if((SELECT enable_bias_calibration FROM eta.policy) = 1, calibrated_eta_at, eta_at) AS eta_at,
+        if((SELECT enable_bias_calibration FROM eta.policy) = 1,
+           if(intDiv(calibrated_eta_at - now_ms, 1000) BETWEEN 0 AND 65535,
+              toNullable(toUInt16(intDiv(calibrated_eta_at - now_ms, 1000))), NULL), eta_seconds) AS eta_seconds,
+        if((SELECT enable_bias_calibration FROM eta.policy) = 1, concat('calibrated:', prediction_version), prediction_version) AS prediction_version
+    )
+FROM monotonic
 SETTINGS join_use_nulls = 1;

@@ -14,7 +14,7 @@ FROM values('key String, value Float64',
     ('max_ingestion_lag_seconds', 120), ('future_tolerance_seconds', 5),
     ('max_extrapolation_seconds', 30), ('min_publish_confidence', 0.15),
     ('max_generation_age_seconds', 90), ('enable_spatial_traffic', 0),
-    ('vehicle_residual_strength', 0))
+    ('vehicle_residual_strength', 0), ('enable_bias_calibration', 0))
 WHERE key NOT IN (SELECT key FROM eta.runtime_policy FINAL);
 
 CREATE OR REPLACE VIEW eta.policy AS
@@ -27,5 +27,6 @@ SELECT
     least(1., greatest(0., maxIf(value, key = 'min_publish_confidence'))) AS min_publish_confidence,
     least(120., greatest(30., maxIf(value, key = 'max_generation_age_seconds'))) AS max_generation_age_seconds,
     toUInt8(maxIf(value, key = 'enable_spatial_traffic') = 1) AS enable_spatial_traffic,
-    least(1., greatest(0., maxIf(value, key = 'vehicle_residual_strength'))) AS vehicle_residual_strength
+    least(1., greatest(0., maxIf(value, key = 'vehicle_residual_strength'))) AS vehicle_residual_strength,
+    toUInt8(maxIf(value, key = 'enable_bias_calibration') = 1) AS enable_bias_calibration
 FROM eta.runtime_policy FINAL;

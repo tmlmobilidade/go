@@ -10,6 +10,8 @@
 export const SQL_FILES = {
 	hub: [
 		'eta/bootstrap/arrival-labels.sql',
+		'eta/bootstrap/bias-calibration.sql',
+		'eta/bootstrap/calibration-table.sql',
 		'eta/bootstrap/create-tables.sql',
 		'eta/bootstrap/live-traffic.sql',
 		'eta/bootstrap/map-match-quality.sql',
