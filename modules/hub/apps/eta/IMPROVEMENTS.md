@@ -125,3 +125,20 @@ reduce coverage until forward movement disambiguates them; this is preferable
 to inventing progress. Audit looping and parallel-road traces before promotion.
 The existing stop snapper still needs route-specific review when the same
 coordinates occur multiple times on one shape.
+
+## Shared directional roads (#953)
+
+Tangents are cached every 15 minutes and refreshed after shape loading, keeping
+window calculations out of 15-second GPS batches. `road_segment_candidates`
+provides deterministic geohash-7 / 15-degree directional review candidates.
+Nearby parallel roads, intersections and bridges cannot be distinguished from
+GTFS 2D coordinates alone, so candidate IDs NEVER enable traffic sharing.
+
+Import `road_segment_assignments` from a road graph or review multi-line
+corridors: exact shape/node, stable 100-250 m road ref, layer, road-v1 version,
+approval and reviewer. `shape_node_road_segments` includes only approved rows;
+its deterministic hash includes road ref, grade/layer, direction and version.
+Different lines then share evidence only on the same approved directional road.
+Opposite directions and bridge layers stay separate. The coverage query reports
+the rollout gap. No reviewed road data was available in this repository; until
+it is supplied, traffic features stay neutral and the baseline remains usable.

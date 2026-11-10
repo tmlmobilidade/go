@@ -59,6 +59,7 @@ class EtaSQLTest(unittest.TestCase):
         for path in ['eta/bootstrap/create-tables.sql',
                      'eta/bootstrap/runtime-policy.sql',
                      'eta/bootstrap/map-match-quality.sql',
+                     'eta/bootstrap/shared-road-segments.sql',
                      'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
                      'eta/bootstrap/valid-vehicle-events.sql',
                      'eta/bootstrap/mv-predict-node-etas.sql',
@@ -116,6 +117,7 @@ class EtaSQLTest(unittest.TestCase):
             (_id,ride_id,agency_id,trip_id,vehicle_id,hashed_shape_id,node_index,match_confidence,created_at,received_at)
             VALUES ('e0','ride','a','trip','v','hs',0,1.,{now-31000},{now-30500}),
                    ('e','ride','a','trip','v','hs',0,1.,{now-1000},{now-500})""")
+        self.insert_select('eta.cached_shape_node_geometry', view_select('eta/bootstrap/shared-road-segments.sql'))
         return now
 
     def test_missing_history_never_yields_zero_for_positive_distance(self):
@@ -272,3 +274,21 @@ class EtaSQLTest(unittest.TestCase):
         query = (SQL / 'eta/loader/build-hist-node-travel-times.sql').read_text()
         self.db.query(query.replace('$chunk_start', str(now-120000)).replace('$chunk_end', str(now)))
         self.assertEqual(self.rows('SELECT count() AS n FROM eta.hist_node_travel_times')[0]['n'], 4)
+
+    def test_directional_segments_share_only_reviewed_same_layer_roads(self):
+        self.seed_live_trip()
+        self.db.query("""INSERT INTO eta.cached_shape_node_geometry
+            SELECT 'hs2',node_index,latitude,longitude,geohash,heading_degrees
+            FROM eta.cached_shape_node_geometry WHERE hashed_shape_id='hs'""")
+        self.assertEqual(self.rows('SELECT * FROM eta.shape_node_road_segments'), [])
+        self.db.query("""INSERT INTO eta.road_segment_assignments VALUES
+            ('hs',1,'road-100m','ground','road-v1',1,'review',1),
+            ('hs2',1,'road-100m','ground','road-v1',1,'review',1),
+            ('hs2',2,'road-100m','bridge','road-v1',1,'review',1)""")
+        rows = self.rows('SELECT * FROM eta.shape_node_road_segments ORDER BY node_index,hashed_shape_id')
+        self.assertEqual(rows[0]['segment_id'], rows[1]['segment_id'])
+        self.assertNotEqual(rows[0]['segment_id'], rows[2]['segment_id'])
+        self.db.query("INSERT INTO eta.cached_shape_node_geometry VALUES ('reverse',1,38.7,-9.1,'',180.)")
+        self.db.query("INSERT INTO eta.road_segment_assignments VALUES ('reverse',1,'road-100m','ground','road-v1',1,'review',1)")
+        opposite = self.rows("SELECT segment_id FROM eta.shape_node_road_segments WHERE hashed_shape_id='reverse'")[0]['segment_id']
+        self.assertNotEqual(opposite, rows[0]['segment_id'])

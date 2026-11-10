@@ -108,7 +108,7 @@ INNER JOIN eta.curr_rides AS d FINAL ON s.trip_id = d.trip_id
     AND s.agency_id = d.agency_id
     AND toYYYYMMDD(toDate(fromUnixTimestamp64Milli(s.created_at, 'Europe/Lisbon') - INTERVAL 4 HOUR)) = d.operational_date
     AND (empty(d.vehicle_ids) OR has(d.vehicle_ids, s.vehicle_id))
-INNER JOIN eta.shape_node_geometry AS n
+INNER JOIN eta.cached_shape_node_geometry AS n
     ON  d.hashed_shape_id = n.hashed_shape_id
     AND s.cell            = n.geohash
     AND n.latitude  BETWEEN s.latitude  - bbox_deg AND s.latitude  + bbox_deg

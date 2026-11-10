@@ -10,6 +10,7 @@ const BOOTSTRAP_FILES = [
 	'eta/bootstrap/create-tables.sql',
 	'eta/bootstrap/runtime-policy.sql',
 	'eta/bootstrap/map-match-quality.sql',
+	'eta/bootstrap/shared-road-segments.sql',
 	'eta/bootstrap/mv-sync-curr-vehicle-events.sql',
 	'eta/bootstrap/valid-vehicle-events.sql',
 	'eta/bootstrap/mv-predict-node-etas.sql',
