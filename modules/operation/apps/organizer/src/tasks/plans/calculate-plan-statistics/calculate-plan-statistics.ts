@@ -30,6 +30,8 @@ export async function calculatePlanStatisticsTask() {
 		'attachments.operation_gtfs_normalized': { $ne: null },
 	});
 
+	Logger.info({ message: `Found ${plans.length} plans pending statistics.` });
+
 	//
 	// Keep the database files in the system's temporary directory, one per plan.
 
@@ -47,6 +49,8 @@ export async function calculatePlanStatisticsTask() {
 
 		try {
 			await setPlanStatus(plan._id, 'plans_statistics', 'processing');
+
+			Logger.info({ message: `Importing normalized GTFS for plan "${plan._id}" to calculate statistics.` });
 
 			const gtfs = await importPlanGtfs(fileId, databasePath);
 			let statistics: GtfsStatistics;

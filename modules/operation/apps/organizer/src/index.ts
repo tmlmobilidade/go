@@ -34,7 +34,6 @@ async function reprocessStuckRides() {
 
 	await updatePlanHashesTask();
 	await normalizePlansTask();
-	await calculatePlanStatisticsTask();
 
 	/* * */
 	/* RIDES */
@@ -53,4 +52,7 @@ async function reprocessStuckRides() {
 
 /* * */
 
-await runOnInterval(reprocessStuckRides, { intervalMs: '10m' });
+await Promise.all([
+	runOnInterval(reprocessStuckRides, { intervalMs: '10m' }),
+	runOnInterval(calculatePlanStatisticsTask, { intervalMs: '10m' }),
+]);
