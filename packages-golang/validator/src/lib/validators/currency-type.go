@@ -8,5 +8,10 @@ import (
 )
 
 func ValidateCurrencyType(currencyType string) bool {
+	//
+
+	//
+	// 1. Check if the currency type is supported
+
 	return slices.Contains(variables.SupportedCurrencyCodes, strings.ToUpper(currencyType))
 }
