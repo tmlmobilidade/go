@@ -28,6 +28,11 @@
 						"label": "Nome do Operador",
 						"placeholder": "Alsa Todi"
 					},
+					"organizations": {
+						"empty": "Não pertence a nenhuma organização",
+						"label": "Organizações",
+						"loading": "A carregar organizações..."
+					},
 					"phone": {
 						"label": "Contacto Telefónico",
 						"placeholder": "912345678"
@@ -149,6 +154,10 @@
 			"validationError": "Não é possível guardar o operador."
 		},
 		"list": {
+			"FiltersBar": {
+				"label": "Filtrar por",
+				"organizations": "Organizações"
+			},
 			"Header": {
 				"title": "Operadores"
 			},
@@ -157,6 +166,7 @@
 					"code": "Código",
 					"id": "#ID",
 					"name": "Nome",
+					"organizations": "Organizações",
 					"pta_name": "Nome da Autoridade"
 				}
 			}
@@ -188,6 +198,106 @@
 			}
 		}
 	},
+	"dev": {
+		"actions": {
+			"addChange": {
+				"bug_fix": "Adicionar correção",
+				"improvement": "Adicionar melhoria",
+				"new_feature": "Adicionar novidade"
+			},
+			"cancel": "Cancelar",
+			"delete": "Eliminar",
+			"down": "Mover para baixo",
+			"preview": "Pré-visualizar",
+			"remove": "Remover alteração",
+			"up": "Mover para cima"
+		},
+		"banners": {
+			"archive": "Arquivar",
+			"create": "Novo aviso",
+			"detail": {
+				"BannersDetailHeader": {
+					"deleteConfirmationMessage": "Este aviso será eliminado permanentemente. Esta ação é irreversível.",
+					"deleteConfirmationTitle": "Eliminar aviso"
+				}
+			},
+			"publish": "Ativar",
+			"select": "Selecione um aviso",
+			"title": "Avisos operacionais",
+			"unpublish": "Desativar"
+		},
+		"changelog": {
+			"archive": "Arquivar",
+			"create": "Nova publicação",
+			"detail": {
+				"ChangelogDetailHeader": {
+					"deleteConfirmationMessage": "Estas notas de versão serão eliminadas permanentemente. Esta ação é irreversível.",
+					"deleteConfirmationTitle": "Eliminar notas de versão"
+				}
+			},
+			"publish": "Publicar",
+			"select": "Selecione uma publicação",
+			"title": "Notas de versão",
+			"unpublish": "Retirar publicação"
+		},
+		"confirm": {
+			"archive": "Este conteúdo será arquivado e deixará de estar disponível para os utilizadores.",
+			"publish": "O conteúdo guardado ficará disponível para os utilizadores de acordo com o respetivo âmbito e agendamento.",
+			"unpublish": "Este conteúdo deixará de estar disponível para os utilizadores."
+		},
+		"fields": {
+			"activity": "Atividade",
+			"changes": "Alterações",
+			"description": "Descrição",
+			"dismissible": "Permitir que os utilizadores ocultem este aviso",
+			"ends_at": "Fim",
+			"id": "#ID",
+			"kind": "Tipo de aviso",
+			"link_label": "Texto da ligação",
+			"link_url": "URL da ligação",
+			"message": "Mensagem",
+			"modules": "Módulos",
+			"publication": "Publicação",
+			"schedule": "Agendamento",
+			"scope": "Âmbito",
+			"severity": "Gravidade",
+			"starts_at": "Início",
+			"status": "Estado",
+			"summary": "Resumo",
+			"title": "Título"
+		},
+		"hints": {
+			"emptyChanges": "Adicione pelo menos uma alteração antes de publicar.",
+			"incomplete": "Preencha os campos obrigatórios antes de publicar."
+		},
+		"kinds": {
+			"announcement": "Comunicado",
+			"incident": "Incidente",
+			"maintenance": "Manutenção"
+		},
+		"noAccess": "Não tem acesso a esta área.",
+		"scope": {
+			"modules": "Módulos específicos",
+			"platform": "Toda a plataforma"
+		},
+		"sections": {
+			"content": "Conteúdo"
+		},
+		"severities": {
+			"critical": "Crítico",
+			"info": "Informação",
+			"warning": "Aviso"
+		},
+		"statuses": {
+			"active": "Ativo",
+			"archived": "Arquivado",
+			"draft": "Rascunho",
+			"expired": "Expirado",
+			"published": "Publicado",
+			"scheduled": "Agendado"
+		},
+		"untitled": "Rascunho sem título"
+	},
 	"home": {
 		"Wiki": {
 			"list": {
@@ -215,9 +325,16 @@
 			},
 			"SectionBasicInfo": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione os operadores da organização"
+					},
 					"long_name": {
 						"label": "Nome da organização",
 						"placeholder": "Carris Metropolitana"
+					},
+					"open_data_enabled": {
+						"label": "Publicar GTFS da organização"
 					},
 					"short_name": {
 						"label": "Sigla",
@@ -287,6 +404,10 @@
 			"SectionBasicInfo": {
 				"description": "Detalhes como nome, sigla, logótipo, links da página inicial.",
 				"fields": {
+					"agency_ids": {
+						"label": "Operadores",
+						"placeholder": "Selecione os operadores da organização"
+					},
 					"logo_dark": {
 						"label": "Logótipo em Modo Escuro"
 					},
@@ -303,6 +424,15 @@
 					}
 				},
 				"title": "Informações gerais"
+			},
+			"SectionOpenData": {
+				"description": "Publicar o GTFS combinado dos operadores da organização.",
+				"fields": {
+					"enabled": {
+						"label": "Publicar GTFS da organização"
+					}
+				},
+				"title": "Dados abertos"
 			}
 		},
 		"list": {
@@ -314,6 +444,9 @@
 			},
 			"table": {
 				"columns": {
+					"gtfs_published": {
+						"label": "GTFS"
+					},
 					"id": {
 						"label": "#ID"
 					},
