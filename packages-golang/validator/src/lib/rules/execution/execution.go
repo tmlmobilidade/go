@@ -7,77 +7,71 @@ import (
 
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	graph "github.com/tmlmobilidade/go/packages-golang/validator/src/types/algorithm"
+	DAG "github.com/tmlmobilidade/go/packages-golang/validator/src/types/algorithm"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/validations"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables/logger"
 )
 
-// RunRule executes a callback released by Kahn; each rule owns its data access.
-func RunRule(run *validationTypes.Execution, ctx *context.ValidationContext, check validationTypes.Check) (status graph.Status) {
+/*
+* ExecuteRule calls the validation function and returns its context outcome.
+ */
+func ExecuteRule(run *validationTypes.Execution, ctx *types.ValidationContext, validate validationTypes.Check) (status DAG.Status) {
 	//
 
 	//
-	// 1. Turn unexpected callback panics into reported operational failures
+	// 1. Turn unexpected validation panics into reported operational failures
 
 	id := ctx.RuleID
-	status = graph.Failed
+	status = DAG.Failed
+
+	//
+	// 2. Recover from panics and report as operational failures
+
 	defer func() {
 		if recovered := recover(); recovered != nil {
-			ctx.Failed = true
-			CollectErrors(run, id, "N/A", "N/A", nil, fmt.Errorf("rule %q panicked: %v", id, recovered))
-			status = graph.Failed
+			CollectErrors(run, id, ctx, fmt.Errorf("rule %q panicked: %v", id, recovered))
+			status = DAG.Failed
 		}
 	}()
 
 	//
-	// 2. Skip disabled checks, preserving file-presence control behavior
+	// 3. Skip disabled validations
 
-	if check == nil {
+	if validate == nil {
 		ctx.Skipped = true
-		return graph.Skipped
+		return DAG.Skipped
 	}
+
 	if context.ShouldIgnore(ctx) && !strings.HasSuffix(id, "_file_missing") {
 		ctx.Skipped = true
-		return graph.Skipped
+		return DAG.Skipped
 	}
 
 	//
-	// 3. Execute the registered whole-rule callback without choosing its table or fields
+	// 4. Track timing and progress
 
-	before := run.Messages.RuleIssueCount(id)
 	timing := telemetry.NewTimer()
-	logger.AppLogger.Progress(telemetry.LogEntry{Message: "Running " + id, Attributes: map[string]any{"rule_id": id}})
+	logger.AppLogger.Progress(telemetry.LogEntry{
+		Message:    "Running " + id,
+		Attributes: map[string]any{"rule_id": id},
+	})
+
 	defer func() {
-		name := map[graph.Status]string{graph.Passed: "passed", graph.Failed: "failed", graph.Skipped: "skipped"}[status]
-		logger.AppLogger.Info(telemetry.LogEntry{Message: fmt.Sprintf("Completed %s: %s (%s)", id, name, timing.Get()), Attributes: map[string]any{"rule_id": id, "status": name, "duration_ms": timing.GetMs()}})
+		logRuleCompletion(id, status, timing)
 	}()
-	err := check(ctx)
-	if err != nil {
-		ctx.Failed = true
-		file, field := ctx.FileName, ctx.Field
-		if file == "" {
-			file = "N/A"
-		}
-		if field == "" {
-			field = "N/A"
-		}
-		var rows []int
-		if source, ok := context.RowErrorDetails(err); ok {
-			file = source.Table + ".txt"
-			field = source.Field
-			rows = []int{source.Row}
-		}
-		CollectErrors(run, id, file, field, rows, fmt.Errorf("rule %q: %w", id, err))
-		return graph.Failed
+
+	//
+	// 5. Execute the validation and report any operational error
+
+	if err := validate(ctx); err != nil {
+		CollectErrors(run, id, ctx, fmt.Errorf("rule %q: %w", id, err))
+		return DAG.Failed
 	}
 
 	//
-	// 4. Publish the completed rule outcome before dependents become ready
+	// 6. Return the outcome recorded by the validation
 
 	status = context.Status(ctx)
-	if status == graph.Passed && run.Messages.RuleIssueCount(id) > before {
-		ctx.Failed = true
-		return graph.Failed
-	}
 	return status
 }

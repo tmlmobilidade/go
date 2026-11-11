@@ -4,5 +4,4 @@ package messages
 type MessageService interface {
 	MessageAdder
 	GetSummary() Summary
-	RuleIssueCount(id string) uint64
 }

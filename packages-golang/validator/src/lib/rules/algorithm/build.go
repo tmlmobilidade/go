@@ -3,8 +3,8 @@ package algorithm
 import (
 	"fmt"
 
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/lib/rules/algorithm/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/algorithm"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/algorithm"
 )
 
 /*
@@ -12,14 +12,14 @@ import (
 * Each ready level keeps registration order. This builds a static order;
 * RunRules schedules execution as dependencies finish.
  */
-func Build[T any](m *types.Manager[T]) error {
+func Build[T any](manager *types.Manager[T]) error {
 	//
 
 	//
 	// 1. Index the rules and reject duplicate IDs
 
-	index := make(map[string]int, len(m.Rules))
-	for i, r := range m.Rules {
+	index := make(map[string]int, len(manager.Rules))
+	for i, r := range manager.Rules {
 		if _, exists := index[r.ID]; exists {
 			return fmt.Errorf("duplicate rule id %q", r.ID)
 		}
@@ -29,9 +29,9 @@ func Build[T any](m *types.Manager[T]) error {
 	//
 	// 2. Count dependencies and record the rules each prerequisite unlocks
 
-	inDegree := make([]int, len(m.Rules))
-	dependents := make([][]int, len(m.Rules))
-	for i, r := range m.Rules {
+	inDegree := make([]int, len(manager.Rules))
+	dependents := make([][]int, len(manager.Rules))
+	for i, r := range manager.Rules {
 		for _, dep := range r.DependsOn {
 			j, ok := index[dep]
 			if !ok {
@@ -46,21 +46,24 @@ func Build[T any](m *types.Manager[T]) error {
 	// 3. Collect ready rules in registration order and detect dependency cycles
 
 	// Each iteration collects a complete ready level before unlocking the next one.
-	ordered := make([]types.Rule[T], 0, len(m.Rules))
-	done := make([]bool, len(m.Rules))
-	for len(ordered) < len(m.Rules) {
+	ordered := make([]types.Rule[T], 0, len(manager.Rules))
+	done := make([]bool, len(manager.Rules))
+	for len(ordered) < len(manager.Rules) {
 		ready := []int{}
-		for i := range m.Rules {
+
+		for i := range manager.Rules {
 			if !done[i] && inDegree[i] == 0 {
 				ready = append(ready, i)
 			}
 		}
+
 		if len(ready) == 0 {
-			return fmt.Errorf("dependency cycle between rules: %s", utils.Pending(m, done))
+			return fmt.Errorf("dependency cycle between rules: %s", utils.Pending(manager, done))
 		}
+
 		for _, next := range ready {
 			done[next] = true
-			ordered = append(ordered, m.Rules[next])
+			ordered = append(ordered, manager.Rules[next])
 			for _, d := range dependents[next] {
 				inDegree[d]--
 			}
@@ -70,6 +73,6 @@ func Build[T any](m *types.Manager[T]) error {
 	//
 	// 4. Save the validated dependency order
 
-	m.Ordered = ordered
+	manager.Ordered = ordered
 	return nil
 }
