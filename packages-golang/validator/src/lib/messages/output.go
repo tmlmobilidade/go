@@ -18,5 +18,9 @@ func (service *MessageService) OutputSummary(outputPath string) error {
 	if outputPath != "" {
 		return output.WriteToFile(outputPath, summary)
 	}
+
+	//
+	// 2. Write the report and propagate filesystem errors
+
 	return output.WriteJSON(os.Stdout, summary)
 }
