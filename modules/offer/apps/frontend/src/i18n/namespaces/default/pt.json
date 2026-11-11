@@ -20,7 +20,7 @@
 				"label": "Operadores afetados"
 			},
 			"code": {
-				"description": "Apenas letras maiúsculas, números e underscores. Máximo de {{max}} caracteres.",
+				"description": "Apenas letras maiúsculas, números e underscores. Máximo de {max} caracteres.",
 				"label": "Código",
 				"placeholder": "Ex: MARAT_LIS"
 			},
@@ -43,18 +43,10 @@
 			"title": "Eventos"
 		},
 		"ruleCard": {
-			"allDay": "Todo o dia {{dates}}",
 			"allLines": "Todas as linhas",
-			"days_one": "dia",
-			"days_other": "dias",
-			"exceptLines": "Todas exceto {{lines}}",
-			"lines_one": "{{count}} linha",
-			"lines_other": "{{count}} linhas",
-			"namedLines": "Linhas {{lines}}",
-			"noLines": "Nenhuma linha",
-			"onDates": "(nos dias {{dates}})",
-			"operateAs": "Funcionará como {{replacement}}",
-			"timeWindow": "{{start}} às {{end}} {{dates}}"
+			"exceptLines": "Todas as linhas exceto {lines}",
+			"namedLines": "Apenas as linhas {lines}",
+			"noLines": "Nenhuma linha"
 		},
 		"ruleEditor": {
 			"affectedDates": "2. Que dias serão afetados por esta regra?",
@@ -73,10 +65,7 @@
 			"excludeLinesDescription": "Todas as linhas serão afetadas, exceto estas.",
 			"includeLines": "Apenas estas linhas",
 			"includeLinesDescription": "Apenas estas linhas serão afetadas.",
-			"newRule": "Nova Regra",
-			"noPatterns": "Sem patterns associados",
 			"operateAs": "O(s) dia(s) selecionado(s) irão funcionar como:",
-			"patterns": "Patterns associados",
 			"periods": "Períodos",
 			"replacement": "Substituição de oferta",
 			"replacementDescription": "Aplicar oferta de outro tipo de dia nestas datas",
@@ -92,7 +81,6 @@
 			"serviceType": "4. Que tipo de oferta se aplica nestes dias?",
 			"startTime": "Hora de início",
 			"startTimeDescription": "Formato HH:MM no dia operacional. Ex.: 10:00",
-			"viewPatterns": "Ver patterns associados",
 			"weekdays": "Dias úteis",
 			"weekend": "Fim de semana"
 		},
@@ -174,7 +162,7 @@
 			"acknowledge": "Compreendo e quero continuar",
 			"blockedConflict": "A atribuição está bloqueada: existe um período em conflito bloqueado ou sem permissão de atualização para todos os seus operadores.",
 			"checking": "A verificar conflitos...",
-			"conflictMessage": "{{count}} datas serão removidas dos períodos: {{periods}}.",
+			"conflictMessage": "{count} datas serão removidas dos períodos: {periods}.",
 			"conflictTitle": "Aviso de conflito",
 			"create": "Criar novo período",
 			"dayCount_one": "{{count}} dia",
@@ -188,8 +176,41 @@
 			"submit": "Atribuir período",
 			"title": "Atribuir datas"
 		},
+		"calendar": {
+			"readOnly": "Apenas consulta",
+			"readOnlyPermissions": "Para editar a configuração ou as datas deste período, é necessária permissão de atualização para todos os operadores associados.",
+			"readOnlyLocked": "Este período está bloqueado e não pode ser editado.",
+			"cancelSelection": "Cancelar seleção (Esc)",
+			"selectEnd": "Selecione o último dia do intervalo ou prima Esc para cancelar.",
+			"discardChanges": "Descartar alterações",
+			"settingsChanged": "Alterações à configuração pendentes",
+			"title": "Calendário de períodos",
+			"settings": "Configuração do período",
+			"legend": "Períodos apresentados no calendário",
+			"overviewHint": "Selecione um operador. Escolha um período na lista, na legenda ou num dia do calendário para ver e editar as suas datas.",
+			"selectAgencies": "Selecione um operador para ver o calendário.",
+			"sharedScope": "As datas deste período aplicam-se a: {agencies}.",
+			"editDates": "Editar datas",
+			"saveSettingsFirst": "Guarde ou reverta as alterações à configuração antes de editar datas.",
+			"editHint": "Comece num dia atribuído para remover datas, ou num dia livre para adicionar. Depois, selecione o último dia do intervalo. As alterações aplicam-se a todos os operadores deste período.",
+			"changes": "{added, plural, one {# data adicionada} other {# datas adicionadas}} · {removed, plural, one {# data removida} other {# datas removidas}}",
+			"noChanges": "Sem alterações pendentes",
+			"lastRange": "Último intervalo: {count, plural, one {# dia} other {# dias}}",
+			"selectRange": "Selecione um intervalo no calendário",
+			"cancelEditing": "Cancelar edição",
+			"saveDates": "Guardar datas",
+			"backToPeriod": "Voltar ao período"
+		},
 		"create": {
 			"title": "Novo período"
+		},
+		"dateManagement": {
+			"coverage": {
+				"complete": "Todas as datas têm período",
+				"description": "Datas sem período para pelo menos um dos operadores deste período.",
+				"missing": "{count, plural, one {# data sem período} other {# datas sem período}}",
+				"moreRanges": "+ {count, plural, one {# intervalo adicional} other {# intervalos adicionais}}"
+			}
 		},
 		"detail": {
 			"cancel": "Cancelar",
@@ -212,6 +233,11 @@
 			"name": {
 				"label": "Nome",
 				"placeholder": "Ex: Período Escolar 2025/2026"
+			},
+			"short_name": {
+				"label": "Nome curto",
+				"placeholder": "Ex: ESC",
+				"description": "Abreviatura para identificar o período em nomes de serviço."
 			}
 		},
 		"list": {
@@ -317,6 +343,170 @@
 		"sections": {
 			"basic": "Configuração básica",
 			"geometry": "Geometria"
+		}
+	},
+	"patterns": {
+		"shapeEditor": {
+			"apply": "Aplicar",
+			"anchorIssuesTitle": "Desvios com segmentos por identificar",
+			"anchorIssuesDescription": "Alguns desvios não identificam uma única ocorrência entre paragens. Ao recalcular, esses desvios serão removidos. Os desvios identificados sem ambiguidade serão mantidos.",
+			"missingSegment": "segmento inexistente",
+			"recalculate": "Recalcular percurso",
+			"cancel": "Cancelar",
+			"undo": "Desfazer",
+			"redo": "Refazer",
+			"dismiss": "Dispensar",
+			"convert": "Converter e editar",
+			"importedTitle": "Shape importado do GTFS",
+			"importedDescription": "Este percurso foi importado diretamente do GTFS e não contém informação de pontos intermédios calculados pela nossa plataforma.",
+			"convertDescription": "Para poder editar paragens e desvios, é necessário converter a shape para o formato editável, recalculando o percurso.",
+			"conversionWarning": "O trajeto resultante pode diferir ligeiramente do original.",
+			"conversionHistory": "Esta conversão fica registada no histórico local e pode ser desfeita antes de aplicar.",
+			"missingStops": "Todas as paragens precisam de coordenadas antes de recalcular o percurso.",
+			"unknownError": "Erro desconhecido",
+			"routeErrorTitle": "Erro ao recalcular percurso"
+		},
+		"list": {
+			"RulesCalendarPreviewRulesGroup": {
+				"no_schedules_removed": "Esta regra não remove nenhum horário neste dia."
+			}
+		},
+		"create": {
+			"RuleCreateEvents": {
+				"select_event_first": "Selecione um evento para definir as datas da regra. Depois poderá limitá-las por período, dia da semana ou mês."
+			},
+			"RuleCreatePeriods": {
+				"required_hint": "Selecione pelo menos um período. Use Todos para selecionar todos os períodos disponíveis.",
+				"optional_hint": "Opcional — limita as datas do evento aos períodos selecionados. Sem seleção, não filtra por período."
+			},
+			"RuleCreateWeekdays": {
+				"required_hint": "Selecione pelo menos um dia da semana. Use Todos para selecionar todos os dias.",
+				"optional_hint": "Opcional — limita as datas do evento aos dias da semana selecionados. Sem seleção, não filtra por dia da semana."
+			},
+			"RuleCreateMonths": {
+				"optional_hint": "Opcional — sem seleção, aplica-se a todos os meses.",
+				"event_optional_hint": "Opcional — limita as datas do evento aos meses selecionados. Sem seleção, não filtra por mês."
+			}
+		}
+	},
+	"scheduling": {
+		"months": {
+			"title": "Meses",
+			"eventTitle": "Meses do evento"
+		},
+		"dayPeriodsTitle": "Períodos do dia",
+		"copy": {
+			"ruleQuestion": "1. O que acontece com estes horários?",
+			"operatingHint": "Define se esta regra ativa ou desativa os horários quando as condições abaixo se verificam.",
+			"excludedDays": "Horários não operam nestes dias",
+			"includedDays": "Horários operam nestes dias",
+			"timepointsQuestion": "2. Que horários esta regra afeta?",
+			"pasteHint": "Também pode colar ou arrastar vários horários de uma folha de cálculo. Ex: 10:00 13:00 15:00 ou 1000 1300 1500",
+			"conditionsQuestion": "3. Quando devem estes horários aplicar-se?",
+			"conditionsHint": "Estes horários aplicam-se quando TODAS as condições abaixo se verificam",
+			"eventHint": "Se ativado, a regra aplica-se ao evento selecionado. As condições abaixo podem limitar as suas datas.",
+			"eventException": "Exceção por evento",
+			"newRule": "Nova Regra",
+			"deleteRuleWarning": "Tem a certeza que deseja apagar esta regra? Esta ação não pode ser revertida.",
+			"deleteRuleTitle": "Apagar Regra",
+			"periods": "Períodos",
+			"invalidFormat": "Formato inválido",
+			"existingTimepoint": "Este horário já existe",
+			"existingTimepoints": "Estes horários já existem",
+			"weekdays": "Dias da Semana",
+			"businessDays": "Dias úteis",
+			"weekend": "Fim de semana",
+			"dayDetailsHint": "Clique num dia afetado para consultar os horários e regras aplicáveis.",
+			"appliedRules": "Regras Aplicadas",
+			"selectDay": "Selecione um dia no calendário",
+			"previewCalendar": "Prever calendário",
+			"excludedAllDay": "Oferta excluída todo o dia",
+			"unnamedRule": "Regra sem nome",
+			"includeService": "Incluem serviço",
+			"noIncludeRules": "Nenhuma regra de inclusão.",
+			"excludeService": "Excluem serviço",
+			"noExcludeRules": "Nenhuma regra de exclusão.",
+			"replaceService": "Substituem oferta",
+			"eventDetails": "Ir para detalhes do evento",
+			"deleteRule": "Eliminar regra",
+			"ruleActions": "Ações da regra",
+			"noTimepoints": "Sem horários para mostrar.",
+			"parameterConditionsHint": "Estes parâmetros aplicam-se quando TODAS as condições abaixo se verificam",
+			"parameterConditionsQuestion": "1. Quando se aplica esta configuração?",
+			"quickActions": "Ações rápidas",
+			"batchHint": "Aplica valores em lote aos tempos desta configuração.",
+			"copyDefault": "Copiar configuração padrão",
+			"copyDefaultHint": "Substitui velocidades e tempos de paragem pelos valores da configuração padrão.",
+			"fixedSpeed": "Velocidade fixa",
+			"fixedSpeedHint": "Define a mesma velocidade média em todos os segmentos.",
+			"fixedDwell": "Tempo de paragem fixo",
+			"fixedDwellHint": "Define o mesmo tempo de paragem em todas as paragens.",
+			"adjustSpeeds": "Ajustar velocidades",
+			"adjustSpeedsHint": "Multiplica as velocidades atuais pelo fator indicado.",
+			"tripEnd": "Fim da viagem",
+			"totalDistance": "Distância total",
+			"totalDuration": "Duração total",
+			"travelTime": "Tempo de viagem",
+			"dwellTimes": "Tempo de paragens",
+			"commercialSpeed": "Vel. média comercial",
+			"sequence": "Sequência",
+			"speed": "Velocidade média",
+			"averageTravelTime": "Tempo médio de viagem",
+			"dwellTime": "Tempo de paragem",
+			"speedPlaceholder": "Velocidade média (km/h)",
+			"travelTimeHint": "Tempo médio de viagem calculado com base na distância e na velocidade média no segmento entre esta paragem e a anterior.",
+			"averageTravelTimeLabel": "Tempo Médio de Viagem",
+			"dwellPlaceholder": "Tempo de paragem (segundos)",
+			"specificConfigurations": "Configurações específicas",
+			"specificConfigurationsHint": "Substituem a configuração padrão em períodos, dias ou horários específicos.",
+			"newConfiguration": "Nova configuração",
+			"defaultConfigurationHint": "Usada por defeito quando nenhuma configuração específica se aplica.",
+			"totalDurationLabel": "Duração total:",
+			"all": "Todos",
+			"add": "Adicionar",
+			"cancel": "Cancelar",
+			"edit": "Editar",
+			"create": "Criar",
+			"duplicate": "Duplicar",
+			"delete": "Eliminar",
+			"open": "Abrir",
+			"event": "Evento",
+			"stop": "Paragem",
+			"apply": "Aplicar",
+			"vehicle": "Veículo",
+			"copy": "Copiar",
+			"timepointPlaceholder": "Ex: 08:30 ou 0830 ou 830 + Enter",
+			"timepointCount": "{count, plural, one {# horário} other {# horários}}",
+			"activeTimepointCount": "{count, plural, one {# horário ativo} other {# horários ativos}}",
+			"dayCount": "{count, plural, one {# dia} other {# dias}}",
+			"affectedDays": "{count, plural, one {Esta regra afeta # dia do calendário} other {Esta regra afeta # dias do calendário}}",
+			"invalidTokens": "Formato inválido: {tokens}",
+			"eventWeekdays": "Dias da semana do evento",
+			"excludedWindow": "Oferta excluída das {start} às {end}",
+			"excludedBy": "Excluído por: {name}",
+			"deleteNamedRule": "Tem a certeza que pretende eliminar a regra \"{name}\"?",
+			"speedSequence": "Velocidade média para a sequência {sequence}",
+			"dwellSequence": "Tempo de paragem para a sequência {sequence}",
+			"segmentSpeed": "Velocidade média do segmento {sequence}",
+			"toStop": "Até {stop}",
+			"stopFallback": "Paragem {id}",
+			"vehicleQuestion": "{step}. Que tipo de veículo deve realizar esta viagem?",
+			"secondsSuffix": " s",
+			"selectWeekday": "Selecione pelo menos um dia da semana.",
+			"selectPeriod": "Selecione pelo menos um período.",
+			"close": "Fechar",
+			"rule": "Regra",
+			"validNonnegativeNumber": "Introduza um número válido igual ou superior a zero.",
+			"checkTimepoints": "Verifique os horários introduzidos.",
+			"selectEvent": "Selecione um evento."
+		}
+	},
+	"shared": {
+		"RuleEventEffect": {
+			"replacement": "Funcionará como",
+			"restriction_all_day": "Horários não irão acontecer durante todo o dia",
+			"restriction_timepoints": "Os horários <timeRange/> não irão acontecer",
+			"restriction_window": "Horários entre as <timeRange/> não irão acontecer"
 		}
 	}
 }

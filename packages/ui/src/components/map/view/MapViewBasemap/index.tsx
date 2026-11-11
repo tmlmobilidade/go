@@ -44,6 +44,8 @@ export interface MapViewBasemapProps {
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
 	onWheel?: (e: MapWheelEvent) => void
+	/** Overrides the saved mouse-wheel zoom preference for this map. */
+	scrollZoom?: boolean
 	/**
 	 * When true (default), pans/zooms the map when search-pin coordinates change.
 	 * Disable for click-to-place flows so selecting a point does not trigger a camera animation.
@@ -55,7 +57,7 @@ export interface MapViewBasemapProps {
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, searchPinFocusOnChange = true, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, scrollZoom, searchPinFocusOnChange = true, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -63,6 +65,7 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 
 	const mapContext = useMapContext();
 	const mapViewContext = useMapViewContext();
+	const isScrollZoomEnabled = scrollZoom ?? mapContext.flags.scroll_zoom;
 
 	const currentThemeMode = useCurrentThemeMode();
 
@@ -111,9 +114,9 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 	}, []);
 
 	const handleOnWheel = useCallback((event: MapWheelEvent) => {
-		mapViewContext.actions.toggleAutoZoom(false);
+		if (isScrollZoomEnabled) mapViewContext.actions.toggleAutoZoom(false);
 		if (onWheel) onWheel(event);
-	}, []);
+	}, [isScrollZoomEnabled, mapViewContext.actions, onWheel]);
 
 	//
 	// D. Render components
@@ -140,7 +143,7 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			onMouseOut={onMouseOut}
 			onMouseOver={onMouseOver}
 			onWheel={handleOnWheel}
-			scrollZoom={mapContext.flags.scroll_zoom}
+			scrollZoom={isScrollZoomEnabled}
 			style={{ height: '100%', width: '100%' }}
 		>
 			{layers.navigation && <NavigationControl />}

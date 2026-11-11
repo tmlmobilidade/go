@@ -1,0 +1,11 @@
+{
+	"detail": {
+		"EventsDetailPatternsMenu": {
+			"error": "No se pudieron cargar los recorridos asociados.",
+			"loading": "Cargando recorridos asociados…",
+			"no_patterns": "Sin patrones asociados",
+			"patterns": "Patrones asociados",
+			"view_patterns": "Ver patrones asociados"
+		}
+	}
+}

@@ -1,0 +1,175 @@
+{
+	"create": {
+		"PatternCreateBasicInfo": {
+			"code": "Code",
+			"code_example": "E.g. 1001_0_1",
+			"destination": "Destination",
+			"destination_example": "E.g. Reboleira (station)",
+			"headsign": "Headsign",
+			"origin": "Origin"
+		},
+		"PatternCreateHeader": {
+			"new_pattern": "New pattern"
+		}
+	},
+	"detail": {
+		"GtfsImportModalContent": {
+			"import_gtfs": "Import GTFS file"
+		},
+		"GtfsStepConfirmation": {
+			"after_import": "AFTER IMPORT",
+			"back": "Back",
+			"before_import": "CURRENT STATE",
+			"import": "Import",
+			"import_confirmation": "Are you sure you want to import this pattern?",
+			"import_error": "Could not import the pattern.",
+			"meters": "metres",
+			"shape_label": "Shape:",
+			"stops_label": "Stops:"
+		},
+		"GtfsStepDropzone": {
+			"choose_zip": "Drop a ZIP file or click to select one (maximum 100 MB)",
+			"drop_gtfs": "Drop the GTFS file here",
+			"file_rejected": "File rejected",
+			"import_gtfs": "Import GTFS file",
+			"process_automatically": "The file will be processed automatically",
+			"upload_error": "Could not process the GTFS file. Check the file and try again.",
+			"zip_only": "Only ZIP files are accepted (maximum 100 MB)"
+		},
+		"GtfsStepSelection": {
+			"back": "Back",
+			"headsign_column": "Headsign",
+			"route_id": "Route ID",
+			"select": "Select",
+			"select_pattern_hint": "Select this pattern",
+			"stops": "Stops"
+		},
+		"PatternDetailHeader": {
+			"delete_pattern": "Delete pattern",
+			"delete_pattern_message": "Are you sure you want to delete this pattern? This cannot be undone.",
+			"save": "Save"
+		},
+		"PatternDetailHistory": {
+			"fields_reverted": "Fields reverted. Save to keep these changes.",
+			"history": "History",
+			"no_history": "No activity recorded for this pattern."
+		},
+		"PatternDetailSectionConfig": {
+			"code": "Code",
+			"code_example": "E.g. 1234_0",
+			"destination": "Destination",
+			"destination_example": "E.g. Reboleira (station)",
+			"direction": "Direction",
+			"direction_options": {
+				"inbound": "Inbound",
+				"outbound": "Outbound"
+			},
+			"headsign": "Headsign",
+			"origin": "Origin",
+			"pattern_config": "Pattern configuration"
+		},
+		"PatternDetailSectionRules": {
+			"new_rule": "New rule",
+			"operating_rules": "Operating rules",
+			"preview_calendar": "Preview calendar",
+			"rule_list": "Rule list",
+			"schedules": "Schedules"
+		},
+		"PatternDetailSectionShape": {
+			"edit_pattern": "Edit pattern",
+			"import_gtfs": "Import GTFS file",
+			"length": "Length",
+			"pattern_loaded": "Pattern loaded. Save to confirm.",
+			"stop_sequence": "Stop sequence",
+			"trip_cost": "Cost per trip"
+		},
+		"PatternDetailSectionTravelTimes": {
+			"travel_times": "Travel times",
+			"travel_times_hint": "Set travel and dwell times for each trip type."
+		},
+		"PatternDetailSectionZones": {
+			"zones": "Zone assignment",
+			"zones_empty": "Add stops to the pattern to configure zone assignment."
+		}
+	},
+	"shape": {
+		"InitialStopSelector": {
+			"first_stop": "First stop",
+			"initial_stops_hint": "This pattern has no stops yet. Add the first two stops to calculate the route.",
+			"second_stop": "Second stop",
+			"stop_sequence": "Stop sequence"
+		},
+		"ParameterCreateModifiers": {
+			"seconds": "s"
+		},
+		"ParameterCreateStopItem": {
+			"dwell_sequence": "Dwell time for sequence {sequence}",
+			"seconds": "s"
+		},
+		"PathTableColumnStop": {
+			"stop_id": "Stop ID:"
+		},
+		"RuleCreateSchedule": {
+			"timepoint_example": "E.g. 08:30 or 0830 + Enter"
+		},
+		"ShapeEditorContent": {
+			"add_detour_failed": "Could not add detour",
+			"detour_error": "Error adding detour",
+			"missing_segment": "Could not identify the segment between stops.",
+			"not_editable_shape": "This shape is not ready for detours. Recalculate the route first."
+		},
+		"ShapeEditorStopSelect": {
+			"load_stop_error": "Error loading stop",
+			"search_stop": "Search stops…"
+		},
+		"ShapeEditorStopsItem": {
+			"drop_off_no": "Alighting is not allowed at this stop",
+			"drop_off_yes": "Alighting is allowed at this stop",
+			"pickup_no": "Boarding is not allowed at this stop",
+			"pickup_yes": "Boarding is allowed at this stop",
+			"timepoint_no": "The passing time is not exact at this stop",
+			"timepoint_yes": "The passing time is exact at this stop"
+		},
+		"StopsList": {
+			"stop_sequence": "Stop sequence"
+		},
+		"StopsListRow": {
+			"add_stop": "Add stop",
+			"cancel": "Cancel"
+		},
+		"StopsTableHeader": {
+			"drop_off": "Allows alighting",
+			"pickup": "Allows boarding",
+			"segment_distance": "Distance between stops",
+			"sequence": "Sequence",
+			"stop": "Stop",
+			"timepoint": "Exact time",
+			"zones": "Zone assignment"
+		},
+		"StopsTableRow": {
+			"drop_off_no": "Alighting is not allowed at this stop",
+			"drop_off_yes": "Alighting is allowed at this stop",
+			"pickup_no": "Boarding is not allowed at this stop",
+			"pickup_yes": "Boarding is allowed at this stop",
+			"timepoint_no": "The passing time is not exact at this stop",
+			"timepoint_yes": "The passing time is exact at this stop"
+		},
+		"StopsTableTableColumnDistance": {
+			"distance_meters": "Distance (metres)",
+			"segment_sequence": "Segment distance for sequence {sequence}"
+		},
+		"useShapeRoutePreview": {
+			"empty_response": "The route preview returned no data."
+		}
+	},
+	"table": {
+		"PathTableColumnStop": {
+			"stop_id": "Stop ID:"
+		},
+		"StopsTableHeader": {
+			"sequence": "Sequence",
+			"stop": "Stop",
+			"zones": "Zone assignment"
+		}
+	}
+}

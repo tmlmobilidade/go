@@ -1,5 +1,6 @@
 /* * */
 
+import { validationTransform } from '@tmlmobilidade/go-utils-validation';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
@@ -27,7 +28,7 @@ export type UnixSeconds = number & {
  */
 export const UnixSecondsSchema = z
 	.union([z.string(), z.number()])
-	.transform(validateUnixSeconds);
+	.transform(validationTransform(validateUnixSeconds, 'custom.formats.unix_seconds', { minimum: 1e9 }));
 
 /**
  * This function validates if a number is a valid Unix Seconds, in seconds.

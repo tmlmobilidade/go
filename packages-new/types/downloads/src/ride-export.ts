@@ -104,7 +104,7 @@ export const FlatRideSchema = z.object({
 	justification_cause: AlertCauseSchema.nullish().nullable(),
 	justification_source: RideJustificationSourceSchema.nullish().nullable(),
 	manual_trip_id: z.string().nullish().nullable(),
-	pto_message: z.string().min(2).max(5000).default('').nullish().nullable(),
+	pto_message: z.string().min(2).max(5000).nullish(),
 });
 
 /* PROPERTIES SCHEMA */

@@ -2,8 +2,6 @@
 
 import { type InfrastructureNodesV1Input, type InfrastructureNodesV1OutputRow } from './types.js';
 
-/* * */
-
 /**
  * Converts a stop's flags into rows for nodes.txt.
  * @param input The stop with the flags and agencies selected for export, plus namespace, parent station ID and validity dates.

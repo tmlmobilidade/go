@@ -1,5 +1,6 @@
 /* * */
 
+import { resolveOrganization } from '@/utils/organization.js';
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getEtaAllHandler } from './handlers/get-eta-all.js';
@@ -10,7 +11,7 @@ import { getEtaGtfsRtProtobufHandler } from './handlers/get-eta-gtfs-rt-protobuf
 
 /* * */
 
-const NAMESPACE = '/v1/eta';
+const NAMESPACE = '/v1/:organizationId/eta';
 
 /* * */
 
@@ -20,15 +21,17 @@ server.register(
 	(instance, opts, next) => {
 		//
 
+		instance.addHook('preHandler', resolveOrganization);
+
 		instance.get('/', getEtaAllHandler);
 
 		instance.get('/gtfs', getEtaGtfsRtJsonHandler);
 
 		instance.get('/gtfs.pb', getEtaGtfsRtProtobufHandler);
 
-		instance.get('/by-trip/:id', getEtaByTripIdHandler);
+		instance.get('/by-trip/:tripId', getEtaByTripIdHandler);
 
-		instance.get('/by-stop/:id', getEtaByStopIdHandler);
+		instance.get('/by-stop/:stopId', getEtaByStopIdHandler);
 
 		next();
 	},

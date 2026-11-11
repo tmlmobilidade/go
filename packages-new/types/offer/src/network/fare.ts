@@ -1,6 +1,7 @@
 /* * */
 
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
+import { validationMessage } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -24,7 +25,7 @@ export const FARE_CURRENCY = {
 /* * */
 
 export const FareSchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).min(1, 'At least one agency ID is required'),
+	agency_ids: z.array(z.string()).min(1, { error: validationMessage('custom.network.agency_required') }),
 	code: z.string().trim().min(1).max(10),
 	currency_type: z.enum([FARE_CURRENCY.EUR]).default(FARE_CURRENCY.EUR),
 	is_locked: z.boolean().default(false),
@@ -43,7 +44,7 @@ export const CreateFareSchema = z.object({
 	code: FareSchema.shape.code,
 	name: FareSchema.shape.name,
 }).merge(
-	FareSchema.omit({
+	partialWithoutDefaults(FareSchema.omit({
 		_id: true,
 		agency_ids: true,
 		code: true,
@@ -53,11 +54,10 @@ export const CreateFareSchema = z.object({
 		name: true,
 		updated_at: true,
 		updated_by: true,
-	}).partial(),
+	})),
 );
 
-export const UpdateFareSchema = CreateFareSchema
-	.partial();
+export const UpdateFareSchema = partialWithoutDefaults(CreateFareSchema);
 
 /* * */
 

@@ -1,5 +1,6 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /**
@@ -23,9 +24,9 @@ export type HexColor = string & {
  * // => '#FFFFFF' as HexColor
  * ```
  */
-export const HexColorSchema = z
+export const HexColorSchema: z.ZodType<HexColor> = z
 	.coerce
 	.string()
 	.transform(value => value.startsWith('#') ? value : `#${value}`)
-	.refine(value => /^#[0-9A-Fa-f]{6}$/.test(value), { message: 'Expected a hex color in the format #RRGGBB' })
+	.refine(value => /^#[0-9A-Fa-f]{6}$/.test(value), validationParams('custom.formats.hex_color', { format: '#RRGGBB' }))
 	.transform(value => value.toUpperCase() as HexColor);

@@ -48,7 +48,7 @@
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/strings": "*",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

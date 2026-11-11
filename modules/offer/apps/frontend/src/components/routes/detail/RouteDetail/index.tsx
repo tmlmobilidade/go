@@ -19,12 +19,12 @@ export function RouteDetail() {
 	//
 	// B. Render components
 
-	if (lineDetailContext.flags.isLoading) {
+	if (lineDetailContext.status.isLoading) {
 		return <LoadingOverlay />;
 	}
 
-	if (lineDetailContext.flags.error) {
-		return <ErrorDisplay message={lineDetailContext.flags.error.message} />;
+	if (lineDetailContext.error) {
+		return <ErrorDisplay message={lineDetailContext.error} />;
 	}
 
 	return (

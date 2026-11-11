@@ -1,35 +1,24 @@
 /* * */
 
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-/**
- * Retrieves a line by its ID from cache.
- * @param request The request object.
- * @param reply The reply object.
- */
-export async function getLineHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiLine>) {
+/** Return organization-scoped published data. */
+export async function getLineHandler(request: FastifyRequest<{ Params: { lineId: string } }>, reply: FastifyReply<HubV1ApiLine>) {
 	//
 
 	//
-	// Get the published line from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.getNew<HubV1ApiLine>(`hub:v1:network:lines:${request.params.id}`);
-
-	if (!cachedData) {
-		Logger.error({ message: `[hub/v1/network:getLineHandler(${request.params.id})] No cached data found for line ${request.params.id}` });
-		return sendErrorApiResponse(reply, {
-			error: `[hub/v1/network:getLineHandler(${request.params.id})] No cached data found for line ${request.params.id}`,
-			status_code: '404',
-		});
-	}
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiLine>(agencyIds, `network:lines:${request.params.lineId}`);
+	const data = entries.flatMap(entry => entry.data);
+	if (!entries.length) return sendErrorApiResponse(reply, { error: 'Resource not found', status_code: '404' });
 
 	//
-	// Return the cached line
+	// Return the merged data
 
-	return sendSuccessApiResponse(reply, cachedData.data, {
-		max_age: '1h',
-	});
+	return sendSuccessApiResponse(reply, data[0], { generated_at: oldestCacheTimestamp(entries), max_age: '1h' });
 }

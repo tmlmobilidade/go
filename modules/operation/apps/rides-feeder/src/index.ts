@@ -22,10 +22,11 @@ async function main() {
 
 	const fetchCoordinatorTimer = new Timer();
 
-	const planId = await fetch(getCoordinatorUrl('plans'))
-		.then(response => response.json())
-		.then(data => data as RidesCoordinatorPlansResponse)
-		.then(data => data.plan_id);
+	const planId = 'F5UJE';
+	// await fetch(getCoordinatorUrl('plans'))
+	// 	.then(response => response.json())
+	// 	.then(data => data as RidesCoordinatorPlansResponse)
+	// 	.then(data => data.plan_id);
 
 	if (!planId) {
 		Logger.info({ message: `No plan to process. Skipping run. (fetch: ${fetchCoordinatorTimer.get()})` });

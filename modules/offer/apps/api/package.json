@@ -22,7 +22,6 @@
 	"dependencies": {
 		"@fastify/multipart": "10.1.6",
 		"@tmlmobilidade/consts": "*",
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
 		"@tmlmobilidade/go-clients-mongo": "*",
@@ -34,11 +33,12 @@
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
+		"@tmlmobilidade/go-utils-offer": "*",
 		"@tmlmobilidade/strings": "*",
 		"@tmlmobilidade/utils": "*",
 		"adm-zip": "0.6.1",
 		"papaparse": "5.7.0",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

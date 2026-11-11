@@ -1,0 +1,175 @@
+{
+	"create": {
+		"PatternCreateBasicInfo": {
+			"code": "Código",
+			"code_example": "Ej.: 1001_0_1",
+			"destination": "Destino",
+			"destination_example": "Ej.: Reboleira (estación)",
+			"headsign": "Letrero de destino",
+			"origin": "Origen"
+		},
+		"PatternCreateHeader": {
+			"new_pattern": "Nuevo recorrido"
+		}
+	},
+	"detail": {
+		"GtfsImportModalContent": {
+			"import_gtfs": "Importar archivo GTFS"
+		},
+		"GtfsStepConfirmation": {
+			"after_import": "ESTADO TRAS LA IMPORTACIÓN",
+			"back": "Volver",
+			"before_import": "ESTADO ACTUAL",
+			"import": "Importar",
+			"import_confirmation": "¿Seguro que desea importar este recorrido?",
+			"import_error": "No se pudo importar el recorrido.",
+			"meters": "metros",
+			"shape_label": "Geometría:",
+			"stops_label": "Paradas:"
+		},
+		"GtfsStepDropzone": {
+			"choose_zip": "Arrastre un archivo ZIP o pulse para seleccionarlo (máximo 100 MB)",
+			"drop_gtfs": "Arrastre aquí el archivo GTFS",
+			"file_rejected": "Archivo rechazado",
+			"import_gtfs": "Importar archivo GTFS",
+			"process_automatically": "El archivo se procesará automáticamente",
+			"upload_error": "No se pudo procesar el archivo GTFS. Compruebe el archivo e inténtelo de nuevo.",
+			"zip_only": "Solo se aceptan archivos ZIP (máximo 100 MB)"
+		},
+		"GtfsStepSelection": {
+			"back": "Volver",
+			"headsign_column": "Letrero de destino",
+			"route_id": "ID de ruta",
+			"select": "Seleccionar",
+			"select_pattern_hint": "Seleccionar este recorrido",
+			"stops": "Paradas"
+		},
+		"PatternDetailHeader": {
+			"delete_pattern": "Eliminar recorrido",
+			"delete_pattern_message": "¿Seguro que desea eliminar este recorrido? Esta acción no se puede deshacer.",
+			"save": "Guardar"
+		},
+		"PatternDetailHistory": {
+			"fields_reverted": "Campos restaurados. Pulse Guardar para conservar los cambios.",
+			"history": "Historial",
+			"no_history": "No hay actividad registrada para este recorrido."
+		},
+		"PatternDetailSectionConfig": {
+			"code": "Código",
+			"code_example": "Ej.: 1234_0",
+			"destination": "Destino",
+			"destination_example": "Ej.: Reboleira (estación)",
+			"direction": "Sentido",
+			"direction_options": {
+				"inbound": "Vuelta",
+				"outbound": "Ida"
+			},
+			"headsign": "Letrero de destino",
+			"origin": "Origen",
+			"pattern_config": "Configuración del recorrido"
+		},
+		"PatternDetailSectionRules": {
+			"new_rule": "Nueva regla",
+			"operating_rules": "Reglas de funcionamiento",
+			"preview_calendar": "Previsualizar calendario",
+			"rule_list": "Lista de reglas",
+			"schedules": "Horarios"
+		},
+		"PatternDetailSectionShape": {
+			"edit_pattern": "Editar recorrido",
+			"import_gtfs": "Importar archivo GTFS",
+			"length": "Longitud",
+			"pattern_loaded": "Recorrido cargado. Pulse Guardar para confirmar.",
+			"stop_sequence": "Secuencia de paradas",
+			"trip_cost": "Coste por viaje"
+		},
+		"PatternDetailSectionTravelTimes": {
+			"travel_times": "Tiempos de viaje",
+			"travel_times_hint": "Defina la duración entre paradas y el tiempo de parada para cada tipo de viaje."
+		},
+		"PatternDetailSectionZones": {
+			"zones": "Asignación por zonas",
+			"zones_empty": "Añada paradas al recorrido para configurar la asignación por zonas."
+		}
+	},
+	"shape": {
+		"InitialStopSelector": {
+			"first_stop": "Primera parada",
+			"initial_stops_hint": "Este recorrido aún no tiene paradas. Añada las dos primeras para calcularlo.",
+			"second_stop": "Segunda parada",
+			"stop_sequence": "Secuencia de paradas"
+		},
+		"ParameterCreateModifiers": {
+			"seconds": "s"
+		},
+		"ParameterCreateStopItem": {
+			"dwell_sequence": "Tiempo de parada para la secuencia {sequence}",
+			"seconds": "s"
+		},
+		"PathTableColumnStop": {
+			"stop_id": "ID de parada:"
+		},
+		"RuleCreateSchedule": {
+			"timepoint_example": "Ej.: 08:30 o 0830 + Intro"
+		},
+		"ShapeEditorContent": {
+			"add_detour_failed": "No se pudo añadir el desvío",
+			"detour_error": "Error al añadir el desvío",
+			"missing_segment": "No se pudo identificar el tramo entre paradas.",
+			"not_editable_shape": "Esta geometría aún no permite desvíos. Recalcule primero el recorrido."
+		},
+		"ShapeEditorStopSelect": {
+			"load_stop_error": "Error al cargar la parada",
+			"search_stop": "Buscar parada…"
+		},
+		"ShapeEditorStopsItem": {
+			"drop_off_no": "No se permite bajar en esta parada",
+			"drop_off_yes": "Se permite bajar en esta parada",
+			"pickup_no": "No se permite subir en esta parada",
+			"pickup_yes": "Se permite subir en esta parada",
+			"timepoint_no": "La hora de paso no es exacta en esta parada",
+			"timepoint_yes": "La hora de paso es exacta en esta parada"
+		},
+		"StopsList": {
+			"stop_sequence": "Secuencia de paradas"
+		},
+		"StopsListRow": {
+			"add_stop": "Añadir parada",
+			"cancel": "Cancelar"
+		},
+		"StopsTableHeader": {
+			"drop_off": "Permite bajar",
+			"pickup": "Permite subir",
+			"segment_distance": "Distancia entre paradas",
+			"sequence": "Secuencia",
+			"stop": "Parada",
+			"timepoint": "Hora exacta",
+			"zones": "Asignación por zonas"
+		},
+		"StopsTableRow": {
+			"drop_off_no": "No se permite bajar en esta parada",
+			"drop_off_yes": "Se permite bajar en esta parada",
+			"pickup_no": "No se permite subir en esta parada",
+			"pickup_yes": "Se permite subir en esta parada",
+			"timepoint_no": "La hora de paso no es exacta en esta parada",
+			"timepoint_yes": "La hora de paso es exacta en esta parada"
+		},
+		"StopsTableTableColumnDistance": {
+			"distance_meters": "Distancia (metros)",
+			"segment_sequence": "Distancia del tramo para la secuencia {sequence}"
+		},
+		"useShapeRoutePreview": {
+			"empty_response": "La vista previa del recorrido no devolvió datos."
+		}
+	},
+	"table": {
+		"PathTableColumnStop": {
+			"stop_id": "ID de parada:"
+		},
+		"StopsTableHeader": {
+			"sequence": "Secuencia",
+			"stop": "Parada",
+			"zones": "Asignación por zonas"
+		}
+	}
+}

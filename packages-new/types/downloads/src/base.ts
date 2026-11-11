@@ -17,7 +17,7 @@ export const FileExportBaseSchema = BaseDocumentSchema
 		file_id: z.string().nullish(),
 		file_name: z.string(),
 		processing_status: ProcessingStatusSchema,
-		properties: z.record(z.any()),
+		properties: z.record(z.string(), z.any()),
 		type: FileExportTypeSchema,
 	});
 

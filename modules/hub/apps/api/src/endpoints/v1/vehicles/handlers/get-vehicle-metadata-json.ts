@@ -1,43 +1,23 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { HubV1ApiVehicleMetadata } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type HubV1ApiVehicleMetadata } from '@tmlmobilidade/go-types-hub';
 
-/**
- * Retrieves the vehicle metadata JSON data from the cache.
- * @param request The request object.
- * @param reply The reply object.
- */
+/** Return organization-scoped published data. */
 export async function getVehicleMetadataJsonHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiVehicleMetadata[]>) {
 	//
 
 	//
-	// Get the published metadata from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get('hub:v1:realtime:vehicles:metadata:json');
-
-	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/realtime:getVehicleMetadataJsonHandler()] No data in cache.' });
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
-			.code(HTTP_STATUS.NO_CONTENT)
-			.send({
-				data: [],
-				error: null,
-				status_code: HTTP_STATUS.NO_CONTENT,
-			});
-	}
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiVehicleMetadata[]>(agencyIds, `realtime:vehicles:metadata:json`);
+	const data = entries.flatMap(entry => entry.data);
 
 	//
-	// Return the parsed metadata
+	// Return the merged data
 
-	return reply
-		.header('access-control-allow-origin', '*')
-		.header('cache-control', 'public, max-age=5')
-		.code(HTTP_STATUS.OK)
-		.send(JSON.parse(cachedData));
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '3s' });
 }

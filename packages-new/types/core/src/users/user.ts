@@ -1,8 +1,11 @@
 /* * */
 
 import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { BaseDocumentSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
+
+import { UserBannerDismissalSchema } from './banner-dismissal.js';
+import { UserChangelogSeenSchema } from './changelog-seen.js';
 
 /* * */
 
@@ -19,6 +22,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 /* * */
 
 export const UserSchema = BaseDocumentSchema.extend({
+	dismissed_banners: z.array(UserBannerDismissalSchema).default([]),
 	email: z.string().email(),
 	email_verified: UnixMillisecondsSchema.nullable().default(null),
 	first_name: z.string().min(2),
@@ -27,15 +31,16 @@ export const UserSchema = BaseDocumentSchema.extend({
 	password_hash: z.string().nullable().default(null),
 	permissions: z.array(PermissionSchema).default([]),
 	phone: z.string().nullable().default(null),
-	preferences: z.record(z.record(UserPreferenceValueSchema)).nullable().default(null),
+	preferences: z.record(z.string(), z.record(z.string(), UserPreferenceValueSchema)).nullable().default(null),
 	role_ids: z.array(z.string()).default([]),
+	seen_changelogs: z.array(UserChangelogSeenSchema).default([]),
 	seen_last_at: UnixMillisecondsSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),
 	verification_token_ids: z.array(z.string()).default([]),
 });
 
-export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateUserSchema = CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }).partial();
+export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, dismissed_banners: true, seen_changelogs: true, updated_at: true });
+export const UpdateUserSchema = partialWithoutDefaults(CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }));
 
 export type User = z.infer<typeof UserSchema>;
 export type CreateUserDto = z.infer<typeof CreateUserSchema>;

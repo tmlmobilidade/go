@@ -7,20 +7,24 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --fix && tsc --noEmit",
+		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix",
-		"start": "node dist/index.js"
+		"start": "node dist/index.js",
+		"test": "node --experimental-test-module-mocks --import tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"@fastify/multipart": "10.1.6",
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-clients-fastify": "*",
+		"@tmlmobilidade/go-clients-mongo": "*",
 		"@tmlmobilidade/go-core-pckg-types": "*",
 		"@tmlmobilidade/go-core-pckg-utils": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
@@ -36,7 +40,8 @@
 		"@tmlmobilidade/go-types-shared": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/strings": "*"
+		"@tmlmobilidade/strings": "*",
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

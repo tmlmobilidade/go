@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Role } from '@tmlmobilidade/go-types-core';
 
@@ -14,8 +13,8 @@ export async function getRoleHandler(request: FastifyRequest<{ Params: { id: str
 	const role = await goDb.core.roles.findById(request.params.id);
 
 	if (!role) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Role not found');
+		return sendErrorApiResponse(reply, { error: 'Role not found', status_code: '404' });
 	}
 
-	reply.send({ data: role, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, role);
 }

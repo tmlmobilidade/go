@@ -15,9 +15,13 @@ export function initGtfsSqlTables<T extends GtfsSQLTables>(source: Buffer | stri
 	const database = new SQLiteDatabase(typeof source === 'string' ? { instancePath: source } : { databaseInstance: new BSQLite3(source), memory: true });
 
 	// Read the actual headers rather than imposing a GTFS schema.
-	const registerTable = (tableName: string) => {
+	const registerTable = (tableName: string, indexColumns: string[] = []) => {
 		const header = database.databaseInstance.prepare(`PRAGMA table_info("${tableName}")`).all() as { name: string }[];
 		if (!header.length) throw new Error(`Table ${tableName} not found`);
+		// Repeated trip/shape lookups must not scan the entire imported feed.
+		if (indexColumns.length && indexColumns.every(name => header.some(column => column.name === name))) {
+			database.databaseInstance.exec(`CREATE INDEX IF NOT EXISTS idx_${tableName}_${indexColumns.join('_')} ON ${tableName} (${indexColumns.join(', ')})`);
+		}
 		const columns: SQLiteColumn<any>[] = header.map(column => ({ name: column.name, type: 'TEXT' }));
 		return database.registerTable<any>(tableName, { columns });
 	};
@@ -40,10 +44,10 @@ export function initGtfsSqlTables<T extends GtfsSQLTables>(source: Buffer | stri
 			_db: database,
 			calendar_dates: Object.fromEntries(calendarDates),
 			routes: registerTable('routes'),
-			shapes: registerTable('shapes'),
-			stop_times: registerTable('stop_times'),
+			shapes: registerTable('shapes', ['shape_id', 'shape_pt_sequence']),
+			stop_times: registerTable('stop_times', ['trip_id', 'stop_sequence']),
 			stops: registerTable('stops'),
-			trips: registerTable('trips'),
+			trips: registerTable('trips', ['shape_id', 'trip_id']),
 		} as unknown as T;
 	} catch (error) {
 		// Release the connection while preserving the imported file on failure.

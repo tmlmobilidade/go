@@ -54,11 +54,12 @@ export function PlansList() {
 				<PlansListCellFeedDates
 					activeFrom={item.active_from}
 					activeUntil={item.active_until}
+					hasOverlap={item.has_overlapping_plans}
 					temporalStatus={item.temporal_status}
 				/>
 			),
 			title: 'Datas de Validade',
-			width: 310,
+			width: 350,
 		},
 		{
 			accessor: 'apps.rides_feeder',
@@ -75,20 +76,6 @@ export function PlansList() {
 			width: 135,
 		},
 		{
-			accessor: 'apps.hub_publish_gtfs_cm',
-			render: item => (
-				<ProcessingStatusDisplay
-					value={item.apps?.hub_publish_gtfs_cm?.status}
-					tooltip={item.apps?.hub_publish_gtfs_cm?.timestamp && Dates
-						.fromUnixMilliseconds(item.apps?.hub_publish_gtfs_cm?.timestamp)
-						.setZone('Europe/Lisbon', 'offset_only')
-						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
-				/>
-			),
-			title: 'GTFS CM',
-			width: 135,
-		},
-		{
 			accessor: 'apps.hub_publish_gtfs',
 			render: item => (
 				<ProcessingStatusDisplay
@@ -99,7 +86,7 @@ export function PlansList() {
 						.toFormat('\'Atualizado a\' yyyy-LL-dd \'às\' HH:mm')}
 				/>
 			),
-			title: 'GTFS AML',
+			title: 'GTFS',
 			width: 135,
 		},
 		{

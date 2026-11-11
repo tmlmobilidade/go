@@ -43,7 +43,7 @@ export function usePeriodsListData(): UsePeriodsListDataReturnType {
 	//
 	// C. Transform data
 
-	const matches = useSearch<YearPeriod>({ accessors: ['_id', 'name', 'code', 'agency_ids'], data, query: searchFilter.value });
+	const matches = useSearch<YearPeriod>({ accessors: ['_id', 'name', 'short_name', 'code', 'agency_ids'], data, query: searchFilter.value });
 	const filtered = useMemo(() => {
 		return matches
 			.filter((item) => {

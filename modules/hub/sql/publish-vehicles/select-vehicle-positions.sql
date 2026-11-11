@@ -14,7 +14,9 @@ WITH latest_events AS (
 				trip_id,
 				bearing
 			FROM operation.simplified_vehicle_events
-			WHERE created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL 90 SECOND)
+			WHERE
+				agency_id = $agency_id
+				AND created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL 90 SECOND)
 			ORDER BY created_at DESC
 			LIMIT 2 BY agency_id, vehicle_id
 		),
@@ -33,7 +35,8 @@ WITH latest_events AS (
 				trip_id
 			FROM operation.rides
 			WHERE
-				start_time_scheduled BETWEEN
+				agency_id = $agency_id
+				AND start_time_scheduled BETWEEN
 					toUnixTimestamp64Milli(now64(3) - INTERVAL 10 HOUR)
 					AND toUnixTimestamp64Milli(now64(3) + INTERVAL 10 HOUR)
 				AND trip_id IN (

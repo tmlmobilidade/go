@@ -14,10 +14,10 @@ const RSS_FEED_URL = 'https://www.carrismetropolitana.pt/alerts';
 
 /* * */
 
-export async function publishRssFeed() {
+export async function publishRssFeed(agencyId: string) {
 	//
 
-	Logger.title('Starting build of RSS feed...');
+	Logger.info({ message: `Starting build of RSS feed` });
 
 	const globalTimer = new Timer();
 
@@ -34,6 +34,7 @@ export async function publishRssFeed() {
 						{ publish_end_date: undefined },
 						{ publish_end_date: { $exists: false } },
 					],
+					agency_id: agencyId,
 					publish_start_date: { $lte: Dates.now('Europe/Lisbon').unix_milliseconds },
 					publish_status: 'published',
 				},
@@ -49,26 +50,32 @@ export async function publishRssFeed() {
 	//
 	// Transform alerts into RSS feed entities
 
-	const transformedItems = await Promise.all(findResult.map(alert => transformAlertIntoRssEntity(alert, RSS_FEED_URL)));
+	const transformedItems = await Promise.all(findResult.map(async alert => ({
+		agency_id: alert.agency_id,
+		entity: await transformAlertIntoRssEntity(alert, RSS_FEED_URL),
+	})));
 
-	const transformResult: RssRawItem[] = transformedItems.filter((item): item is RssRawItem => item !== undefined);
+	const transformResult: RssRawItem[] = transformedItems.flatMap(item => item.entity ? [item.entity] : []);
 
 	Logger.info({ message: `Transformed ${transformResult.length} alerts into RSS feed entities (${globalTimer.get()})` });
 
 	//
 	// Save the result in API Cache
 
-	const rssFeed: string = createRssFeed(transformResult, {
+	const feedOptions = {
 		copyright: 'Carris Metropolitana',
 		description: 'Alertas e atualizações da Carris Metropolitana.',
 		feedSelfUrl: `${RSS_FEED_URL}.rss`,
 		link: RSS_FEED_URL,
 		title: 'Carris Metropolitana - Alertas',
-	});
+	};
 
-	await cacheDb.set('hub:v1:alerts:published:rss', rssFeed);
+	await cacheDb.set('hub:v1:alerts:published:rss', createRssFeed(transformResult, feedOptions));
 
-	Logger.success(`Finished publishing RSS feed (${globalTimer.get()})`);
+	const agencyItems = transformedItems.filter(item => item.agency_id === agencyId).flatMap(item => item.entity ? [item.entity] : []);
+	await cacheDb.set(`hub:v1:${agencyId}:alerts:published:rss`, createRssFeed(agencyItems, feedOptions));
+
+	Logger.success({ message: `Finished publishing RSS feed (${globalTimer.get()})` });
 
 	//
 };

@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PlansListFilters, PlansListFiltersSchema, type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
@@ -29,7 +29,9 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	//
 	// Validate the filters
 
-	const validatedFilters = PlansListFiltersSchema.parse(request.body);
+	const validatedFiltersResult = PlansListFiltersSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Build aggregation pipeline
@@ -46,11 +48,25 @@ export async function listPlansHandler(request: FastifyRequest<{ Body: PlansList
 	const aggregationResult = await goDb.operation.plans.aggregate(pipeline);
 
 	//
-	// Add temporal status to the results and filter by its value
+	// Check overlaps before filtering so hidden plans still trigger the warning.
+	// Validity dates are inclusive, including plans sharing a boundary date.
 
 	const resultsWithTemporalStatus = aggregationResult.map((result: PlansListItem) => {
+		//
+
+		//
+		// Calculate overlaps
+
+		const hasOverlap = aggregationResult.some((other) => {
+			// Skip plans with the same id or from different agency
+			if (other._id === result._id || other.agency_id !== result.agency_id) return false;
+			// Check if the other plan has overlapping dates
+			return other.active_from <= result.active_until && other.active_until >= result.active_from;
+		});
+
 		return {
 			...result,
+			has_overlapping_plans: hasOverlap,
 			temporal_status: getPlanTemporalStatus(result.active_from, result.active_until),
 		};
 	});

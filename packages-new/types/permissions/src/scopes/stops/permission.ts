@@ -10,7 +10,7 @@ import { StopsPermissionScopeSchema } from './scope.js';
 
 export const StopsPermissionSchema = z.object({
 	action: StopsPermissionActionsSchema,
-	resources: StopsPermissionResourcesSchema.default({ agency_ids: [], location_ids: [] }),
+	resources: StopsPermissionResourcesSchema.prefault({}),
 	scope: StopsPermissionScopeSchema,
 });
 

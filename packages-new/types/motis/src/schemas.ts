@@ -94,12 +94,12 @@ const MotisItinerarySchema = z.object({
 export const MotisGeocodeResponseSchema: z.ZodType<MotisGeocodeResponse> = z.array(MotisGeocodeResultSchema);
 
 export const MotisPlanResponseSchema: z.ZodType<MotisPlanResponse> = z.object({
-	debugOutput: z.record(z.number()),
+	debugOutput: z.record(z.string(), z.number()),
 	direct: z.array(MotisItinerarySchema),
 	from: MotisPlanPlaceSchema,
 	itineraries: z.array(MotisItinerarySchema),
 	nextPageCursor: z.string(),
 	previousPageCursor: z.string(),
-	requestParameters: z.record(z.string()),
+	requestParameters: z.record(z.string(), z.string()),
 	to: MotisPlanPlaceSchema,
 }).passthrough();
