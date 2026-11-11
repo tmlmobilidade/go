@@ -25,6 +25,7 @@ func DiscoverRuleIDs(source fs.FS) ([]string, error) {
 	for _, id := range []string{"file_validation", "file_not_found_in_rules"} {
 		found[id] = true
 	}
+
 	for _, file := range variables.GtfsRuleFiles {
 		found[file+"_file_missing"] = true
 	}
@@ -36,26 +37,32 @@ func DiscoverRuleIDs(source fs.FS) ([]string, error) {
 		if err != nil {
 			return err
 		}
-		if entry.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
+
+		if entry.IsDir() || !strings.HasSuffix(path, ".go") {
 			return nil
 		}
+
 		data, err := fs.ReadFile(source, path)
 		if err != nil {
 			return err
 		}
+
 		file, err := parser.ParseFile(token.NewFileSet(), path, data, 0)
 		if err != nil {
 			return err
 		}
+
 		ast.Inspect(file, func(node ast.Node) bool {
 			batch, ok := node.(*ast.CompositeLit)
 			if !ok {
 				return true
 			}
+
 			selector, ok := batch.Type.(*ast.SelectorExpr)
 			if !ok || selector.Sel.Name != "RuleChecks" {
 				return true
 			}
+
 			for _, element := range batch.Elts {
 				pair, ok := element.(*ast.KeyValueExpr)
 				if !ok {

@@ -16,5 +16,9 @@ func ValidateJSON(data []byte) error {
 	if err := json.Unmarshal(data, &document); err != nil {
 		return fmt.Errorf("invalid rules JSON: %w", err)
 	}
+
+	//
+	// 2. Return nil if the JSON is valid
+
 	return nil
 }
