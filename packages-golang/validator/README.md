@@ -62,9 +62,9 @@ The GTFS Validator follows a modular, concurrent architecture designed for effic
 
 Shared data types and contracts live under `src/types`, grouped into `cli`,
 `logger`, `messages`, `rules`, `algorithm`, `sqlite`, `geo`,
-`context`, and `validations`. The `types` tree contains declarations only;
-row-error behavior lives in `lib/context`, and report helpers live in
-`lib/messages`. Query and execution logic stays in
+`context`, and `validations`. `RowError` keeps its source metadata and error
+methods in `types/context`; source-detail extraction lives in `lib/context`,
+and report helpers live in `lib/messages`. Query and execution logic stays in
 `services` and `lib`. Service implementations that own methods and private state,
 such as the logger and message collector, keep those together in their package.
 
@@ -82,6 +82,11 @@ thresholds live in `types/variables/geo.go`; custom-rule tolerance and unit opti
 are resolved in `validations/customs/utils`.
 
 ### High-Level Flow
+
+`algorithm.NewManager` receives the registered checks and configuration,
+selects configured rules and prerequisites, creates their execution contexts,
+and builds the dependency graph. `algorithm.Build` validates and orders the graph;
+`algorithm.RunRules` invokes the prepared callbacks as dependencies finish.
 
 ```mermaid
 flowchart LR
@@ -106,12 +111,17 @@ ZIP input is no longer supported by the validator.
 checks its SQLite schema, and returns a database connection. Missing paths are
 rejected without creating a database. Imported rows remain on disk: query helpers
 preserve TEXT values and expose NULL cells as empty strings. Preparation is
-separate: `queries.PrepareSQLiteIndexes(db)` creates lookup indexes in one
+separate: `sqlite.PrepareSQLiteIndexes(db)` creates lookup indexes in one
 transaction before concurrent checks start. Table and column existence are queried
 directly from SQLite when needed; there is no shared schema cache or preload step.
 Missing columns become SQL `NULL` in validation queries, and missing tables are
 left for file-presence rules to report. The input must be writable and is retained
 after validation; only the connection is closed.
+
+`services/sqlite` owns database opening and the index transaction. SQL helpers,
+including `queries.PrepareIndexes`, live in `services/sqlite/queries`; shared
+contracts live in `types/sqlite`, and the row-reference helper lives in `utils/sqlite`.
+Other pure helpers are grouped by domain under `src/utils`.
 
 The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 
@@ -171,8 +181,8 @@ the node, and only `depends_on` controls when Kahn invokes its callback.
 Every executable rule receives one context:
 
 ```go
-func PatternIdField(ctx *context.ValidationContext) error {
-    return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *context.ValidationContext) error {
+func PatternIdField(ctx *contextTypes.ValidationContext) error {
+    return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *contextTypes.ValidationContext) error {
         // Read row.Source, use row.Config, and report through context.AddMessage.
         return nil
     })
@@ -198,9 +208,10 @@ the report and error.
 `ValidationContext` contains the rule ID, complete configuration, database
 connection, message receiver, and outcome. `Config.Severity` is the source used by
 severity and reporting helpers. Each row callback receives a child context with
-its own source location and copied configuration; row changes do not leak into
-other rows or rules. Findings propagate to the parent outcome before Kahn
-releases or blocks its dependents. Translation helpers use the context's rule ID.
+its own source location and a value copy of the configuration. Options and
+comparisons remain shared and read-only during validation. Findings propagate to
+the parent outcome before Kahn releases or blocks its dependents. Translation
+helpers use the context's rule ID.
 
 ## Results Collection and Output
 
@@ -212,11 +223,11 @@ The `MessageService` collects all validation messages throughout the execution:
 - **Deduplication**: Findings with the same file, rule, field, severity, and text
   are merged, retaining at most 50 row examples: the first 49 source rows and the latest occurrence
 - **Severity Tracking**: Counts distinct error and warning diagnostics in the report
-- **Dependency Outcomes**: Counts every emitted info, warning, and error finding
-  before deduplication so repeated findings still fail the rule
+- **Dependency Outcomes**: Contexts record info, warning, and error findings before
+  collection, so repeated findings still fail the rule after deduplication
 
-The shared collector interface exposes `AddMessage`, `GetSummary`, and
-`RuleIssueCount`. The concrete collector also provides `OutputSummary` for the CLI.
+The shared collector interface exposes `AddMessage` and `GetSummary`.
+The concrete collector also provides `OutputSummary` for the CLI.
 Each run owns its collector, and report snapshots can be changed without changing
 stored findings. `AllMessages` flattens grouped reports for callers such as tests.
 
