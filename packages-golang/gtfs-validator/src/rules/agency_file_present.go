@@ -18,9 +18,10 @@ func AgencyFilePresent(ctx context.Context, db *sql.DB) ([]Finding, error) {
 	// Missing GTFS content is a finding, not a database execution error.
 	if !exists {
 		return []Finding{{
-			Severity: Error,
-			FileName: "agency.txt",
-			Message:  "Required agency.txt file is missing.",
+			Severity:    SEVERITY_ERROR,
+			Description: "Required agency.txt file must be present.",
+			FileName:    "agency.txt",
+			Message:     "Required agency.txt file is missing.",
 		}}, nil
 	}
 

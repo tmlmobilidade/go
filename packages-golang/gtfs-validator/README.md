@@ -26,11 +26,19 @@ Stdout contains one JSON report; diagnostics go to stderr. Exit codes:
 - `1`: validation completed with error findings.
 - `2`: invalid arguments/config, import failure, or execution failure.
 
-Reports contain every rule in ID order, findings, error/warning totals, and skip
-reasons. `blocked_by` lists direct prerequisites that did not pass. On operational
-failure, the report also contains an `error`; independent unstarted rules are
-skipped with an abort reason. CLI argument failures do not produce a report.
-Finding totals count findings, not affected rows.
+Reports use `Summary`: `messages` contains grouped `RuleMessage` objects, plus
+`total_errors` and `total_warnings`. Each group contains detail `Message` objects,
+field, filename, description, rule ID, severity, and distinct affected row count.
+The report service lives in `src/report/` and retains at most 100 detail messages
+per group and 100 rows per detail. Totals count distinct diagnostics before sampling;
+row counts include all distinct collected rows. Zero-based input rows become CSV
+line numbers (index + 2 for the header). Findings without source rows use `rows: []`.
+A clean feed produces `messages: []`. Operational failures use the returned Go
+error and CLI stderr; CLI argument failures do not produce a report.
+
+Severities are `ignore`, `info`, `warning`, `error`, and `forbidden`. Ignored findings
+are omitted; info is retained without increasing totals. Error and forbidden
+findings contribute to `total_errors`; warnings contribute to `total_warnings`.
 
 ## Go library
 
@@ -64,14 +72,14 @@ There is no external registration API. Initial checks form a chain:
 agency_file_present → agency_name_field_present → agency_name_valid
 ```
 
-Rules return findings separately from operational errors. Error findings mark a
+Rules return findings separately from operational errors. Error and forbidden findings mark a
 rule `failed`; descendants become `skipped`, while independent branches continue.
-Warnings allow dependents to proceed. Operational errors or panics mark a rule
+Ignore, info, and warning findings allow dependents to proceed. Operational errors or panics mark a rule
 `errored`, cancel running work, and abort scheduling. Cancellation is cooperative;
 the executor waits for all started functions to return. Successful rules are `passed`.
 
 The name check reports one finding with the number of empty/ASCII-whitespace-only
-names. Original CSV line numbers are not preserved, so row references are omitted.
+names. Original CSV line numbers are not preserved, so row references are empty.
 These three checks are examples, not a complete GTFS conformance validator.
 TypeScript validator integration and config-driven rule selection are deferred.
 

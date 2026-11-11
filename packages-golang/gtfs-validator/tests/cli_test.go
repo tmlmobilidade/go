@@ -95,18 +95,15 @@ func TestCLI(t *testing.T) {
 			// Capturing streams separately catches accidental log output in JSON stdout.
 			if test.report {
 				var report struct {
-					Rules []struct {
-						Status string `json:"status"`
-					} `json:"rules"`
-					TotalErrors int    `json:"total_errors"`
-					Error       string `json:"error"`
+					Messages    []json.RawMessage `json:"messages"`
+					TotalErrors int               `json:"total_errors"`
 				}
 
 				if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
 					t.Fatalf("stdout is not a JSON report: %s", stdout.String())
 				}
 
-				if len(report.Rules) != 3 {
+				if report.Messages == nil {
 					t.Fatal("incomplete rule report", stdout.String())
 				}
 
@@ -114,7 +111,7 @@ func TestCLI(t *testing.T) {
 					t.Fatal("missing findings")
 				}
 
-				if code == 2 && report.Error == "" {
+				if code == 2 && stderr.Len() == 0 {
 					t.Fatal("missing operational error")
 				}
 			} else if stdout.Len() != 0 {

@@ -20,27 +20,11 @@ func TestRulesOperationalError(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	report, err := rules.RunValidations(context.Background(), database, 2)
-	if err == nil || report.Error == "" || len(report.Rules) != 3 {
-		t.Fatal(report, err)
+	results, err := rules.RunValidations(context.Background(), database, 2)
+	if err == nil || len(results) != 3 {
+		t.Fatal(results, err)
 	}
-	if report.Rules[0].Status != dag.Errored || report.Rules[1].Status != dag.Skipped || report.Rules[2].Status != dag.Skipped {
-		t.Fatal(report)
-	}
-}
-
-// A report is available before any database exists, including every built-in rule.
-func TestPendingReport(t *testing.T) {
-	report := rules.PendingReport()
-	if len(report.Rules) != 3 {
-		t.Fatal(report)
-	}
-	for i, result := range report.Rules {
-		if result.Status != dag.Skipped || result.Reason == "" || result.Findings == nil {
-			t.Fatal(result)
-		}
-		if i > 0 && report.Rules[i-1].ID >= result.ID {
-			t.Fatal("rules are not sorted by ID")
-		}
+	if results[0].Status != dag.Errored || results[1].Status != dag.Skipped || results[2].Status != dag.Skipped {
+		t.Fatal(results)
 	}
 }

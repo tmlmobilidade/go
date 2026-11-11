@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/dag"
 	validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 )
@@ -44,15 +43,14 @@ func TestValidateLocalAndCleanup(t *testing.T) {
 	temp := t.TempDir()
 	t.Setenv("TMPDIR", temp)
 	for _, test := range []struct {
-		name     string
-		files    map[string]string
-		statuses []dag.Status
-		count    int
+		name  string
+		files map[string]string
+		count int
 	}{
-		{"valid", map[string]string{"agency.txt": "agency_name\nExample\n"}, []dag.Status{dag.Passed, dag.Passed, dag.Passed}, 0},
-		{"missing file", map[string]string{}, []dag.Status{dag.Failed, dag.Skipped, dag.Skipped}, 1},
-		{"missing field", map[string]string{"agency.txt": "agency_id\n1\n"}, []dag.Status{dag.Passed, dag.Failed, dag.Skipped}, 1},
-		{"empty names", map[string]string{"agency.txt": "agency_id,agency_name\n1,\n2, \n3,Good\n"}, []dag.Status{dag.Passed, dag.Passed, dag.Failed}, 1},
+		{"valid", map[string]string{"agency.txt": "agency_name\nExample\n"}, 0},
+		{"missing file", map[string]string{}, 1},
+		{"missing field", map[string]string{"agency.txt": "agency_id\n1\n"}, 1},
+		{"empty names", map[string]string{"agency.txt": "agency_id,agency_name\n1,\n2, \n3,Good\n"}, 1},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			path := filepath.Join(temp, "feed.zip")
@@ -61,14 +59,8 @@ func TestValidateLocalAndCleanup(t *testing.T) {
 			}
 
 			report, err := validator.GtfsValidator(context.Background(), validator.Options{Source: importgtfs.ImportGtfsConfigSource{Path: path}, Concurrency: 3})
-			if err != nil || report.TotalErrors != test.count || len(report.Rules) != 3 {
+			if err != nil || report.TotalErrors != test.count || len(report.Messages) != test.count {
 				t.Fatal(report, err)
-			}
-
-			for i, r := range report.Rules {
-				if r.Status != test.statuses[i] {
-					t.Fatal(report)
-				}
 			}
 
 			entries, _ := filepath.Glob(filepath.Join(temp, "gtfs-validator-*"))
@@ -82,7 +74,7 @@ func TestValidateLocalAndCleanup(t *testing.T) {
 	path := filepath.Join(temp, "bad.zip")
 	os.WriteFile(path, archive(t, map[string]string{"agency.txt": "agency_name\n\"unterminated"}), 0600)
 	report, err := validator.GtfsValidator(context.Background(), validator.Options{Source: importgtfs.ImportGtfsConfigSource{Path: path}})
-	if err == nil || report.Error == "" {
+	if err == nil || len(report.Messages) != 0 {
 		t.Fatal("expected import failure")
 	}
 
@@ -98,7 +90,7 @@ func TestValidateURLAndCancellation(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.Write(contents) }))
 	defer server.Close()
 	report, err := validator.GtfsValidator(context.Background(), validator.Options{Source: importgtfs.ImportGtfsConfigSource{Url: server.URL}})
-	if err != nil || report.TotalErrors != 0 || len(report.Rules) != 3 {
+	if err != nil || report.TotalErrors != 0 || len(report.Messages) != 0 {
 		t.Fatal(report, err)
 	}
 

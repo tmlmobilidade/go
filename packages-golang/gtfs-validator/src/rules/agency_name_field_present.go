@@ -16,10 +16,11 @@ func AgencyNameFieldPresent(ctx context.Context, db *sql.DB) ([]Finding, error) 
 
 	if !exists {
 		return []Finding{{
-			Severity: Error,
-			FileName: "agency.txt",
-			Field:    "agency_name",
-			Message:  "Required agency_name field is missing.",
+			Severity:    SEVERITY_ERROR,
+			Description: "Required agency_name field must be present.",
+			FileName:    "agency.txt",
+			Field:       "agency_name",
+			Message:     "Required agency_name field is missing.",
 		}}, nil
 	}
 

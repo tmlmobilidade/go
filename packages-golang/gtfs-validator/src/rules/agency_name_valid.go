@@ -20,10 +20,11 @@ func AgencyNameValid(ctx context.Context, db *sql.DB) ([]Finding, error) {
 	// Return one aggregate finding, since original CSV row numbers are unavailable.
 	if count > 0 {
 		return []Finding{{
-			Severity: Error,
-			FileName: "agency.txt",
-			Field:    "agency_name",
-			Message:  fmt.Sprintf("%d agency rows have an empty agency_name.", count),
+			Severity:    SEVERITY_ERROR,
+			Description: "Agency names must not be empty.",
+			FileName:    "agency.txt",
+			Field:       "agency_name",
+			Message:     fmt.Sprintf("%d agency rows have an empty agency_name.", count),
 		}}, nil
 	}
 

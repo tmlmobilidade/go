@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/dag"
 	validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 )
 
@@ -22,42 +22,25 @@ func TestIntegrationMockGTFS(t *testing.T) {
 		t.Run(scenario, func(t *testing.T) {
 			files := loadMockGTFS(t, "mock-gtfs")
 
-			// Describe the full expected report, including rule ordering and empty lists.
-			// A passing feed validates only the currently implemented agency checks.
-			expected := validator.Report{Rules: []validator.RuleResult{
-				{ID: "agency_file_present", Status: dag.Passed, Findings: []validator.Finding{}},
-				{ID: "agency_name_field_present", Status: dag.Passed, Findings: []validator.Finding{}},
-				{ID: "agency_name_valid", Status: dag.Passed, Findings: []validator.Finding{}},
-			}}
-
+			expected := validator.Summary{Messages: []validator.RuleMessage{}}
+			var finding validator.Message
+			var description string
 			switch scenario {
 			case "empty agency names":
-				// Both a NULL value and a whitespace-only name must be detected after import.
+				description = "Agency names must not be empty."
 				files = loadMockGTFS(t, "mock-gtfs-invalid")
-				expected.TotalErrors = 1
-				expected.Rules[2].Status = dag.Failed
-				expected.Rules[2].Findings = []validator.Finding{{
-					Severity: validator.Error,
-					FileName: "agency.txt",
-					Field:    "agency_name",
-					Message:  "2 agency rows have an empty agency_name.",
-				}}
-
+				finding = validator.Message{Severity: rules.SEVERITY_ERROR, FileName: "agency.txt", Field: "agency_name", RuleID: "agency_name_valid", Message: "2 agency rows have an empty agency_name.", Rows: []int{}}
 			case "missing agency file":
+				description = "Required agency.txt file must be present."
 				delete(files, "agency.txt")
+				finding = validator.Message{Severity: rules.SEVERITY_ERROR, FileName: "agency.txt", RuleID: "agency_file_present", Message: "Required agency.txt file is missing.", Rows: []int{}}
+			}
+			if finding.RuleID != "" {
 				expected.TotalErrors = 1
-				expected.Rules[0].Status = dag.Failed
-				expected.Rules[0].Findings = []validator.Finding{{
-					Severity: validator.Error,
-					FileName: "agency.txt",
-					Message:  "Required agency.txt file is missing.",
-				}}
-				expected.Rules[1].Status = dag.Skipped
-				expected.Rules[1].BlockedBy = []string{"agency_file_present"}
-				expected.Rules[1].Reason = "prerequisite unsuccessful"
-				expected.Rules[2].Status = dag.Skipped
-				expected.Rules[2].BlockedBy = []string{"agency_name_field_present"}
-				expected.Rules[2].Reason = "prerequisite unsuccessful"
+				expected.Messages = append(expected.Messages, validator.RuleMessage{
+					Messages: []validator.Message{finding}, Field: finding.Field, FileName: finding.FileName,
+					RuleID: finding.RuleID, Message: description, Severity: finding.Severity,
+				})
 			}
 
 			// Package the text fixture as a real ZIP and offer identical bytes over HTTP.
