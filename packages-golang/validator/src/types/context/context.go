@@ -12,7 +12,7 @@ import (
 // Create a separate context for each running check; contexts are not shared between workers.
 type ValidationContext struct {
 	DB           *sql.DB                // Shared connection pool; schema is queried when needed
-	Config       rules.RuleContext      // Private complete configuration, including options and comparisons
+	Config       rules.RuleContext      // Per-rule copy; options and comparisons remain shared and read-only
 	Source       *sqliteTypes.SQLiteRow // Current source row; nil on the whole-rule context
 	Skipped      bool                   // True when this rule cannot run against its required input data
 	Field        string                 // Field being checked, such as shape_id

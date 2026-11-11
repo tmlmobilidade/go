@@ -1,9 +1,10 @@
 package validationutils
 
 import (
+	"strings"
+
 	mathgeo "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/geo"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
-	"strings"
 )
 
 /*

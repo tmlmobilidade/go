@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -35,9 +36,9 @@ Field definitions: [GTFS Standard routes].
 [route_networks.txt]: https://gtfs.org/documentation/schedule/reference/#route_networkstxt
 [GTFS Standard routes]: https://gtfs.org/documentation/schedule/reference/#routestxt
 */
-func FilePresenceAndIntegrity(ctx *context.ValidationContext) error {
+func FilePresenceAndIntegrity(ctx *contextTypes.ValidationContext) error {
 	reported := map[string]bool{}
-	return context.ForEachRow(ctx, "routes", []string{"network_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"network_id"}, func(row *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(row) {
 			return nil
 		}

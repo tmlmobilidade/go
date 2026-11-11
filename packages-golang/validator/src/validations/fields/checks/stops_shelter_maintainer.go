@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -22,13 +23,13 @@ the validation rule configuration.
 
 [stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 */
-func ShelterMaintainerField(ctx *context.ValidationContext) error {
+func ShelterMaintainerField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "stops", []string{"shelter_maintainer"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stops", []string{"shelter_maintainer"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the shelter_maintainer value
 

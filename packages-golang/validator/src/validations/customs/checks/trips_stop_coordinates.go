@@ -1,11 +1,12 @@
 package custom
 
 import (
-	geoService "github.com/tmlmobilidade/go/packages-golang/validator/src/services/geo"
 	"strconv"
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	geoService "github.com/tmlmobilidade/go/packages-golang/validator/src/services/geo"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
@@ -48,7 +49,7 @@ Related tables: [trips.txt], [stop_times.txt], [stops.txt], [shapes.txt].
 [stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 [shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
 */
-func StopCoordinates(ctx *context.ValidationContext) error {
+func StopCoordinates(ctx *contextTypes.ValidationContext) error {
 
 	//
 	// 1. Require trip, stop-time, stop, and shape tables; create a local geometry cache.
@@ -62,7 +63,7 @@ func StopCoordinates(ctx *context.ValidationContext) error {
 	//
 	// 2. Visit each trip so findings remain associated with its source row.
 
-	return context.ForEachRow(ctx, "trips", []string{"stop_id", "trip_id", "shape_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"stop_id", "trip_id", "shape_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 
 		//
 		// 3. Skip this trip when the rule configuration disables its check.

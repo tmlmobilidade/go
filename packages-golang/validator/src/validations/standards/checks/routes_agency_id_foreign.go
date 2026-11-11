@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -34,7 +35,7 @@ Field definitions: [GTFS Standard routes].
 [agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 [GTFS Standard routes]: https://gtfs.org/documentation/schedule/reference/#routestxt
 */
-func RoutesAgencyIdUnique(ctx *context.ValidationContext) error {
+func RoutesAgencyIdUnique(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
@@ -43,7 +44,7 @@ func RoutesAgencyIdUnique(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "routes", []string{"agency_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"agency_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

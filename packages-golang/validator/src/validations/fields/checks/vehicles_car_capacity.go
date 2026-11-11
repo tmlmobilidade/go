@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ be carried. Required for operators providing car transport and optional otherwis
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func CarCapacityField(ctx *context.ValidationContext) error {
+func CarCapacityField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "vehicles", []string{"car_capacity"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"car_capacity"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the car_capacity value
 

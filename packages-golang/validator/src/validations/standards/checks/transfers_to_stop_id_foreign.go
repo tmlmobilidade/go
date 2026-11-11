@@ -1,10 +1,12 @@
 package standard
 
 import (
+	"strconv"
+
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
-	"strconv"
 )
 
 /*
@@ -34,7 +36,7 @@ Presence and type describe the GTFS fields; they do not define the configured di
 [transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 [stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 */
-func TransfersToStopIdForeign(ctx *context.ValidationContext) error {
+func TransfersToStopIdForeign(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
@@ -43,7 +45,7 @@ func TransfersToStopIdForeign(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "transfers", []string{"to_stop_id", "transfer_type", "from_stop_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "transfers", []string{"to_stop_id", "transfer_type", "from_stop_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

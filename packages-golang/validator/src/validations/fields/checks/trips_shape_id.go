@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -27,15 +28,15 @@ Presence and type follow [GTFS Standard].
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#tripstxt
 */
-func TripsShapeIdField(ctx *context.ValidationContext) error {
+func TripsShapeIdField(ctx *types.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *types.ValidationContext) error {
 		//
-		// 2. Get the shape_id value
+		// 2. Read the current source value
 
 		value, err := queries.Field(row.Source, "shape_id")
 		if err != nil {
@@ -43,20 +44,11 @@ func TripsShapeIdField(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 3. Check if the shape_id is required
+		// 3. Report missing values using this context's configuration and rule ID
 
-		if value == "" {
-			if context.ShouldIgnore(row) {
-				return nil
-			}
-
+		if value == "" && !context.ShouldIgnore(row) {
 			context.AddMessage(row, context.GetSeverityMessage(row, "required", "recommended", "informational"))
-			return nil
 		}
-
-		//
-		// 4. Return success
-
 		return nil
 	})
 }

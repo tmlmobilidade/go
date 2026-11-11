@@ -3,6 +3,7 @@ package custom
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
@@ -36,7 +37,7 @@ Related tables: [agency.txt].
 
 [agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 */
-func AgencyNameIdMatch(ctx *context.ValidationContext) error {
+func AgencyNameIdMatch(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -45,7 +46,7 @@ func AgencyNameIdMatch(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "agency", []string{"agency_name_id_match", "agency_id", "agency_name"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "agency", []string{"agency_name_id_match", "agency_id", "agency_name"}, func(rowCtx *contextTypes.ValidationContext) error {
 		config := &rowCtx.Config
 
 		//

@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Identifies the fare class defined in fare_attributes.txt.
 
 [fare_rules.txt]: https://gtfs.org/documentation/schedule/reference/#fare_rulestxt
 */
-func FareRulesFareIdField(ctx *context.ValidationContext) error {
+func FareRulesFareIdField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "fare_rules", []string{"fare_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "fare_rules", []string{"fare_id"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the fare_id value
 

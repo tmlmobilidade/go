@@ -6,6 +6,7 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
@@ -39,7 +40,7 @@ Related tables: [trips.txt].
 
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func DirectionPatternIdMatch(ctx *context.ValidationContext) error {
+func DirectionPatternIdMatch(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -48,7 +49,7 @@ func DirectionPatternIdMatch(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "trips", []string{"direction_pattern_id_match", "pattern_id", "direction_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"direction_pattern_id_match", "pattern_id", "direction_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the pattern_id, direction_id values
 

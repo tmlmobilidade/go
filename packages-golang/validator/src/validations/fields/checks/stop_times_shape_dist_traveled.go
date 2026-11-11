@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -23,13 +24,13 @@ Presence and type follow [GTFS Standard].
 [stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
-func StopTimesShapeDistTraveledField(ctx *context.ValidationContext) error {
+func StopTimesShapeDistTraveledField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "stop_times", []string{"shape_dist_traveled"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stop_times", []string{"shape_dist_traveled"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the shape_dist_traveled value
 

@@ -5,10 +5,11 @@ import (
 	"testing"
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	i18n "github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables/i18n"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/validations"
 	standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/checks"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
 )
 
 func TestFileMissingConditionalMessages(t *testing.T) {
@@ -89,7 +90,7 @@ func TestFeedInfoEmptyWithoutTranslationsPasses(t *testing.T) {
 
 func TestFileMissingOperationalErrors(t *testing.T) {
 	collector := &testutil.Collector{}
-	for name, ctx := range map[string]*context.ValidationContext{
+	for name, ctx := range map[string]*contextTypes.ValidationContext{
 		"nil":              nil,
 		"database_missing": context.NewRuleContext("agency_file_missing", nil, rules.RuleContext{Severity: rules.SEVERITY_ERROR}, collector),
 		"receiver_missing": context.NewRuleContext("agency_file_missing", emptyDatabase(t), rules.RuleContext{Severity: rules.SEVERITY_ERROR}, nil),

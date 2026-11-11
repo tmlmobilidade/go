@@ -16,9 +16,16 @@ func Status(context *types.ValidationContext) types.RuleStatus {
 	if context.Failed {
 		return algorithmtypes.Failed
 	}
+
+	//
+	// 2. Return the skipped outcome
+
 	if context.Skipped {
 		return algorithmtypes.Skipped
 	}
+
+	//
+	// 3. Return the passed outcome
 
 	return algorithmtypes.Passed
 }

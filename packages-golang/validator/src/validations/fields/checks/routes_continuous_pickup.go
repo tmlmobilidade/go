@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -28,13 +29,13 @@ Presence and type follow [GTFS Standard].
 [routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
 */
-func RoutesContinuousPickupField(ctx *context.ValidationContext) error {
+func RoutesContinuousPickupField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "routes", []string{"continuous_pickup"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"continuous_pickup"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the continuous_pickup value
 

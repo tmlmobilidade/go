@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Time at the trip's first stop when this headway interval ends or changes to anot
 
 [frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
 */
-func EndTimeField(ctx *context.ValidationContext) error {
+func EndTimeField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "frequencies", []string{"end_time"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "frequencies", []string{"end_time"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the end_time value
 

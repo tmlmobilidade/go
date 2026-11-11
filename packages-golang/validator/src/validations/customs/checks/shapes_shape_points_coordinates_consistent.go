@@ -1,7 +1,6 @@
 package custom
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 	"sort"
 	"strconv"
 
@@ -9,9 +8,11 @@ import (
 	geo "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/geo"
 	validators "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/validators"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
 	ruleTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
@@ -45,7 +46,7 @@ Related tables: [shapes.txt].
 
 [shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
 */
-func ShapePointsCoordinatesConsistent(ctx *context.ValidationContext) error {
+func ShapePointsCoordinatesConsistent(ctx *contextTypes.ValidationContext) error {
 
 	//
 	// 1. Require the shapes table before visiting each distinct shape ID.
@@ -55,7 +56,7 @@ func ShapePointsCoordinatesConsistent(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return validationutils.ForEachGroup(ctx, "shapes", "shape_id", []string{"shape_pt_sequence", "shape_id"}, func(rowCtx *context.ValidationContext) error {
+	return validationutils.ForEachGroup(ctx, "shapes", "shape_id", []string{"shape_pt_sequence", "shape_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		config := &rowCtx.Config
 
 		//

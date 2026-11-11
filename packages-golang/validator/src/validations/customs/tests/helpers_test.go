@@ -10,7 +10,7 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/validations"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/validations"
 	_ "modernc.org/sqlite"
 )
 

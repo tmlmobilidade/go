@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Identifier grouping route variants into a line. This legacy TML extension is req
 
 [routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 */
-func LineIdField(ctx *context.ValidationContext) error {
+func LineIdField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "routes", []string{"line_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"line_id"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the line_id value
 

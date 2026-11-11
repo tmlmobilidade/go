@@ -3,6 +3,7 @@ package custom
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -33,10 +34,10 @@ Related tables: [trips.txt].
 
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func PatternRequiredFields(ctx *context.ValidationContext) error {
+func PatternRequiredFields(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Read each pattern member once and preserve its source row
-	return context.ForEachRow(ctx, "trips", []string{"pattern_id", "shape_id", "route_id", "direction_id", "trip_headsign"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"pattern_id", "shape_id", "route_id", "direction_id", "trip_headsign"}, func(row *contextTypes.ValidationContext) error {
 		values, err := queries.Fields(row.Source, "pattern_id", "shape_id", "route_id", "direction_id", "trip_headsign")
 		if err != nil {
 			return err

@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ min_transfer_time, 3 no transfer, 4 an in-seat transfer or 5 an in-seat transfer
 
 [transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
-func TransferTypeField(ctx *context.ValidationContext) error {
+func TransferTypeField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "transfers", []string{"transfer_type"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "transfers", []string{"transfer_type"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the transfer_type value
 

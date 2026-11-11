@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ or be left empty.
 
 [fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
-func TransferDurationField(ctx *context.ValidationContext) error {
+func TransferDurationField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "fare_attributes", []string{"transfer_duration"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "fare_attributes", []string{"transfer_duration"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the transfer_duration value
 

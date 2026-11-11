@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Minimum pathway width in meters. Providing this field is recommended when the wi
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func MinWidthField(ctx *context.ValidationContext) error {
+func MinWidthField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "pathways", []string{"min_width"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"min_width"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the min_width value
 

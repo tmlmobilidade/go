@@ -2,7 +2,8 @@ package standard
 
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -35,46 +36,43 @@ Field definitions: [GTFS Standard trips].
 [shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
 [GTFS Standard trips]: https://gtfs.org/documentation/schedule/reference/#tripstxt
 */
-func ShapeIdForeign(ctx *context.ValidationContext) error {
+func ShapeIdForeign(ctx *types.ValidationContext) error {
 	//
-	// 1. Select this rule's source rows and required lookup tables.
+
+	//
+	// 1. Validate the context and skip when required tables are unavailable
 
 	ready, err := context.RequireTables(ctx, "trips", "shapes")
 	if err != nil || !ready {
 		return err
 	}
+	shapes := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: "shapes"}
 
-	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(rowCtx *context.ValidationContext) error {
-		if context.ShouldIgnore(rowCtx) {
+	//
+	// 2. Read each trip's shape ID
+
+	return context.ForEachRow(ctx, "trips", []string{"shape_id"}, func(row *types.ValidationContext) error {
+		if context.ShouldIgnore(row) {
 			return nil
 		}
-
-		value, err := queries.Field(rowCtx.Source, "shape_id")
+		value, err := queries.Field(row.Source, "shape_id")
 		if err != nil {
 			return err
 		}
-
-		//
-		// 2. Requiredness is checked by the field rule.
-
 		if value == "" {
 			return nil
-		}
+		} // Presence is handled by the field rule.
 
 		//
-		// 3. Check if the shape_id exists in the shapes table
+		// 3. Check the related table and report through the same row context
 
-		referenceExists1, err := queries.Exists(&sqliteTypes.SQLiteTable{DB: rowCtx.DB, Name: "shapes"}, "shape_id", value)
+		exists, err := queries.Exists(shapes, "shape_id", value)
 		if err != nil {
 			return err
 		}
-		if !referenceExists1 {
-			context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "not_found", value))
+		if !exists {
+			context.AddMessage(row, context.GetTranslatedMessage(row, "not_found", value))
 		}
-
-		//
-		// 4. Return success
-
 		return nil
 	})
 }

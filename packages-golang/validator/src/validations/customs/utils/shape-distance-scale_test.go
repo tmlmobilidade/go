@@ -1,9 +1,10 @@
 package validationutils_test
 
 import (
+	"testing"
+
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	utils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
-	"testing"
 )
 
 /*

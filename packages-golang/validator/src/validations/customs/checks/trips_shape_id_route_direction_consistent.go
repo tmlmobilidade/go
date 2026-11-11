@@ -7,6 +7,7 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
@@ -39,7 +40,7 @@ Related tables: [trips.txt].
 
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func ShapeIdRouteDirectionConsistent(ctx *context.ValidationContext) error {
+func ShapeIdRouteDirectionConsistent(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -48,7 +49,7 @@ func ShapeIdRouteDirectionConsistent(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return validationutils.ForEachGroup(ctx, "trips", "route_id", []string{"shape_id", "route_id"}, func(rowCtx *context.ValidationContext) error {
+	return validationutils.ForEachGroup(ctx, "trips", "route_id", []string{"shape_id", "route_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		//
 		// 2. Check if the shape_id validation should run
 

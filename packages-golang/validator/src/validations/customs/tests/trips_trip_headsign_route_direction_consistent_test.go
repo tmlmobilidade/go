@@ -1,8 +1,9 @@
 package custom_test
 
 import (
-	custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/checks"
 	"testing"
+
+	custom "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/checks"
 )
 
 func TestTripsTripHeadsignRouteDirectionConsistent(t *testing.T) {

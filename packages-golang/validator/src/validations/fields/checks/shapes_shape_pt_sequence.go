@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -23,13 +24,13 @@ Presence and type follow [GTFS Standard].
 [shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
 */
-func ShapePtSequenceField(ctx *context.ValidationContext) error {
+func ShapePtSequenceField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "shapes", []string{"shape_pt_sequence"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "shapes", []string{"shape_pt_sequence"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the shape_pt_sequence value
 

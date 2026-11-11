@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Non-negative fare amount expressed in the currency identified by currency_type.
 
 [fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
-func PriceField(ctx *context.ValidationContext) error {
+func PriceField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "fare_attributes", []string{"price"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "fare_attributes", []string{"price"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the price value
 

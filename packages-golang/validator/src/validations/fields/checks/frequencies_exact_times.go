@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ Specifies frequency-based service with 0 or an empty value, or exact scheduled d
 
 [frequencies.txt]: https://gtfs.org/documentation/schedule/reference/#frequenciestxt
 */
-func ExactTimesField(ctx *context.ValidationContext) error {
+func ExactTimesField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "frequencies", []string{"exact_times"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "frequencies", []string{"exact_times"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the exact_times value
 

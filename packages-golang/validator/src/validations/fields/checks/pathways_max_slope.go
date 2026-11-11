@@ -5,6 +5,7 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -22,13 +23,13 @@ walkways and moving sidewalks, identified by pathway_mode values 1 and 3.
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func MaxSlopeField(ctx *context.ValidationContext) error {
+func MaxSlopeField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "pathways", []string{"max_slope", "pathway_mode"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"max_slope", "pathway_mode"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the max_slope value
 

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -19,7 +19,7 @@ type TripsSequencePoint struct {
 }
 
 // StopSequence reads current imported values. Gaps are valid; distances may be equal.
-func StopSequence(ctx *context.ValidationContext, tripID string) ([]TripsSequencePoint, string, error) {
+func StopSequence(ctx *contextTypes.ValidationContext, tripID string) ([]TripsSequencePoint, string, error) {
 	table, err := Table(ctx, "stop_times")
 	if err != nil {
 		return nil, "", err
@@ -76,7 +76,7 @@ func SequenceHash(points []TripsSequencePoint) string {
 
 // SequenceHashes replaces the external map populated by a previous rule. It reads
 // its own prerequisites and retains missing signatures for invalid sequences.
-func SequenceHashes(ctx *context.ValidationContext) (map[int]string, error) {
+func SequenceHashes(ctx *contextTypes.ValidationContext) (map[int]string, error) {
 	hashes := map[int]string{}
 	signatures := map[string]string{}
 	table := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: "trips"}

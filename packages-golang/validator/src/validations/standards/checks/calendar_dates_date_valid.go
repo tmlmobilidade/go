@@ -4,6 +4,7 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	validators "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/validators"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -28,11 +29,11 @@ Field definitions: [GTFS Standard].
 [calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendar_datestxt
 */
-func CalendarDatesDateValid(ctx *context.ValidationContext) error {
+func CalendarDatesDateValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "calendar_dates", []string{"date"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "calendar_dates", []string{"date"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

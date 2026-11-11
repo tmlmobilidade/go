@@ -1,10 +1,12 @@
 package standard
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 	"math"
 	"strconv"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -30,11 +32,11 @@ Field definitions: [GTFS Standard].
 [shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
 */
-func ShapesShapeDistTraveledValid(ctx *context.ValidationContext) error {
+func ShapesShapeDistTraveledValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "shapes", []string{"shape_dist_traveled"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "shapes", []string{"shape_dist_traveled"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

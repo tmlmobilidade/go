@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ levels use negative values.
 
 [levels.txt]: https://gtfs.org/documentation/schedule/reference/#levelstxt
 */
-func LevelIndexField(ctx *context.ValidationContext) error {
+func LevelIndexField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "levels", []string{"level_index"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "levels", []string{"level_index"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the level_index value
 

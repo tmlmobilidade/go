@@ -4,6 +4,7 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	validators "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/validators"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -31,11 +32,11 @@ Field definitions: [GTFS Standard].
 [agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
-func AgencyPhoneValid(ctx *context.ValidationContext) error {
+func AgencyPhoneValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "agency", []string{"agency_phone"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "agency", []string{"agency_phone"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

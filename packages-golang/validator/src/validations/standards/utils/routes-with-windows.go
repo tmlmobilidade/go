@@ -1,13 +1,13 @@
 package standardutils
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // RoutesWithWindows derives this rule's route lookup from its own SQLite input.
-func RoutesWithWindows(ctx *context.ValidationContext) (map[string]bool, error) {
+func RoutesWithWindows(ctx *contextTypes.ValidationContext) (map[string]bool, error) {
 	trips := map[string]bool{}
 	stops := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: "stop_times"}
 	err := queries.ForEachRowFields(stops, []string{"trip_id", "start_pickup_drop_off_window", "end_pickup_drop_off_window"}, func(row *sqliteTypes.SQLiteRow) error {

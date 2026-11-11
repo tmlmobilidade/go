@@ -1,9 +1,11 @@
 package standard
 
 import (
+	"strconv"
+
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
-	"strconv"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -29,11 +31,11 @@ Presence and type describe the GTFS fields; they do not define the configured di
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func MaxSlopeValid(ctx *context.ValidationContext) error {
+func MaxSlopeValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "pathways", []string{"max_slope", "pathway_mode"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"max_slope", "pathway_mode"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

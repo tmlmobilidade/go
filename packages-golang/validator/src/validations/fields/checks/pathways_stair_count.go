@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ value means walking down. Recommended for pathway_mode=2.
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func StairCountField(ctx *context.ValidationContext) error {
+func StairCountField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "pathways", []string{"stair_count"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"stair_count"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the stair_count value
 

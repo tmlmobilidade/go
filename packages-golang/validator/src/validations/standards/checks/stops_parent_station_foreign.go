@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -35,8 +36,8 @@ Field definitions: [GTFS Standard].
 [stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
 */
-func ParentStationForeign(ctx *context.ValidationContext) error {
-	return context.ForEachRow(ctx, "stops", []string{"parent_station"}, func(row *context.ValidationContext) error {
+func ParentStationForeign(ctx *contextTypes.ValidationContext) error {
+	return context.ForEachRow(ctx, "stops", []string{"parent_station"}, func(row *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(row) {
 			return nil
 		}

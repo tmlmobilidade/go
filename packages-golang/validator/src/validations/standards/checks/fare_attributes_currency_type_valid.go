@@ -4,6 +4,7 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	validators "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/validators"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -25,11 +26,11 @@ Presence and type describe the GTFS fields; they do not define the configured di
 
 [fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
-func CurrencyTypeValid(ctx *context.ValidationContext) error {
+func CurrencyTypeValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "fare_attributes", []string{"currency_type"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "fare_attributes", []string{"currency_type"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

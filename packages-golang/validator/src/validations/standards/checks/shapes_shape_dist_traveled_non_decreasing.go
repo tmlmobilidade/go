@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	geo "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/geo"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	standardutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/utils"
 )
 
@@ -33,7 +34,7 @@ Field definitions: [GTFS Standard].
 [shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
 */
-func ShapeDistTraveledNonDecreasing(ctx *context.ValidationContext) error {
+func ShapeDistTraveledNonDecreasing(ctx *contextTypes.ValidationContext) error {
 	ready, err := context.RequireTables(ctx, "shapes")
 	if err != nil || !ready {
 		return err

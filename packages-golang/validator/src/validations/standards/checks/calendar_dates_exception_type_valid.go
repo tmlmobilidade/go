@@ -1,10 +1,12 @@
 package standard
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 	"slices"
 	"strconv"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -30,11 +32,11 @@ Field definitions: [GTFS Standard].
 [calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendar_datestxt
 */
-func ExceptionTypeValid(ctx *context.ValidationContext) error {
+func ExceptionTypeValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "calendar_dates", []string{"exception_type"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "calendar_dates", []string{"exception_type"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

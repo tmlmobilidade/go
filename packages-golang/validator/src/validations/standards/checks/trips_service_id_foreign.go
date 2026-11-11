@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -31,7 +32,7 @@ Field definitions: [GTFS Standard trips].
 [calendar_dates.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar-dates
 [GTFS Standard trips]: https://gtfs.org/documentation/schedule/reference/#tripstxt
 */
-func TripsServiceIdForeign(ctx *context.ValidationContext) error {
+func TripsServiceIdForeign(ctx *contextTypes.ValidationContext) error {
 	ready, err := context.RequireTables(ctx, "trips")
 	if err != nil || !ready {
 		return err
@@ -50,7 +51,7 @@ func TripsServiceIdForeign(ctx *context.ValidationContext) error {
 		ctx.Skipped = true
 		return nil
 	}
-	return context.ForEachRow(ctx, "trips", []string{"service_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"service_id"}, func(row *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(row) {
 			return nil
 		}

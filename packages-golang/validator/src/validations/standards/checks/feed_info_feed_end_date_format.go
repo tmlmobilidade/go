@@ -4,6 +4,7 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	validators "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/validators"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -30,11 +31,11 @@ Field definitions: [GTFS Standard].
 [feed_info.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/feed-info
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#feed_infotxt
 */
-func FeedEndDateFormat(ctx *context.ValidationContext) error {
+func FeedEndDateFormat(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "feed_info", []string{"feed_end_date"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "feed_info", []string{"feed_end_date"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

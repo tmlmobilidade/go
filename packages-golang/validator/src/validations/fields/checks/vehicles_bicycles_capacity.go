@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Number of spaces for non-folding bicycles. A value of 0 means that non-folding b
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func BicyclesCapacityField(ctx *context.ValidationContext) error {
+func BicyclesCapacityField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "vehicles", []string{"bicycles_capacity"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"bicycles_capacity"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the bicycles_capacity value
 

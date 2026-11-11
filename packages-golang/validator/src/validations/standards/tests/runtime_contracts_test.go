@@ -1,11 +1,13 @@
 package standard_test
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
-	standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/checks"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
 	"testing"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/validations"
+	standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/checks"
 )
 
 // Every migrated row rule must honor the same runtime boundary. Keep this list
@@ -203,7 +205,7 @@ func TestStandardRuntimeContracts(t *testing.T) {
 			})
 			t.Run("invalid_context", func(t *testing.T) {
 				collector := &testutil.Collector{}
-				for name, ctx := range map[string]*context.ValidationContext{
+				for name, ctx := range map[string]*contextTypes.ValidationContext{
 					"nil":              nil,
 					"missing_database": context.NewRuleContext(check.id, nil, rules.RuleContext{Severity: rules.SEVERITY_ERROR}, collector),
 					"missing_receiver": context.NewRuleContext(check.id, emptyDatabase(t), rules.RuleContext{Severity: rules.SEVERITY_ERROR}, nil),

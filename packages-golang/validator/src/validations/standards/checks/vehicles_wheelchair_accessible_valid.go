@@ -1,11 +1,13 @@
 package standard
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
-	variables "github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 	"slices"
 	"strconv"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
+	variables "github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 )
 
 /*
@@ -27,11 +29,11 @@ handle absence.
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func VehiclesWheelchairAccessibleValid(ctx *context.ValidationContext) error {
+func VehiclesWheelchairAccessibleValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "vehicles", []string{"wheelchair_accessible"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"wheelchair_accessible"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

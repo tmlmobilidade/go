@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ Exit gates with pathway_mode=7 must be one-way.
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func IsBidirectionalField(ctx *context.ValidationContext) error {
+func IsBidirectionalField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "pathways", []string{"is_bidirectional"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"is_bidirectional"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the is_bidirectional value
 

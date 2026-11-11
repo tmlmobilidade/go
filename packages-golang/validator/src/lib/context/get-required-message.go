@@ -15,5 +15,9 @@ func GetRequiredMessage(context *types.ValidationContext, requiredKey, recommend
 	if context.Config.Severity == rules.SEVERITY_ERROR {
 		return GetTranslatedMessage(context, requiredKey)
 	}
+
+	//
+	// 2. Return the translated message for the recommended severity
+
 	return GetTranslatedMessage(context, recommendedKey)
 }

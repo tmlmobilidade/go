@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Specifies when payment is required: 0 for payment on board or 1 for payment befo
 
 [fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
-func PaymentMethodField(ctx *context.ValidationContext) error {
+func PaymentMethodField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "fare_attributes", []string{"payment_method"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "fare_attributes", []string{"payment_method"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the payment_method value
 

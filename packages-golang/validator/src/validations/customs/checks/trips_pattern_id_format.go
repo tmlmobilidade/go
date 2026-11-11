@@ -6,6 +6,7 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
@@ -43,7 +44,7 @@ Related tables: [trips.txt].
 
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func PatternIdFormat(ctx *context.ValidationContext) error {
+func PatternIdFormat(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -52,7 +53,7 @@ func PatternIdFormat(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		config := &rowCtx.Config
 
 		//

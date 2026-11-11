@@ -6,6 +6,7 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
@@ -37,7 +38,7 @@ Related tables: [trips.txt].
 
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func TripHeadsignPatternConsistent(ctx *context.ValidationContext) error {
+func TripHeadsignPatternConsistent(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -46,7 +47,7 @@ func TripHeadsignPatternConsistent(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return validationutils.ForEachGroup(ctx, "trips", "pattern_id", []string{"trip_headsign", "pattern_id"}, func(rowCtx *context.ValidationContext) error {
+	return validationutils.ForEachGroup(ctx, "trips", "pattern_id", []string{"trip_headsign", "pattern_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		//
 		// 2. Check if the trip_headsign validation should run
 

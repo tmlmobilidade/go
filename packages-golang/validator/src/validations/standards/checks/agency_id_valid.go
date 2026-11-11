@@ -1,10 +1,12 @@
 package standard
 
 import (
+	"slices"
+
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	variables "github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
-	"slices"
 )
 
 /*
@@ -34,11 +36,11 @@ Field definitions: [GTFS Standard].
 [agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
-func AgencyIdValid(ctx *context.ValidationContext) error {
+func AgencyIdValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "agency", []string{"agency_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "agency", []string{"agency_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

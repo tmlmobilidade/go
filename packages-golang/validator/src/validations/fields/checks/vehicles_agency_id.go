@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Identifies the agency responsible for the vehicle.
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func VehiclesAgencyIdField(ctx *context.ValidationContext) error {
+func VehiclesAgencyIdField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "vehicles", []string{"agency_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"agency_id"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the agency_id value
 

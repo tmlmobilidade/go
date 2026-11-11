@@ -5,6 +5,7 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -26,13 +27,13 @@ Conditionally Required:
 
 [transfers.txt]: https://gtfs.org/documentation/schedule/reference/#transferstxt
 */
-func FromTripIdField(ctx *context.ValidationContext) error {
+func FromTripIdField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "transfers", []string{"from_trip_id", "transfer_type"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "transfers", []string{"from_trip_id", "transfer_type"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the from_trip_id value
 

@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -30,7 +31,7 @@ Field definitions: [GTFS Standard stop_times].
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 [GTFS Standard stop_times]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
-func StopTimesTripIdForeign(ctx *context.ValidationContext) error {
+func StopTimesTripIdForeign(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
@@ -39,7 +40,7 @@ func StopTimesTripIdForeign(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "stop_times", []string{"trip_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stop_times", []string{"trip_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

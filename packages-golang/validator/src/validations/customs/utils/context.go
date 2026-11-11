@@ -5,11 +5,12 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // RequireTables skips a rule when source or lookup data is unavailable.
-func RequireTables(ctx *context.ValidationContext, names ...string) (bool, error) {
+func RequireTables(ctx *contextTypes.ValidationContext, names ...string) (bool, error) {
 	if ctx == nil || ctx.DB == nil || ctx.MessageAdder == nil {
 		return false, fmt.Errorf("validation requires a context, database, and message receiver")
 	}
@@ -27,7 +28,7 @@ func RequireTables(ctx *context.ValidationContext, names ...string) (bool, error
 }
 
 // Table identifies an existing table; SQL stays in the SQLite query package.
-func Table(ctx *context.ValidationContext, name string) (*sqliteTypes.SQLiteTable, error) {
+func Table(ctx *contextTypes.ValidationContext, name string) (*sqliteTypes.SQLiteTable, error) {
 	exists, err := queries.TableExists(ctx.DB, name)
 	if err != nil {
 		return nil, err
@@ -40,9 +41,9 @@ func Table(ctx *context.ValidationContext, name string) (*sqliteTypes.SQLiteTabl
 
 // ForEachGroup invokes a whole-group check once at its first source row.
 // The seen set is private to one execution and never shared between rules.
-func ForEachGroup(ctx *context.ValidationContext, table, key string, fields []string, check func(*context.ValidationContext) error) error {
+func ForEachGroup(ctx *contextTypes.ValidationContext, table, key string, fields []string, check func(*contextTypes.ValidationContext) error) error {
 	seen := map[string]bool{}
-	return context.ForEachRow(ctx, table, fields, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, table, fields, func(row *contextTypes.ValidationContext) error {
 		value, err := queries.Field(row.Source, key)
 		if err != nil {
 			return err
@@ -55,7 +56,7 @@ func ForEachGroup(ctx *context.ValidationContext, table, key string, fields []st
 	})
 }
 
-func ForGroupFields(ctx *context.ValidationContext, field string, fields []string, check func(*sqliteTypes.SQLiteRow, map[string]string) error) error {
+func ForGroupFields(ctx *contextTypes.ValidationContext, field string, fields []string, check func(*sqliteTypes.SQLiteRow, map[string]string) error) error {
 	key, err := queries.Field(ctx.Source, field)
 	if err != nil {
 		return err
@@ -66,12 +67,12 @@ func ForGroupFields(ctx *context.ValidationContext, field string, fields []strin
 	return queries.ForEachMatchingFields(ctx.Source.Table, field, []any{key}, fields, check)
 }
 
-func ForGroup(ctx *context.ValidationContext, field string, check func(*sqliteTypes.SQLiteRow) error) error {
+func ForGroup(ctx *contextTypes.ValidationContext, field string, check func(*sqliteTypes.SQLiteRow) error) error {
 	return ForGroupFields(ctx, field, []string{field}, func(row *sqliteTypes.SQLiteRow, _ map[string]string) error { return check(row) })
 }
 
 // AddMessageAt preserves an offending member's source location and propagates failure.
-func AddMessageAt(ctx *context.ValidationContext, field string, row int, message string) {
+func AddMessageAt(ctx *contextTypes.ValidationContext, field string, row int, message string) {
 	finding := *ctx
 	finding.Field, finding.Row = field, row
 	context.AddMessage(&finding, message)

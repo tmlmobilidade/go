@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -22,13 +23,13 @@ Presence and type follow [GTFS Standard].
 [stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
 */
-func LocationTypeField(ctx *context.ValidationContext) error {
+func LocationTypeField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "stops", []string{"location_type"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stops", []string{"location_type"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the location_type value
 

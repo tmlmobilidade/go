@@ -1,10 +1,12 @@
 package standard
 
 import (
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
 	"math"
 	"strconv"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -26,11 +28,11 @@ Presence and type describe the GTFS fields; they do not define the configured di
 
 [fare_attributes.txt]: https://gtfs.org/documentation/schedule/reference/#fare_attributestxt
 */
-func PriceValid(ctx *context.ValidationContext) error {
+func PriceValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "fare_attributes", []string{"price"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "fare_attributes", []string{"price"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

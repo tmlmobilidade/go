@@ -5,8 +5,8 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/validations"
 	standard "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/checks"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
 )
 
 func TestTripsShapeIdForeign(t *testing.T) {

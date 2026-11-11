@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -22,13 +23,13 @@ Presence and type follow [GTFS Standard].
 [calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#calendartxt
 */
-func ServiceIdValidation(ctx *context.ValidationContext) error {
+func ServiceIdValidation(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "calendar", []string{"service_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "calendar", []string{"service_id"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get service_id and its occurrence count in calendar
 

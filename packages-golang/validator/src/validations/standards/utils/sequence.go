@@ -4,15 +4,15 @@ import (
 	"sort"
 	"strconv"
 
-	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	geoTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/geo"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
 // SequenceGroups reads source rows once and orders each shape by numeric sequence.
 // A shape with an unusable sequence is left to its sequence-value check.
-func SequenceGroups(ctx *context.ValidationContext) (map[string][]geoTypes.ShapePoint, error) {
+func SequenceGroups(ctx *contextTypes.ValidationContext) (map[string][]geoTypes.ShapePoint, error) {
 	groups := map[string][]geoTypes.ShapePoint{}
 	invalid := map[string]bool{}
 	table := &sqliteTypes.SQLiteTable{DB: ctx.DB, Name: "shapes"}

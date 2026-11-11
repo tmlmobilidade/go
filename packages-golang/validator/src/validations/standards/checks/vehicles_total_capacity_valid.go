@@ -1,9 +1,11 @@
 package standard
 
 import (
+	"strconv"
+
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
-	"strconv"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -24,11 +26,11 @@ required-field checks handle absence.
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func TotalCapacityValid(ctx *context.ValidationContext) error {
+func TotalCapacityValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "vehicles", []string{"total_capacity"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"total_capacity"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -20,13 +21,13 @@ Stations and platforms with stop_access=1 must not be used.
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func PathwaysFromStopIdField(ctx *context.ValidationContext) error {
+func PathwaysFromStopIdField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "pathways", []string{"from_stop_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"from_stop_id"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the from_stop_id value
 

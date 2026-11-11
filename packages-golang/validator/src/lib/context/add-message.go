@@ -10,6 +10,8 @@ import (
 // A nonempty override takes precedence over configuration; ignore suppresses the finding.
 func AddMessage(context *types.ValidationContext, message string, severityOverride ...rules.Severities) {
 	//
+
+	//
 	// 1. Use this rule context's severity, then apply an optional override
 
 	severity := context.Config.Severity
@@ -20,11 +22,11 @@ func AddMessage(context *types.ValidationContext, message string, severityOverri
 	//
 	// 2. Suppress ignored findings and normalize forbidden content to errors
 
-	if severity == rules.SEVERITY_IGNORE {
-		return
-	}
 	if severity == rules.SEVERITY_FORBIDDEN {
 		severity = rules.SEVERITY_ERROR
+	}
+	if severity == rules.SEVERITY_IGNORE {
+		return
 	}
 
 	//

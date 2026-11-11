@@ -2,8 +2,8 @@ package custom
 
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
-	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
-	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -34,41 +34,27 @@ Related tables: [trips.txt].
 
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func PatternIdSameShapeId(ctx *context.ValidationContext) error {
+func PatternIdSameShapeId(ctx *types.ValidationContext) error {
 	//
-	// 1. Select the source tables and keep derived state private to this invocation
 
-	ready, err := validationutils.RequireTables(ctx, "trips")
-	if err != nil || !ready {
-		return err
-	}
+	//
+	// 1. Select the fields needed for this comparison inside the rule
 
-	return context.ForEachRow(ctx, "trips", []string{"pattern_id", "shape_id"}, func(rowCtx *context.ValidationContext) error {
-		//
-		// 2. Get the pattern_id, shape_id values
-
-		values, err := queries.Fields(rowCtx.Source, "pattern_id", "shape_id")
+	return context.ForEachRow(ctx, "trips", []string{"pattern_id", "shape_id"}, func(row *types.ValidationContext) error {
+		values, err := queries.Fields(row.Source, "pattern_id", "shape_id")
 		if err != nil {
 			return err
 		}
 
 		//
-		// 3. Check if the pattern_id validation should run
+		// 2. Compare populated IDs using the scoped configuration
 
-		if values["pattern_id"] == "" || values["shape_id"] == "" || context.ShouldSkip(rowCtx) {
+		if values["pattern_id"] == "" || values["shape_id"] == "" || context.ShouldSkip(row) {
 			return nil
 		}
-
-		//
-		// 4. Check if pattern_id matches the shape_id
-
 		if values["pattern_id"] != values["shape_id"] {
-			context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "not_matching", values["pattern_id"], values["shape_id"]))
+			context.AddMessage(row, context.GetTranslatedMessage(row, "not_matching", values["pattern_id"], values["shape_id"]))
 		}
-
-		//
-		// 5. Return success
-
 		return nil
 	})
 }

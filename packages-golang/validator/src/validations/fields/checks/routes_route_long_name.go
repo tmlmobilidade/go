@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -27,13 +28,13 @@ Presence and type follow [GTFS Standard].
 [routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
 */
-func RouteLongNameField(ctx *context.ValidationContext) error {
+func RouteLongNameField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "routes", []string{"route_long_name"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"route_long_name"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the route_long_name value
 

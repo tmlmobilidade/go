@@ -7,6 +7,7 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	validators "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/validators"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
@@ -44,7 +45,7 @@ Related tables: [vehicles.txt].
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func VehicleCodeValid(ctx *context.ValidationContext) error {
+func VehicleCodeValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -53,7 +54,7 @@ func VehicleCodeValid(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "vehicles", []string{"vehicle_code", "vehicle_type"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"vehicle_code", "vehicle_type"}, func(rowCtx *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the vehicle_code value
 

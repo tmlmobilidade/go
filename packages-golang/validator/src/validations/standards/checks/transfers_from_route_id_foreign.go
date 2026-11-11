@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -32,7 +33,7 @@ Presence and type describe the GTFS fields; they do not define the configured di
 [routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func FromRouteIdForeign(ctx *context.ValidationContext) error {
+func FromRouteIdForeign(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
@@ -41,7 +42,7 @@ func FromRouteIdForeign(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "transfers", []string{"from_route_id", "from_trip_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "transfers", []string{"from_route_id", "from_trip_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

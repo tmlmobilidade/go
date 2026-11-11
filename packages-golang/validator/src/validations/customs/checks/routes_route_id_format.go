@@ -5,6 +5,7 @@ import (
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
@@ -36,7 +37,7 @@ Related tables: [routes.txt].
 
 [routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 */
-func RouteIdFormat(ctx *context.ValidationContext) error {
+func RouteIdFormat(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -45,7 +46,7 @@ func RouteIdFormat(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "routes", []string{"route_id", "route_short_name", "route_sort_order"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"route_id", "route_short_name", "route_sort_order"}, func(rowCtx *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the values
 

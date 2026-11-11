@@ -1,9 +1,11 @@
 package standard
 
 import (
+	"slices"
+
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
-	"slices"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -28,11 +30,11 @@ Field definitions: [GTFS Standard].
 [stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
 */
-func LocationTypeValid(ctx *context.ValidationContext) error {
+func LocationTypeValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "stops", []string{"location_type"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stops", []string{"location_type"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

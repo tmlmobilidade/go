@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -28,13 +29,13 @@ Presence and type follow [GTFS Standard].
 [stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
-func PickupTypeField(ctx *context.ValidationContext) error {
+func PickupTypeField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "stop_times", []string{"pickup_type"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stop_times", []string{"pickup_type"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the pickup_type value
 

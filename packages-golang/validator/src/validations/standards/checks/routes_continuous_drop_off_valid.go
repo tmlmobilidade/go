@@ -1,10 +1,12 @@
 package standard
 
 import (
+	"strconv"
+
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	standardutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/standards/utils"
-	"strconv"
 )
 
 /*
@@ -35,7 +37,7 @@ Field definitions: [GTFS Standard routes].
 [stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
 [GTFS Standard routes]: https://gtfs.org/documentation/schedule/reference/#routestxt
 */
-func RoutesContinuousDropOffValid(ctx *context.ValidationContext) error {
+func RoutesContinuousDropOffValid(ctx *contextTypes.ValidationContext) error {
 	ready, err := context.RequireTables(ctx, "routes", "trips", "stop_times")
 	if err != nil || !ready {
 		return err
@@ -47,7 +49,7 @@ func RoutesContinuousDropOffValid(ctx *context.ValidationContext) error {
 	if err != nil {
 		return err
 	}
-	return context.ForEachRow(ctx, "routes", []string{"continuous_drop_off", "route_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"continuous_drop_off", "route_id"}, func(row *contextTypes.ValidationContext) error {
 		values, err := queries.Fields(row.Source, "continuous_drop_off", "route_id")
 		if err != nil {
 			return err

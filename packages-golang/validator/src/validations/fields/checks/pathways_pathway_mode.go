@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Type of connection: 1 walkway, 2 stairs, 3 moving sidewalk, 4 escalator, 5 eleva
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func PathwayModeField(ctx *context.ValidationContext) error {
+func PathwayModeField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "pathways", []string{"pathway_mode"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"pathway_mode"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the pathway_mode value
 

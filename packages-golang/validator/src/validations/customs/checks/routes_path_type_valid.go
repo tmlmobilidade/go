@@ -3,6 +3,7 @@ package custom
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	validationutils "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/customs/utils"
 )
 
@@ -34,7 +35,7 @@ Related tables: [routes.txt].
 
 [routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 */
-func PathTypeValid(ctx *context.ValidationContext) error {
+func PathTypeValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select the source tables and keep derived state private to this invocation
 
@@ -43,7 +44,7 @@ func PathTypeValid(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "routes", []string{"path_type"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"path_type"}, func(rowCtx *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the path_type value
 

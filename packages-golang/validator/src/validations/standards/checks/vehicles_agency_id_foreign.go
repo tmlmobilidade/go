@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
@@ -25,7 +26,7 @@ Empty values are skipped; required-field checks handle absence.
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 [agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 */
-func VehiclesAgencyIdForeign(ctx *context.ValidationContext) error {
+func VehiclesAgencyIdForeign(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
@@ -34,7 +35,7 @@ func VehiclesAgencyIdForeign(ctx *context.ValidationContext) error {
 		return err
 	}
 
-	return context.ForEachRow(ctx, "vehicles", []string{"agency_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"agency_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

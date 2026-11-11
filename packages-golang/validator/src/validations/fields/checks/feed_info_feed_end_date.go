@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -24,13 +25,13 @@ Presence and type follow [GTFS Standard].
 [feed_info.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/feed-info
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#feed_infotxt
 */
-func FeedEndDateField(ctx *context.ValidationContext) error {
+func FeedEndDateField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "feed_info", []string{"feed_end_date"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "feed_info", []string{"feed_end_date"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the feed_end_date value
 

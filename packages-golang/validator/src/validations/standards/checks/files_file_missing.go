@@ -2,12 +2,14 @@ package standard
 
 import (
 	"fmt"
+	"strings"
+
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	ruleTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	sqliteTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 	i18n "github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables/i18n"
-	"strings"
 )
 
 /*
@@ -30,7 +32,7 @@ GTFS text files.
 
 [GTFS dataset]: https://gtfs.org/documentation/schedule/reference/#dataset-files
 */
-func FileMissing(ctx *context.ValidationContext) error {
+func FileMissing(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Resolve the configured file gate and verify its database connection.
 

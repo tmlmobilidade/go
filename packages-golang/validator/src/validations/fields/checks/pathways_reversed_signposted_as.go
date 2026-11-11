@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Text shown on physical signs when following the pathway from to_stop_id to from_
 
 [pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
 */
-func ReversedSignpostedAsField(ctx *context.ValidationContext) error {
+func ReversedSignpostedAsField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "pathways", []string{"reversed_signposted_as"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "pathways", []string{"reversed_signposted_as"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the reversed_signposted_as value
 

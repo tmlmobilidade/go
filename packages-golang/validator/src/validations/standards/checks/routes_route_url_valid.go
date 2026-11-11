@@ -4,6 +4,7 @@ import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	validators "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/validators"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -29,11 +30,11 @@ Field definitions: [GTFS Standard].
 [routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
 */
-func RouteUrlValid(ctx *context.ValidationContext) error {
+func RouteUrlValid(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "routes", []string{"route_url"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "routes", []string{"route_url"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -23,15 +24,15 @@ the validation rule configuration.
 
 [trips.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/trips
 */
-func PatternIdField(ctx *context.ValidationContext) error {
+func PatternIdField(ctx *types.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "trips", []string{"pattern_id"}, func(row *types.ValidationContext) error {
 		//
-		// 2. Get the pattern_id value
+		// 2. Read the current source value
 
 		value, err := queries.Field(row.Source, "pattern_id")
 		if err != nil {
@@ -39,20 +40,11 @@ func PatternIdField(ctx *context.ValidationContext) error {
 		}
 
 		//
-		// 3. Check if the pattern_id is required
+		// 3. Report missing values using this context's configuration and rule ID
 
-		if value == "" {
-			if context.ShouldIgnore(row) {
-				return nil
-			}
-
+		if value == "" && !context.ShouldIgnore(row) {
 			context.AddMessage(row, context.GetSeverityMessage(row, "required", "recommended", "informational"))
-			return nil
 		}
-
-		//
-		// 4. Return success
-
 		return nil
 	})
 }

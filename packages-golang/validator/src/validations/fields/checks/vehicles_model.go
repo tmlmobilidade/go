@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Model of the vehicle.
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func ModelField(ctx *context.ValidationContext) error {
+func ModelField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "vehicles", []string{"model"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"model"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the model value
 

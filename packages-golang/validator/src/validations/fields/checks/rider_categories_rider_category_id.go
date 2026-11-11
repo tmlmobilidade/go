@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Identifies a rider category.
 
 [rider_categories.txt]: https://gtfs.org/documentation/schedule/reference/#rider_categoriestxt
 */
-func RiderCategoryIdField(ctx *context.ValidationContext) error {
+func RiderCategoryIdField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "rider_categories", []string{"rider_category_id"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "rider_categories", []string{"rider_category_id"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the rider_category_id value
 

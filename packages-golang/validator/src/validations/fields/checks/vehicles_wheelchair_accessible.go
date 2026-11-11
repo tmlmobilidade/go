@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -19,13 +20,13 @@ Wheelchair accessibility of the vehicle, using the standard trips.wheelchair_acc
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func VehiclesWheelchairAccessibleField(ctx *context.ValidationContext) error {
+func VehiclesWheelchairAccessibleField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "vehicles", []string{"wheelchair_accessible"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "vehicles", []string{"wheelchair_accessible"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the wheelchair_accessible value
 

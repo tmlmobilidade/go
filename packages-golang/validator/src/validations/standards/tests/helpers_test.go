@@ -8,10 +8,11 @@ import (
 	"testing"
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/messages"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/validations"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/validations"
 	_ "modernc.org/sqlite"
 )
 
@@ -58,7 +59,7 @@ func fixture(t *testing.T, table string, columns []string, rowIDs []int, rows []
 	return db
 }
 
-func runCheck(t *testing.T, check standardCheck, db *sql.DB, config rules.RuleContext) (*context.ValidationContext, []messages.Message) {
+func runCheck(t *testing.T, check standardCheck, db *sql.DB, config rules.RuleContext) (*contextTypes.ValidationContext, []messages.Message) {
 	t.Helper()
 	collector := &testutil.Collector{}
 	ctx := context.NewRuleContext(check.id, db, config, collector)
@@ -71,7 +72,7 @@ func runCheck(t *testing.T, check standardCheck, db *sql.DB, config rules.RuleCo
 	return ctx, collector.Messages
 }
 
-func assertRows(t *testing.T, check standardCheck, ctx *context.ValidationContext, findings []messages.Message, severity rules.Severities, rows ...int) {
+func assertRows(t *testing.T, check standardCheck, ctx *contextTypes.ValidationContext, findings []messages.Message, severity rules.Severities, rows ...int) {
 	t.Helper()
 	if ctx.Failed != (len(rows) > 0) || ctx.Skipped {
 		t.Fatalf("unexpected outcome: %+v", ctx)

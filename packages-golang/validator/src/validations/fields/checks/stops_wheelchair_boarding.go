@@ -3,6 +3,7 @@ package fields
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -23,13 +24,13 @@ Presence and type follow [GTFS Standard].
 [stops.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stops
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stopstxt
 */
-func WheelchairBoardingField(ctx *context.ValidationContext) error {
+func WheelchairBoardingField(ctx *contextTypes.ValidationContext) error {
 	//
 
 	//
 	// 1. Select the source table and fields for this rule
 
-	return context.ForEachRow(ctx, "stops", []string{"wheelchair_boarding"}, func(row *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stops", []string{"wheelchair_boarding"}, func(row *contextTypes.ValidationContext) error {
 		//
 		// 2. Get the wheelchair_boarding value
 

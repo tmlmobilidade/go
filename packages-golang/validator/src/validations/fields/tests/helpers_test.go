@@ -8,10 +8,11 @@ import (
 	"testing"
 
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	validationTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/validations"
 	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables/i18n"
-	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/validations/utils"
+	testutil "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/validations"
 	_ "modernc.org/sqlite"
 )
 
@@ -165,7 +166,7 @@ func checkInputContract(t *testing.T, check fieldCheck, columns []string) {
 	})
 	t.Run("invalid_context", func(t *testing.T) {
 		collector := &testutil.Collector{}
-		for name, ctx := range map[string]*context.ValidationContext{
+		for name, ctx := range map[string]*contextTypes.ValidationContext{
 			"nil":              nil,
 			"missing_database": context.NewRuleContext(check.id, nil, rules.RuleContext{Severity: rules.SEVERITY_ERROR}, collector),
 			"missing_receiver": context.NewRuleContext(check.id, emptyDatabase(t), rules.RuleContext{Severity: rules.SEVERITY_ERROR}, nil),

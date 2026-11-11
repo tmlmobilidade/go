@@ -3,6 +3,7 @@ package standard
 import (
 	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
 	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
 )
 
 /*
@@ -31,11 +32,11 @@ Field definitions: [GTFS Standard].
 [stop_times.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/stop-times
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
-func LocationGroupIdForbidden(ctx *context.ValidationContext) error {
+func LocationGroupIdForbidden(ctx *contextTypes.ValidationContext) error {
 	//
 	// 1. Select this rule's source rows and required lookup tables.
 
-	return context.ForEachRow(ctx, "stop_times", []string{"location_group_id", "stop_id", "location_id"}, func(rowCtx *context.ValidationContext) error {
+	return context.ForEachRow(ctx, "stop_times", []string{"location_group_id", "stop_id", "location_id"}, func(rowCtx *contextTypes.ValidationContext) error {
 		if context.ShouldIgnore(rowCtx) {
 			return nil
 		}

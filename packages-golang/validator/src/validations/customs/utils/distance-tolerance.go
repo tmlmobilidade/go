@@ -1,9 +1,10 @@
 package validationutils
 
 import (
-	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 	"math"
 	"strconv"
+
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/types/rules"
 )
 
 // DistanceTolerance resolves options[0], preserving each rule's zero-tolerance policy.
