@@ -1,8 +1,6 @@
 /* * */
 
-import { Tag } from '@tmlmobilidade/ui';
-
-import { useVehiclesAgenciesData } from '../../../shared/use-vehicles-agencies-data';
+import { Tag, useAgenciesData } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -12,7 +10,7 @@ export function VehiclesListCellAgency({ value }: { value: string }) {
 	//
 	// A. Setup variables
 
-	const { options } = useVehiclesAgenciesData();
+	const { options } = useAgenciesData();
 
 	const label = options.find(option => option.value === value)?.label ?? value;
 
