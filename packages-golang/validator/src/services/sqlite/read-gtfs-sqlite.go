@@ -10,9 +10,14 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-// ReadGTFSSQLite opens an existing database produced by import-gtfs.
-// Rows remain in SQLite and are read through the query helpers when needed.
-// The caller closes the connection; the input database is retained.
+/*
+* ReadGTFSSQLite opens an existing regular SQLite file produced by import-gtfs.
+* The path is resolved before opening in read-write mode, without creating files.
+* The schema query verifies the file format and connection, not GTFS completeness;
+* missing GTFS tables remain the responsibility of configured validation rules.
+* Rows stay on disk. The caller closes the returned pool and retains the input file.
+* A failed schema query closes the pool before returning the error.
+ */
 func ReadGTFSSQLite(databasePath string) (*sql.DB, error) {
 	//
 
@@ -32,7 +37,7 @@ func ReadGTFSSQLite(databasePath string) (*sql.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("open GTFS SQLite database %q: %w", absolutePath, err)
 	}
-	
+
 	if !info.Mode().IsRegular() {
 		return nil, fmt.Errorf("GTFS SQLite database %q is not a regular file", absolutePath)
 	}

@@ -5,14 +5,19 @@ import (
 	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
-// rowGroups reads keys and source row IDs together, avoiding a query per row.
-// Groups and their members retain source order. Empty keys remain independent
-// rows and never participate in a grouped check.
+/*
+* RowGroups reads grouping keys and source rowids together in one ordered query.
+* Non-empty keys share one group, ordered by the key's first source occurrence;
+* member positions follow rowid order and use the zero-based value rowid - 1.
+* SQL NULL and missing columns become empty keys. Each empty key forms its own
+* independent row group with Grouped=false rather than joining other empty rows.
+* All groups and row positions are collected in memory before returning.
+ */
 func RowGroups(t *types.SQLiteTable, field string) ([]types.SQLiteRowGroup, error) {
 	//
 
 	//
-	// 1. Query the table
+	// 1. Read source rowids and NULL-as-empty keys in the original row order
 
 	expression, err := column(t, "source", field)
 	if err != nil {
@@ -27,13 +32,13 @@ func RowGroups(t *types.SQLiteTable, field string) ([]types.SQLiteRowGroup, erro
 	defer rows.Close()
 
 	//
-	// 2. Initialize the groups
+	// 2. Map each non-empty key to its first group position
 
 	var groups []types.SQLiteRowGroup
 	indexes := map[string]int{}
 
 	//
-	// 3. Read the rows
+	// 3. Reuse groups for known keys and keep each empty-key row independent
 
 	for rows.Next() {
 		var rowID int
@@ -53,7 +58,7 @@ func RowGroups(t *types.SQLiteTable, field string) ([]types.SQLiteRowGroup, erro
 	}
 
 	//
-	// 4. Return the groups
+	// 4. Return the collected groups together with any cursor error
 
 	return groups, rows.Err()
 }

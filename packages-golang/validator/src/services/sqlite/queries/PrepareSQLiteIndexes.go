@@ -8,8 +8,15 @@ import (
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
 )
 
-// PrepareSQLiteIndexes creates validation lookup indexes before concurrent checks start.
-// Missing tables or columns are left for GTFS rules to report. Imported values are unchanged.
+/*
+* PrepareSQLiteIndexes creates validation lookup indexes in one transaction before
+* concurrent checks start. It owns the transaction and commits only after every
+* available index is prepared; a failure rolls back the partial setup.
+* Missing tables or columns are skipped for GTFS rules to report. Existing indexes
+* are reused. Imported cell values are unchanged, but the database must be writable.
+* COALESCE expression indexes support NULL-as-empty lookups; plain-column indexes
+* separately support raw-equality foreign-reference checks.
+ */
 func PrepareSQLiteIndexes(db *sql.DB) error {
 	//
 
@@ -74,7 +81,13 @@ func PrepareSQLiteIndexes(db *sql.DB) error {
 	return nil
 }
 
-// prepareIndexes applies one lookup strategy to the available tables and columns.
+/*
+* prepareIndexes prepares one index per available table-column pair in the supplied
+* transaction. It checks the live schema and skips absent tables or columns.
+* coalesce selects either a COALESCE(column, '') expression index or a plain-column
+* index; each strategy uses a distinct name prefix so the two forms can coexist.
+* This helper neither commits nor rolls back. Its caller owns the transaction.
+ */
 func prepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) error {
 	//
 
@@ -97,6 +110,9 @@ func prepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) err
 		if !exists {
 			continue
 		}
+
+		// The index expression must match the expression used by the data query.
+		// Raw equality cannot reuse a COALESCE expression index.
 		prefix := "idx_validation_foreign_"
 		expression := dbops.SanitizeName(lookup[1])
 		if coalesce {
@@ -113,5 +129,9 @@ func prepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) err
 			return fmt.Errorf("prepare lookup index for %s.%s: %w", tableName, lookup[1], err)
 		}
 	}
+
+	//
+	// 3. Leave the prepared indexes pending for the caller to commit
+
 	return nil
 }

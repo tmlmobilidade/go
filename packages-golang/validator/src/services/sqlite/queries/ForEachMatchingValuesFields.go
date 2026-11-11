@@ -6,21 +6,27 @@ import (
 	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
-// ForEachMatchingValuesFields reads several lookup keys in bounded queries.
-// Repeated keys are visited once. Rows are ordered by rowid within each batch;
-// callers that need key order must collect the results and apply that order.
+/*
+* ForEachMatchingValuesFields deduplicates string keys and queries at most 500
+* distinct keys at a time through ForEachMatchingFields. Empty key lists perform
+* no queries, but at least one requested field is always required.
+* Batches follow the keys' first occurrence; rows follow rowid order within each
+* batch, not key order or global rowid order across batches.
+* Field normalization, open-cursor callbacks and errors follow ForEachMatchingFields.
+* The first failed batch or callback stops processing the remaining keys.
+ */
 func ForEachMatchingValuesFields(t *types.SQLiteTable, field string, keys []string, fields []string, fn func(*types.SQLiteRow, map[string]string) error) error {
 	//
 
 	//
-	// 1. Check if the fields are empty
+	// 1. Require fields before scheduling any lookup batches
 
 	if len(fields) == 0 {
 		return fmt.Errorf("at least one field is required")
 	}
 
 	//
-	// 2. Build the batch
+	// 2. Deduplicate keys across all batches and execute each full batch of 500
 
 	const batchSize = 500 // Stay below SQLite's parameter limit, including older builds.
 	seen := make(map[string]bool, len(keys))
@@ -40,14 +46,14 @@ func ForEachMatchingValuesFields(t *types.SQLiteTable, field string, keys []stri
 	}
 
 	//
-	// 3. Process the remaining batch
+	// 3. Execute the final partial batch, if any distinct keys remain
 
 	if len(batch) > 0 {
 		return ForEachMatchingFields(t, field, batch, fields, fn)
 	}
 
 	//
-	// 4. Return nil
+	// 4. Finish successfully when all batches completed or there were no keys
 
 	return nil
 }

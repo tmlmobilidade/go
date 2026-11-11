@@ -6,13 +6,19 @@ import (
 	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
 )
 
-// ForEachMatching selects source rows whose field equals the supplied value.
-// Values are bound parameters; callers can request just the fields they need.
+/*
+* ForEachMatching visits source rows whose field matches the bound lookup value.
+* SQL NULL and missing columns are treated as empty strings for matching.
+* Rows are ordered by rowid and passed as references with zero-based positions;
+* requested values can be read separately through the field query helpers.
+* The cursor stays open during callbacks, so nested queries need another database
+* connection. Callback errors stop iteration; scan and cursor errors propagate.
+ */
 func ForEachMatching(t *types.SQLiteTable, field, value string, fn func(*types.SQLiteRow) error) error {
 	//
 
 	//
-	// 1. Build the query
+	// 1. Build the lookup with NULL-as-empty matching and stable source-row order
 
 	expression, err := column(t, "source", field)
 	if err != nil {
@@ -21,7 +27,7 @@ func ForEachMatching(t *types.SQLiteTable, field, value string, fn func(*types.S
 	query := "SELECT rowid FROM " + dbops.SanitizeName(t.Name) + " AS source WHERE COALESCE(" + expression + ", '') = ? ORDER BY rowid"
 
 	//
-	// 2. Execute the query
+	// 2. Bind the lookup value and keep the cursor open while visiting matches
 
 	rows, err := t.DB.Query(query, value)
 	if err != nil {
@@ -30,7 +36,7 @@ func ForEachMatching(t *types.SQLiteTable, field, value string, fn func(*types.S
 	defer rows.Close()
 
 	//
-	// 3. Iterate over the rows
+	// 3. Convert each SQLite rowid to a row reference and stop on callback errors
 
 	for rows.Next() {
 		var rowID int
@@ -43,7 +49,7 @@ func ForEachMatching(t *types.SQLiteTable, field, value string, fn func(*types.S
 	}
 
 	//
-	// 4. Return the error
+	// 4. Report any error encountered while advancing the cursor
 
 	return rows.Err()
 }
