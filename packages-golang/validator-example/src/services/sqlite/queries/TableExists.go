@@ -5,8 +5,15 @@ import (
 	"fmt"
 )
 
-// TableExists checks the current database schema for an imported table.
+/*
+* TableExists checks the live schema for a table using a case-insensitive name
+* comparison. Views and internal sqlite_* tables are excluded by the query.
+* The name is a bound parameter; no table metadata is retained between calls.
+* A nil database pool and schema query failures are returned as errors.
+ */
 func TableExists(db *sql.DB, name string) (bool, error) {
+	//
+
 	//
 	// 1. Require a database connection
 

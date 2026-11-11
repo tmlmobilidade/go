@@ -1,4 +1,4 @@
-package sqlite
+package queries
 
 import (
 	"database/sql"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/database"
-	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
 )
 
 /*
@@ -16,6 +15,7 @@ import (
 * Otherwise, it indexes the column directly for equality comparisons.
 * Existing indexes are kept, and stored values are unchanged.
 * The caller owns the supplied transaction and must commit or roll it back.
+* Raw indexes use table_column names; expression indexes add the _coalesce suffix.
  */
 func PrepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) error {
 	//
@@ -32,13 +32,15 @@ func PrepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) err
 		if err != nil {
 			return fmt.Errorf("find SQLite table %q for index preparation: %w", lookup[0], err)
 		}
-		exists, err := queries.ColumnExists(transaction, tableName, lookup[1])
+		exists, err := columnExists(transaction, tableName, lookup[1])
 		if err != nil {
 			return err
 		}
 		if !exists {
 			continue
 		}
+
+		// The expression and name distinguish raw-equality and NULL-as-empty indexes.
 		indexName := lookup[0] + "_" + lookup[1]
 		expression := dbops.SanitizeName(lookup[1])
 		if coalesce {
@@ -55,5 +57,9 @@ func PrepareIndexes(transaction *sql.Tx, lookups [][2]string, coalesce bool) err
 			return fmt.Errorf("prepare lookup index for %s.%s: %w", tableName, lookup[1], err)
 		}
 	}
+
+	//
+	// 3. Leave the prepared indexes pending for the caller to commit
+
 	return nil
 }

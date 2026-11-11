@@ -9,27 +9,33 @@ import (
 	types "github.com/tmlmobilidade/go/packages-golang/validator-example/src/types/sqlite"
 )
 
-// Fields requests only the named fields in one query. Missing columns and SQL
-// NULL values are represented by empty strings, just like empty CSV cells.
+/*
+* Fields reads named values from a source row. If Values contains every requested
+* field, the result is copied from that row's prefetched data without querying.
+* Otherwise, all requested fields are selected in one query using Row + 1 as rowid.
+* Missing columns and SQL NULL cells become empty strings. Partial prefetched
+* values are not merged with database values, and no shared cache is updated.
+* A missing source row or database failure is returned as an error.
+ */
 func Fields(r *types.SQLiteRow, fields ...string) (map[string]string, error) {
 	//
 
 	//
-	// 1. Check if the row is nil
+	// 1. Require a row reference and its source table
 
 	if r == nil || r.Table == nil {
 		return nil, fmt.Errorf("select a row from a table before reading fields")
 	}
 
 	//
-	// 2. Check if the fields are empty
+	// 2. Require at least one requested field
 
 	if len(fields) == 0 {
 		return nil, fmt.Errorf("at least one field is required")
 	}
 
 	//
-	// 3. Check if the values are already cached
+	// 3. Reuse prefetched values only when every requested field is present
 
 	if r.Values != nil {
 		result := make(map[string]string, len(fields))
@@ -48,14 +54,14 @@ func Fields(r *types.SQLiteRow, fields ...string) (map[string]string, error) {
 	}
 
 	//
-	// 4. Check if the database connection is nil
+	// 4. Require a database pool when the prefetched row cannot satisfy the request
 
 	if r.Table.DB == nil {
 		return nil, fmt.Errorf("database connection is nil")
 	}
 
 	//
-	// 5. Build the query
+	// 5. Resolve the requested columns and read them by the original source rowid
 
 	columns := make([]string, len(fields))
 	values := make([]sql.NullString, len(fields))
@@ -74,7 +80,7 @@ func Fields(r *types.SQLiteRow, fields ...string) (map[string]string, error) {
 	}
 
 	//
-	// 6. Return the result
+	// 6. Convert nullable SQLite values to the empty-string CSV representation
 
 	result := make(map[string]string, len(fields))
 	for i, field := range fields {

@@ -104,36 +104,33 @@ ZIP input is no longer supported by the validator.
 checks its SQLite schema, and returns a database connection. Missing paths are
 rejected without creating a database. Imported rows remain on disk: query helpers
 preserve TEXT values and expose NULL cells as empty strings. Preparation is
-separate: `queries.PrepareSQLiteIndexes(db)` creates lookup indexes in one
+separate: `sqlite.PrepareSQLiteIndexes(db)` creates lookup indexes in one
 transaction before concurrent checks start. Table and column existence are queried
 directly from SQLite when needed; there is no shared schema cache or preload step.
 Missing columns become SQL `NULL` in validation queries, and missing tables are
 left for file-presence rules to report. The input must be writable and is retained
 after validation; only the connection is closed.
 
+`services/sqlite` owns database opening and the index transaction. SQL helpers
+live in `services/sqlite/queries`, shared contracts in `types/sqlite`, and the
+row-reference helper in `utils/sqlite`. The example keeps only the query helpers
+used by its validation flow.
+
 The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains supported.
 
 ## Logging
 
-`src/services/logger` composes the shared telemetry logger with validator row
-progress. Its shared instance is `types/variables/logger.AppLogger`, which supports
-all telemetry severity methods, log-level filtering,
-and performance trackers. Severity logs go to stderr so stdout can contain the
-JSON result. `ENVIRONMENT=dev` selects readable logs; other environments use
-structured JSON with timestamps and attributes. Shared presentation methods such
-as `Divider` still write to stdout; the entrypoint uses `Info` for its banner.
+`types/variables/logger.AppLogger` creates the shared telemetry logger directly,
+with `src/services/logger.RenderLogRecord` as its renderer. It supports severity
+methods, log-level filtering, and performance trackers without a validator wrapper.
+Severity logs go to stderr so stdout can contain the JSON result.
+`ENVIRONMENT=dev` selects readable logs; other environments use structured JSON
+with timestamps and attributes. Shared presentation methods such as `Divider`
+still write to stdout; the entrypoint uses `Info` for its banner.
 
-```go
-progress := logger.AppLogger.NewProgressTracker("trips", totalRows, 1000)
-// Call after each processed row:
-progress.Track()
-// Call only after all table checks finish successfully:
-progress.Complete()
-```
-
-Progress includes the table, processed rows, total rows, and completion status.
-Reaching the final row does not report 100% until `Complete` is called. Progress
-trackers accept concurrent row updates and normalize a zero row threshold to one.
+Rule execution logs each rule's start, completion status, and elapsed time.
+Row iteration emits progress records with the rule ID, table, and checked row
+count directly through `AppLogger.Progress`.
 
 ## Validation Processing
 

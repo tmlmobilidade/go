@@ -3,10 +3,19 @@ package sqlite
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/sqlite/queries"
 )
 
-// PrepareSQLiteIndexes creates validation lookup indexes before concurrent checks start.
-// Missing tables or columns are left for GTFS rules to report. Imported values are unchanged.
+/*
+* PrepareSQLiteIndexes prepares the configured validation lookups before checks
+* start. It owns one transaction for all index creation and commits only after
+* every lookup succeeds; failures roll back the partial setup.
+* Missing tables and columns are skipped for GTFS rules to report. Existing
+* indexes are kept and imported values are unchanged; the database must be writable.
+* Expression indexes support NULL-as-empty matching, while plain-column indexes
+* support raw-equality lookups. The two forms cannot substitute for one another.
+ */
 func PrepareSQLiteIndexes(db *sql.DB) error {
 	//
 
@@ -29,7 +38,7 @@ func PrepareSQLiteIndexes(db *sql.DB) error {
 	//
 	// 3. Index NULL-as-empty lookups used by matching-row and grouping queries
 
-	if err := PrepareIndexes(transaction, [][2]string{
+	if err := queries.PrepareIndexes(transaction, [][2]string{
 		{"stop_times", "trip_id"},
 		{"stops", "stop_id"},
 		{"shapes", "shape_id"},
@@ -45,7 +54,7 @@ func PrepareSQLiteIndexes(db *sql.DB) error {
 	// 4. Index raw equality lookups used by foreign-reference checks
 
 	// Equality on a column cannot use an index on COALESCE(column, ''), so both forms are needed.
-	if err := PrepareIndexes(transaction, [][2]string{
+	if err := queries.PrepareIndexes(transaction, [][2]string{
 		{"agency", "agency_id"},
 		{"calendar", "service_id"},
 		{"calendar_dates", "service_id"},

@@ -1,6 +1,9 @@
 package logger
 
-import loggerService "github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/logger"
+import (
+	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
+	loggerService "github.com/tmlmobilidade/go/packages-golang/validator-example/src/services/logger"
+)
 
 // AppLogger reserves stdout for validation JSON in every environment.
-var AppLogger = loggerService.NewLogger(loggerService.RenderLogRecord)
+var AppLogger = telemetry.CreateLogger(loggerService.RenderLogRecord)
