@@ -5,17 +5,18 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/report"
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
 func TestReportCollection(t *testing.T) {
-	service := report.New()
+	service := services.NewReport()
 	for _, severity := range []rules.Severities{
 		rules.SEVERITY_IGNORE, rules.SEVERITY_INFO, rules.SEVERITY_WARNING,
 		rules.SEVERITY_ERROR, rules.SEVERITY_FORBIDDEN,
 	} {
-		message := report.Message{RuleID: "rule", FileName: "agency.txt", Severity: severity, Rows: []int{2, 0, 2}, Message: "Invalid name."}
+		message := types.Message{RuleID: "rule", FileName: "agency.txt", Severity: severity, Rows: []int{2, 0, 2}, Message: "Invalid name."}
 		service.Add(message, "Invalid names.")
 		message.Rows = []int{0, 2}
 		message.SeverityResolved = true
@@ -44,13 +45,13 @@ func TestReportCollection(t *testing.T) {
 }
 
 func TestReportDetailCap(t *testing.T) {
-	service := report.New()
-	for i := 0; i < report.MaxDetails+1; i++ {
-		service.Add(report.Message{RuleID: "rule", Severity: rules.SEVERITY_ERROR, Rows: []int{i}}, "Invalid names.")
+	service := services.NewReport()
+	for i := 0; i < services.MaxDetails+1; i++ {
+		service.Add(types.Message{RuleID: "rule", Severity: rules.SEVERITY_ERROR, Rows: []int{i}}, "Invalid names.")
 	}
 	summary := service.Summary()
 	group := summary.Messages[0]
-	if summary.TotalErrors != report.MaxDetails+1 || group.TotalRows != report.MaxDetails+1 || len(group.Messages) != report.MaxDetails {
+	if summary.TotalErrors != services.MaxDetails+1 || group.TotalRows != services.MaxDetails+1 || len(group.Messages) != services.MaxDetails {
 		t.Fatal(summary)
 	}
 	// Snapshots cannot mutate retained diagnostics.

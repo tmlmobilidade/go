@@ -9,8 +9,9 @@ import (
 	"os"
 	"path/filepath"
 
-	reportservice "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/report"
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 )
@@ -28,16 +29,16 @@ type Options struct {
 }
 
 // Public report types are also available from the validator entry point.
-type Summary = reportservice.Summary
-type RuleMessage = reportservice.RuleMessage
-type Message = reportservice.Message
+type Summary = types.Summary
+type RuleMessage = types.RuleMessage
+type Message = types.Message
 
 // GtfsValidator owns the temporary SQLite directory and removes it on every return path.
 // A non-nil error means the run failed operationally, not that the feed is invalid.
 // Import currently has no context support: cancellation takes effect before/after
 // import and during rule execution. A partial report is returned on execution failure.
 func GtfsValidator(ctx context.Context, options Options) (summary Summary, err error) {
-	collector := reportservice.New()
+	collector := services.NewReport()
 	summary = collector.Summary()
 
 	// Both comparisons have the same value when both sources are empty or both

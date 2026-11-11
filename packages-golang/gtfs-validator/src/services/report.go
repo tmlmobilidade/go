@@ -1,11 +1,11 @@
-package report
+package services
 
 import (
 	"encoding/json"
 	"slices"
 	"sort"
 
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
 // MaxDetails limits sampled messages and rows per sampled message in each group.
@@ -13,29 +13,29 @@ const MaxDetails = 100
 
 type groupKey struct {
 	rule, file, field string
-	severity          rules.Severities
+	severity          types.Severities
 }
 
 type group struct {
-	message RuleMessage
+	message types.RuleMessage
 	rows    map[int]struct{}
 }
 
-// Service collects diagnostics for one validation run. Use it from one goroutine.
-type Service struct {
+// ReportService collects diagnostics for one validation run. Use it from one goroutine.
+type ReportService struct {
 	groups           map[groupKey]*group
 	seen             map[string]struct{}
 	errors, warnings int
 }
 
-func New() *Service {
-	return &Service{groups: make(map[groupKey]*group), seen: make(map[string]struct{})}
+func NewReport() *ReportService {
+	return &ReportService{groups: make(map[groupKey]*group), seen: make(map[string]struct{})}
 }
 
 // Add retains distinct diagnostics, omits ignored findings, and converts row
 // indexes to CSV line numbers (the header occupies line one).
-func (s *Service) Add(message Message, description string) {
-	if message.Severity == rules.SEVERITY_IGNORE {
+func (s *ReportService) Add(message types.Message, description string) {
+	if message.Severity == types.SEVERITY_IGNORE {
 		return
 	}
 	message.Rows = append([]int{}, message.Rows...)
@@ -52,16 +52,16 @@ func (s *Service) Add(message Message, description string) {
 	}
 	s.seen[key] = struct{}{}
 	switch message.Severity {
-	case rules.SEVERITY_ERROR, rules.SEVERITY_FORBIDDEN:
+	case types.SEVERITY_ERROR, types.SEVERITY_FORBIDDEN:
 		s.errors++
-	case rules.SEVERITY_WARNING:
+	case types.SEVERITY_WARNING:
 		s.warnings++
 	}
 	k := groupKey{message.RuleID, message.FileName, message.Field, message.Severity}
 	g := s.groups[k]
 	if g == nil {
-		g = &group{message: RuleMessage{
-			Messages: []Message{}, Field: message.Field, FileName: message.FileName,
+		g = &group{message: types.RuleMessage{
+			Messages: []types.Message{}, Field: message.Field, FileName: message.FileName,
 			Message: description, RuleID: message.RuleID, Severity: message.Severity,
 		}, rows: make(map[int]struct{})}
 		s.groups[k] = g
@@ -76,8 +76,8 @@ func (s *Service) Add(message Message, description string) {
 }
 
 // Summary returns an independent snapshot in stable rule/file/field/severity order.
-func (s *Service) Summary() Summary {
-	result := Summary{Messages: []RuleMessage{}, TotalErrors: s.errors, TotalWarnings: s.warnings}
+func (s *ReportService) Summary() types.Summary {
+	result := types.Summary{Messages: []types.RuleMessage{}, TotalErrors: s.errors, TotalWarnings: s.warnings}
 	for _, g := range s.groups {
 		message := g.message
 		message.TotalRows = len(g.rows)

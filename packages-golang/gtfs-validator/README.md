@@ -29,7 +29,7 @@ Stdout contains one JSON report; diagnostics go to stderr. Exit codes:
 Reports use `Summary`: `messages` contains grouped `RuleMessage` objects, plus
 `total_errors` and `total_warnings`. Each group contains detail `Message` objects,
 field, filename, description, rule ID, severity, and distinct affected row count.
-The report service lives in `src/report/` and retains at most 100 detail messages
+The report service in `src/services/report.go` retains at most 100 detail messages
 per group and 100 rows per detail. Totals count distinct diagnostics before sampling;
 row counts include all distinct collected rows. Zero-based input rows become CSV
 line numbers (index + 2 for the header). Findings without source rows use `rows: []`.
@@ -85,9 +85,9 @@ TypeScript validator integration and config-driven rule selection are deferred.
 
 ## Generic DAG executor
 
-The public `dag` subpackage has no GTFS or database dependencies. `dag.New` validates
+The DAG executor lives in `src/services/dag.go`. `services.NewDAG` validates
 IDs, functions, edges, and cycles before execution. `DAG.Execute(ctx, limit)` uses
-Kahn's algorithm with bounded parallelism. Tasks return `dag.Outcome[T]` plus an
+Kahn's algorithm with bounded parallelism. Tasks return `types.Outcome[T]` plus an
 error: `Failed: true` blocks descendants, while an error aborts the run. Results
 retain each task's value and are sorted by ID. Graph bookkeeping is fresh per run;
 functions and any shared state must be safe for the requested concurrency/reuse.

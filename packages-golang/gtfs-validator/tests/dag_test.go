@@ -4,7 +4,8 @@ import (
 	"context"
 
 	"errors"
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/dag"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 	"reflect"
 	"sync/atomic"
 	"testing"
@@ -12,19 +13,19 @@ import (
 )
 
 // task builds a passing test node; deps ...string accepts any number of prerequisite IDs.
-func task(id string, deps ...string) dag.Task[int] {
-	return dag.Task[int]{
+func task(id string, deps ...string) types.Task[int] {
+	return types.Task[int]{
 		ID:           id,
 		Dependencies: deps,
-		Run: func(context.Context) (dag.Outcome[int], error) {
-			return dag.Outcome[int]{Value: 1}, nil
+		Run: func(context.Context) (types.Outcome[int], error) {
+			return types.Outcome[int]{Value: 1}, nil
 		},
 	}
 }
 
 // Table-driven tests run the same assertion against several named input cases.
 func TestMalformedGraphs(t *testing.T) {
-	for name, tasks := range map[string][]dag.Task[int]{
+	for name, tasks := range map[string][]types.Task[int]{
 		"empty id":           {task("")},
 		"nil function":       {{ID: "a"}},
 		"duplicate id":       {task("a"), task("a")},
@@ -34,7 +35,7 @@ func TestMalformedGraphs(t *testing.T) {
 		"self cycle":         {task("a", "a")},
 	} {
 		t.Run(name, func(t *testing.T) {
-			if _, err := dag.New(tasks); err == nil {
+			if _, err := services.NewDAG(tasks); err == nil {
 				t.Fatal("accepted malformed graph")
 			}
 		})
@@ -45,23 +46,23 @@ func TestMalformedGraphs(t *testing.T) {
 func TestBranchFailureAndReuse(t *testing.T) {
 	var ran atomic.Int32
 	a := task("a")
-	a.Run = func(context.Context) (dag.Outcome[int], error) {
-		return dag.Outcome[int]{Failed: true}, nil
+	a.Run = func(context.Context) (types.Outcome[int], error) {
+		return types.Outcome[int]{Failed: true}, nil
 	}
 	b := task("b", "a")
-	b.Run = func(context.Context) (dag.Outcome[int], error) {
+	b.Run = func(context.Context) (types.Outcome[int], error) {
 		t.Error("blocked task ran")
-		return dag.Outcome[int]{}, nil
+		return types.Outcome[int]{}, nil
 	}
 
 	z := task("z")
-	z.Run = func(context.Context) (dag.Outcome[int], error) {
+	z.Run = func(context.Context) (types.Outcome[int], error) {
 		ran.Add(1)
-		return dag.Outcome[int]{Value: 42}, nil
+		return types.Outcome[int]{Value: 42}, nil
 	}
 
-	input := []dag.Task[int]{task("d", "b", "c"), task("c", "a"), b, z, a}
-	graph, err := dag.New(input)
+	input := []types.Task[int]{task("d", "b", "c"), task("c", "a"), b, z, a}
+	graph, err := services.NewDAG(input)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -75,12 +76,12 @@ func TestBranchFailureAndReuse(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		statuses := []dag.Status{}
+		statuses := []types.Status{}
 		for _, r := range results {
 			statuses = append(statuses, r.Status)
 		}
 
-		if !reflect.DeepEqual(statuses, []dag.Status{dag.Failed, dag.Skipped, dag.Skipped, dag.Skipped, dag.Passed}) {
+		if !reflect.DeepEqual(statuses, []types.Status{types.Failed, types.Skipped, types.Skipped, types.Skipped, types.Passed}) {
 			t.Fatal(results)
 		}
 
@@ -105,10 +106,10 @@ func TestBoundedParallelDiamond(t *testing.T) {
 	started := make(chan struct{}, 3)
 	release := make(chan struct{})
 	var active, peak atomic.Int32
-	tasks := []dag.Task[int]{}
+	tasks := []types.Task[int]{}
 	for _, id := range []string{"a", "b", "c"} {
 		node := task(id)
-		node.Run = func(ctx context.Context) (dag.Outcome[int], error) {
+		node.Run = func(ctx context.Context) (types.Outcome[int], error) {
 			n := active.Add(1)
 			defer active.Add(-1)
 			for old := peak.Load(); n > old; old = peak.Load() {
@@ -119,24 +120,24 @@ func TestBoundedParallelDiamond(t *testing.T) {
 			started <- struct{}{}
 			select {
 			case <-release:
-				return dag.Outcome[int]{}, nil
+				return types.Outcome[int]{}, nil
 			case <-ctx.Done():
-				return dag.Outcome[int]{}, ctx.Err()
+				return types.Outcome[int]{}, ctx.Err()
 			}
 		}
 		tasks = append(tasks, node)
 	}
 
 	child := task("d", "a", "b", "c")
-	child.Run = func(context.Context) (dag.Outcome[int], error) {
+	child.Run = func(context.Context) (types.Outcome[int], error) {
 		if active.Load() != 0 {
 			t.Error("dependent started early")
 		}
 
-		return dag.Outcome[int]{}, nil
+		return types.Outcome[int]{}, nil
 	}
 
-	graph, _ := dag.New(append(tasks, child))
+	graph, _ := services.NewDAG(append(tasks, child))
 	finished := make(chan error, 1)
 	go func() {
 		_, err := graph.Execute(ctx, 2)
@@ -172,26 +173,26 @@ func TestAbortCancelsAndJoins(t *testing.T) {
 	var joined atomic.Bool
 	failure := errors.New("database unavailable")
 	a := task("a")
-	a.Run = func(ctx context.Context) (dag.Outcome[int], error) {
+	a.Run = func(ctx context.Context) (types.Outcome[int], error) {
 		select {
 		case <-running:
-			return dag.Outcome[int]{}, failure
+			return types.Outcome[int]{}, failure
 		case <-ctx.Done():
-			return dag.Outcome[int]{}, ctx.Err()
+			return types.Outcome[int]{}, ctx.Err()
 		}
 	}
 
 	b := task("b")
-	b.Run = func(ctx context.Context) (dag.Outcome[int], error) {
+	b.Run = func(ctx context.Context) (types.Outcome[int], error) {
 		close(running)
 		<-ctx.Done()
 		joined.Store(true)
-		return dag.Outcome[int]{}, ctx.Err()
+		return types.Outcome[int]{}, ctx.Err()
 	}
 
-	graph, _ := dag.New([]dag.Task[int]{a, b, task("c", "a")})
+	graph, _ := services.NewDAG([]types.Task[int]{a, b, task("c", "a")})
 	results, err := graph.Execute(ctx, 2)
-	if !errors.Is(err, failure) || !joined.Load() || results[2].Status != dag.Skipped || results[0].Status != dag.Errored {
+	if !errors.Is(err, failure) || !joined.Load() || results[2].Status != types.Skipped || results[0].Status != types.Errored {
 		t.Fatal(results, err)
 	}
 }
@@ -199,17 +200,17 @@ func TestAbortCancelsAndJoins(t *testing.T) {
 // Check the exceptional paths that must terminate without leaving work behind.
 func TestPanicCancellationAndEmptyGraph(t *testing.T) {
 	a := task("a")
-	a.Run = func(context.Context) (dag.Outcome[int], error) { panic("broken rule") }
-	graph, _ := dag.New([]dag.Task[int]{a})
+	a.Run = func(context.Context) (types.Outcome[int], error) { panic("broken rule") }
+	graph, _ := services.NewDAG([]types.Task[int]{a})
 	results, err := graph.Execute(context.Background(), 1)
-	if err == nil || results[0].Status != dag.Errored {
+	if err == nil || results[0].Status != types.Errored {
 		t.Fatal(results, err)
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 	results, err = graph.Execute(ctx, 1)
-	if !errors.Is(err, context.Canceled) || results[0].Status != dag.Skipped {
+	if !errors.Is(err, context.Canceled) || results[0].Status != types.Skipped {
 		t.Fatal(results, err)
 	}
 
@@ -217,7 +218,7 @@ func TestPanicCancellationAndEmptyGraph(t *testing.T) {
 		t.Fatal("accepted invalid limit")
 	}
 
-	empty, _ := dag.New([]dag.Task[int]{})
+	empty, _ := services.NewDAG([]types.Task[int]{})
 	results, err = empty.Execute(context.Background(), 1)
 	if err != nil || len(results) != 0 {
 		t.Fatal(results, err)

@@ -1,65 +1,30 @@
-// Package dag executes dependency graphs using bounded parallel Kahn scheduling.
-package dag
+package services
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	"sort"
+
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
-
-// Status is the final state of a task; pending/running states stay internal.
-type Status string
-
-const (
-	Passed  Status = "passed"
-	Failed  Status = "failed"
-	Skipped Status = "skipped"
-	Errored Status = "errored"
-)
-
-// Outcome separates an unsuccessful check from an operational error.
-// Failed outcomes block descendants; returned errors abort the entire run.
-// [T any] makes this type generic: callers choose the value type, such as []Finding.
-type Outcome[T any] struct {
-	Value  T
-	Failed bool
-}
-
-// Task is a graph node. Run is a function stored as a field, called only after
-// all prerequisites pass. Its error return is separate from a failed outcome.
-type Task[T any] struct {
-	ID           string
-	Dependencies []string
-	Run          func(context.Context) (Outcome[T], error)
-}
-
-// Result keeps the task output and an explanation when it failed or was skipped.
-type Result[T any] struct {
-	ID        string
-	Status    Status
-	Value     T
-	BlockedBy []string // Direct prerequisites that did not pass.
-	Reason    string
-	Error     string
-}
 
 // DAG is immutable after construction. Each Execute call owns its scheduling state.
 // Task functions must be safe for the concurrency and reuse requested by callers.
 type DAG[T any] struct {
 	// Maps are dictionaries keyed by task ID. Reverse edges let a completed
 	// prerequisite find the tasks waiting for it without scanning the whole graph.
-	tasks      map[string]Task[T]
+	tasks      map[string]types.Task[T]
 	dependents map[string][]string
 	ids        []string
 }
 
-// New validates all nodes and edges, including cycles, before any work can run.
-func New[T any](tasks []Task[T]) (*DAG[T], error) {
+// NewDAG validates all nodes and edges, including cycles, before any work can run.
+func NewDAG[T any](tasks []types.Task[T]) (*DAG[T], error) {
 	// First register every task so dependencies can refer to later entries.
 	// & creates a pointer to this graph; callers keep using the same graph object.
 	d := &DAG[T]{
-		tasks:      make(map[string]Task[T]),
+		tasks:      make(map[string]types.Task[T]),
 		dependents: make(map[string][]string),
 	}
 
@@ -143,13 +108,13 @@ func (d *DAG[T]) initial() (map[string]int, []string) {
 // scheduler's maps directly, so graph bookkeeping needs no shared-memory locks.
 type completion[T any] struct {
 	id      string
-	outcome Outcome[T]
+	outcome types.Outcome[T]
 	err     error
 }
 
 // Execute returns results in ID order, including skipped tasks after an abort.
 // Cancellation is cooperative: it cancels and joins all started tasks before returning.
-func (d *DAG[T]) Execute(parent context.Context, limit int) ([]Result[T], error) {
+func (d *DAG[T]) Execute(parent context.Context, limit int) ([]types.Result[T], error) {
 	if limit < 1 {
 		return nil, errors.New("concurrency must be >= 1")
 	}
@@ -159,7 +124,7 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]Result[T], error)
 	defer cancel()
 
 	degrees, ready := d.initial()
-	results := make(map[string]Result[T], len(d.tasks))
+	results := make(map[string]types.Result[T], len(d.tasks))
 
 	// A channel is a typed message queue between goroutines (concurrent functions).
 	// Buffer one message per active slot so finished workers can report immediately.
@@ -181,7 +146,7 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]Result[T], error)
 	blockedBy := func(id string) []string {
 		blocked := []string{}
 		for _, dep := range d.tasks[id].Dependencies {
-			if results[dep].Status != Passed {
+			if results[dep].Status != types.Passed {
 				blocked = append(blocked, dep)
 			}
 		}
@@ -204,9 +169,9 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]Result[T], error)
 			ready = ready[1:]
 
 			if blocked := blockedBy(id); len(blocked) > 0 {
-				results[id] = Result[T]{
+				results[id] = types.Result[T]{
 					ID:        id,
-					Status:    Skipped,
+					Status:    types.Skipped,
 					BlockedBy: blocked,
 					Reason:    "prerequisite unsuccessful",
 				}
@@ -242,17 +207,17 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]Result[T], error)
 		running--
 
 		// A failed outcome is a normal check result. An error aborts all branches.
-		entry := Result[T]{
+		entry := types.Result[T]{
 			ID:     result.id,
-			Status: Passed,
+			Status: types.Passed,
 			Value:  result.outcome.Value,
 		}
 		if result.outcome.Failed {
-			entry.Status = Failed
+			entry.Status = types.Failed
 		}
 
 		if result.err != nil {
-			entry.Status = Errored
+			entry.Status = types.Errored
 			entry.Error = result.err.Error()
 			if firstErr == nil {
 				firstErr = fmt.Errorf("task %s: %w", result.id, result.err)
@@ -269,19 +234,19 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]Result[T], error)
 	// Populate every unfinished node before computing abort-related blockers.
 	for _, id := range d.ids {
 		if _, exists := results[id]; !exists {
-			results[id] = Result[T]{
+			results[id] = types.Result[T]{
 				ID:     id,
-				Status: Skipped,
+				Status: types.Skipped,
 				Reason: "execution aborted",
 			}
 		}
 	}
 
 	// Completion order can vary with concurrency; report order must not.
-	ordered := make([]Result[T], 0, len(d.ids))
+	ordered := make([]types.Result[T], 0, len(d.ids))
 	for _, id := range d.ids {
 		entry := results[id]
-		if entry.Status == Skipped {
+		if entry.Status == types.Skipped {
 			entry.BlockedBy = blockedBy(id)
 		}
 		ordered = append(ordered, entry)
@@ -294,7 +259,7 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]Result[T], error)
 	return ordered, firstErr
 }
 
-func runTask[T any](ctx context.Context, task Task[T], done chan<- completion[T]) {
+func runTask[T any](ctx context.Context, task types.Task[T], done chan<- completion[T]) {
 	result := completion[T]{id: task.ID}
 
 	// defer always sends one completion, even after a panic (a runtime exception).
