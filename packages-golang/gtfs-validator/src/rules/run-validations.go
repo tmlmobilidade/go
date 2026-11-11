@@ -12,12 +12,7 @@ import (
 // RunValidations runs the built-in rules against an imported database.
 // The caller owns the database and is responsible for closing it afterward.
 func RunValidations(ctx context.Context, db *sql.DB, concurrency int) ([]types.Result[[]Finding], error) {
-	return executeRules(ctx, db, registry(), concurrency)
-}
-
-func executeRules(ctx context.Context, db *sql.DB, rules []rule, concurrency int) ([]types.Result[[]Finding], error) {
-	// []Finding means a slice (a growable list) of findings. The generic DAG
-	// carries this value without needing to know anything about GTFS or SQLite.
+	rules := registry()
 	tasks := make([]types.Task[[]Finding], 0, len(rules))
 
 	for _, r := range rules {
