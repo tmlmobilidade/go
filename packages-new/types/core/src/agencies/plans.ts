@@ -8,7 +8,7 @@ export const AgencyPlansSchema = z.object({
 	apex_notification_emails: z.array(z.string().email()).default([]),
 	approval_notification_emails: z.array(z.string().email()).default([]),
 	approval_request_emails: z.array(z.string().email()).default([]),
-	validation_rules: z.record(GtfsValidatorRuleIdSchema, GtfsValidatiorRuleSchema),
+	validation_rules: z.partialRecord(GtfsValidatorRuleIdSchema, GtfsValidatiorRuleSchema),
 });
 
 export type AgencyPlans = z.infer<typeof AgencyPlansSchema>;
