@@ -117,25 +117,17 @@ The validator uses the pure-Go SQLite driver, so `CGO_ENABLED=0` remains support
 
 ## Logging
 
-`src/services/logger` composes the shared telemetry logger with validator row
-progress. Its shared instance is `types/variables/logger.AppLogger`, which supports
-all telemetry severity methods, log-level filtering,
-and performance trackers. Severity logs go to stderr so stdout can contain the
-JSON result. `ENVIRONMENT=dev` selects readable logs; other environments use
-structured JSON with timestamps and attributes. Shared presentation methods such
-as `Divider` still write to stdout; the entrypoint uses `Info` for its banner.
+`types/variables/logger.AppLogger` creates the shared telemetry logger directly,
+with `src/services/logger.RenderLogRecord` as its renderer. It supports severity
+methods, log-level filtering, and performance trackers without a validator wrapper.
+Severity logs go to stderr so stdout can contain the JSON result.
+`ENVIRONMENT=dev` selects readable logs; other environments use structured JSON
+with timestamps and attributes. Shared presentation methods such as `Divider`
+still write to stdout; the entrypoint uses `Info` for its banner.
 
-```go
-progress := logger.AppLogger.NewProgressTracker("trips", totalRows, 1000)
-// Call after each processed row:
-progress.Track()
-// Call only after all table checks finish successfully:
-progress.Complete()
-```
-
-Progress includes the table, processed rows, total rows, and completion status.
-Reaching the final row does not report 100% until `Complete` is called. Progress
-trackers accept concurrent row updates and normalize a zero row threshold to one.
+Rule execution logs each rule's start, completion status, and elapsed time.
+Row iteration emits progress records with the rule ID, table, and checked row
+count directly through `AppLogger.Progress`.
 
 ## Validation Processing
 
