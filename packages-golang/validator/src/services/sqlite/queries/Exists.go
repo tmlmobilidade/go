@@ -10,8 +10,7 @@ import (
 /*
 * Exists checks whether any source row has a field exactly equal to value.
 * The value is bound separately from SQL, and matching rows are not loaded.
-* SQL NULL and missing columns do not match an empty string here; use
-* ExistsMatching when NULL and empty strings should share matching semantics.
+* SQL NULL and missing columns do not match an empty string.
 * Invalid table references, schema failures and query failures return errors.
  */
 func Exists(t *types.SQLiteTable, field string, value string) (bool, error) {

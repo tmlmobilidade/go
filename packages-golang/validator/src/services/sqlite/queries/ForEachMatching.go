@@ -2,8 +2,8 @@ package queries
 
 import (
 	dbops "github.com/tmlmobilidade/go/packages-golang/validator/src/services/database"
-	utils "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/utils"
 	types "github.com/tmlmobilidade/go/packages-golang/validator/src/types/sqlite"
+	utils "github.com/tmlmobilidade/go/packages-golang/validator/src/utils/sqlite"
 )
 
 /*
