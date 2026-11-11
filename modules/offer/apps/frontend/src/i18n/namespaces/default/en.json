@@ -476,6 +476,37 @@
 			"confirmMessage": "Delete this zone? This action cannot be undone.",
 			"confirmTitle": "Delete zone"
 		},
+		"extract": {
+			"ZonesExtract": {
+				"action": {
+					"error_title": "Error requesting export",
+					"success_title": "Export requested"
+				}
+			},
+			"ZonesExtractFooter": {
+				"button": {
+					"label": "Export"
+				}
+			},
+			"ZonesExtractHeader": {
+				"title": "Export zones"
+			},
+			"ZonesExtractProperties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operators"
+					},
+					"search": {
+						"label": "Search"
+					},
+					"version": {
+						"label": "Version"
+					}
+				},
+				"no_filter": "No filter",
+				"placeholder": "Select one or more options..."
+			}
+		},
 		"fields": {
 			"agency_ids": {
 				"label": "Operators"
@@ -494,6 +525,11 @@
 			}
 		},
 		"list": {
+			"actions": {
+				"extract": {
+					"label": "Export zones"
+				}
+			},
 			"columns": {
 				"agency_ids": "Operators",
 				"code": "Code",

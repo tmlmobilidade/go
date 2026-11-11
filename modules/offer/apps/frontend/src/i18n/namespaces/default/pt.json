@@ -312,6 +312,37 @@
 			"confirmMessage": "Tem a certeza que deseja apagar esta zona? Esta ação não pode ser revertida.",
 			"confirmTitle": "Apagar zona"
 		},
+		"extract": {
+			"ZonesExtract": {
+				"action": {
+					"error_title": "Erro ao solicitar a exportação",
+					"success_title": "Exportação solicitada"
+				}
+			},
+			"ZonesExtractFooter": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"ZonesExtractHeader": {
+				"title": "Exportar zonas"
+			},
+			"ZonesExtractProperties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"search": {
+						"label": "Pesquisa"
+					},
+					"version": {
+						"label": "Versão"
+					}
+				},
+				"no_filter": "Sem filtro",
+				"placeholder": "Selecione uma ou mais opções..."
+			}
+		},
 		"fields": {
 			"agency_ids": {
 				"label": "Operadores"
@@ -330,6 +361,11 @@
 			}
 		},
 		"list": {
+			"actions": {
+				"extract": {
+					"label": "Exportar zonas"
+				}
+			},
 			"columns": {
 				"agency_ids": "Operadores",
 				"code": "Código",

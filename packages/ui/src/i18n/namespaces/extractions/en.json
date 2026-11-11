@@ -43,6 +43,9 @@
 		"offer-gtfs-v29": {
 			"title": "GTFS (v29)"
 		},
+		"offer-zones-v1": {
+			"title": "Zones (v1)"
+		},
 		"operation-alerts-v1": {
 			"title": "Alerts (v1)"
 		},
