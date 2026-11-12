@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
@@ -18,6 +19,7 @@ import (
 // trip, service calendar, stops, and stop times. No importer, database, or rule
 // functions are replaced: the only mock is the GTFS data (and its HTTP server).
 func TestIntegrationMockGTFS(t *testing.T) {
+	config := integrationRules(t)
 	for _, scenario := range []string{"valid feed", "empty agency names", "missing agency file"} {
 		t.Run(scenario, func(t *testing.T) {
 			files := loadMockGTFS(t, "mock-gtfs")
@@ -56,7 +58,7 @@ func TestIntegrationMockGTFS(t *testing.T) {
 					report, err := validator.GtfsValidator(context.Background(), validator.Options{
 						Source:      source.input,
 						Concurrency: 3,
-						Rules:       agencyRules(),
+						Rules:       config,
 					})
 					if err != nil {
 						t.Fatalf("validation did not complete: %v", err)
@@ -77,6 +79,38 @@ func TestIntegrationMockGTFS(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Build the config from rule files so an unregistered rule fails the integration test.
+func integrationRules(t *testing.T) []types.Rule {
+	t.Helper()
+	entries, err := os.ReadDir(filepath.Join("..", "src", "rules"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	config := agencyRules()
+	configured := make(map[string]bool, len(config))
+	for _, rule := range config {
+		configured[rule.RuleID] = true
+	}
+
+	for _, entry := range entries {
+		name := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
+			continue
+		}
+		switch name {
+		case "registry.go", "run-validations.go", "types.go":
+			continue
+		}
+
+		id := strings.TrimSuffix(name, ".go")
+		if !configured[id] {
+			config = append(config, types.Rule{RuleID: id, Severity: types.SEVERITY_ERROR})
+		}
+	}
+	return config
 }
 
 // Readable CSV fixtures stay in version control; the ZIP is generated at test time.
