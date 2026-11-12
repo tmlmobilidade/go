@@ -1,7 +1,7 @@
 'use client';
 
-import { type AgencyPlans } from '@tmlmobilidade/go-types-core';
-import { Collapsible, GtfsValidationRulesEditor, Section } from '@tmlmobilidade/ui';
+import { type GtfsValidatorRulesDraft } from '@tmlmobilidade/go-types-gtfs-validator';
+import { Collapsible, GtfsValidationRulesEditor, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
@@ -14,12 +14,13 @@ export function AgenciesDetailValidationRules() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { capabilities, form, validationRules } = useAgenciesDetailFormContext();
+	const { capabilities, form } = useAgenciesDetailFormContext();
+	const validationRules = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' }) ?? {};
 
 	//
 	// B. Handle actions
 
-	const handleChange = (rules: AgencyPlans['validation_rules']) => {
+	const handleChange = (rules: GtfsValidatorRulesDraft) => {
 		if (!capabilities.editEnabled) return;
 		form.setValue('plans.validation_rules', getAgenciesDetailValidationRules(rules), { shouldDirty: true, shouldValidate: true });
 	};

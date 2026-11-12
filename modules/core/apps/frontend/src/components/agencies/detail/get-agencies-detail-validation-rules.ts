@@ -1,19 +1,28 @@
-import { type AgencyPlans } from '@tmlmobilidade/go-types-core';
-import { GtfsValidatorRuleIdValues } from '@tmlmobilidade/go-types-gtfs-validator';
+import { GtfsValidatorRuleIdValues, type GtfsValidatorRulesDraft } from '@tmlmobilidade/go-types-gtfs-validator';
 
 /* * */
 
 const supportedRuleIds = new Set<string>(GtfsValidatorRuleIdValues);
 
-/** Rebuild saved rules and dependencies from the same IDs displayed by the editor. */
-export function getAgenciesDetailValidationRules(rules: AgencyPlans['validation_rules'] = {}): AgencyPlans['validation_rules'] {
-	return Object.fromEntries(Object.entries(rules)
-		.filter(([id]) => supportedRuleIds.has(id))
-		.map(([id, rule]) => [id, Array.isArray(rule?.depends_on)
-			? {
-				...rule,
-				// Remove retired IDs while retaining malformed values for schema validation.
-				depends_on: rule.depends_on.filter(dependency => typeof dependency !== 'string' || supportedRuleIds.has(dependency)),
-			}
-			: rule]));
+/**
+ * Build the complete current ID map, dropping retired rules and dependencies.
+ * New rules have no severity until the user chooses one. Unchanged settings keep
+ * their identity so the form can distinguish pending cleanup from ordinary loads.
+ */
+export function getAgenciesDetailValidationRules(rules: GtfsValidatorRulesDraft = {}): GtfsValidatorRulesDraft {
+	//
+
+	//
+	// A. Process rules
+
+	return Object.fromEntries(GtfsValidatorRuleIdValues.map((id) => {
+		const rule = rules[id];
+
+		if (!rule) return [id, { depends_on: [] }];
+		if (!Array.isArray(rule.depends_on)) return [id, rule];
+
+		// Keep malformed values visible to strict schema validation.
+		const dependencies = rule.depends_on.filter(dependency => typeof dependency !== 'string' || supportedRuleIds.has(dependency));
+		return [id, dependencies.length === rule.depends_on.length ? rule : { ...rule, depends_on: dependencies }];
+	}));
 }

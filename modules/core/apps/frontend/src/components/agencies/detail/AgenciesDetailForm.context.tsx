@@ -2,8 +2,9 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency, type AgencyPlans, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
+import { type GtfsValidatorRulesDraft } from '@tmlmobilidade/go-types-gtfs-validator';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleAction, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,11 +16,13 @@ import { useAgenciesDetailData } from './use-agencies-detail-data';
 
 /* * */
 
-interface AgenciesDetailFormContextValue extends StandardFormContextValue<UpdateAgencyDto> {
-	validationRules: AgencyPlans['validation_rules']
-}
+type AgenciesDetailFormValues = Omit<UpdateAgencyDto, 'plans'> & {
+	plans?: Omit<AgencyPlans, 'validation_rules'> & {
+		validation_rules: GtfsValidatorRulesDraft
+	}
+};
 
-const AgenciesDetailFormContext = createContext<AgenciesDetailFormContextValue | undefined>(undefined);
+const AgenciesDetailFormContext = createContext<StandardFormContextValue<AgenciesDetailFormValues> | undefined>(undefined);
 
 export function useAgenciesDetailFormContext() {
 	const context = useContext(AgenciesDetailFormContext);
@@ -59,12 +62,10 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 		};
 	}, [agencyData]);
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<AgenciesDetailFormValues, typeof UpdateAgencySchema>({
 		apiData: agencyFormData,
 		schema: UpdateAgencySchema,
 	});
-
-	const validationRules = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' });
 
 	//
 	// C. Handle actions
@@ -136,7 +137,7 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// E. Return state
 
-	const stateValue: AgenciesDetailFormContextValue = useMemo(() => ({
+	const stateValue: StandardFormContextValue<AgenciesDetailFormValues> = useMemo(() => ({
 		actions: {
 			update: handleSave,
 		},
@@ -152,8 +153,7 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 			isUpdating,
 		},
 		unblock,
-		validationRules: validationRules ?? {},
-	}), [editEnabled, form, handleSave, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid, validationRules]);
+	}), [editEnabled, form, handleSave, isUpdating, agencyDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
 		<AgenciesDetailFormContext.Provider value={stateValue}>
