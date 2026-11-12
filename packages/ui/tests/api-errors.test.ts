@@ -4,6 +4,13 @@ import { test } from 'node:test';
 import { ApiError } from '../src/fetch/api-error';
 import { fetchApiData } from '../src/fetch/fetch-api-data';
 
+test('fetch accepts a successful delete response without a data field', async (context) => {
+	const body = { error: null, generated_at: null, status_code: '200', timestamp: Date.now() };
+	context.mock.method(globalThis, 'fetch', async () => Response.json(body));
+	const response = await fetchApiData<undefined>({ method: 'DELETE', url: '/test' });
+	assert.deepEqual(response, { ...body, data: undefined });
+});
+
 test('fetch preserves non-2xx API messages, status and nested field details', async (context) => {
 	const body = { data: null, error: 'dates.0.date: Required', issues: [{ code: 'invalid_type', message: 'Required', path: ['dates', 0, 'date'] }], status_code: '400', timestamp: Date.now() };
 	context.mock.method(globalThis, 'fetch', async (_url, options: RequestInit) => {
