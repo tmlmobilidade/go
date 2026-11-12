@@ -73,6 +73,9 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 	if err = validateDatabase(ctx, databasePath, graph, max(options.Concurrency, 1), collector); err != nil {
 		return summary, err
 	}
+
+	//
+	// 5. Return the summary
 	return collector.Summary(), nil
 }
 
