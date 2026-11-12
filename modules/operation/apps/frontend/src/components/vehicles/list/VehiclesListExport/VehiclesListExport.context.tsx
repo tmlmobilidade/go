@@ -3,9 +3,8 @@
 import { useVehiclesListFilterAgency } from '@/components/vehicles/list/filters/VehiclesListFilterAgency/use-vehicles-list-filter-agency';
 import { useVehiclesListFilterSearch } from '@/components/vehicles/list/filters/VehiclesListFilterSearch/use-vehicles-list-filter-search';
 import { useVehiclesListData } from '@/components/vehicles/list/use-vehicles-list-data';
-import { useVehiclesAgenciesData } from '@/components/vehicles/shared/use-vehicles-agencies-data';
 import { type CreateFileExportDto, type VehicleExportProperties } from '@tmlmobilidade/go-types-downloads';
-import { closeModal, useToast } from '@tmlmobilidade/ui';
+import { closeModal, useAgenciesData, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -58,7 +57,7 @@ export function VehiclesListExportContextProvider({ children }: PropsWithChildre
 	const filterSearch = useVehiclesListFilterSearch();
 
 	const { data: vehiclesData } = useVehiclesListData();
-	const { options: agencyOptions } = useVehiclesAgenciesData();
+	const { options: agencyOptions } = useAgenciesData();
 
 	//
 	// B. Transform data

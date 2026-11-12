@@ -1,5 +1,6 @@
 /* * */
 
+import { validationTransform } from '@tmlmobilidade/go-utils-validation';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
@@ -27,7 +28,7 @@ export type UnixMilliseconds = number & {
  */
 export const UnixMillisecondsSchema = z
 	.union([z.string(), z.number()])
-	.transform(validateUnixMilliseconds);
+	.transform(validationTransform(validateUnixMilliseconds, 'custom.formats.unix_milliseconds', { minimum: 1e10 }));
 
 /**
  * This function validates if a number is a valid Unix Timestamp, in milliseconds.

@@ -19,7 +19,7 @@ export async function createLineHandler(request: FastifyRequest<{ Body: CreateLi
 	const validatedLine = CreateLineSchema.safeParse(request.body);
 
 	if (!validatedLine.success) {
-		return sendErrorApiResponse(reply, { error: validatedLine.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedLine.error, status_code: '400' });
 	}
 
 	//

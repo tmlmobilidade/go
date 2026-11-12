@@ -1,0 +1,169 @@
+{
+	"create": {
+		"LineCreateBasicInfo": {
+			"agency": "Operator",
+			"code": "Code",
+			"code_example": "E.g. 1001",
+			"line_example": "E.g. Alfragide - Reboleira",
+			"name": "Name"
+		},
+		"LineCreateHeader": {
+			"new_line": "New line"
+		}
+	},
+	"detail": {
+		"LineDetailHeader": {
+			"delete_line": "Delete line",
+			"delete_line_message": "Are you sure you want to delete this line? This cannot be undone."
+		},
+		"LineDetailSectionConfig": {
+			"agency": "Operator",
+			"code": "Code",
+			"code_example": "E.g. 1001",
+			"line_config": "Line configuration",
+			"name": "Name",
+			"transport_options": {
+				"aerial_lift": "Aerial lift",
+				"bus": "Bus",
+				"cable_tram": "Cable tram",
+				"ferry": "Ferry",
+				"funicular": "Funicular",
+				"monorail": "Monorail",
+				"rail": "Rail",
+				"subway": "Subway",
+				"tram": "Tram",
+				"trolleybus": "Trolleybus"
+			},
+			"vehicle_type": "Vehicle type"
+		},
+		"LineDetailSectionRoutes": {
+			"add_route": "Add route",
+			"routes": "Routes",
+			"routes_description": "All variants of this line, including the main route."
+		},
+		"LineDetailSectionSpecs": {
+			"circular_line": "Circular line",
+			"line_specs": "Line specifications",
+			"school_line": "School line"
+		},
+		"LineDetailSectionTypology": {
+			"apex_interchange": "APEX interchange",
+			"cancel": "Cancel",
+			"change_typology": "Change typology",
+			"confirm": "Confirm",
+			"interchange_options": {
+				"0": "Transfers are not allowed",
+				"1": "Transfers are not allowed within the same operator",
+				"2": "Transfers must be configured in APEX files"
+			},
+			"onboard_fares": "Onboard fares (navegante® a bordo)",
+			"prepaid_fare": "navegante® pré-pago fare",
+			"typology": "Typology",
+			"typology_confirmation": "Changing the typology will also replace this line’s fares. This affects onboard (navegante® a bordo) and prepaid (navegante® pré-pago) ticket prices. Do you want to continue?",
+			"typology_fares": "Typology and fares"
+		}
+	},
+	"export": {
+		"GtfsExportModal": {
+			"all_lines": "All lines",
+			"all_stops": "Include all stops",
+			"calendar_end": "Last calendar date",
+			"calendar_end_hint": "Service ends on this date, inclusive",
+			"calendar_start": "First calendar date",
+			"calendar_start_hint": "Service starts on this date, inclusive",
+			"except_lines": "All except these",
+			"except_lines_hint": "All lines will be exported except these.",
+			"export": "Export",
+			"export_agencies_hint": "Select one or more operators to export their data",
+			"export_gtfs": "Export GTFS",
+			"feed_end": "Feed end date",
+			"feed_end_hint": "The plan is valid until this date",
+			"feed_start": "Feed start date",
+			"feed_start_hint": "The plan is valid from this date",
+			"numeric_codes": "Numeric calendar codes",
+			"only_lines": "Only these lines",
+			"only_lines_hint": "Only these lines will be exported.",
+			"select_agencies": "Select operators",
+			"select_lines": "Select lines",
+			"stop_sequence_hint": "Stops in a pattern are ordered using consecutive integers. Starting at 1 is recommended, but another value, such as 0, can be used when needed.",
+			"stop_sequence_start": "Stop sequence starting number"
+		},
+		"GtfsExportModalContextProvider": {
+			"error": "Error",
+			"export_failed": "Error starting GTFS export",
+			"export_started": "GTFS export started",
+			"success": "Success"
+		}
+	},
+	"list": {
+		"LinesList": {
+			"agency": "Operator",
+			"code": "Code",
+			"name": "Name"
+		},
+		"LinesListFilterAgencies": {
+			"agencies": "Operators"
+		},
+		"LinesListHeader": {
+			"actions": "Actions",
+			"export_gtfs": "Export GTFS",
+			"lines": "Lines",
+			"more_options": "More options",
+			"new_line_action": "New line",
+			"vkm": "View vehicle kilometres"
+		}
+	},
+	"overview": {
+		"LinesOverviewMapHover": {
+			"line_count": "{count, plural, one {# line} other {# lines}}",
+			"pattern_line_count": "{count, plural, one {# pattern} other {# patterns}} on {line_count, plural, one {# line} other {# lines}}"
+		},
+		"LinesOverviewMapStatus": {
+			"count": "{count, plural, one {# pattern} other {# patterns}}",
+			"loading": "Loading patterns…"
+		}
+	},
+	"vkms": {
+		"VkmModal": {
+			"agency": "Operator",
+			"business_days": "Weekdays",
+			"calculate": "Calculate",
+			"calculating": "Calculating vehicle kilometres for the selected settings…",
+			"calculation_method": "Calculation method",
+			"calculation_summary": "Calculation summary",
+			"contracted_vkm": "Contracted vehicle kilometres/year:",
+			"day_totals": "Totals by day type",
+			"end_date": "End date",
+			"end_hint": "Last date included in the calculation",
+			"estimated_cost": "Estimated cost",
+			"extension_source": "Length source",
+			"fixed_range": "Fixed range",
+			"go_description": "Uses the length saved on the pattern, equivalent to the former recommended shape option (GO v1).",
+			"go_recommended": "GO (recommended)",
+			"method_hint": "Choose a rolling year from the start date or a fixed date range.",
+			"no_periods": "No periods are defined for the selected range.",
+			"overview": "Overview",
+			"period_heading": "Totals for {name}",
+			"period_total": "Period total",
+			"period_totals": "Totals by period",
+			"price_km": "Price per km:",
+			"relative_contract": "Relative to contract",
+			"rolling_year": "Rolling year",
+			"saturdays": "Saturdays",
+			"select_agency": "Select operator",
+			"start_date": "Start date",
+			"start_hint": "First date included in the calculation",
+			"stop_times": "Stop distances",
+			"stop_times_description": "Adds the distances between stops (`distance_delta`) along the pattern.",
+			"sundays_holidays": "Sundays and holidays",
+			"total_distance": "Total distance",
+			"vkm": "View vehicle kilometres",
+			"vkm_agency_hint": "Select the operator to calculate vehicle kilometres for the planned service",
+			"vkm_empty": "Select an operator, adjust the settings and calculate to see vehicle kilometres."
+		},
+		"VkmModalContextProvider": {
+			"calculation_error": "Error calculating vehicle kilometres",
+			"error": "Error"
+		}
+	}
+}

@@ -4,23 +4,28 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { locationsProvider } from '@tmlmobilidade/go-providers-locations';
 import { type Stop, StopIdSchema, StopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 
 import { type ImportOptions } from '../utils/cli.js';
 import { parseStops, toStop } from '../utils/stops.js';
 
 /* * */
 
+const preparationBatchSize = 10;
+const idLookupSize = 100;
+
+/* * */
+
 /**
- * Validates, prepares and imports stops, skipping existing agency flags.
+ * Validates and prepares stops for preview, export or import, skipping existing flags and legacy IDs.
  * @param options The validated CLI options
  * @param services The database and location operations, replaceable for offline checks
- * @returns The number of prepared, inserted, previewed and skipped stops
+ * @returns The number of prepared, inserted, exported, previewed and skipped stops
  */
 export async function importStopsTask(options: ImportOptions, services: {
 	findAgency: (id: string) => Promise<boolean>
 	findLocation: typeof locationsProvider.findLocationByGeo
-	stops: Pick<typeof goDb.infrastructure.stops, 'exists' | 'findOne' | 'insertOneUnsafe'>
+	stops: Pick<typeof goDb.infrastructure.stops, 'findMany' | 'findOne' | 'insertOneUnsafe'>
 } = {
 	findAgency: async id => Boolean(await goDb.core.agencies.findById(id)),
 	findLocation: (lat, lon) => locationsProvider.findLocationByGeo(lat, lon),
@@ -29,11 +34,13 @@ export async function importStopsTask(options: ImportOptions, services: {
 	//
 
 	const timer = new Timer();
-	const counts = { inserted: 0, prepared: 0, previewed: 0, skipped: 0 };
+	const { agencyIds, exportJson } = options;
+	const counts = { exported: 0, inserted: 0, prepared: 0, previewed: 0, skipped: 0 };
+	const action = exportJson ? 'Exporting' : options.dryRun ? 'Previewing' : 'Importing';
 	let context = 'reading the GTFS file';
 	let completed = false;
 
-	Logger.title(`${options.dryRun ? 'Previewing' : 'Importing'} GTFS stops for agency ${options.agencyId}`);
+	Logger.title(`${action} GTFS stops for ${agencyIds.join(', ')}`);
 	Logger.info(`Reading ${options.file}; starting GO ID: ${options.startId}`);
 
 	try {
@@ -51,59 +58,96 @@ export async function importStopsTask(options: ImportOptions, services: {
 		}
 
 		//
-		// Verify the agency exists
+		// Verify every supplied agency exists
 
-		context = `checking agency ${options.agencyId}`;
-		Logger.info(`Validated input; checking agency ${options.agencyId}.`);
-		if (!await services.findAgency(options.agencyId)) throw new Error('Agency does not exist');
+		Logger.info(`Validated input; checking agencies ${agencyIds.join(', ')}.`);
+		for (const agencyId of agencyIds) {
+			context = `checking agency ${agencyId}`;
+			if (!await services.findAgency(agencyId)) throw new Error('Agency does not exist');
+		}
 
 		//
 		// Match both identifiers on the same flag, with legacy IDs as a fallback
 
-		const findExisting = (stopId: string) => services.stops.findOne({
-			$or: [
-				{ flags: { $elemMatch: { agency_ids: options.agencyId, stop_id: stopId } } },
-				{ legacy_id: `${options.agencyId}:${stopId}` },
-				{ legacy_ids: `${options.agencyId}:${stopId}` },
-			],
-		});
+		const findExisting = (stopId: string) => {
+			const legacyIds = [stopId, ...agencyIds.map(agencyId => `${agencyId}:${stopId}`)];
+			return services.stops.findOne({
+				$or: [
+					{ flags: { $elemMatch: { agency_ids: { $in: agencyIds }, stop_id: stopId } } },
+					{ legacy_id: { $in: legacyIds } },
+					{ legacy_ids: { $in: legacyIds } },
+				],
+			});
+		};
 
 		//
 		// Prepare every new stop before performing the first insert
 
 		const prepared: { gtfsId: string, stop: Stop }[] = [];
 		let nextId = options.startId;
+		let checkedUntil = nextId;
+		let occupiedIds = new Set<string>();
+		const allocateId = async () => {
+			while (true) {
+				const id = StopIdSchema.parse(nextId);
+				if (nextId === checkedUntil) {
+					checkedUntil = Math.min(nextId + idLookupSize, 1_000_000);
+					const ids = Array.from({ length: checkedUntil - nextId }, (_, index) => String(nextId + index));
+					const occupied = await services.stops.findMany({
+						$or: [{ _id: { $in: ids } }, { legacy_id: { $in: ids } }],
+					}, { projection: { _id: 1, legacy_id: 1 } });
+					occupiedIds = new Set(occupied.flatMap(stop => stop.legacy_id ? [stop._id, stop.legacy_id] : [stop._id]));
+				}
+				nextId++;
+				if (!occupiedIds.has(id)) return id;
+			}
+		};
 
-		for (const [index, row] of rows.entries()) {
-			const progress = `[${index + 1}/${rows.length}] GTFS ${row.stop_id} (${row.stop_name})`;
-			context = `preparing ${progress}`;
-			Logger.info(`${progress}: checking existing flags.`);
+		for (let offset = 0; offset < rows.length; offset += preparationBatchSize) {
+			const batch = rows.slice(offset, offset + preparationBatchSize);
+			Logger.info(`Preparing stops ${offset + 1}–${offset + batch.length} of ${rows.length}.`);
+			const matches = await Promise.allSettled(batch.map(row => findExisting(row.stop_id)));
+			const newStops: { id: string, progress: string, row: typeof rows[number] }[] = [];
 
-			const existing = await findExisting(row.stop_id);
-			if (existing) {
-				counts.skipped++;
-				Logger.info(`${progress}: skipped; already linked to GO stop ${existing._id} by agency flag or legacy ID.`);
-				continue;
+			for (const [index, row] of batch.entries()) {
+				const progress = `[${offset + index + 1}/${rows.length}] GTFS ${row.stop_id} (${row.stop_name})`;
+				context = `preparing ${progress}`;
+				const match = matches[index];
+				if (match.status === 'rejected') throw match.reason;
+				if (match.value) {
+					counts.skipped++;
+					Logger.info(`${progress}: skipped; already linked to GO stop ${match.value._id} by agency flag or legacy ID.`);
+					continue;
+				}
+
+				newStops.push({ id: await allocateId(), progress, row });
 			}
 
-			let id = StopIdSchema.parse(nextId);
-			while (await services.stops.exists('_id', id) || await services.stops.exists('legacy_id', id)) {
-				id = StopIdSchema.parse(++nextId);
+			const locations = await Promise.allSettled(newStops.map(({ row }) => services.findLocation(Number(row.stop_lat), Number(row.stop_lon))));
+			for (const [index, { id, progress, row }] of newStops.entries()) {
+				context = `preparing ${progress}`;
+				const location = locations[index];
+				if (location.status === 'rejected') throw location.reason;
+				const stop = toStop(row, id, location.value, agencyIds);
+				prepared.push({ gtfsId: row.stop_id, stop });
+				counts.prepared++;
 			}
-
-			Logger.info(`${progress}: resolving administrative location for GO stop ${id}.`);
-			const location = await services.findLocation(Number(row.stop_lat), Number(row.stop_lon));
-			const stop = toStop(row, id, location, options.agencyId);
-			prepared.push({ gtfsId: row.stop_id, stop });
-			counts.prepared++;
-			nextId++;
-			Logger.info(`${progress}: prepared GO stop ${id}; elapsed ${timer.get()}.`);
 		}
 
 		//
-		// Preview or insert, rechecking duplicates before each write
+		// Export, preview or insert, rechecking duplicates before each database insert
 
 		Logger.info(`Preparation complete: ${counts.prepared} new stops; ${counts.skipped} existing stops skipped.`);
+
+		if (exportJson) {
+			context = `exporting stops to ${exportJson}`;
+			const documents = prepared.map(({ stop }) => stop);
+			await writeFile(exportJson, `${JSON.stringify(documents, null, 2)}\n`, { flag: 'wx' });
+			counts.exported = documents.length;
+			Logger.info(`Exported ${counts.exported} stops to ${exportJson}.`);
+			completed = true;
+			return counts;
+		}
 
 		for (const [index, { gtfsId, stop }] of prepared.entries()) {
 			const progress = `[${index + 1}/${prepared.length}] GO ${stop._id} (${stop.name}), GTFS ${gtfsId}`;
@@ -132,8 +176,8 @@ export async function importStopsTask(options: ImportOptions, services: {
 		throw new Error(`Failed while ${context}: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
 	} finally {
 		Logger.info({
-			attributes: { ...counts, agency_id: options.agencyId, dry_run: options.dryRun, elapsed_ms: timer.getMs() },
-			message: `${completed ? 'Completed' : 'Stopped'} in ${timer.get()}: prepared ${counts.prepared}, inserted ${counts.inserted}, previewed ${counts.previewed}, skipped ${counts.skipped}.`,
+			attributes: { ...counts, agency_ids: agencyIds, dry_run: options.dryRun, elapsed_ms: timer.getMs() },
+			message: `${completed ? 'Completed' : 'Stopped'} in ${timer.get()}: prepared ${counts.prepared}, inserted ${counts.inserted}, exported ${counts.exported}, previewed ${counts.previewed}, skipped ${counts.skipped}.`,
 		});
 	}
 }

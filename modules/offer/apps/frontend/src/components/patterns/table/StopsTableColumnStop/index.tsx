@@ -4,6 +4,7 @@ import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { Text } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from '../styles.module.css';
 
@@ -15,6 +16,7 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PatternsDetailPath
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	//
 	// B. Handle actions
 
@@ -38,7 +40,7 @@ export function PathTableColumnStop({ pathItem }: { pathItem: PatternsDetailPath
 		return (
 			<div className={styles.column} style={{ padding: 'var(--size-spacing-sm) 0' }}>
 				<div className={styles.sequenceStop}>
-					<Text size="sm">Stop ID: {pathItem.stop_id}</Text>
+					<Text size="sm">{t('patterns:table.PathTableColumnStop.stop_id')}{pathItem.stop_id}</Text>
 				</div>
 			</div>
 		);

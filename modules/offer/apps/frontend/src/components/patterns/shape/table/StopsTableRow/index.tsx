@@ -4,13 +4,14 @@
 
 import { StopsTableTableColumnDistance } from '@/components/patterns/shape/table/StopsTableColumnDistance';
 import { PathTableColumnStop } from '@/components/patterns/shape/table/StopsTableColumnStop';
+import { StopsTableTableColumnZones } from '@/components/patterns/table/StopsTableColumnZones';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
-import { Checkbox, CheckboxProps, Text, Tooltip } from '@tmlmobilidade/ui';
+import { Checkbox, CheckboxProps, StandardFormController, Text, Tooltip } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from '../styles.module.css';
 
 import { usePatternDetailContext } from '../../../detail/PatternDetail.context';
-import { StopsTableTableColumnZones } from '../StopsTableColumnZones';
 
 /* * */
 
@@ -28,7 +29,7 @@ function CheckboxColumn({ tooltip, ...checkboxProps }: CheckboxProps & { tooltip
 	return (
 		<div className={`${styles.column} ${styles.hcenter}`}>
 			<Tooltip label={tooltip}>
-				<Checkbox size="sm" {...checkboxProps} disabled={patternDetailContext.flags.isReadOnly} />
+				<Checkbox size="sm" {...checkboxProps} disabled={!patternDetailContext.capabilities.editEnabled} />
 			</Tooltip>
 		</div>
 	);
@@ -42,6 +43,7 @@ export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetail
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	//
@@ -55,26 +57,43 @@ export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetail
 
 			<PathTableColumnStop pathItem={pathItem} />
 
-			<CheckboxColumn
-				key={patternDetailContext.data.form.key(`path.${rowIndex}.timepoint`)}
-				tooltip={`O horário de passagem ${patternDetailContext.data.form.values.path?.[rowIndex]?.timepoint ? '' : 'não'} é exato nesta paragem`}
-				{...patternDetailContext.data.form.getInputProps(`path.${rowIndex}.timepoint`, { type: 'checkbox' })}
+			<StandardFormController
+				control={patternDetailContext.form.control}
+				name={`path.${rowIndex}.timepoint`}
+				render={({ field }) => (
+					<CheckboxColumn
+						checked={field.value ?? false}
+						onChange={event => field.onChange(event.currentTarget.checked)}
+						tooltip={t(field.value ? 'patterns:shape.StopsTableRow.timepoint_yes' : 'patterns:shape.StopsTableRow.timepoint_no')}
+					/>
+				)}
 			/>
-			<CheckboxColumn
-				key={patternDetailContext.data.form.key(`path.${rowIndex}.allow_pickup`)}
-				tooltip={`${patternDetailContext.data.form.values.path?.[rowIndex]?.allow_pickup ? 'É' : 'Não é'} permitida a entrada de passageiros nesta paragem`}
-				{...patternDetailContext.data.form.getInputProps(`path.${rowIndex}.allow_pickup`, { type: 'checkbox' })}
+			<StandardFormController
+				control={patternDetailContext.form.control}
+				name={`path.${rowIndex}.allow_pickup`}
+				render={({ field }) => (
+					<CheckboxColumn
+						checked={field.value ?? false}
+						onChange={event => field.onChange(event.currentTarget.checked)}
+						tooltip={t(field.value ? 'patterns:shape.StopsTableRow.pickup_yes' : 'patterns:shape.StopsTableRow.pickup_no')}
+					/>
+				)}
+			/>
+			<StandardFormController
+				control={patternDetailContext.form.control}
+				name={`path.${rowIndex}.allow_drop_off`}
+				render={({ field }) => (
+					<CheckboxColumn
+						checked={field.value ?? false}
+						onChange={event => field.onChange(event.currentTarget.checked)}
+						tooltip={t(field.value ? 'patterns:shape.StopsTableRow.drop_off_yes' : 'patterns:shape.StopsTableRow.drop_off_no')}
+					/>
+				)}
 			/>
 
-			<CheckboxColumn
-				key={patternDetailContext.data.form.key(`path.${rowIndex}.allow_drop_off`)}
-				tooltip={`${patternDetailContext.data.form.values.path?.[rowIndex]?.allow_drop_off ? 'É' : 'Não é'} permitida a saída de passageiros nesta paragem`}
-				{...patternDetailContext.data.form.getInputProps(`path.${rowIndex}.allow_drop_off`, { type: 'checkbox' })}
-			/>
+			<StopsTableTableColumnDistance rowIndex={rowIndex} />
 
-			<StopsTableTableColumnDistance pathItem={pathItem} rowIndex={rowIndex} />
-
-			<StopsTableTableColumnZones pathItem={pathItem} rowIndex={rowIndex} />
+			<StopsTableTableColumnZones rowIndex={rowIndex} />
 		</div>
 	);
 }

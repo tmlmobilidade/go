@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const AlertsComposeResponseSchema = z.record(LanguageTagSchema, z.object({
+export const AlertsComposeResponseSchema = z.partialRecord(LanguageTagSchema, z.object({
 	description: z.string(),
 	title: z.string(),
 }));

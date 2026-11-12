@@ -2,12 +2,13 @@
 
 import { type GtfsTripDirection } from '@tmlmobilidade/go-types-gtfs';
 import { StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
-import { BaseDocumentSchema, CommentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { createGtfsMapper } from '@tmlmobilidade/types';
 import { z } from 'zod';
 
 import { StopsParametersListSchema } from './parameters.js';
-import { PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
+import { PatternUpdateRuleSchema, PatternUpdateRulesSchema, ScheduleRuleSchema } from './rules.js';
 
 /* * */
 
@@ -32,10 +33,10 @@ export const directionOptions: { label: string, value: typeof PatternDirectionVa
 /* * */
 
 export const PathSchema = z.object({
-	_id: z.string(),
+	_id: z.string().min(1),
 	allow_drop_off: z.boolean().default(true),
 	allow_pickup: z.boolean().default(true),
-	distance_delta: z.number().nullable().default(null),
+	distance_delta: z.number().finite().nonnegative().nullable().default(null),
 	stop_id: StopIdSchema,
 	timepoint: z.boolean().default(true),
 	zones: z.array(z.string()).optional(),
@@ -43,49 +44,61 @@ export const PathSchema = z.object({
 
 /* * */
 
-const ShapeAnchorSchema = z.object({
-	_id: z.string(),
-	after_stop_id: StopIdSchema,
-	before_stop_id: StopIdSchema,
-	lat: z.number(),
-	lon: z.number(),
-	sequence: z.number().default(0),
+export const ShapeAnchorSchema = z.object({
+	_id: z.string().min(1),
+	after_path_item_id: z.string().min(1).optional(),
+	after_stop_id: StopIdSchema.optional(),
+	before_path_item_id: z.string().min(1).optional(),
+	before_stop_id: StopIdSchema.optional(),
+	lat: z.number().finite().min(-90).max(90),
+	lon: z.number().finite().min(-180).max(180),
+	sequence: z.number().int().nonnegative().default(0),
 	type: z.enum(['via', 'through']).default('via'),
-});
+}).refine(anchor => (
+	(Boolean(anchor.after_path_item_id) && Boolean(anchor.before_path_item_id))
+	|| (!anchor.after_path_item_id && !anchor.before_path_item_id && Boolean(anchor.after_stop_id) && Boolean(anchor.before_stop_id))
+), { ...validationParams('custom.network.anchor') });
+
+const CoordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([z.number(), z.number()]);
+const GeoJsonCoordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([
+	z.number().finite().min(-180).max(180),
+	z.number().finite().min(-90).max(90),
+]);
+const ShapePropertiesSchema: z.ZodType<object> = z.object({});
 
 const ShapeLegSchema = z.object({
-	distance: z.number(),
-	duration: z.number(),
+	distance: z.number().finite().nonnegative(),
+	duration: z.number().finite().nonnegative(),
 	encoded_polyline: z.string().optional(),
-	from_index: z.number(),
+	from_index: z.number().int().nonnegative(),
 	geojson: z.object({
 		geometry: z.object({
-			coordinates: z.array(z.array(z.number())),
-			type: z.string().default('LineString'),
+			coordinates: z.array(GeoJsonCoordinatesSchema),
+			type: z.literal('LineString').default('LineString'),
 		}),
 		properties: z.object({
-			distance: z.number(),
-			duration: z.number(),
-			from_index: z.number(),
-			to_index: z.number(),
+			distance: z.number().finite().nonnegative(),
+			duration: z.number().finite().nonnegative(),
+			from_index: z.number().int().nonnegative(),
+			to_index: z.number().int().nonnegative(),
 		}),
-		type: z.string().default('Feature'),
+		type: z.literal('Feature').default('Feature'),
 	}),
-	geometry: z.array(z.tuple([z.number(), z.number()])),
-	to_index: z.number(),
+	geometry: z.array(CoordinatesSchema),
+	to_index: z.number().int().nonnegative(),
 });
 
 export const ShapeSchema = z.object({
 	anchors: z.array(ShapeAnchorSchema).optional(),
 	encoded_polyline: z.string().optional(),
-	extension: z.number(),
+	extension: z.number().finite().nonnegative(),
 	geojson: z.object({
 		geometry: z.object({
-			coordinates: z.array(z.array(z.number())),
-			type: z.string().default('LineString'),
+			coordinates: z.array(GeoJsonCoordinatesSchema),
+			type: z.literal('LineString').default('LineString'),
 		}),
-		properties: z.object({}).optional(),
-		type: z.string().default('Feature'),
+		properties: ShapePropertiesSchema.optional(),
+		type: z.literal('Feature').default('Feature'),
 	}),
 	legs: z.array(ShapeLegSchema).optional(),
 });
@@ -109,12 +122,32 @@ export const PatternSchema = BaseDocumentSchema.extend({
 
 	path: z.array(PathSchema).optional(),
 	route_id: z.string().min(1),
-	rules: z.array(ScheduleRuleSchema).optional().default([]),
-	shape: ShapeSchema.optional(),
+	rules: z.array(PatternUpdateRuleSchema).default([]),
+	shape: ShapeSchema.nullable().optional(),
+});
+
+/** Read-only scheduling projection with rules resolved from current Events. */
+export const ResolvedPatternSchema = PatternSchema.extend({
+	rules: z.array(ScheduleRuleSchema).default([]),
+});
+
+/** Validate positional travel-time values against stable path occurrences before a write. */
+export const PatternPathParametersSchema = z.object({
+	parameters: StopsParametersListSchema.optional(),
+	path: z.array(PathSchema).default([]),
+}).superRefine((value, context) => {
+	if (new Set(value.path.map(item => item._id)).size !== value.path.length) {
+		context.addIssue({ code: 'custom', ...validationParams('custom.network.path_ids'), path: ['path'] });
+	}
+	for (const [parameterIndex, parameter] of (value.parameters ?? []).entries()) {
+		if (parameter.path.length !== value.path.length || parameter.path.some((item, index) => item.stop_id !== value.path[index]?.stop_id)) {
+			context.addIssue({ code: 'custom', ...validationParams('custom.network.parameters_path'), path: ['parameters', parameterIndex, 'path'] });
+		}
+	}
 });
 
 export const PatternSimplifiedSchema = z.object({
-	_id: z.string(),
+	_id: z.string().min(1),
 	code: z.string().trim().min(1).max(10),
 	headsign: z.string().trim().min(1).max(100),
 	line_id: z.string().min(1),
@@ -130,8 +163,7 @@ const PatternWritableSchema = PatternSchema
 // The API initializes the default stop parameters when creating a pattern.
 export const CreatePatternSchema = PatternWritableSchema.omit({ parameters: true });
 
-export const UpdatePatternSchema = PatternWritableSchema
-	.partial()
+export const UpdatePatternSchema = partialWithoutDefaults(PatternWritableSchema)
 	.extend({
 		rules: PatternUpdateRulesSchema,
 	});
@@ -139,12 +171,15 @@ export const UpdatePatternSchema = PatternWritableSchema
 /* * */
 
 export type Pattern = z.infer<typeof PatternSchema>;
+export type ResolvedPattern = z.infer<typeof ResolvedPatternSchema>;
 export type CreatePatternDto = z.infer<typeof CreatePatternSchema>;
 export type UpdatePatternDto = z.infer<typeof UpdatePatternSchema>;
 
 export type PatternSimplified = z.infer<typeof PatternSimplifiedSchema>;
 
 export type Path = z.infer<typeof PathSchema>;
+
+export type ShapeAnchor = z.infer<typeof ShapeAnchorSchema>;
 
 export type Shape = z.infer<typeof ShapeSchema>;
 

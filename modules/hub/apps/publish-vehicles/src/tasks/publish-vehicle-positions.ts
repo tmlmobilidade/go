@@ -38,19 +38,17 @@ type QueryResult =
 
 /* * */
 
-export async function publishVehiclesPositions() {
+export async function publishVehiclesPositions(agencyId: string) {
 	//
 
 	Logger.title('Publishing latest vehicles positions...');
-
-	const timer = new Timer();
 
 	//
 	// Retrieve active plans from local cache
 
 	const metadataTimer = new Timer();
 
-	const vehiclesMetadata = await getVehiclesMetadataMap();
+	const vehiclesMetadata = await getVehiclesMetadataMap(agencyId);
 
 	Logger.info({ message: `Retrieved ${vehiclesMetadata.size} vehicle metadata in ${metadataTimer.get()}` });
 
@@ -60,7 +58,9 @@ export async function publishVehiclesPositions() {
 
 	const queryTimer = new Timer();
 
-	const latestVehiclePositions = await labDb.queryFromFile<QueryResult>(sqlPath('hub', 'publish-vehicles/select-vehicle-positions.sql'));
+	const latestVehiclePositions = await labDb.queryFromFile<QueryResult>(sqlPath('hub', 'publish-vehicles/select-vehicle-positions.sql'), {
+		agency_id: agencyId,
+	});
 
 	const vehiclePositionsMap = new Map<string, QueryResult[]>();
 
@@ -221,7 +221,15 @@ export async function publishVehiclesPositions() {
 	await cacheDb.set('hub:v1:realtime:vehicles:positions:gtfs', JSON.stringify(validatedGtfsRtFeedMessage), 600);
 	Logger.success(`Finished publishing latest vehicles positions GTFS-RT (${saveTimer.get()})`);
 
-	Logger.info({ message: `Run complete in ${timer.get()}` });
+	const agencyPositions = hubVehiclePositionsJson.filter(position => position.agency_id === agencyId);
+	const positionIds = new Set(agencyPositions.map(position => position._id));
+	const agencyGtfsRtFeed: GtfsRtFeedMessage = {
+		...validatedGtfsRtFeedMessage,
+		entity: hubVehiclePositionsGtfsRt.filter(entity => positionIds.has(entity.id)),
+	};
+
+	await cacheDb.setNew(`hub:v1:${agencyId}:realtime:vehicles:positions:json`, agencyPositions, 600);
+	await cacheDb.set(`hub:v1:${agencyId}:realtime:vehicles:positions:gtfs`, JSON.stringify(agencyGtfsRtFeed), 600);
 
 	//
 };

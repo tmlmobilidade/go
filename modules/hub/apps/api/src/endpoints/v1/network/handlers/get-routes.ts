@@ -1,35 +1,23 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type HubV1ApiRoute } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-/**
- * Retrieves all routes from cache.
- * @param request The request object.
- * @param reply The reply object.
- */
+/** Return organization-scoped published data. */
 export async function getRoutesHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiRoute[]>) {
 	//
 
 	//
-	// Get the published routes from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get('hub:v1:network:routes');
-
-	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/network:getRoutesHandler()] No cached data found for routes' });
-		return sendErrorApiResponse(reply, {
-			error: '[hub/v1/network:getRoutesHandler()] No cached data found for routes',
-			status_code: '404',
-		});
-	}
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiRoute[]>(agencyIds, `network:routes`);
+	const data = entries.flatMap(entry => entry.data);
 
 	//
-	// Return the parsed routes
+	// Return the merged data
 
-	return sendSuccessApiResponse(reply, JSON.parse(cachedData), {
-		max_age: '1h',
-	});
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '1h' });
 }

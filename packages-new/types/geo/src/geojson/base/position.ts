@@ -2,20 +2,18 @@
 
 import { z } from 'zod';
 
-import { LatitudeSchema } from './latitude.js';
-import { LongitudeSchema } from './longitude.js';
+import { type Latitude, LatitudeSchema } from './latitude.js';
+import { type Longitude, LongitudeSchema } from './longitude.js';
 
 /* * */
 
-export const GeoJson2dPositionSchema = z.tuple([LongitudeSchema, LatitudeSchema]);
-
-export type GeoJson2dPosition = z.infer<typeof GeoJson2dPositionSchema>;
+export type GeoJson2dPosition = [Longitude, Latitude];
+export const GeoJson2dPositionSchema: z.ZodType<GeoJson2dPosition, [unknown, unknown]> = z.tuple([LongitudeSchema, LatitudeSchema]);
 
 /* * */
 
-export const GeoJson3dPositionSchema = z.tuple([LongitudeSchema, LatitudeSchema, z.number()]);
-
-export type GeoJson3dPosition = z.infer<typeof GeoJson3dPositionSchema>;
+export type GeoJson3dPosition = [Longitude, Latitude, number];
+export const GeoJson3dPositionSchema: z.ZodType<GeoJson3dPosition, [unknown, unknown, number]> = z.tuple([LongitudeSchema, LatitudeSchema, z.number()]);
 
 /* * */
 

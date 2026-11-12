@@ -1,7 +1,7 @@
 'use client';
 
 import { type MapLayerMouseEvent, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
-import { type CSSProperties, type PropsWithChildren } from 'react';
+import { type CSSProperties, type PropsWithChildren, useState } from 'react';
 
 import styles from './styles.module.css';
 
@@ -13,6 +13,8 @@ import { MapViewToolbar } from '../MapViewToolbar';
 
 interface MapViewProps {
 	cursor?: CSSProperties['cursor'] | null
+	/** Starts this view with a local, toggleable setting instead of the saved zoom preference. */
+	defaultScrollZoom?: boolean
 	height?: number
 	id: string
 	interactiveLayerIds?: string[]
@@ -33,7 +35,9 @@ interface MapViewProps {
 
 /* * */
 
-export function MapView({ children, cursor, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, showSearchPin = true, toolbar = true }: PropsWithChildren<MapViewProps>) {
+export function MapView({ children, cursor, defaultScrollZoom, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, showSearchPin = true, toolbar = true }: PropsWithChildren<MapViewProps>) {
+	const [scrollZoom, setScrollZoom] = useState(defaultScrollZoom);
+
 	return (
 		<MapViewContextProvider>
 			<div
@@ -54,11 +58,17 @@ export function MapView({ children, cursor, height, id, interactiveLayerIds = []
 					onMouseLeave={onMouseLeave}
 					onMouseOut={onMouseOut}
 					onMouseOver={onMouseOver}
+					scrollZoom={scrollZoom}
 					showSearchPin={showSearchPin}
 				>
 					{children}
 				</MapViewBasemap>
-				{toolbar && <MapViewToolbar />}
+				{toolbar && (
+					<MapViewToolbar
+						onScrollZoomChange={defaultScrollZoom === undefined ? undefined : setScrollZoom}
+						scrollZoom={scrollZoom}
+					/>
+				)}
 			</div>
 		</MapViewContextProvider>
 	);

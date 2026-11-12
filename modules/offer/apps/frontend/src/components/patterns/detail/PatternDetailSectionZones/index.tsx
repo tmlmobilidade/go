@@ -5,6 +5,7 @@
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
 import { StopsTable } from '@/components/patterns/table/StopsTable';
 import { Collapsible, Section, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,19 +15,20 @@ export function PatternDetailSectionZones() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Collapsible title="Afetação">
+		<Collapsible title={t('patterns:detail.PatternDetailSectionZones.zones')}>
 			<Section>
-				{patternDetailContext.data.form.values.path?.length ? (
+				{patternDetailContext.data.path?.length ? (
 					<StopsTable />
 				) : (
 					<Text c="var(--color-system-text-200)" size="sm">
-						Adicione paragens ao percurso para configurar a afetação por zona.
+						{t('patterns:detail.PatternDetailSectionZones.zones_empty')}
 					</Text>
 				)}
 			</Section>

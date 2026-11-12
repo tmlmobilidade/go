@@ -3,6 +3,7 @@
 import { IconChevronRight } from '@tabler/icons-react';
 import { CopyButton, Loader, Text } from '@tmlmobilidade/ui';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -19,6 +20,8 @@ interface StatCardProps {
 /* * */
 
 export default function StatCard({ isLoading = false, link, title, type = 'copy', value }: StatCardProps) {
+	const { t } = useTranslation();
+
 	//
 
 	if (isLoading || (!value && value !== 0)) {
@@ -38,7 +41,7 @@ export default function StatCard({ isLoading = false, link, title, type = 'copy'
 				{({ copied, copy }) => (
 					<div className={styles.container} onClick={copy}>
 						<div className={styles.wrapper}>
-							<Text size="xl">{copied ? 'Value Copied' : title}</Text>
+							<Text size="xl">{copied ? t('shared:common.StatCard.copied') : title}</Text>
 							<div className={styles.value}>{value}</div>
 						</div>
 					</div>

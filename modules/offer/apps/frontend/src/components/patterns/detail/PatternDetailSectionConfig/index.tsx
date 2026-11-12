@@ -1,71 +1,106 @@
 /* * */
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { directionOptions, PatternSchema } from '@tmlmobilidade/go-types-offer';
-import { Collapsible, Grid, Section, Select, TextInput } from '@tmlmobilidade/ui';
+import { PatternDirectionValues, PatternSchema } from '@tmlmobilidade/go-types-offer';
+import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export function PatternDetailSectionConfig() {
 	//
-
-	//
 	// A. Setup variables
 
-	const patternDetailContext = usePatternDetailContext();
+	const { t } = useTranslation();
+	const { capabilities, form } = usePatternDetailContext();
 
 	//
 	// B. Render components
 
 	return (
-		<Collapsible title="Configuração do Pattern">
+		<Collapsible title={t('patterns:detail.PatternDetailSectionConfig.pattern_config')}>
 			<Section gap="sm">
-				<TextInput
-					key={patternDetailContext.data.form.key('code')}
-					disabled={patternDetailContext.flags.isReadOnly}
-					label="Código"
-					placeholder="Ex: 1234_0"
-					required={!PatternSchema.shape.code.isOptional()}
-					w="100%"
-					{...patternDetailContext.data.form.getInputProps('code')}
+				<StandardFormController
+					control={form.control}
+					name="code"
+					render={({ field, fieldState }) => (
+						<TextInput
+							{...field}
+							error={fieldState.error?.message}
+							label={t('patterns:detail.PatternDetailSectionConfig.code')}
+							placeholder={t('patterns:detail.PatternDetailSectionConfig.code_example')}
+							readOnly={!capabilities.editEnabled}
+							required={!PatternSchema.shape.code.isOptional()}
+							value={field.value ?? ''}
+							w="100%"
+						/>
+					)}
 				/>
-
 				<Grid columns="ab" gap="sm">
-					<TextInput
-						key={patternDetailContext.data.form.key('origin')}
-						label="Origem"
-						placeholder="Ex: Reboleira (Estação)"
-						required={!PatternSchema.shape.origin.isOptional()}
-						w="100%"
-						{...patternDetailContext.data.form.getInputProps('origin')}
+					<StandardFormController
+						control={form.control}
+						name="origin"
+						render={({ field, fieldState }) => (
+							<TextInput
+								{...field}
+								error={fieldState.error?.message}
+								label={t('patterns:detail.PatternDetailSectionConfig.origin')}
+								placeholder={t('patterns:detail.PatternDetailSectionConfig.destination_example')}
+								readOnly={!capabilities.editEnabled}
+								required={!PatternSchema.shape.origin.isOptional()}
+								value={field.value ?? ''}
+								w="100%"
+							/>
+						)}
 					/>
-
-					<TextInput
-						key={patternDetailContext.data.form.key('destination')}
-						label="Destino"
-						placeholder="Ex: Reboleira (Estação)"
-						required={!PatternSchema.shape.destination.isOptional()}
-						w="100%"
-						{...patternDetailContext.data.form.getInputProps('destination')}
+					<StandardFormController
+						control={form.control}
+						name="destination"
+						render={({ field, fieldState }) => (
+							<TextInput
+								{...field}
+								error={fieldState.error?.message}
+								label={t('patterns:detail.PatternDetailSectionConfig.destination')}
+								placeholder={t('patterns:detail.PatternDetailSectionConfig.destination_example')}
+								readOnly={!capabilities.editEnabled}
+								required={!PatternSchema.shape.destination.isOptional()}
+								value={field.value ?? ''}
+								w="100%"
+							/>
+						)}
 					/>
 				</Grid>
-
-				<Select
-					key={patternDetailContext.data.form.key('direction')}
-					data={directionOptions}
-					label="Direção"
-					required={!PatternSchema.shape.direction.isOptional()}
-					w="100%"
-					{...patternDetailContext.data.form.getInputProps('direction')}
+				<StandardFormController
+					control={form.control}
+					name="direction"
+					render={({ field, fieldState }) => (
+						<Select
+							{...field}
+							data={PatternDirectionValues.map(value => ({ label: t(`patterns:detail.PatternDetailSectionConfig.direction_options.${value}`), value }))}
+							error={fieldState.error?.message}
+							label={t('patterns:detail.PatternDetailSectionConfig.direction')}
+							readOnly={!capabilities.editEnabled}
+							required={!PatternSchema.shape.direction.isOptional()}
+							value={field.value ?? ''}
+							w="100%"
+						/>
+					)}
 				/>
-
-				<TextInput
-					key={patternDetailContext.data.form.key('headsign')}
-					label="Bandeira/Headsign"
-					placeholder="Ex: Reboleira (Estação)"
-					required={!PatternSchema.shape.headsign.isOptional()}
-					w="100%"
-					{...patternDetailContext.data.form.getInputProps('headsign')}
+				<StandardFormController
+					control={form.control}
+					name="headsign"
+					render={({ field, fieldState }) => (
+						<TextInput
+							{...field}
+							error={fieldState.error?.message}
+							label={t('patterns:detail.PatternDetailSectionConfig.headsign')}
+							placeholder={t('patterns:detail.PatternDetailSectionConfig.destination_example')}
+							readOnly={!capabilities.editEnabled}
+							required={!PatternSchema.shape.headsign.isOptional()}
+							value={field.value ?? ''}
+							w="100%"
+						/>
+					)}
 				/>
 			</Section>
 		</Collapsible>

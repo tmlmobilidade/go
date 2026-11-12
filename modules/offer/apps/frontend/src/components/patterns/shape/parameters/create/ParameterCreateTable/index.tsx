@@ -1,8 +1,11 @@
+'use client';
+
 /* * */
 
 import { IconClockHour4, IconClockPause, IconPlayerTrackNext, IconSortAscendingNumbers } from '@tabler/icons-react';
-import { NumberInput, Text, TextInput, Tooltip } from '@tmlmobilidade/ui';
+import { NumberInput, StandardFormController, Text, TextInput, Tooltip } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from '../styles.module.css';
 
@@ -17,6 +20,7 @@ export function ParameterCreateTable() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const parameterCreateContext = useParameterCreateContext();
 	const paths = useMemo(() => parameterCreateContext.data.path ?? [], [parameterCreateContext.data.path]);
 
@@ -29,22 +33,14 @@ export function ParameterCreateTable() {
 			{/* Header */}
 			<div className={`${styles.row} ${styles.headerRow}`}>
 				<div className={`${styles.column} ${styles.hcenter}`}>
-					<Tooltip label="Sequência">
+					<Tooltip label={t('default:scheduling.copy.sequence')}>
 						<IconSortAscendingNumbers size={20} />
 					</Tooltip>
 				</div>
-				<div className={styles.column}>
-					Paragem
-				</div>
-				<div className={styles.column}>
-					Velocidade média
-				</div>
-				<div className={styles.column}>
-					Tempo médio de viagem
-				</div>
-				<div className={styles.column}>
-					Tempo de paragem
-				</div>
+				<div className={styles.column}>{t('default:scheduling.copy.stop')}</div>
+				<div className={styles.column}>{t('default:scheduling.copy.speed')}</div>
+				<div className={styles.column}>{t('default:scheduling.copy.averageTravelTime')}</div>
+				<div className={styles.column}>{t('default:scheduling.copy.dwellTime')}</div>
 
 			</div>
 
@@ -59,36 +55,51 @@ export function ParameterCreateTable() {
 						<PathTableColumnStop pathItem={pathItem} />
 
 						<div className={styles.column}>
-							<NumberInput
-								aria-label={`Velocidade média para a sequência ${index + 1}`}
-								defaultValue={20}
-								leftSection={<IconPlayerTrackNext size={18} />}
-								min={0}
-								placeholder="Velocidade média (km/h)"
-								step={1}
-								suffix=" km/h"
-								{...parameterCreateContext.data.form.getInputProps(`path.${index}.avg_speed`)}
-								disabled={index === 0}
+							<StandardFormController
+								control={parameterCreateContext.form.control}
+								name={`path.${index}.avg_speed`}
+								render={({ field, fieldState }) => (
+									<NumberInput
+										aria-label={t('default:scheduling.copy.speedSequence', '', { sequence: index + 1 })}
+										disabled={index === 0}
+										error={fieldState.error ? t('default:scheduling.copy.validNonnegativeNumber') : undefined}
+										leftSection={<IconPlayerTrackNext size={18} />}
+										min={0}
+										placeholder={t('default:scheduling.copy.speedPlaceholder')}
+
+										step={1}
+										suffix=" km/h"
+										{...field}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
 						</div>
 
 						<div className={styles.column}>
-							<Tooltip label="Tempo médio de viagem calculado com base na distância e na velocidade média no segmento entre esta paragem e a anterior." position="bottom" multiline withArrow>
-								<TextInput aria-label="Tempo Médio de Viagem" disabled={true} leftSection={<IconClockHour4 size={18} />} placeholder="2 min" value={parameterCreateContext.data.parameterForUI.travelTimes.segmentTravelSeconds.formatted[index]} readOnly />
+							<Tooltip label={t('default:scheduling.copy.travelTimeHint')} position="bottom" multiline withArrow>
+								<TextInput aria-label={t('default:scheduling.copy.averageTravelTimeLabel')} disabled={true} leftSection={<IconClockHour4 size={18} />} placeholder="2 min" value={parameterCreateContext.data.parameterForUI.travelTimes.segmentTravelSeconds.formatted[index]} readOnly />
 							</Tooltip>
 						</div>
 
 						<div className={styles.column}>
-							<NumberInput
-								aria-label={`Tempo de paragem para a sequência ${index + 1}`}
-								defaultValue={30}
-								leftSection={<IconClockPause size={20} />}
-								max={900}
-								min={0}
-								placeholder="Tempo de paragem (segundos)"
-								step={10}
-								suffix=" seg"
-								{...parameterCreateContext.data.form.getInputProps(`path.${index}.dwell_time`)}
+							<StandardFormController
+								control={parameterCreateContext.form.control}
+								name={`path.${index}.dwell_time`}
+								render={({ field, fieldState }) => (
+									<NumberInput
+										aria-label={t('default:scheduling.copy.dwellSequence', '', { sequence: index + 1 })}
+										error={fieldState.error ? t('default:scheduling.copy.validNonnegativeNumber') : undefined}
+										leftSection={<IconClockPause size={20} />}
+										max={900}
+										min={0}
+										placeholder={t('default:scheduling.copy.dwellPlaceholder')}
+										step={10}
+										suffix={t('default:scheduling.copy.secondsSuffix')}
+										{...field}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
 						</div>
 

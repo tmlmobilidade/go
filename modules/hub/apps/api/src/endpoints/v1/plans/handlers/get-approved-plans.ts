@@ -1,48 +1,20 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type HubV1ApiPlan } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-/**
- * Retrieves all plans that are approved together with the URL to the operation file.
- * This method is used to fetch plans that are ready for use in the system.
- * @param request The request object.
- * @param reply The reply object.
- */
+/** Return published plans belonging to this organization. */
 export async function getApprovedPlansHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiPlan[]>) {
 	//
 
 	//
-	// Get the published plans from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get('hub:v1:plans:approved:json');
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiPlan[]>(agencyIds, 'plans:approved:json');
+	const data = entries.flatMap(entry => entry.data);
 
-	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/plans:getApprovedPlansHandler()] No cached data found for approved plans' });
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=300')
-			.code(HTTP_STATUS.NO_CONTENT)
-			.send({
-				data: [],
-				error: null,
-				status_code: HTTP_STATUS.NO_CONTENT,
-			});
-	}
-
-	//
-	// Return the parsed plans
-
-	return reply
-		.header('access-control-allow-origin', '*')
-		.header('cache-control', 'public, max-age=300')
-		.code(HTTP_STATUS.OK)
-		.send({
-			data: JSON.parse(cachedData),
-			error: null,
-			status_code: HTTP_STATUS.OK,
-		});
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '5m' });
 }

@@ -13,7 +13,7 @@ import { getClickHouseEtas } from './get-clickhouse-etas.js';
  * Rebuilds the full simplified ETA list cache from ClickHouse.
  *
  * Fetches all trip-stop ETAs via {@link getClickHouseEtas} and writes them to
- * `hub:v1:realtime:eta:all`.
+ * `hub:v1:{agencyId}:realtime:eta:all`.
  *
  * Use this for the main ClickHouse-sourced ETA pipeline (full replace).
  * For merging in-memory `TripStopEta[]` from an external feed (e.g. CP) into
@@ -21,14 +21,16 @@ import { getClickHouseEtas } from './get-clickhouse-etas.js';
  *
  * @returns The ClickHouse ETAs that were written to cache
  */
-export async function cacheAllEtasFromClickHouse(): Promise<TripStopEta[]> {
+export async function cacheAllEtasFromClickHouse(agencyId: string): Promise<TripStopEta[]> {
 	//
+
+	const prefix = `hub:v1:${agencyId}:realtime:eta` as const;
 
 	const timer = new Timer();
 
-	const etas = await getClickHouseEtas();
+	const etas = await getClickHouseEtas(agencyId);
 
-	await cacheDb.set('hub:v1:realtime:eta:all', JSON.stringify(etas), TTL_REALTIME);
+	await cacheDb.set(`${prefix}:all`, JSON.stringify(etas), TTL_REALTIME);
 
 	Logger.info({ message: `Cached ${etas.length} trip stop ETAs in ${timer.get()}`, spacesAfter: 1 });
 

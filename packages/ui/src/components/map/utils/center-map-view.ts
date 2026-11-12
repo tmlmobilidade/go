@@ -39,10 +39,10 @@ export function centerMapView(mapObject: MapRef, features: Feature<Geometry, Geo
 	// Validate if the envelope is valid
 
 	if (featureCollectionEnvelope.bbox.length < 4) return;
-	if (featureCollectionEnvelope.bbox[0] < -90 || featureCollectionEnvelope.bbox[0] > 90) return;
-	if (featureCollectionEnvelope.bbox[1] < -180 || featureCollectionEnvelope.bbox[1] > 180) return;
-	if (featureCollectionEnvelope.bbox[2] < -90 || featureCollectionEnvelope.bbox[2] > 90) return;
-	if (featureCollectionEnvelope.bbox[3] < -180 || featureCollectionEnvelope.bbox[3] > 180) return;
+	if (featureCollectionEnvelope.bbox[0] < -180 || featureCollectionEnvelope.bbox[0] > 180) return;
+	if (featureCollectionEnvelope.bbox[1] < -90 || featureCollectionEnvelope.bbox[1] > 90) return;
+	if (featureCollectionEnvelope.bbox[2] < -180 || featureCollectionEnvelope.bbox[2] > 180) return;
+	if (featureCollectionEnvelope.bbox[3] < -90 || featureCollectionEnvelope.bbox[3] > 90) return;
 
 	//
 	// Center the map on the envelope

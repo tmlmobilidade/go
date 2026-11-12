@@ -1,27 +1,20 @@
 /* * */
 
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
 import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type HubV1ApiAgency } from '@tmlmobilidade/go-types-hub';
 
-/**
- * Returns all agencies.
- * @param request The request object.
- * @param reply The reply object.
- */
+/** Return published agencies belonging to this organization. */
 export async function listAgenciesHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiAgency[]>) {
 	//
 
 	//
-	// Get the published agencies from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.getNew<HubV1ApiAgency[]>('hub:v1:agencies:json');
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiAgency[]>(agencyIds, 'agencies:json');
+	const data = entries.flatMap(entry => entry.data);
 
-	//
-	// Return the agencies
-
-	return sendSuccessApiResponse(reply, cachedData?.data ?? [], {
-		generated_at: cachedData?.timestamp,
-		max_age: '1h',
-	});
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '5m' });
 }

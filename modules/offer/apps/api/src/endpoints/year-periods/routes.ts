@@ -10,6 +10,7 @@ import { getYearPeriodHandler } from './handlers/get-year-period.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listYearPeriodsHandler } from './handlers/list-year-periods.js';
 import { lockYearPeriodHandler } from './handlers/lock-year-period.js';
+import { updateYearPeriodDatesHandler } from './handlers/update-year-period-dates.js';
 import { updateYearPeriodHandler } from './handlers/update-year-period.js';
 
 /* * */
@@ -58,6 +59,12 @@ server.register(
 			'/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.update]) },
 			updateYearPeriodHandler,
+		);
+
+		instance.put(
+			'/:id/dates',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.year_periods.scope, [PermissionCatalog.all.year_periods.actions.update]) },
+			updateYearPeriodDatesHandler,
 		);
 
 		instance.get(

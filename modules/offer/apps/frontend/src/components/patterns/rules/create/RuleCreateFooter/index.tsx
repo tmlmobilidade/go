@@ -4,6 +4,9 @@ import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCre
 import { closeCreateRuleModal } from '@/components/patterns/rules/create/RuleCreate.modal';
 import { IconCalendar } from '@tabler/icons-react';
 import { Button, Section, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -13,6 +16,7 @@ export function RuleCreateFooter() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const ruleCreateContext = useRuleCreateContext();
 
 	//
@@ -32,17 +36,17 @@ export function RuleCreateFooter() {
 				<IconCalendar size={20} />
 				<Button
 					c="var(--color-system-text-100)"
-					label={`Esta regra afeta ${ruleCreateContext?.data?.ruleImpact?.count ?? 0} dias do calendário`}
+					className={styles.previewLink}
+					label={t('default:scheduling.copy.affectedDays', '', { count: ruleCreateContext.data.ruleImpact?.count ?? 0 })}
 					onClick={handleShowAffectedDates}
-					style={{ textDecoration: 'underline' }}
 					variant="transparent"
 				/>
 			</Section>
 
-			<Button label="Cancelar" onClick={closeCreateRuleModal} variant="danger" />
+			<Button label={t('default:scheduling.copy.cancel')} onClick={closeCreateRuleModal} variant="danger" />
 			<Button
-				disabled={!ruleCreateContext.data.form.isValid()}
-				label={ruleCreateContext.flags.isEditing ? 'Editar' : 'Criar'}
+				disabled={!ruleCreateContext.capabilities.createEnabled}
+				label={ruleCreateContext.flags.isEditing ? t('default:scheduling.copy.edit') : t('default:scheduling.copy.create')}
 				onClick={ruleCreateContext.actions.submitRule}
 			/>
 

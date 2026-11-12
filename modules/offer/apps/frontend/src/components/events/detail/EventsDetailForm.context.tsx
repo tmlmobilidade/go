@@ -57,7 +57,7 @@ export function EventsDetailFormContextProvider({ children }: PropsWithChildren)
 		fetchFn: async (data: UpdateEventDto) => await fetchApiData<Event>({ body: UpdateEventSchema.parse(data), method: 'PUT', url: API_ROUTES.offer.EVENTS_DETAIL(eventId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
-			detailMutate();
+			detailMutate(response);
 			listMutate();
 		},
 	});
@@ -65,7 +65,7 @@ export function EventsDetailFormContextProvider({ children }: PropsWithChildren)
 		fetchFn: async () => await fetchApiData<Event>({ url: API_ROUTES.offer.EVENTS_DETAIL_LOCK(eventId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
-			detailMutate();
+			detailMutate(response);
 			listMutate();
 		},
 	});

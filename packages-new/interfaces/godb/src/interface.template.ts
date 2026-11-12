@@ -21,8 +21,8 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	private readonly indexDescription: false | SimplifiedMongoIndex<T>[];
 
 	//
-	private readonly createSchema: null | z.ZodSchema = null;
-	private readonly updateSchema: null | z.ZodSchema = null;
+	private readonly createSchema: null | z.ZodType<TCreate> = null;
+	private readonly updateSchema: null | z.ZodType<TUpdate> = null;
 
 	private initPromise: null | Promise<void> = null;
 
@@ -32,7 +32,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
  * @param createSchema - The schema to use for creating documents.
  * @param indexDescription - The index description to use for the collection.
  */
-	public constructor(collectionName: string, database: Db, createSchema: null | z.ZodSchema = null, updateSchema: null | z.ZodSchema = null, indexDescription: false | SimplifiedMongoIndex<T>[] = []) {
+	public constructor(collectionName: string, database: Db, createSchema: null | z.ZodType<TCreate> = null, updateSchema: null | z.ZodType<TUpdate> = null, indexDescription: false | SimplifiedMongoIndex<T>[] = []) {
 		this.collectionName = collectionName;
 		this.collection = database.collection<T>(collectionName);
 		this.database = database;
@@ -187,7 +187,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 		if (!unsafe) {
 			try {
 				if (!this.createSchema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
-				parsedDocument = this.createSchema.parse(parsedDocument);
+				parsedDocument = this.createSchema.parse(parsedDocument) as OptionalUnlessRequiredId<T>;
 			} catch (error) {
 				throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 			}
@@ -288,7 +288,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate, TUpdate> {
 	 * @returns A promise that resolves to the result of the update operation
 	 */
 	public async updateMany<TReturnDocument extends boolean = true>(filter: Filter<T>, updateFields: TUpdate & { updated_at?: UnixMilliseconds, updated_by?: string }, options?: UpdateOptions & { returnResults?: TReturnDocument }): Promise<TReturnDocument extends true ? WithId<T>[] : UpdateResult<T>> {
-		let parsedUpdateFields = {
+		let parsedUpdateFields: TUpdate = {
 			...updateFields,
 			updated_at: updateFields.updated_at || Dates.now('utc').unix_milliseconds,
 			updated_by: updateFields.updated_by || 'system',

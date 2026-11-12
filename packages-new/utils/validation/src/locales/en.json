@@ -1,0 +1,226 @@
+{
+	"custom": {
+		"banner": {
+			"link": "Banner links must use HTTP or HTTPS"
+		},
+		"dates": {
+			"event_id": "Must be uppercase letters, numbers, or underscores",
+			"overlap": "Dates cannot be added and removed in the same request: {dates}",
+			"period_name": "Enter a period name",
+			"period_required": "Select a period"
+		},
+		"documents": {
+			"changes_required": "multiple_fields requires metadata.changes array",
+			"different_values": "curr_value and prev_value must differ",
+			"null_values": "multiple_fields must have null curr_value and prev_value"
+		},
+		"feedback": {
+			"duplicate_reason": "Reason \"{reason}\" cannot be selected more than once.",
+			"reason": "Reason \"{reason}\" is not valid for {entity} feedback."
+		},
+		"formats": {
+			"date": "Expected a date in the format {format}",
+			"hex_color": "Expected a hex color in the format {format}",
+			"hhmm": "Expected a time in the format {format} between {minimum} and {maximum}",
+			"operational_date": "Expected a date in the format {format} or {alternative}",
+			"operational_time": "Expected a time in the format {format}, with minutes and seconds between 00 and 59",
+			"unix_milliseconds": "Expected a valid Unix timestamp in milliseconds, at least {minimum}",
+			"unix_seconds": "Expected a valid Unix timestamp in seconds, at least {minimum}"
+		},
+		"geo": {
+			"coordinate": "Invalid coordinate",
+			"encoded_polyline": "Invalid encoded polyline",
+			"latitude": "Latitude must be between {minimum} and {maximum}",
+			"linear_ring": "The first and last points of a linear ring must match",
+			"longitude": "Longitude must be between {minimum} and {maximum}"
+		},
+		"network": {
+			"agency_required": "At least one agency ID is required",
+			"anchor": "An anchor must identify both ends of one path segment.",
+			"default_required": "A default parameter is required.",
+			"default_unique": "Only one default parameter is allowed.",
+			"parameters_path": "Travel-time parameters must match each path occurrence in order.",
+			"path_ids": "Path occurrence IDs must be unique.",
+			"shape_distances": "Shape distances must not decrease along the path.",
+			"shape_sequences": "Shape point sequences must be unique.",
+			"stop_distances": "Stop distances must not decrease along the path.",
+			"stop_sequences": "Stop sequences must be unique.",
+			"weekdays": "Select at least one weekday.",
+			"year_periods": "Select at least one year period."
+		},
+		"password": {
+			"lowercase": "Password must contain at least one lowercase character",
+			"min_length": "Password must be at least {minimum} characters long",
+			"mismatch": "Passwords do not match",
+			"number": "Password must contain at least one number",
+			"requirements": "Password requirements",
+			"special": "Password must contain at least one special character",
+			"uppercase": "Password must contain at least one uppercase character"
+		},
+		"schedule": {
+			"active_period": "The active period end date must be on or after the start date",
+			"end_after_start": "The end must be after the start",
+			"publication": "The publication end date must be on or after the start date"
+		},
+		"unique": {
+			"changelog_items": "Change item IDs must be unique within a changelog",
+			"module_ids": "Module IDs must be unique",
+			"release_ids": "Release IDs must be unique"
+		}
+	},
+	"errors": {
+		"custom": "Invalid input",
+		"invalid_element": "Invalid value in {origin}",
+		"invalid_format": {
+			"default": "Invalid {format}",
+			"ends_with": "Must end with \"{suffix}\"",
+			"includes": "Must include \"{includes}\"",
+			"lowercase": "Must be lowercase",
+			"regex": "Invalid format",
+			"starts_with": "Must start with \"{prefix}\"",
+			"uppercase": "Must be uppercase"
+		},
+		"invalid_key": "Invalid key in {origin}",
+		"invalid_type": "Expected {expected}, received {received}",
+		"invalid_type_received_null": "Expected {expected}, received {received}",
+		"invalid_type_received_undefined": "Required",
+		"invalid_union": "Invalid input",
+		"invalid_union_discriminator": "Invalid discriminator value. Expected {options}",
+		"invalid_union_type": "Expected {expected}",
+		"invalid_value": "Invalid option: expected one of {options}",
+		"invalid_value_single": "Invalid input: expected {expected}",
+		"not_multiple_of": "Number must be a multiple of {divisor}",
+		"too_big": {
+			"array": {
+				"exact": "{count, plural, one {Array must contain exactly {count} element} other {Array must contain exactly {count} elements}}",
+				"inclusive": "{count, plural, one {Array must contain at most {count} element} other {Array must contain at most {count} elements}}",
+				"not_inclusive": "{count, plural, one {Array must contain fewer than {count} element} other {Array must contain fewer than {count} elements}}"
+			},
+			"date": {
+				"exact": "Date must be exactly {maximum, date}",
+				"inclusive": "Date must be on or before {maximum, date}",
+				"not_inclusive": "Date must be before {maximum, date}"
+			},
+			"file": {
+				"exact": "{count, plural, one {File must be exactly {count} byte} other {File must be exactly {count} bytes}}",
+				"inclusive": "{count, plural, one {File must be at most {count} byte} other {File must be at most {count} bytes}}",
+				"not_inclusive": "{count, plural, one {File must be smaller than {count} byte} other {File must be smaller than {count} bytes}}"
+			},
+			"map": {
+				"exact": "{count, plural, one {Map must contain exactly {count} entry} other {Map must contain exactly {count} entries}}",
+				"inclusive": "{count, plural, one {Map must contain at most {count} entry} other {Map must contain at most {count} entries}}",
+				"not_inclusive": "{count, plural, one {Map must contain fewer than {count} entry} other {Map must contain fewer than {count} entries}}"
+			},
+			"number": {
+				"exact": "Number must be exactly {maximum}",
+				"inclusive": "Number must be less than or equal to {maximum}",
+				"not_inclusive": "Number must be less than {maximum}"
+			},
+			"set": {
+				"exact": "{count, plural, one {Set must contain exactly {count} item} other {Set must contain exactly {count} items}}",
+				"inclusive": "{count, plural, one {Set must contain at most {count} item} other {Set must contain at most {count} items}}",
+				"not_inclusive": "{count, plural, one {Set must contain fewer than {count} item} other {Set must contain fewer than {count} items}}"
+			},
+			"string": {
+				"exact": "{count, plural, one {String must contain exactly {count} character} other {String must contain exactly {count} characters}}",
+				"inclusive": "{count, plural, one {String must contain at most {count} character} other {String must contain at most {count} characters}}",
+				"not_inclusive": "{count, plural, one {String must contain fewer than {count} character} other {String must contain fewer than {count} characters}}"
+			}
+		},
+		"too_small": {
+			"array": {
+				"exact": "{count, plural, one {Array must contain exactly {count} element} other {Array must contain exactly {count} elements}}",
+				"inclusive": "{count, plural, one {Array must contain at least {count} element} other {Array must contain at least {count} elements}}",
+				"not_inclusive": "{count, plural, one {Array must contain more than {count} element} other {Array must contain more than {count} elements}}"
+			},
+			"date": {
+				"exact": "Date must be exactly {minimum, date}",
+				"inclusive": "Date must be on or after {minimum, date}",
+				"not_inclusive": "Date must be after {minimum, date}"
+			},
+			"file": {
+				"exact": "{count, plural, one {File must be exactly {count} byte} other {File must be exactly {count} bytes}}",
+				"inclusive": "{count, plural, one {File must be at least {count} byte} other {File must be at least {count} bytes}}",
+				"not_inclusive": "{count, plural, one {File must be larger than {count} byte} other {File must be larger than {count} bytes}}"
+			},
+			"map": {
+				"exact": "{count, plural, one {Map must contain exactly {count} entry} other {Map must contain exactly {count} entries}}",
+				"inclusive": "{count, plural, one {Map must contain at least {count} entry} other {Map must contain at least {count} entries}}",
+				"not_inclusive": "{count, plural, one {Map must contain more than {count} entry} other {Map must contain more than {count} entries}}"
+			},
+			"number": {
+				"exact": "Number must be exactly {minimum}",
+				"inclusive": "Number must be greater than or equal to {minimum}",
+				"not_inclusive": "Number must be greater than {minimum}"
+			},
+			"set": {
+				"exact": "{count, plural, one {Set must contain exactly {count} item} other {Set must contain exactly {count} items}}",
+				"inclusive": "{count, plural, one {Set must contain at least {count} item} other {Set must contain at least {count} items}}",
+				"not_inclusive": "{count, plural, one {Set must contain more than {count} item} other {Set must contain more than {count} items}}"
+			},
+			"string": {
+				"exact": "{count, plural, one {String must contain exactly {count} character} other {String must contain exactly {count} characters}}",
+				"inclusive": "{count, plural, one {String must contain at least {count} character} other {String must contain at least {count} characters}}",
+				"not_inclusive": "{count, plural, one {String must contain more than {count} character} other {String must contain more than {count} characters}}"
+			}
+		},
+		"unrecognized_keys": "{count, plural, one {Unrecognized key in object: {keys}} other {Unrecognized keys in object: {keys}}}"
+	},
+	"formats": {
+		"base64": "base64-encoded string",
+		"base64url": "base64url-encoded string",
+		"cidrv4": "IPv4 range",
+		"cidrv6": "IPv6 range",
+		"credit_card": "credit card number",
+		"cuid": "cuid",
+		"cuid2": "cuid2",
+		"currency_code": "currency code",
+		"date": "ISO date",
+		"datetime": "ISO datetime",
+		"duration": "ISO duration",
+		"e164": "E.164 phone number",
+		"email": "email address",
+		"emoji": "emoji",
+		"guid": "GUID",
+		"hash": "hash",
+		"hex": "hexadecimal string",
+		"hostname": "hostname",
+		"iban": "IBAN",
+		"ipv4": "IPv4 address",
+		"ipv6": "IPv6 address",
+		"json_string": "JSON string",
+		"jwt": "JWT",
+		"ksuid": "KSUID",
+		"mac": "MAC address",
+		"nanoid": "nanoid",
+		"template_literal": "input",
+		"time": "ISO time",
+		"ulid": "ULID",
+		"url": "URL",
+		"uuid": "UUID",
+		"xid": "XID"
+	},
+	"types": {
+		"array": "array",
+		"bigint": "bigint",
+		"boolean": "boolean",
+		"date": "date",
+		"file": "file",
+		"function": "function",
+		"int": "integer",
+		"map": "map",
+		"nan": "NaN",
+		"never": "never",
+		"null": "null",
+		"number": "number",
+		"object": "object",
+		"promise": "promise",
+		"record": "record",
+		"set": "set",
+		"string": "string",
+		"symbol": "symbol",
+		"tuple": "tuple",
+		"undefined": "undefined",
+		"void": "void"
+	}
+}

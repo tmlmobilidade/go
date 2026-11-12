@@ -14,7 +14,7 @@ export async function listPatternShapesHandler(request: FastifyRequest<{ Queryst
 
 	const validatedQuery = PatternsShapeMapQuerySchema.safeParse(request.query);
 	if (!validatedQuery.success) {
-		return sendErrorApiResponse(reply, { error: validatedQuery.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedQuery.error, status_code: '400' });
 	}
 	const requestedAgencyIds = [...new Set((validatedQuery.data.agency_ids ?? '').split(',').map(id => id.trim()).filter(Boolean))];
 	if (!requestedAgencyIds.length) {

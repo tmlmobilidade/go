@@ -1,4 +1,9 @@
 {
+	"banner": {
+		"dismiss": "Fechar aviso",
+		"dismiss_error": "Não foi possível dispensar o aviso. Tente novamente.",
+		"until": "Até {end}"
+	},
 	"buttons": {
 		"CreateButton": {
 			"label": "Criar"
@@ -10,6 +15,46 @@
 		"UpdateButton": {
 			"label": "Guardar"
 		}
+	},
+	"changelog": {
+		"back": "Todas as novidades",
+		"categories": {
+			"bug_fix": "Correções",
+			"improvement": "Melhorias",
+			"new_feature": "Novidades"
+		},
+		"category_counts": {
+			"bug_fix": "{count, plural, =1 {1 correção} other {# correções}}",
+			"improvement": "{count, plural, =1 {1 melhoria} other {# melhorias}}",
+			"new_feature": "{count, plural, =1 {1 novidade} other {# novidades}}"
+		},
+		"close": "Fechar novidades",
+		"empty": "Ainda não há novidades publicadas. Volte em breve.",
+		"error": "Não foi possível carregar as novidades.",
+		"loading": "A carregar novidades…",
+		"mark_all_read": "Marcar todas como lidas",
+		"mark_read_error": "Não foi possível marcar as atualizações como lidas",
+		"mark_read_success": "Atualizações marcadas como lidas",
+		"modules": {
+			"apex": "Apex",
+			"core": "Base",
+			"dates": "Datas",
+			"exporter": "Exportações",
+			"hub": "Hub",
+			"infrastructure": "Infraestrutura",
+			"offer": "Oferta",
+			"operation": "Operação",
+			"performance": "Desempenho",
+			"platform": "Plataforma",
+			"tracker": "Tracker"
+		},
+		"open_release": "Ver atualização",
+		"read_release": "Lida",
+		"retry": "Tentar novamente",
+		"subtitle": "Descubra as novas funcionalidades, melhorias e correções na plataforma.",
+		"title": "Novidades no GO",
+		"unread": "Atualização por ler",
+		"unread_count": "Atualizações por ler"
 	},
 	"files": {
 		"FileItem": {
@@ -67,7 +112,9 @@
 			"agencies": "Operadores",
 			"alerts": "Alertas",
 			"annotations": "Anotações",
+			"banners": "Avisos Operacionais",
 			"calendar": "Calendário",
+			"changelog": "Novidades",
 			"collapse_sidebar_aria": "Recolher barra lateral",
 			"events": "Eventos & Exceções",
 			"fares": "Tarifas",
@@ -99,10 +146,15 @@
 		"SidebarGroups": {
 			"core": "Base",
 			"dates": "Datas",
+			"dev": "Dev",
 			"infrastructure": "Infraestrutura",
 			"offer": "Oferta",
 			"operation": "Operação",
 			"overview": "Visão Geral"
+		},
+		"SidebarNews": {
+			"tooltip": "Novidades",
+			"unread_tooltip": "Novidades — atualizações por ler"
 		},
 		"SidebarNotifications": {
 			"label": "Notificações",
@@ -139,6 +191,44 @@
 	"topbar": {
 		"Topbar": {
 			"show_sidebar_aria": "Mostrar barra lateral"
+		}
+	},
+	"calendar": {
+		"month": "Mês",
+		"year": "Ano",
+		"today": "Hoje",
+		"previous": "Anterior",
+		"next": "Seguinte",
+		"selectMonth": "Selecionar mês",
+		"selectYear": "Selecionar ano",
+		"switchToMonthView": "Mudar para a vista mensal",
+		"switchToYearView": "Mudar para a vista anual",
+		"viewSelectLabel": "Vista do calendário",
+		"more": "+{count} eventos",
+		"agency": "Operador",
+		"agencies": "Operadores",
+		"types": {
+			"annotation": "Anotações",
+			"event": "Eventos",
+			"holiday": "Feriados",
+			"period": "Períodos",
+			"rule-impact": "Dias afetados"
+		},
+		"nextMonth": "Mês seguinte",
+		"previousMonth": "Mês anterior",
+		"nextYear": "Ano seguinte",
+		"previousYear": "Ano anterior",
+		"nextDecade": "Década seguinte",
+		"previousDecade": "Década anterior",
+		"daysCopied": "Número de dias copiado",
+		"copyDays": "Copiar número de dias",
+		"copyAffectedDays": "Copiar número de dias afetados",
+		"affectedDays": "{count, plural, one {dia afetado} other {dias afetados}}",
+		"noTimepoints": "Sem horários"
+	},
+	"common": {
+		"WeekdaySelector": {
+			"sundayAndHolidays": "{day} e feriados"
 		}
 	}
 }

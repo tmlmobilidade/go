@@ -12,6 +12,7 @@ export interface SelectDataItem {
 	disabled?: boolean
 	keywords?: string
 	label: string
+	sortLabel?: string
 	value: string
 };
 

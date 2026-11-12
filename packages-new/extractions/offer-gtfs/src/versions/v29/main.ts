@@ -4,8 +4,9 @@ import { exportAgencyFile, exportCalendarDates, exportCalendarMap, exportFareAtt
 import { type ExportProgress, type GtfsV29ExportConfig } from '@/versions/v29/types.js';
 import { rewriteServiceIds, rewriteTripIds } from '@/versions/v29/utils/rewrite-service-ids.js';
 import { ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
-import { Dates } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { createOfferTranslator } from '@tmlmobilidade/go-utils-offer';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 
@@ -91,8 +92,8 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 		const serviceRegistry = new ServiceRegistry();
 
 		// Define export date range
-		const exportStartDate = Dates.fromOperationalDate(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
-		const exportEndDate = Dates.fromOperationalDate(exportConfig.calendars_clip_end_date, 'Europe/Lisbon');
+		const exportStartDate = Dates.fromOperationalDateInt(exportConfig.calendars_clip_start_date, 'Europe/Lisbon');
+		const exportEndDate = Dates.fromOperationalDateInt(exportConfig.calendars_clip_end_date, 'Europe/Lisbon');
 
 		//
 		// 1.
@@ -118,6 +119,10 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 		Logger.success('Exported feed_info.txt');
 
 		const agenciesMap = new Map(allAgenciesData.map(a => [a._id, a]));
+		const agencyTranslators = new Map(await Promise.all(allAgenciesData.map(async agency => [
+			agency._id,
+			await createOfferTranslator(agency.primary_language),
+		] as const)));
 
 		//
 		// 2.
@@ -186,7 +191,8 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 
 		for (const [lineIndex, lineData] of allLinesData.entries()) {
 			//
-			const lineAgencyData = agenciesMap.get(lineData.agency_id) ?? allAgenciesData[0];
+			const lineAgencyData = agenciesMap.get(lineData.agency_id);
+			if (!lineAgencyData) throw new Error(`No agency ${lineData.agency_id} for line ${lineData._id}`);
 
 			// 3.0.
 			// Update progress
@@ -258,18 +264,24 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 						}
 					}
 
+					const translator = agencyTranslators.get(lineAgencyData._id);
+					if (!translator) throw new Error(`No scheduling translator for agency ${lineAgencyData._id}`);
+
 					// Export trips for this pattern (will deduplicate serviceIds across patterns)
 					const tripSchedules = await exportTripsForPattern(
 						routeData,
 						patternData,
 						shapeId,
-						Array.from(allPeriodsMap.values()),
+						Array.from(allPeriodsMap.values()).filter(period => period.agency_ids.includes(lineAgencyData._id)),
 						Array.from(allHolidaysMap.values()),
 						Array.from(allEventsMap.values()),
 						exportStartDate,
 						exportEndDate,
 						serviceRegistry,
 						exportConfig,
+						lineAgencyData.primary_language,
+						translator,
+						lineAgencyData._id,
 					);
 
 					await exportStopTimesForPattern(allStopsData, patternData, tripSchedules, exportConfig, lineData.agency_id);
@@ -282,24 +294,23 @@ export async function exportGtfsV29(progress: ExportProgress, exportConfig: Gtfs
 		}
 
 		//
-		// Step 4: Export referenced stops
-		// Only export stops that are actually referenced in the patterns
+		// Step 4: Export stops
+		// All stops are restricted to the requesting user's permitted locations.
 
 		await updateProgress(progress, { progress_current: 5, progress_total: 7 });
 
-		Logger.info({ message: `Processing ${allStopsData.length} stops...` });
+		const stopsToExport = exportConfig.stops_export_all
+			? await goDb.infrastructure.stops.findMany(exportConfig.stops_location_filter, { sort: { _id: 1 } })
+			: allStopsData.filter(stop => referencedStopCodes.has(String(stop._id)));
+
+		Logger.info({ message: `Processing ${stopsToExport.length} stops...` });
 
 		// Export each stop
-		for (const stopData of allStopsData) {
-			//
-
-			// Skip stops that are not referenced
-			if (!exportConfig.stops_export_all && !referencedStopCodes.has(String(stopData._id))) continue;
-
+		for (const stopData of stopsToExport) {
 			await exportStop(stopData, exportConfig);
 		}
 
-		Logger.success(`Exported ${allStopsData.length} stops to stops.txt`);
+		Logger.success(`Exported ${stopsToExport.length} stops to stops.txt`);
 
 		//
 		// Step 4.5: Export calendar_dates

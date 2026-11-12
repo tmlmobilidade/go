@@ -16,7 +16,9 @@ export async function updateMePreferencesHandler(request: FastifyRequest<{ Body:
 	//
 	// Validate request body
 
-	const validatedRequest = MePreferencesPlatformRequestSchema.parse(request.body);
+	const validatedRequestResult = MePreferencesPlatformRequestSchema.safeParse(request.body);
+	if (!validatedRequestResult.success) return sendErrorApiResponse(reply, { error: validatedRequestResult.error, status_code: '400' });
+	const validatedRequest = validatedRequestResult.data;
 
 	//
 	// Get the user data from the session token

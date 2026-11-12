@@ -18,10 +18,11 @@
  *   ... --only-routed
  */
 
-import { buildOperationalDateRange, calculateAgencyVkm, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CalculateVkmDto, type Pattern } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
+import { calculateAgencyVkm, computeActiveRules, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/go-utils-offer';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createInterface } from 'node:readline/promises';
@@ -135,7 +136,7 @@ async function loadAgencyPatterns(agencyId: string, onlyRouted: boolean): Promis
 
 function goTimepointDays(
 	pattern: Pattern,
-	operationalDates: OperationalDate[],
+	operationalDates: OperationalDateInt[],
 	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
 	holidaysList: Awaited<ReturnType<typeof goDb.dates.holidays.findMany>>,
 	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
@@ -181,14 +182,14 @@ async function main() {
 	if (!gtfsDir) throw new Error('Missing --gtfs path to export folder');
 
 	const startOp = start;
-	const endOp = Dates.fromOperationalDate(start, 'Europe/Lisbon').plus({ years: 1 }).operational_date;
+	const endOp = Dates.fromOperationalDateInt(start, 'Europe/Lisbon').plus({ years: 1 }).operational_date_int;
 	const operationalDates = buildOperationalDateRange(
-		Dates.fromOperationalDate(start, 'Europe/Lisbon').js_date,
-		Dates.fromOperationalDate(endOp, 'Europe/Lisbon').js_date,
+		Dates.fromOperationalDateInt(start, 'Europe/Lisbon').js_date,
+		Dates.fromOperationalDateInt(endOp, 'Europe/Lisbon').js_date,
 	);
 
 	const resolvedGtfsDir = resolve(gtfsDir);
-	const gtfsIndex = loadGtfsExportIndex(resolvedGtfsDir, startOp, endOp);
+	const gtfsIndex = loadGtfsExportIndex(resolvedGtfsDir, startOp, String(endOp));
 
 	const [agencyRecord, agencyPatterns, periods, holidaysList, eventsList] = await Promise.all([
 		goDb.core.agencies.findById(agency),
@@ -204,7 +205,7 @@ async function main() {
 		calculation_method: 'rolling_year',
 		end_date: null,
 		extension_source: 'go',
-		start_date: start as OperationalDate,
+		start_date: OperationalDateIntSchema.parse(start),
 	};
 
 	const vkmResult = calculateAgencyVkm({
@@ -390,7 +391,7 @@ async function main() {
 				ruleGapKm,
 			},
 			window: {
-				end: endOp,
+				end: String(endOp),
 				start: startOp,
 				totalDates: operationalDates.length,
 			},
