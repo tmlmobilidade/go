@@ -53,11 +53,27 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 	//
 	// 3. Import the GTFS data into a SQLite database
 	// Own one temporary directory for the database and its SQLite sidecar files.
-	database, err := importFeed(options.Source)
+	directory, err := os.MkdirTemp("", "gtfs-validator-*")
+	if err != nil {
+		return summary, err
+	}
+	defer func() { err = errors.Join(err, os.RemoveAll(directory)) }()
+
+	database, err := importFeed(options.Source, filepath.Join(directory, "gtfs.db"))
+	if err != nil {
+		return summary, err
+	}
+	defer func() { err = errors.Join(err, database.DatabaseInstance.Close()) }()
+	if err := ctx.Err(); err != nil {
+		return summary, err
+	}
 
 	//
 	// 4. Run the validation rules
 	results, err := graph.Execute(ctx, database.DatabaseInstance, max(options.Concurrency, 1))
+	if err != nil {
+		return summary, err
+	}
 	for _, result := range results {
 		for _, finding := range result.Value {
 			collector.Add(types.Message{
@@ -88,38 +104,16 @@ func validateOptions(options Options) error {
 	return nil
 }
 
-// importFeed imports the entire archive into SQLite and returns the resulting
-// database path. The importer closes the database before returning.
-func importFeed(source importgtfs.ImportGtfsConfigSource) (*sqlite.SQLiteDatabase, error) {
-	//
-
-	//
-	// Create a temporary directory for the database and its SQLite sidecar files.
-	directory, err := os.MkdirTemp("", "gtfs-validator-*")
-	if err != nil {
-		return nil, err
-	}
-	defer func() { err = errors.Join(err, os.RemoveAll(directory)) }()
-
-	//
-	// Import the GTFS data into the database
+// importFeed imports the archive and opens the resulting SQLite database.
+// The caller owns the returned connection.
+func importFeed(source importgtfs.ImportGtfsConfigSource, destination string) (*sqlite.SQLiteDatabase, error) {
 	config := importgtfs.ImportGtfsConfig{
 		Source:        source,
-		Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: filepath.Join(directory, "gtfs.db")},
+		Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: destination},
 	}
-	
 	databasePath, err := importgtfs.ImportGtfsToDatabase(config)
 	if err != nil {
 		return nil, fmt.Errorf("import GTFS: %w", err)
 	}
-	
-	//
-	// Open the database and return it
-	database, err := sqlite.NewSQLiteDatabase(sqlite.SQLiteDatabaseConfig{InstancePath: databasePath})
-	if err != nil {
-		return nil, err
-	}
-	defer func() { err = errors.Join(err, database.DatabaseInstance.Close()) }()
-	
-	return database, nil
+	return sqlite.NewSQLiteDatabase(sqlite.SQLiteDatabaseConfig{InstancePath: databasePath})
 }
