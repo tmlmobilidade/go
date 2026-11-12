@@ -3,6 +3,7 @@
 import { type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationPostersV1ShapesExt } from '@tmlmobilidade/go-types-operation';
 
+import { isBaseShape } from '../lib/is-base-shape.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
 
 /* * */
@@ -32,24 +33,24 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, O
 	const extensions = new Map<string, OperationPostersV1ShapesExt>();
 	for (const group of groups.values()) {
 		//
-		// 1. Prefer the main pattern and sort the remaining variants
+		// 1. Place every _0 shape first, followed by the remaining distinct variants
 
-		const sortedTrips = [...group].sort((a, b) => a.shape_id.localeCompare(b.shape_id) || a.trip_id.localeCompare(b.trip_id));
-		const baseRouteId = getPosterRouteId(sortedTrips[0].route_id);
-		const mainTrip = sortedTrips.find(trip => trip.route_id === `${baseRouteId}_0` || trip.shape_id.startsWith(`${baseRouteId}_0_`)) ?? sortedTrips[0];
-		const shapeIds = [mainTrip.shape_id, ...new Set(sortedTrips.filter(trip => trip.shape_id !== mainTrip.shape_id).map(trip => trip.shape_id))];
+		const baseRouteId = getPosterRouteId(group[0].route_id);
+		const shapeIds = [...new Set(group.map(trip => trip.shape_id))].sort((a, b) =>
+			Number(isBaseShape(b, baseRouteId)) - Number(isBaseShape(a, baseRouteId)) || a.localeCompare(b, undefined, { numeric: true }));
 
 		//
 		// 2. Assign sequence, priority and the variant note
 
 		for (const [index, shapeId] of shapeIds.entries()) {
 			const sequence = index + 1;
+			const isBase = isBaseShape(shapeId, baseRouteId);
 			const existing = extensions.get(shapeId);
 			if (existing && existing.sequence_number !== sequence) throw new Error(`Shape ${shapeId} has conflicting variant orders.`);
 			extensions.set(shapeId, {
 				direction_description: '',
-				note: sequence === 1 ? '' : 'O número da linha com uma letra corresponde a outro percurso da mesma linha',
-				priority_number: sequence === 1 ? 1 : 2,
+				note: isBase ? '' : `O número ${sequence} corresponde a outro percurso da mesma linha`,
+				priority_number: isBase ? 1 : 2,
 				sequence_number: sequence,
 				shape_id: shapeId,
 				via_text: '',
@@ -59,3 +60,4 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, O
 
 	return extensions;
 }
+

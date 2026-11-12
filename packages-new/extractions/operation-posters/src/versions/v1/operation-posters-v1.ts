@@ -14,8 +14,10 @@ export async function operationPostersV1Extraction(context: ExtractionTaskContex
 		_id: { $in: properties.plan_ids },
 		agency_id: { $in: properties.agency_ids },
 	});
+
 	if (!plans.length) throw new Error('No selected plans found for the selected agencies.');
 	if (plans.length !== properties.plan_ids.length) throw new Error('Some selected plans were not found for the selected agencies.');
+
 	if (new Set(plans.map(plan => plan.agency_id)).size !== plans.length) {
 		throw new Error('Only one plan per agency can be selected for poster export.');
 	}

@@ -36,6 +36,7 @@
 		"yazl": "3.3.1"
 	},
 	"devDependencies": {
+		"@tmlmobilidade/go-clients-sqlite": "*",
 		"@tmlmobilidade/go-utils-tsconfig": "*",
 		"@types/node": "26.6.5",
 		"resolve-tspaths": "0.8.23",

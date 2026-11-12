@@ -1,12 +1,13 @@
 /* * */
 
+import { quoteIdentifier } from '../lib/quote-identifier.js';
 import { type OperationPostersV1Tables } from '../types/context.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
 
 /* * */
 
 /**
- * Merge an imported plan into the combined database, preserving the original IDs.
+ * Merge an imported plan into the combined database, preserving IDs and the union of GTFS columns.
  */
 export function mergeGtfsTables(target: OperationPostersV1Tables | undefined, source: OperationPostersV1Tables): OperationPostersV1Tables {
 	//
@@ -34,14 +35,32 @@ export function mergeGtfsTables(target: OperationPostersV1Tables | undefined, so
 	targetDb.prepare('ATTACH DATABASE ? AS imported_plan').run(sourceDb.name);
 	try {
 		//
-		// D. Copy GTFS rows in one transaction and merge the service dates
+		// D. Extend the combined schema and copy rows by column name in one transaction
 
 		targetDb.transaction(() => {
-			for (const table of ['routes', 'trips', 'stop_times', 'shapes']) {
-				targetDb.exec(`INSERT INTO main.${table} SELECT * FROM imported_plan.${table}`);
+			for (const table of ['routes', 'trips', 'stop_times', 'shapes', 'stops'] as const) {
+				const targetColumns = targetDb.prepare(`PRAGMA main.table_info("${table}")`).all() as { name: string }[];
+				const sourceColumns = targetDb.prepare(`PRAGMA imported_plan.table_info("${table}")`).all() as { name: string }[];
+				const existingColumns = new Set(targetColumns.map(column => column.name.toLowerCase()));
+
+				for (const column of sourceColumns) {
+					if (existingColumns.has(column.name.toLowerCase())) continue;
+					targetDb.exec(`ALTER TABLE main."${table}" ADD COLUMN ${quoteIdentifier(column.name)} TEXT`);
+					existingColumns.add(column.name.toLowerCase());
+				}
+
+				// Omitted target columns become NULL; the explicit list also handles reordered headers.
+				const columns = sourceColumns.map(column => quoteIdentifier(column.name)).join(', ');
+				const values = sourceColumns.map(column => `incoming.${quoteIdentifier(column.name)}`).join(', ');
+				const filter = table === 'stops'
+					? ' WHERE NOT EXISTS (SELECT 1 FROM main.stops AS existing WHERE existing.stop_id = incoming.stop_id)'
+					: '';
+				targetDb.exec(`INSERT INTO main."${table}" (${columns}) SELECT ${values} FROM imported_plan."${table}" AS incoming${filter}`);
 			}
-			targetDb.exec('INSERT INTO main.stops SELECT * FROM imported_plan.stops AS incoming WHERE NOT EXISTS (SELECT 1 FROM main.stops WHERE stop_id = incoming.stop_id)');
 		})();
+
+		// Calendar rebuilding writes trips and stop times again, so include newly added columns.
+		for (const table of ['routes', 'trips', 'stop_times', 'shapes', 'stops'] as const) target[table].refreshColumns();
 		Object.assign(target.calendar_dates, source.calendar_dates);
 	} finally {
 		//
