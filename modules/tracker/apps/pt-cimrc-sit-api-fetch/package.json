@@ -1,9 +1,5 @@
 {
-<<<<<<<< HEAD:packages-new/extractions/operation-posters/package.json
-	"name": "@tmlmobilidade/go-extractions-operation-posters",
-========
 	"name": "@tmlmobilidade/go-tracker-pt-cimrc-sit-api-fetch",
->>>>>>>> prd:modules/tracker/apps/pt-cimrc-sit-api-fetch/package.json
 	"version": "1.0.0",
 	"author": {
 		"email": "iso@tmlmobilidade.pt",
@@ -21,32 +17,12 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"dependencies": {
-<<<<<<<< HEAD:packages-new/extractions/operation-posters/package.json
-		"@tmlmobilidade/go-interfaces-godb": "*",
-		"@tmlmobilidade/go-providers-storage": "*",
-		"@tmlmobilidade/go-types-downloads": "*",
-		"@tmlmobilidade/go-types-extractions": "*",
-		"@tmlmobilidade/go-types-gtfs-strict": "*",
-		"@tmlmobilidade/go-types-offer": "*",
-		"@tmlmobilidade/go-types-operation": "*",
-		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-utils-dates": "*",
-		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-import-gtfs": "*",
-		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/strings": "*",
-		"@tmlmobilidade/timer": "*",
-		"@tmlmobilidade/writers": "*",
-		"papaparse": "5.7.0",
-		"yazl": "3.3.1"
-========
 		"@tmlmobilidade/go-interfaces-rawdb": "*",
 		"@tmlmobilidade/go-types-vehicle-events": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/gtfs-rt": "*"
->>>>>>>> prd:modules/tracker/apps/pt-cimrc-sit-api-fetch/package.json
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",
