@@ -11,20 +11,20 @@ import (
 
 // DAG is immutable after construction. Each Execute call owns its scheduling state.
 // Task functions must be safe for the concurrency and reuse requested by callers.
-type DAG[T any] struct {
+type DAG[I, T any] struct {
 	// Maps are dictionaries keyed by task ID. Reverse edges let a completed
 	// prerequisite find the tasks waiting for it without scanning the whole graph.
-	tasks      map[string]types.Task[T]
+	tasks      map[string]types.Task[I, T]
 	dependents map[string][]string
 	ids        []string
 }
 
 // NewDAG validates all nodes and edges, including cycles, before any work can run.
-func NewDAG[T any](tasks []types.Task[T]) (*DAG[T], error) {
+func NewDAG[I, T any](tasks []types.Task[I, T]) (*DAG[I, T], error) {
 	// First register every task so dependencies can refer to later entries.
 	// & creates a pointer to this graph; callers keep using the same graph object.
-	d := &DAG[T]{
-		tasks:      make(map[string]types.Task[T]),
+	d := &DAG[I, T]{
+		tasks:      make(map[string]types.Task[I, T]),
 		dependents: make(map[string][]string),
 	}
 
@@ -90,7 +90,7 @@ func NewDAG[T any](tasks []types.Task[T]) (*DAG[T], error) {
 
 // initial makes fresh counters for each run. A degree is the number of unfinished
 // prerequisites; zero-degree nodes can be considered immediately.
-func (d *DAG[T]) initial() (map[string]int, []string) {
+func (d *DAG[I, T]) initial() (map[string]int, []string) {
 	degrees := make(map[string]int, len(d.tasks))
 	ready := []string{}
 
@@ -114,7 +114,7 @@ type completion[T any] struct {
 
 // Execute returns results in ID order, including skipped tasks after an abort.
 // Cancellation is cooperative: it cancels and joins all started tasks before returning.
-func (d *DAG[T]) Execute(parent context.Context, limit int) ([]types.Result[T], error) {
+func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types.Result[T], error) {
 	if limit < 1 {
 		return nil, errors.New("concurrency must be >= 1")
 	}
@@ -168,12 +168,18 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]types.Result[T], 
 			id := ready[0]
 			ready = ready[1:]
 
-			if blocked := blockedBy(id); len(blocked) > 0 {
+			task := d.tasks[id]
+			blocked := blockedBy(id)
+			reason := task.SkipReason
+			if len(blocked) > 0 {
+				reason = "prerequisite unsuccessful"
+			}
+			if reason != "" {
 				results[id] = types.Result[T]{
 					ID:        id,
 					Status:    types.Skipped,
 					BlockedBy: blocked,
-					Reason:    "prerequisite unsuccessful",
+					Reason:    reason,
 				}
 				unlock(id)
 				continue
@@ -181,7 +187,7 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]types.Result[T], 
 
 			// go starts the function concurrently; the scheduler continues immediately.
 			running++
-			go runTask(ctx, d.tasks[id], done)
+			go runTask(ctx, input, task, done)
 		}
 
 		if running == 0 {
@@ -259,7 +265,7 @@ func (d *DAG[T]) Execute(parent context.Context, limit int) ([]types.Result[T], 
 	return ordered, firstErr
 }
 
-func runTask[T any](ctx context.Context, task types.Task[T], done chan<- completion[T]) {
+func runTask[I, T any](ctx context.Context, input I, task types.Task[I, T], done chan<- completion[T]) {
 	result := completion[T]{id: task.ID}
 
 	// defer always sends one completion, even after a panic (a runtime exception).
@@ -272,5 +278,5 @@ func runTask[T any](ctx context.Context, task types.Task[T], done chan<- complet
 		done <- result
 	}()
 
-	result.outcome, result.err = task.Run(ctx)
+	result.outcome, result.err = task.Run(ctx, input)
 }

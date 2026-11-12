@@ -20,12 +20,13 @@ type Outcome[T any] struct {
 	Failed bool
 }
 
-// Task is a graph node. Run is a function stored as a field, called only after
-// all prerequisites pass. Its error return is separate from a failed outcome.
-type Task[T any] struct {
+// Task is a graph node. A task with SkipReason is skipped even when its
+// prerequisites pass. Other tasks run with the input supplied to Execute.
+type Task[I, T any] struct {
 	ID           string
 	Dependencies []string
-	Run          func(context.Context) (Outcome[T], error)
+	SkipReason   string
+	Run          func(context.Context, I) (Outcome[T], error)
 }
 
 // Result keeps the task output and an explanation when it failed or was skipped.

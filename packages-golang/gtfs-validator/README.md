@@ -1,44 +1,58 @@
 # GTFS validator
 
 Imports a local GTFS ZIP or HTTP(S) URL through `import-gtfs` into an isolated,
-temporary SQLite database, then executes the built-in rules. The database and its
+temporary SQLite database, then executes the configured rules. The database and its
 sidecar files are removed after success, validation failure, or operational failure.
 Requires Go 1.26 and a C compiler for the SQLite driver.
 
+**All registered checks currently return success as placeholders. An empty report
+only confirms that the feed was imported and the configured graph ran.**
+
 ## CLI
 
-From this directory:
-
 ```sh
-go build -o dist/gtfs-validator ./src/cli.go
-./dist/gtfs-validator -path ./gtfs.zip -config '{}' -concurrency 1
-./dist/gtfs-validator -url https://example.com/gtfs.zip > report.json
+go build -ldflags=-w -o dist/gtfs-validator ./src/cli.go
+./dist/gtfs-validator -path ./gtfs.zip -rules ./rules.json -concurrency 1
+./dist/gtfs-validator -url https://example.com/gtfs.zip -rules ./rules.json > report.json
 ```
 
-Provide exactly one of `-path` or `-url`. `-config` accepts an inline JSON object;
-its contents are reserved for future settings and currently have no effect.
+Provide exactly one of `-path` or `-url`. The required `-rules` file holds a nonempty
+JSON array. Each entry has a `rule_id` and `severity`. It can also supply
+`depends_on` and `options` arrays of strings and a `compare` array of
+`{"key":"…","value":"…"}` objects.
+
+```json
+[
+  {"rule_id": "agency_file_missing", "severity": "error"},
+  {"rule_id": "agency_name_field", "severity": "error", "depends_on": ["agency_file_missing"]},
+  {"rule_id": "agency_name_valid", "severity": "warning", "depends_on": ["agency_name_field"], "options": ["Example"]}
+]
+```
+
 `-concurrency` defaults to 1 and must be positive. SQLite uses one connection,
 so concurrent rules still serialize database queries.
 
-Stdout contains one JSON report; diagnostics go to stderr. Exit codes:
+Stdout contains one JSON report for completed runs and operational failures.
+Diagnostics go to stderr.
 
-- `0`: no error findings (warnings allowed), or help.
-- `1`: validation completed with error findings.
-- `2`: invalid arguments/config, import failure, or execution failure.
+- `0` for a run with no error findings or for help.
+- `1` for a run with error findings.
+- `2` for invalid arguments or rules, import failure, or execution failure.
 
-Reports use `Summary`: `messages` contains grouped `RuleMessage` objects, plus
+The `Summary` report contains grouped `RuleMessage` objects in `messages`, plus
 `total_errors` and `total_warnings`. Each group contains detail `Message` objects,
 field, filename, description, rule ID, severity, and distinct affected row count.
 The report service in `src/services/report.go` retains at most 100 detail messages
 per group and 100 rows per detail. Totals count distinct diagnostics before sampling;
 row counts include all distinct collected rows. Zero-based input rows become CSV
 line numbers (index + 2 for the header). Findings without source rows use `rows: []`.
-A clean feed produces `messages: []`. Operational failures use the returned Go
-error and CLI stderr; CLI argument failures do not produce a report.
+A run without findings produces `messages: []`. Argument and rule configuration
+errors are written to stderr before any report is emitted.
 
 Severities are `ignore`, `info`, `warning`, `error`, and `forbidden`. Ignored findings
-are omitted; info is retained without increasing totals. Error and forbidden
-findings contribute to `total_errors`; warnings contribute to `total_warnings`.
+are omitted. Info findings are retained without increasing totals. Error and
+forbidden findings contribute to `total_errors`. Warnings contribute to
+`total_warnings`.
 
 ## Go library
 
@@ -47,52 +61,54 @@ import (
     "context"
 
     validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
+    "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
     importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 )
 
 report, err := validator.GtfsValidator(context.Background(), validator.Options{
     Source: importgtfs.ImportGtfsConfigSource{Path: "./gtfs.zip"},
     Concurrency: 1,
+    Rules: []types.Rule{
+        {RuleID: "agency_file_missing", Severity: types.SEVERITY_ERROR},
+        {RuleID: "agency_name_field", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_missing"}},
+    },
 })
-// err != nil: operational failure; report may contain partial results.
-// report.TotalErrors > 0: invalid feed, independently of err.
+// A non-nil err indicates invalid inputs or an operational failure.
+// A nonzero report.TotalErrors means the rules reported error findings.
 ```
 
-A zero library concurrency uses 1. The library uses the shared telemetry logger;
-the CLI configures it to write to stderr. Importer APIs do not accept a context:
-cancellation is checked before/after import, then supported during rule execution.
+A zero library concurrency uses 1. The CLI configures the shared telemetry logger
+to write to stderr. The validator checks for cancellation before and after
+import and passes the context to rule callbacks during execution.
 
 ## Rules and dependencies
 
-The internal registry in `src/rules/registry.go` maps fixed IDs to functions and hardcoded
-prerequisites. Each rule function lives in its own file under `src/rules/`.
-There is no external registration API. Initial checks form a chain:
+The registry in `src/rules/registry.go` maps 367 executable IDs to functions.
+Each rule has its own `src/rules/<rule_id>.go` file.
+`file_validation` and `file_not_found_in_rules` are reserved notice IDs.
 
-```text
-agency_file_present → agency_name_field_present → agency_name_valid
-```
+Every prerequisite must appear as a rule in the same array. Omit `depends_on`
+for a rule without prerequisites. IDs and severities are normalized to
+lowercase. The validator rejects unknown rules, invalid severities, duplicate
+rules or dependencies, missing prerequisites, and cycles before importing the
+feed. `options` and `compare` are passed through to the rule functions.
 
-Rules return findings separately from operational errors. Error and forbidden findings mark a
-rule `failed`; descendants become `skipped`, while independent branches continue.
-Ignore, info, and warning findings allow dependents to proceed. Operational errors or panics mark a rule
-`errored`, cancel running work, and abort scheduling. Cancellation is cooperative;
-the executor waits for all started functions to return. Successful rules are `passed`.
-
-The name check reports one finding with the number of empty/ASCII-whitespace-only
-names. Original CSV line numbers are not preserved, so row references are empty.
-These three checks are examples, not a complete GTFS conformance validator.
-TypeScript validator integration and config-driven rule selection are deferred.
+A finding at any reported severity fails the rule and skips dependent rules.
+Independent branches continue. Ignored ordinary rules are skipped and block their
+dependents. Ignored file-presence rules run so they can enforce prerequisites
+without emitting a finding. Operational errors and panics abort the run and
+cancel active checks. The executor waits for started checks to return.
 
 ## Generic DAG executor
 
 The DAG executor lives in `src/services/dag.go`. `services.NewDAG` validates
-IDs, functions, edges, and cycles before execution. `DAG.Execute(ctx, limit)` uses
-Kahn's algorithm with bounded parallelism. Tasks return `types.Outcome[T]` plus an
-error: `Failed: true` blocks descendants, while an error aborts the run. Results
-retain each task's value and are sorted by ID. Graph bookkeeping is fresh per run;
-functions and any shared state must be safe for the requested concurrency/reuse.
+IDs, functions, edges, and cycles before execution. `DAG.Execute(ctx, input, limit)`
+passes the run input to each task and uses Kahn's algorithm with bounded
+parallelism. Tasks return `types.Outcome[T]` and an error. A failed outcome blocks
+descendants. An error aborts the run. Results are sorted by ID and retain each
+task's value. Each execution owns its scheduling state.
 
-All tests live in `tests/` and exercise the public package APIs and CLI.
+Integration and CLI tests live in `tests/`.
 
 ```sh
 go test -race ./...

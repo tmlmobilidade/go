@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 	importgtfs "github.com/tmlmobilidade/go/packages-golang/import-gtfs/src"
 )
@@ -24,24 +23,11 @@ func TestIntegrationMockGTFS(t *testing.T) {
 			files := loadMockGTFS(t, "mock-gtfs")
 
 			expected := types.Summary{Messages: []types.RuleMessage{}}
-			var finding types.Message
-			var description string
 			switch scenario {
 			case "empty agency names":
-				description = "Agency names must not be empty."
 				files = loadMockGTFS(t, "mock-gtfs-invalid")
-				finding = types.Message{Severity: rules.SEVERITY_ERROR, FileName: "agency.txt", Field: "agency_name", RuleID: "agency_name_valid", Message: "2 agency rows have an empty agency_name.", Rows: []int{}}
 			case "missing agency file":
-				description = "Required agency.txt file must be present."
 				delete(files, "agency.txt")
-				finding = types.Message{Severity: rules.SEVERITY_ERROR, FileName: "agency.txt", RuleID: "agency_file_present", Message: "Required agency.txt file is missing.", Rows: []int{}}
-			}
-			if finding.RuleID != "" {
-				expected.TotalErrors = 1
-				expected.Messages = append(expected.Messages, types.RuleMessage{
-					Messages: []types.Message{finding}, Field: finding.Field, FileName: finding.FileName,
-					RuleID: finding.RuleID, Message: description, Severity: finding.Severity,
-				})
 			}
 
 			// Package the text fixture as a real ZIP and offer identical bytes over HTTP.
@@ -70,6 +56,7 @@ func TestIntegrationMockGTFS(t *testing.T) {
 					report, err := validator.GtfsValidator(context.Background(), validator.Options{
 						Source:      source.input,
 						Concurrency: 3,
+						Rules:       agencyRules(),
 					})
 					if err != nil {
 						t.Fatalf("validation did not complete: %v", err)

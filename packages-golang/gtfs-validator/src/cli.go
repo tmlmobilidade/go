@@ -6,6 +6,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"syscall"
 
 	gtfsvalidator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
 	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/render"
 )
@@ -32,20 +34,20 @@ func run() int {
 	// StringVar/IntVar bind flags to fields. & passes the address of a field so
 	// parsing can write the supplied value into it.
 	var options gtfsvalidator.Options
-	var configJSON string
+	var rulesPath string
 	var help bool
 
 	flags := flag.NewFlagSet("gtfs-validator", flag.ContinueOnError)
 	flags.SetOutput(os.Stderr)
 	flags.StringVar(&options.Source.Path, "path", "", "Local GTFS ZIP path (exactly one of -path or -url)")
 	flags.StringVar(&options.Source.Url, "url", "", "GTFS ZIP URL")
-	flags.StringVar(&configJSON, "config", "{}", "JSON object reserved for future validation settings (currently unused)")
+	flags.StringVar(&rulesPath, "rules", "", "Path to a JSON array of validation rules (required)")
 	flags.IntVar(&options.Concurrency, "concurrency", 1, "Maximum concurrent rules (>= 1)")
 	flags.BoolVar(&help, "help", false, "Show help")
 	flags.BoolVar(&help, "h", false, "Show help")
 
 	flags.Usage = func() {
-		fmt.Fprintln(os.Stderr, "Usage: gtfs-validator (-path GTFS.zip | -url URL) [-config JSON] [-concurrency N]")
+		fmt.Fprintln(os.Stderr, "Usage: gtfs-validator (-path GTFS.zip | -url URL) -rules RULES.json [-concurrency N]")
 		flags.PrintDefaults()
 		fmt.Fprintln(os.Stderr, "JSON report: stdout. Logs: stderr. Exit: 0 clean/warnings/help, 1 validation errors, 2 invalid arguments or operational failure.")
 	}
@@ -61,15 +63,18 @@ func run() int {
 	}
 
 	// Reject positional arguments, ambiguous sources, and invalid worker limits.
-	if flags.NArg() != 0 || (options.Source.Path == "") == (options.Source.Url == "") || options.Concurrency < 1 {
-		fmt.Fprintln(os.Stderr, "Provide exactly one source, positive concurrency, and no positional arguments.")
+	if flags.NArg() != 0 || (options.Source.Path == "") == (options.Source.Url == "") || options.Concurrency < 1 || rulesPath == "" {
+		fmt.Fprintln(os.Stderr, "Provide exactly one source, a rules file, positive concurrency, and no positional arguments.")
 		return 2
 	}
 
-	// Decode into a map (a dictionary). JSON null yields a nil map, which is
-	// rejected along with arrays, malformed JSON, and additional trailing values.
-	if err := json.Unmarshal([]byte(configJSON), &options.Config); err != nil || options.Config == nil {
-		fmt.Fprintln(os.Stderr, "-config must be a JSON object")
+	data, err := os.ReadFile(rulesPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "read rules file: %v\n", err)
+		return 2
+	}
+	if err := json.Unmarshal(data, &options.Rules); err != nil {
+		fmt.Fprintf(os.Stderr, "rules file must contain a JSON array: %v\n", err)
 		return 2
 	}
 
@@ -78,9 +83,12 @@ func run() int {
 	defer cancel()
 
 	report, err := gtfsvalidator.GtfsValidator(ctx, options)
+	if errors.Is(err, rules.ErrInvalidConfiguration) {
+		fmt.Fprintln(os.Stderr, err)
+		return 2
+	}
 
-	// Write partial reports too: an operational failure can happen after some
-	// rules have completed. Check the returned error after writing the report.
+	// Keep stdout machine-readable for completed runs and operational failures.
 	if encodeErr := json.NewEncoder(os.Stdout).Encode(report); encodeErr != nil {
 		fmt.Fprintln(os.Stderr, encodeErr)
 		return 2

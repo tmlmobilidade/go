@@ -1,9 +1,9 @@
-// Package gtfsvalidator imports a GTFS archive and runs the built-in validation rules.
+// Package gtfsvalidator imports a GTFS archive and runs configured validation rules.
 package gtfsvalidator
 
 import (
 	"context"
-	"encoding/json"
+	"database/sql"
 	"errors"
 	"fmt"
 	"os"
@@ -23,16 +23,13 @@ type Options struct {
 	// Zero uses the default of one. Negative limits are invalid.
 	Concurrency int
 
-	// Config reserves an opaque JSON object for future validation settings.
-	// No properties influence validation yet.
-	Config map[string]json.RawMessage
+	Rules []types.Rule
 }
 
 // GtfsValidator imports a GTFS archive into a temporary SQLite database and runs
-// the built-in rules. The returned summary contains any validation findings from
-// a completed rule run. Import and rule execution failures return an empty summary
-// and an error. The validator checks for cancellation before and after import
-// and passes ctx to the rule executor.
+// the configured rules. A successful execution returns its findings. The
+// validator checks for cancellation before and after import and passes ctx to
+// the rule executor.
 func GtfsValidator(ctx context.Context, options Options) (summary types.Summary, err error) {
 	//
 
@@ -47,6 +44,10 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 		return summary, err
 	}
 	if err := ctx.Err(); err != nil {
+		return summary, err
+	}
+	graph, err := rules.NewValidationGraph(options.Rules)
+	if err != nil {
 		return summary, err
 	}
 
@@ -69,14 +70,10 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 
 	//
 	// 4. Run the validation rules
-	err = validateDatabase(ctx, databasePath, max(options.Concurrency, 1), collector)
-	if err != nil {
+	if err = validateDatabase(ctx, databasePath, graph, max(options.Concurrency, 1), collector); err != nil {
 		return summary, err
 	}
-
-	//
-	// 5. Return the validation summary
-	return collector.Summary(), err
+	return collector.Summary(), nil
 }
 
 // validateOptions requires exactly one archive source and a non-negative
@@ -105,17 +102,17 @@ func importFeed(source importgtfs.ImportGtfsConfigSource, databasePath string) (
 	return importedPath, nil
 }
 
-// validateDatabase opens the imported database, runs the built-in rules, and
+// validateDatabase opens the imported database, runs the configured rules, and
 // adds their findings to collector even if execution fails. It closes the
 // database before returning and includes any close failure in the returned error.
-func validateDatabase(ctx context.Context, databasePath string, concurrency int, collector *services.ReportService) (err error) {
+func validateDatabase(ctx context.Context, databasePath string, graph *services.DAG[*sql.DB, []rules.Finding], concurrency int, collector *services.ReportService) (err error) {
 	database, err := sqlite.NewSQLiteDatabase(sqlite.SQLiteDatabaseConfig{InstancePath: databasePath})
 	if err != nil {
 		return err
 	}
 	defer func() { err = errors.Join(err, database.DatabaseInstance.Close()) }()
 
-	results, err := rules.RunValidations(ctx, database.DatabaseInstance, concurrency)
+	results, err := graph.Execute(ctx, database.DatabaseInstance, concurrency)
 	for _, result := range results {
 		for _, finding := range result.Value {
 			collector.Add(types.Message{
