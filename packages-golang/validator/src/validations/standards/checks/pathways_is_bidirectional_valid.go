@@ -1,0 +1,110 @@
+package standard
+
+import (
+	"slices"
+	"strconv"
+
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	queries "github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
+	variables "github.com/tmlmobilidade/go/packages-golang/validator/src/types/variables"
+)
+
+/*
+# Attributes
+
+  - File: [pathways.txt]
+  - Field: [is_bidirectional, pathway_mode]
+  - Presence: Required
+  - Type: Enum
+
+# Description
+
+  - is_bidirectional: Specifies a one-way pathway from from_stop_id to to_stop_id with 0, or a pathway usable in both
+    directions with 1. Exit gates with pathway_mode=7 must be one-way.
+  - pathway_mode: Type of connection: 1 walkway, 2 stairs, 3 moving sidewalk, 4 escalator, 5 elevator, 6 fare gate or
+    7 exit gate.
+
+Validation: Checks that is_bidirectional represents the integer 0 or 1, then applies configured options. A
+pathway_mode of 7 rejects bidirectionality. The all_options wildcard returns before that exit-gate condition is
+evaluated; an empty option list rejects every populated value. Empty values are skipped; required-field checks
+handle absence.
+
+Presence and type describe the GTFS fields; they do not define the configured diagnostic severity.
+
+[pathways.txt]: https://gtfs.org/documentation/schedule/reference/#pathwaystxt
+*/
+func IsBidirectionalValid(ctx *contextTypes.ValidationContext) error {
+	//
+	// 1. Select this rule's source rows and required lookup tables.
+
+	return context.ForEachRow(ctx, "pathways", []string{"is_bidirectional", "pathway_mode"}, func(rowCtx *contextTypes.ValidationContext) error {
+		if context.ShouldIgnore(rowCtx) {
+			return nil
+		}
+		config := &rowCtx.Config
+
+		value, err := queries.Field(rowCtx.Source, "is_bidirectional")
+		if err != nil {
+			return err
+		}
+
+		//
+		// 2. Skip empty is_bidirectional values
+
+		if value == "" {
+			return nil
+		}
+
+		//
+		// 3. Convert the is_bidirectional to an integer
+
+		parsed, err := strconv.Atoi(value)
+
+		//
+		// 4. Check if the is_bidirectional is a valid option
+
+		if err != nil || !slices.Contains([]int{0, 1}, parsed) {
+			context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "invalid", value))
+			return nil
+		}
+
+		//
+		// 5. Check the configured is_bidirectional options
+
+		if config.Options != nil {
+			if slices.Contains(*config.Options, variables.AllRuleOptions) {
+				return nil
+			}
+			if !slices.Contains(*config.Options, strconv.Itoa(parsed)) {
+				context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "not_allowed", strconv.Itoa(parsed)))
+				return nil
+			}
+		}
+
+		//
+		// 6. Get the pathway_mode value
+
+		modeValue, err := queries.Field(rowCtx.Source, "pathway_mode")
+		if err != nil {
+			return err
+		}
+
+		//
+		// 7. Convert the pathway_mode to an integer
+
+		mode, err := strconv.Atoi(modeValue)
+
+		//
+		// 8. Check if the exit gate is bidirectional
+
+		if err == nil && parsed == 1 && mode == 7 {
+			context.AddMessage(rowCtx, context.GetTranslatedMessage(rowCtx, "exit_gate_bidirectional"))
+		}
+
+		//
+		// 9. Return success
+
+		return nil
+	})
+}

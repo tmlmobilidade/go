@@ -72,6 +72,48 @@
 			}
 		}
 	},
+	"gtfsValidationResultGroup": {
+		"documentation": "Documentation",
+		"message": "Message",
+		"occurrences": "{count, plural, =1 {1 occurrence} other {# occurrences}}",
+		"rows": "Row index(es)",
+		"showAll": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}"
+	},
+	"gtfsValidationRules": {
+		"allRules": "All rules",
+		"compare": {
+			"description": "Key / expected value pairs checked by the rule.",
+			"label": "Comparisons",
+			"value": "Expected value"
+		},
+		"dependencies": {
+			"description": "Rules in the same file that must pass before this rule. Leave empty for no dependencies.",
+			"label": "Dependencies",
+			"placeholder": "Select dependencies..."
+		},
+		"empty": "No rules found.",
+		"options": {
+			"description": "Values used by the rule. Leave empty to use the default options.",
+			"label": "Options",
+			"placeholder": "Enter values separated by commas or spaces."
+		},
+		"rule": "Rule",
+		"search": "Search rules...",
+		"settings": {
+			"remove": "Remove configuration"
+		},
+		"severities": {
+			"error": "Error",
+			"forbidden": "Forbidden",
+			"ignore": "Ignore",
+			"info": "Info",
+			"warning": "Warning"
+		},
+		"severity": "Severity",
+		"unconfigured": {
+			"description": "No severity configured"
+		}
+	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {
@@ -80,6 +122,12 @@
 			"longitude": {
 				"placeholder": "Longitude (-180 to 180)"
 			}
+		},
+		"KeyValueListInput": {
+			"add": "Add pair",
+			"key": "Key",
+			"remove": "Remove pair",
+			"value": "Value"
 		},
 		"SearchField": {
 			"placeholder": "Search...",
@@ -186,6 +234,24 @@
 		"IdTag": {
 			"copied": "Copied!",
 			"copy": "Click to copy the ID"
+		},
+		"SeverityTag": {
+			"error": {
+				"filter": "Filter by errors",
+				"label": "Error"
+			},
+			"forbidden": {
+				"filter": "Filter by forbidden items",
+				"label": "Forbidden"
+			},
+			"info": {
+				"filter": "Filter by information",
+				"label": "Info"
+			},
+			"warning": {
+				"filter": "Filter by warnings",
+				"label": "Warning"
+			}
 		}
 	},
 	"topbar": {

@@ -23,3 +23,4 @@ type LogRecord = types.LogRecord
 type LoggerApi = types.Logger
 type LogRenderer = types.LogRenderer
 type OtelLogRecord = render.OtelLogRecord
+type PerformanceTracker = types.PerformanceTracker

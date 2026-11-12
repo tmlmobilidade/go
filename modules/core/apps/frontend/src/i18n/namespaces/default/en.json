@@ -28,6 +28,11 @@
 						"label": "Agency Name",
 						"placeholder": "Alsa Todi"
 					},
+					"organizations": {
+						"empty": "Does not belong to any organization",
+						"label": "Organizations",
+						"loading": "Loading organizations..."
+					},
 					"phone": {
 						"label": "Phone Number",
 						"placeholder": "912345678"
@@ -184,11 +189,19 @@
 					}
 				}
 			},
+			"ValidationRules": {
+				"invalidSeverities": "Invalid severities in the listed rules."
+			},
 			"header": {
 				"save": "Save"
-			}
+			},
+			"validationError": "Unable to save the agency."
 		},
 		"list": {
+			"FiltersBar": {
+				"label": "Filter by",
+				"organizations": "Organizations"
+			},
 			"Header": {
 				"title": "Agencies"
 			},
@@ -197,6 +210,7 @@
 					"code": "Code",
 					"id": "#ID",
 					"name": "Name",
+					"organizations": "Organizations",
 					"pta_name": "Authority Name"
 				}
 			}
@@ -355,9 +369,16 @@
 			},
 			"SectionBasicInfo": {
 				"fields": {
+					"agency_ids": {
+						"label": "Operators",
+						"placeholder": "Select the organization operators"
+					},
 					"long_name": {
 						"label": "Organization name",
 						"placeholder": "Carris Metropolitana"
+					},
+					"open_data_enabled": {
+						"label": "Publish organization GTFS"
 					},
 					"short_name": {
 						"label": "Abbreviation",
@@ -427,6 +448,10 @@
 			"SectionBasicInfo": {
 				"description": "Details such as name, abbreviation, logo, and home page links.",
 				"fields": {
+					"agency_ids": {
+						"label": "Operators",
+						"placeholder": "Select the organization operators"
+					},
 					"logo_dark": {
 						"label": "Dark Mode Logo"
 					},
@@ -443,6 +468,15 @@
 					}
 				},
 				"title": "General information"
+			},
+			"SectionOpenData": {
+				"description": "Publish the combined GTFS of the organization operators.",
+				"fields": {
+					"enabled": {
+						"label": "Publish organization GTFS"
+					}
+				},
+				"title": "Open data"
 			}
 		},
 		"list": {
@@ -454,6 +488,9 @@
 			},
 			"table": {
 				"columns": {
+					"gtfs_published": {
+						"label": "GTFS"
+					},
 					"id": {
 						"label": "#ID"
 					},

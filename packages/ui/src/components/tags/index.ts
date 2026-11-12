@@ -2,6 +2,7 @@ export * from './AgencyTag';
 export * from './AgencyTagGroup';
 export * from './EnvironmentTag';
 export * from './IdTag';
+export * from './SeverityTag';
 export * from './Tag';
 export * from './TagGroup';
 export * from './UserTag';

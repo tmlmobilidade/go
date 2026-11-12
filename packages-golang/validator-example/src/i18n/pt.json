@@ -1,0 +1,2027 @@
+{
+	"agency_email_field": {
+		"generic": "O campo \"agency_email\" não está preenchido.",
+		"informational": "O campo agency_email é informativo",
+		"recommended": "O campo agency_email é recomendado",
+		"required": "O campo agency_email é obrigatório"
+	},
+	"agency_email_valid": {
+		"generic": "O campo \"agency_email\" contém um endereço de correio eletrónico inválido.",
+		"invalid": "O campo \"agency_email\" \"%s\" não é um endereço de e-mail válido",
+		"not_allowed": "O campo \"agency_email\" \"%s\" não é permitido"
+	},
+	"agency_fare_url_field": {
+		"generic": "O campo \"agency_fare_url\" não está preenchido.",
+		"informational": "O campo agency_fare_url é informativo",
+		"recommended": "O campo agency_fare_url é recomendado",
+		"required": "O campo agency_fare_url é obrigatório"
+	},
+	"agency_fare_url_valid": {
+		"generic": "O campo \"agency_fare_url\" contém um URL inválido.",
+		"invalid": "O campo \"agency_fare_url\" \"%s\" não é um URL válido",
+		"not_allowed": "O campo \"agency_fare_url\" \"%s\" não é permitido"
+	},
+	"agency_id_field": {
+		"generic": "O campo \"agency_id\" não está preenchido.",
+		"informational": "O campo agency_id é informativo",
+		"recommended": "O campo agency_id é recomendado",
+		"required": "O campo agency_id é obrigatório"
+	},
+	"agency_id_matched_with_agency_name": {
+		"generic": "Os valores de \"agency_id\" e \"agency_name\" não correspondem aos pares configurados.",
+		"no_match": "A correspondência entre o campo \"agency_id\" \"%s\" e o campo \"agency_name\" \"%s\" não é válida. Para o agency_id \"%s\" é esperado o nome \"%s\""
+	},
+	"agency_id_unique": {
+		"duplicate": "O campo \"agency_id\" \"%s\" deve ser único",
+		"generic": "Existem valores duplicados no campo \"agency_id\"."
+	},
+	"agency_id_valid": {
+		"generic": "O valor de \"agency_id\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O campo \"agency_id\" \"%s\" não é permitido"
+	},
+	"agency_lang_field": {
+		"generic": "O campo \"agency_lang\" não está preenchido.",
+		"informational": "O campo agency_lang é informativo",
+		"recommended": "O campo agency_lang é recomendado",
+		"required": "O campo agency_lang é obrigatório"
+	},
+	"agency_lang_valid": {
+		"generic": "O campo \"agency_lang\" contém um código de idioma inválido.",
+		"invalid": "O campo \"agency_lang\" \"%s\" não é um código de idioma válido",
+		"not_allowed": "O campo \"agency_lang\" \"%s\" não é permitido"
+	},
+	"agency_name_field": {
+		"generic": "O campo \"agency_name\" não está preenchido.",
+		"informational": "O campo agency_name é informativo",
+		"recommended": "O campo agency_name é recomendado",
+		"required": "O campo agency_name é obrigatório"
+	},
+	"agency_name_id_match": {
+		"generic": "Os valores de \"agency_id\" e \"agency_name\" não correspondem aos pares configurados.",
+		"no_match": "A correspondência entre o campo \"agency_id\" \"%s\" e o campo \"agency_name\" \"%s\" não é válida. Para o agency_id \"%s\" o nome \"%s\" é esperado"
+	},
+	"agency_name_valid": {
+		"generic": "O valor de \"agency_name\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O campo \"agency_name\" \"%s\" não é permitido"
+	},
+	"agency_phone_field": {
+		"generic": "O campo \"agency_phone\" não está preenchido.",
+		"informational": "O campo agency_phone é informativo",
+		"recommended": "O campo agency_phone é recomendado",
+		"required": "O campo agency_phone é obrigatório"
+	},
+	"agency_phone_valid": {
+		"generic": "O campo \"agency_phone\" contém um número de telefone inválido.",
+		"invalid": "O campo \"agency_phone\" \"%s\" não é um número de telefone válido",
+		"not_allowed": "O campo \"agency_phone\" \"%s\" não é permitido"
+	},
+	"agency_timezone_field": {
+		"generic": "O campo \"agency_timezone\" não está preenchido.",
+		"informational": "O campo agency_timezone é informativo",
+		"recommended": "O campo agency_timezone é recomendado",
+		"required": "O campo agency_timezone é obrigatório"
+	},
+	"agency_timezone_valid": {
+		"generic": "O campo \"agency_timezone\" contém um fuso horário inválido.",
+		"invalid": "O campo \"agency_timezone\" \"%s\" não é um fuso horário válido",
+		"not_allowed": "O campo \"agency_timezone\" \"%s\" não é permitido"
+	},
+	"agency_url_field": {
+		"generic": "O campo \"agency_url\" não está preenchido.",
+		"informational": "O campo agency_url é informativo",
+		"recommended": "O campo agency_url é recomendado",
+		"required": "O campo agency_url é obrigatório"
+	},
+	"agency_url_valid": {
+		"generic": "O campo \"agency_url\" contém um URL inválido.",
+		"invalid": "O campo \"agency_url\" \"%s\" não é um URL válido",
+		"not_allowed": "O campo \"agency_url\" \"%s\" não é permitido"
+	},
+	"calendar_dates_date_field": {
+		"generic": "O campo \"date\" não está preenchido.",
+		"informational": "O campo date é informativo",
+		"recommended": "O campo date é recomendado",
+		"required": "O campo date é obrigatório"
+	},
+	"calendar_dates_date_valid": {
+		"generic": "O campo \"date\" contém uma data inválida ou com formato diferente de YYYYMMDD.",
+		"invalid": "A data \"%s\" é inválida; deve ser uma data válida no formato AAAAMMDD"
+	},
+	"calendar_dates_exception_type_field": {
+		"generic": "O campo \"exception_type\" não está preenchido.",
+		"informational": "O campo exception_type é informativo",
+		"recommended": "O campo exception_type é recomendado",
+		"required": "O campo exception_type é obrigatório"
+	},
+	"calendar_dates_exception_type_valid": {
+		"generic": "O campo \"exception_type\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo exception_type é inválido; deve ser 1 ou 2"
+	},
+	"calendar_dates_file_missing": {
+		"calendar_files_required": "calendar.txt ou calendar_dates.txt devem ser presentes"
+	},
+	"calendar_dates_service_id_field": {
+		"generic": "O campo \"service_id\" não está preenchido.",
+		"informational": "O campo service_id é informativo",
+		"recommended": "O campo service_id é recomendado",
+		"required": "O campo service_id é obrigatório"
+	},
+	"calendar_dates_service_id_foreign": {
+		"generic": "O campo \"service_id\" contém uma referência inválida a calendar.txt.",
+		"not_found": "O service_id \"%s\" não existe em calendar.txt"
+	},
+	"calendar_end_date_field": {
+		"generic": "O campo \"end_date\" não está preenchido.",
+		"informational": "O campo end_date é informativo",
+		"recommended": "O campo end_date é recomendado",
+		"required": "O campo end_date é obrigatório"
+	},
+	"calendar_end_date_valid_yyyymmdd": {
+		"generic": "O campo \"end_date\" contém uma data inválida ou com formato diferente de YYYYMMDD."
+	},
+	"calendar_file_missing": {
+		"calendar_files_required": "calendar.txt ou calendar_dates.txt devem ser presentes"
+	},
+	"calendar_friday_field": {
+		"generic": "O campo \"friday\" não está preenchido.",
+		"informational": "O campo friday é informativo",
+		"recommended": "O campo friday é recomendado",
+		"required": "O campo friday é obrigatório"
+	},
+	"calendar_friday_valid": {
+		"generic": "O campo \"friday\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"friday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_monday_field": {
+		"generic": "O campo \"monday\" não está preenchido.",
+		"informational": "O campo monday é informativo",
+		"recommended": "O campo monday é recomendado",
+		"required": "O campo monday é obrigatório"
+	},
+	"calendar_monday_valid": {
+		"generic": "O campo \"monday\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"monday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_saturday_field": {
+		"generic": "O campo \"saturday\" não está preenchido.",
+		"informational": "O campo saturday é informativo",
+		"recommended": "O campo saturday é recomendado",
+		"required": "O campo saturday é obrigatório"
+	},
+	"calendar_saturday_valid": {
+		"generic": "O campo \"saturday\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"saturday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_service_id_field": {
+		"generic": "O campo \"service_id\" não está preenchido.",
+		"informational": "O campo service_id é informativo",
+		"recommended": "O campo service_id é recomendado",
+		"required": "O campo service_id é obrigatório"
+	},
+	"calendar_service_id_unique": {
+		"duplicate": "O valor \"%s\" do campo \"service_id\" deve ser único",
+		"generic": "Existem valores duplicados no campo \"service_id\"."
+	},
+	"calendar_service_id_unique_non_empty": {
+		"duplicate": "Campo \"service_id\" \"%s\" duplicado encontrado. O campo \"service_id\" deve ser único",
+		"forbidden": "O campo \"service_id\" é proibido",
+		"generic": "O campo \"service_id\" está vazio ou contém valores duplicados.",
+		"recommended": "O campo \"service_id\" é recomendado",
+		"required": "O campo \"service_id\" é obrigatório"
+	},
+	"calendar_start_date_field": {
+		"generic": "O campo \"start_date\" não está preenchido.",
+		"informational": "O campo start_date é informativo",
+		"recommended": "O campo start_date é recomendado",
+		"required": "O campo start_date é obrigatório"
+	},
+	"calendar_start_date_valid_yyyymmdd": {
+		"generic": "O campo \"start_date\" contém uma data inválida ou com formato diferente de YYYYMMDD."
+	},
+	"calendar_start_end_dates_valid": {
+		"generic": "A data \"start_date\" não é anterior a \"end_date\".",
+		"invalid": "A data \"%s\" do campo \"start_date\" deve ser anterior à data do campo \"end_date\""
+	},
+	"calendar_start_end_dates_valid_format": {
+		"generic": "As datas de serviço são inválidas ou não seguem o formato YYYYMMDD.",
+		"invalid": "A data \"%s\" no campo \"start_date\" ou \"end_date\" é inválida; deve ser uma data válida no formato AAAAMMDD"
+	},
+	"calendar_start_end_dates_valid_yyyymmdd_order": {
+		"forbidden": "O campo \"service_date\" é proibido",
+		"generic": "As datas de serviço são inválidas ou não seguem o formato YYYYMMDD.",
+		"invalid": "O campo \"service_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"recommended": "O campo \"service_date\" é recomendado",
+		"required": "O campo \"service_date\" é obrigatório"
+	},
+	"calendar_sunday_field": {
+		"generic": "O campo \"sunday\" não está preenchido.",
+		"informational": "O campo sunday é informativo",
+		"recommended": "O campo sunday é recomendado",
+		"required": "O campo sunday é obrigatório"
+	},
+	"calendar_sunday_valid": {
+		"generic": "O campo \"sunday\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"sunday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_thursday_field": {
+		"generic": "O campo \"thursday\" não está preenchido.",
+		"informational": "O campo thursday é informativo",
+		"recommended": "O campo thursday é recomendado",
+		"required": "O campo thursday é obrigatório"
+	},
+	"calendar_thursday_valid": {
+		"generic": "O campo \"thursday\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"thursday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_tuesday_field": {
+		"generic": "O campo \"tuesday\" não está preenchido.",
+		"informational": "O campo tuesday é informativo",
+		"recommended": "O campo tuesday é recomendado",
+		"required": "O campo tuesday é obrigatório"
+	},
+	"calendar_tuesday_valid": {
+		"generic": "O campo \"tuesday\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"tuesday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"calendar_wednesday_field": {
+		"generic": "O campo \"wednesday\" não está preenchido.",
+		"informational": "O campo wednesday é informativo",
+		"recommended": "O campo wednesday é recomendado",
+		"required": "O campo wednesday é obrigatório"
+	},
+	"calendar_wednesday_valid": {
+		"generic": "O campo \"wednesday\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"wednesday\" tem um valor inválido \"%s\"; deve ser 0 ou 1"
+	},
+	"fare_attributes_agency_id_field": {
+		"forbidden": "O campo \"agency_id\" é proibido",
+		"generic": "O campo \"agency_id\" não está preenchido.",
+		"informational": "O campo \"agency_id\" é recomendado quando existe apenas uma agência",
+		"recommended": "O campo \"agency_id\" é recomendado quando existe apenas uma agência",
+		"required": "O campo \"agency_id\" é obrigatório quando existe mais do que uma agência"
+	},
+	"fare_attributes_agency_id_foreign": {
+		"generic": "O campo \"agency_id\" contém uma referência inválida a agency.txt.",
+		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt"
+	},
+	"fare_attributes_currency_type_field": {
+		"forbidden": "O campo \"currency_type\" é proibido",
+		"generic": "O campo \"currency_type\" não está preenchido.",
+		"informational": "O campo \"currency_type\" é recomendado",
+		"recommended": "O campo \"currency_type\" é recomendado",
+		"required": "O campo \"currency_type\" é obrigatório"
+	},
+	"fare_attributes_currency_type_valid": {
+		"generic": "O campo \"currency_type\" contém um código de moeda ISO 4217 inválido.",
+		"invalid": "O campo \"currency_type\" \"%s\" não é um código de moeda ISO 4217 válido, consulte https://en.wikipedia.org/wiki/ISO_4217"
+	},
+	"fare_attributes_fare_id_field": {
+		"forbidden": "O campo \"fare_id\" é proibido",
+		"generic": "O campo \"fare_id\" não está preenchido.",
+		"informational": "O campo \"fare_id\" é recomendado",
+		"recommended": "O campo \"fare_id\" é recomendado",
+		"required": "O campo \"fare_id\" é obrigatório"
+	},
+	"fare_attributes_fare_id_unique": {
+		"duplicate": "Campo \"fare_id\" \"%s\" duplicado encontrado. O campo \"fare_id\" deve ser único",
+		"generic": "Existem valores duplicados no campo \"fare_id\"."
+	},
+	"fare_attributes_payment_method_field": {
+		"forbidden": "O campo \"payment_method\" é proibido",
+		"generic": "O campo \"payment_method\" não está preenchido.",
+		"informational": "O campo \"payment_method\" é recomendado",
+		"recommended": "O campo \"payment_method\" é recomendado",
+		"required": "O campo \"payment_method\" é obrigatório"
+	},
+	"fare_attributes_payment_method_valid": {
+		"generic": "O campo \"payment_method\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"payment_method\" deve ser 0 ou 1. Recebido: \"%s\""
+	},
+	"fare_attributes_price_field": {
+		"forbidden": "O campo \"price\" é proibido",
+		"generic": "O campo \"price\" não está preenchido.",
+		"informational": "O campo \"price\" é recomendado",
+		"recommended": "O campo \"price\" é recomendado",
+		"required": "O campo \"price\" é obrigatório"
+	},
+	"fare_attributes_price_valid": {
+		"generic": "O campo \"price\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"price\" não pode ser negativo. Recebido: \"%s\""
+	},
+	"fare_attributes_transfer_duration_field": {
+		"forbidden": "O campo \"transfer_duration\" é proibido",
+		"generic": "O campo \"transfer_duration\" não está preenchido.",
+		"informational": "O campo \"transfer_duration\" é recomendado",
+		"recommended": "O campo \"transfer_duration\" é recomendado",
+		"required": "O campo \"transfer_duration\" é obrigatório"
+	},
+	"fare_attributes_transfer_duration_valid": {
+		"generic": "O campo \"transfer_duration\" contém um valor inválido, igual a zero ou negativo.",
+		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\""
+	},
+	"fare_attributes_transfers_field": {
+		"forbidden": "O campo \"transfers\" é proibido",
+		"generic": "O campo \"transfers\" não está preenchido.",
+		"informational": "O campo \"transfers\" é recomendado",
+		"recommended": "O campo \"transfers\" é recomendado",
+		"required": "O campo \"transfers\" é obrigatório"
+	},
+	"fare_attributes_transfers_valid": {
+		"generic": "O campo \"transfers\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\""
+	},
+	"fare_rules_contains_id_field": {
+		"generic": "O campo \"contains_id\" não está preenchido.",
+		"informational": "O campo contains_id é informativo",
+		"recommended": "O campo contains_id é recomendado",
+		"required": "O campo contains_id é obrigatório"
+	},
+	"fare_rules_contains_id_foreign": {
+		"forbidden": "O campo \"contains_id\" é proibido",
+		"generic": "O campo \"contains_id\" contém uma referência inválida a stops.txt.",
+		"invalid": "O campo \"contains_id\" \"%s\" deve ser um ID válido de stops.txt",
+		"recommended": "O campo \"contains_id\" é recomendado",
+		"required": "O campo \"contains_id\" é obrigatório"
+	},
+	"fare_rules_destination_id_field": {
+		"generic": "O campo \"destination_id\" não está preenchido.",
+		"informational": "O campo destination_id é informativo",
+		"recommended": "O campo destination_id é recomendado",
+		"required": "O campo destination_id é obrigatório"
+	},
+	"fare_rules_destination_id_foreign": {
+		"forbidden": "O campo \"destination_id\" é proibido",
+		"generic": "O campo \"destination_id\" contém uma referência inválida a stops.txt.",
+		"invalid": "O campo \"destination_id\" \"%s\" deve ser um ID válido de stops.txt",
+		"recommended": "O campo \"destination_id\" é recomendado",
+		"required": "O campo \"destination_id\" é obrigatório"
+	},
+	"fare_rules_fare_id_field": {
+		"generic": "O campo \"fare_id\" não está preenchido.",
+		"informational": "O campo fare_id é informativo",
+		"recommended": "O campo fare_id é recomendado",
+		"required": "O campo fare_id é obrigatório"
+	},
+	"fare_rules_fare_id_foreign": {
+		"forbidden": "O campo \"fare_id\" é proibido",
+		"generic": "O campo \"fare_id\" contém uma referência inválida a fare_attributes.txt.",
+		"invalid": "O campo \"fare_id\" \"%s\" não é um fare_id válido de fare_attributes.txt",
+		"recommended": "O campo \"fare_id\" é recomendado",
+		"required": "O campo \"fare_id\" é obrigatório"
+	},
+	"fare_rules_origin_id_field": {
+		"generic": "O campo \"origin_id\" não está preenchido.",
+		"informational": "O campo origin_id é informativo",
+		"recommended": "O campo origin_id é recomendado",
+		"required": "O campo origin_id é obrigatório"
+	},
+	"fare_rules_origin_id_foreign": {
+		"forbidden": "O campo \"origin_id\" é proibido",
+		"generic": "O campo \"origin_id\" contém uma referência inválida a stops.txt.",
+		"invalid": "O campo \"origin_id\" \"%s\" deve ser um ID válido de stops.txt",
+		"recommended": "O campo \"origin_id\" é recomendado",
+		"required": "O campo \"origin_id\" é obrigatório"
+	},
+	"fare_rules_route_id_field": {
+		"generic": "O campo \"route_id\" não está preenchido.",
+		"informational": "O campo route_id é informativo",
+		"recommended": "O campo route_id é recomendado",
+		"required": "O campo route_id é obrigatório"
+	},
+	"fare_rules_route_id_foreign": {
+		"forbidden": "O campo \"route_id\" é proibido",
+		"generic": "O campo \"route_id\" contém uma referência inválida a routes.txt.",
+		"invalid": "O campo \"route_id\" \"%s\" não é um route_id válido de routes.txt",
+		"recommended": "O campo \"route_id\" é recomendado",
+		"required": "O campo \"route_id\" é obrigatório"
+	},
+	"feed_info_default_lang_field": {
+		"generic": "O campo \"default_lang\" não está preenchido.",
+		"informational": "O campo default_lang é informativo",
+		"recommended": "O campo default_lang é recomendado",
+		"required": "O campo default_lang é obrigatório"
+	},
+	"feed_info_default_lang_valid": {
+		"generic": "O campo \"default_lang\" contém um código de idioma inválido.",
+		"invalid": "O campo \"default_lang\" \"%s\" não é um código de idioma válido"
+	},
+	"feed_info_feed_contact_email_field": {
+		"generic": "O campo \"feed_contact_email\" não está preenchido.",
+		"informational": "O campo feed_contact_email é informativo",
+		"recommended": "O campo feed_contact_email é recomendado",
+		"required": "O campo feed_contact_email é obrigatório"
+	},
+	"feed_info_feed_contact_email_valid": {
+		"generic": "O campo \"feed_contact_email\" contém um endereço de correio eletrónico inválido.",
+		"invalid": "O campo \"feed_contact_email\" \"%s\" não é um endereço de e-mail válido"
+	},
+	"feed_info_feed_contact_url_field": {
+		"generic": "O campo \"feed_contact_url\" não está preenchido.",
+		"informational": "O campo feed_contact_url é informativo",
+		"recommended": "O campo feed_contact_url é recomendado",
+		"required": "O campo feed_contact_url é obrigatório"
+	},
+	"feed_info_feed_contact_url_valid": {
+		"generic": "O campo \"feed_contact_url\" contém um URL inválido.",
+		"invalid": "O campo \"feed_contact_url\" \"%s\" não é um URL válido"
+	},
+	"feed_info_feed_end_date_field": {
+		"generic": "O campo \"feed_end_date\" não está preenchido.",
+		"informational": "O campo feed_end_date é informativo",
+		"recommended": "O campo feed_end_date é recomendado",
+		"required": "O campo feed_end_date é obrigatório"
+	},
+	"feed_info_feed_end_date_format": {
+		"generic": "O campo \"feed_end_date\" contém uma data inválida ou com formato diferente de YYYYMMDD.",
+		"informational": "Espera-se que o campo \"feed_end_date\" contenha uma data válida no formato AAAAMMDD",
+		"invalid": "O campo \"feed_end_date\" deve conter uma data válida no formato AAAAMMDD",
+		"recommended": "Recomenda-se que o campo \"feed_end_date\" contenha uma data válida no formato AAAAMMDD"
+	},
+	"feed_info_feed_lang_field": {
+		"generic": "O campo \"feed_lang\" não está preenchido.",
+		"informational": "O campo feed_lang é informativo",
+		"recommended": "O campo feed_lang é recomendado",
+		"required": "O campo feed_lang é obrigatório"
+	},
+	"feed_info_feed_lang_valid": {
+		"generic": "O campo \"feed_lang\" contém um código de idioma inválido.",
+		"invalid": "O campo \"feed_lang\" \"%s\" não é um código de idioma válido"
+	},
+	"feed_info_feed_publisher_name_field": {
+		"generic": "O campo \"feed_publisher_name\" não está preenchido.",
+		"informational": "O campo feed_publisher_name é informativo",
+		"recommended": "O campo feed_publisher_name é recomendado",
+		"required": "O campo feed_publisher_name é obrigatório"
+	},
+	"feed_info_feed_publisher_url_field": {
+		"generic": "O campo \"feed_publisher_url\" não está preenchido.",
+		"informational": "O campo feed_publisher_url é informativo",
+		"recommended": "O campo feed_publisher_url é recomendado",
+		"required": "O campo feed_publisher_url é obrigatório"
+	},
+	"feed_info_feed_publisher_url_valid": {
+		"generic": "O campo \"feed_publisher_url\" contém um URL inválido.",
+		"invalid": "O campo \"feed_publisher_url\" \"%s\" não é um URL válido"
+	},
+	"feed_info_feed_start_date_field": {
+		"generic": "O campo \"feed_start_date\" não está preenchido.",
+		"informational": "O campo feed_start_date é informativo",
+		"recommended": "O campo feed_start_date é recomendado",
+		"required": "O campo feed_start_date é obrigatório"
+	},
+	"feed_info_feed_start_date_format": {
+		"generic": "O campo \"feed_start_date\" contém uma data inválida ou com formato diferente de YYYYMMDD.",
+		"informational": "Espera-se que o campo \"feed_start_date\" contenha uma data válida no formato AAAAMMDD",
+		"invalid": "O campo \"feed_start_date\" deve conter uma data válida no formato AAAAMMDD",
+		"recommended": "Recomenda-se que o campo \"feed_start_date\" contenha uma data válida no formato AAAAMMDD"
+	},
+	"feed_info_feed_version_field": {
+		"generic": "O campo \"feed_version\" não está preenchido.",
+		"informational": "O campo feed_version é informativo",
+		"recommended": "O campo feed_version é recomendado",
+		"required": "O campo feed_version é obrigatório"
+	},
+	"feed_info_file_missing": {
+		"feed_info_required_when_translations": "feed_info.txt é obrigatório quando translations.txt está presente"
+	},
+	"feed_info_start_end_dates_valid": {
+		"generic": "A data \"feed_start_date\" não é anterior a \"feed_end_date\".",
+		"invalid": "A data \"%s\" do campo \"feed_start_date\" deve ser anterior à data \"%s\" do campo \"feed_end_date\""
+	},
+	"file_missing": {
+		"message": "O ficheiro %s não está presente."
+	},
+	"file_not_found_in_rules": {
+		"generic": "O ficheiro não é suportado pelo validador e foi ignorado.",
+		"not_supported": "O ficheiro \"%s\" não é suportado pelo validador e foi ignorado"
+	},
+	"file_validation": {
+		"generic": "Não foi possível processar ou validar os dados do GTFS.",
+		"not_supported": "O ficheiro \"%s\" não é suportado pelo validador e foi ignorado"
+	},
+	"file_validation_gtfs_feed_file_presence_and_integrity_rule": {
+		"forbidden": "O ficheiro \"%s\" é proibido",
+		"generic": "O GTFS contém ficheiros não permitidos neste contexto.",
+		"networks_forbidden_when_network_id": "networks.txt é proibido quando network_id existe em routes.txt",
+		"route_networks_forbidden_when_network_id": "route_networks.txt é proibido quando network_id existe em routes.txt"
+	},
+	"frequencies_end_time_field": {
+		"generic": "O campo \"end_time\" não está preenchido.",
+		"informational": "O campo end_time é informativo",
+		"recommended": "O campo end_time é recomendado",
+		"required": "O campo end_time é obrigatório"
+	},
+	"frequencies_end_time_valid": {
+		"forbidden": "O campo \"end_time\" é proibido",
+		"generic": "O campo \"end_time\" contém uma hora inválida.",
+		"invalid": "O campo \"end_time\" deve ser uma hora válida, formato esperado: HH:MM:SS, recebido: %s",
+		"recommended": "O campo \"end_time\" é recomendado",
+		"required": "O campo \"end_time\" é obrigatório"
+	},
+	"frequencies_exact_times_field": {
+		"generic": "O campo \"exact_times\" não está preenchido.",
+		"informational": "O campo exact_times é informativo",
+		"recommended": "O campo exact_times é recomendado",
+		"required": "O campo exact_times é obrigatório"
+	},
+	"frequencies_exact_times_valid": {
+		"forbidden": "O campo \"exact_times\" é proibido",
+		"generic": "O campo \"exact_times\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"exact_times\" deve ser 0 ou 1, recebido: %s",
+		"not_allowed": "O campo \"exact_times\" \"%s\" não é permitido",
+		"recommended": "O campo \"exact_times\" é recomendado",
+		"required": "O campo \"exact_times\" é obrigatório"
+	},
+	"frequencies_headway_secs_field": {
+		"generic": "O campo \"headway_secs\" não está preenchido.",
+		"informational": "O campo headway_secs é informativo",
+		"recommended": "O campo headway_secs é recomendado",
+		"required": "O campo headway_secs é obrigatório"
+	},
+	"frequencies_headway_secs_valid": {
+		"forbidden": "O campo \"headway_secs\" é proibido",
+		"generic": "O campo \"headway_secs\" contém um intervalo inválido; o valor não é um número inteiro positivo.",
+		"invalid": "O campo \"headway_secs\" deve ser um número inteiro positivo, recebido: %s",
+		"recommended": "O campo \"headway_secs\" é recomendado",
+		"required": "O campo \"headway_secs\" é obrigatório"
+	},
+	"frequencies_start_time_field": {
+		"generic": "O campo \"start_time\" não está preenchido.",
+		"informational": "O campo start_time é informativo",
+		"recommended": "O campo start_time é recomendado",
+		"required": "O campo start_time é obrigatório"
+	},
+	"frequencies_start_time_valid": {
+		"forbidden": "O campo \"start_time\" é proibido",
+		"generic": "O campo \"start_time\" contém uma hora inválida.",
+		"invalid": "O campo \"start_time\" deve ser uma hora válida, formato esperado: HH:MM:SS, recebido: %s",
+		"recommended": "O campo \"start_time\" é recomendado",
+		"required": "O campo \"start_time\" é obrigatório"
+	},
+	"frequencies_trip_id_field": {
+		"generic": "O campo \"trip_id\" não está preenchido.",
+		"informational": "O campo trip_id é informativo",
+		"recommended": "O campo trip_id é recomendado",
+		"required": "O campo trip_id é obrigatório"
+	},
+	"frequencies_trip_id_foreign": {
+		"forbidden": "O campo \"trip_id\" é proibido",
+		"generic": "O campo \"trip_id\" contém uma referência inválida a trips.txt.",
+		"not_found": "O campo \"trip_id\" \"%s\" não existe em trips.txt",
+		"recommended": "O campo \"trip_id\" é recomendado",
+		"required": "O campo \"trip_id\" é obrigatório"
+	},
+	"levels_file_missing": {
+		"levels_required_when_elevator": "levels.txt é obrigatório quando pathways.txt contém elevadores (pathway_mode=5)"
+	},
+	"levels_level_id_field": {
+		"generic": "O campo \"level_id\" não está preenchido.",
+		"informational": "O campo level_id é informativo",
+		"recommended": "O campo level_id é recomendado",
+		"required": "O campo level_id é obrigatório"
+	},
+	"levels_level_id_unique": {
+		"duplicate": "Campo \"level_id\" \"%s\" duplicado encontrado. O campo \"level_id\" deve ser único",
+		"forbidden": "O campo \"level_id\" é proibido",
+		"generic": "Existem valores duplicados no campo \"level_id\".",
+		"recommended": "O campo \"level_id\" é recomendado",
+		"required": "O campo \"level_id\" é obrigatório"
+	},
+	"levels_level_index_field": {
+		"generic": "O campo \"level_index\" não está preenchido.",
+		"informational": "O campo level_index é informativo",
+		"recommended": "O campo level_index é recomendado",
+		"required": "O campo level_index é obrigatório"
+	},
+	"levels_level_index_valid": {
+		"forbidden": "O campo \"level_index\" é proibido",
+		"generic": "O campo \"level_index\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"level_index\" deve ser um número inteiro não negativo",
+		"recommended": "O campo \"level_index\" é recomendado",
+		"required": "O campo \"level_index\" é obrigatório"
+	},
+	"levels_level_name_field": {
+		"generic": "O campo \"level_name\" não está preenchido.",
+		"informational": "O campo level_name é informativo",
+		"recommended": "O campo level_name é recomendado",
+		"required": "O campo level_name é obrigatório"
+	},
+	"pathways_from_stop_id_field": {
+		"generic": "O campo \"from_stop_id\" não está preenchido.",
+		"informational": "O campo from_stop_id é informativo",
+		"recommended": "O campo from_stop_id é recomendado",
+		"required": "O campo from_stop_id é obrigatório"
+	},
+	"pathways_from_stop_id_foreign": {
+		"forbidden": "O campo \"from_stop_id\" é proibido",
+		"forbidden_stop_access_1": "O campo \"from_stop_id\" \"%s\" referencia uma paragem (location_type=0 ou vazio) com stop_access=1. Paragens com stop_access=1 são proibidas para pathways",
+		"generic": "O campo \"from_stop_id\" contém uma referência inválida a stops.txt.",
+		"invalid_location_type_format": "O campo \"from_stop_id\" \"%s\" referencia uma paragem cujo \"location_type\" não é um número inteiro válido",
+		"invalid_location_type_pathway": "O campo \"from_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser plataforma (0 ou vazio), entrada/saída (2), nó (3) ou área de embarque (4)",
+		"invalid_location_type_station": "O campo \"from_stop_id\" \"%s\" referencia uma estação (location_type=1). Estações são proibidas para pathways",
+		"invalid_stop_access_format": "O campo \"from_stop_id\" \"%s\" referencia uma paragem cujo \"stop_access\" não é um número inteiro válido",
+		"not_found": "O campo \"from_stop_id\" \"%s\" não existe em stops.txt",
+		"recommended": "O campo \"from_stop_id\" é recomendado",
+		"required": "O campo \"from_stop_id\" é obrigatório"
+	},
+	"pathways_is_bidirectional_field": {
+		"generic": "O campo \"is_bidirectional\" não está preenchido.",
+		"informational": "O campo is_bidirectional é informativo",
+		"recommended": "O campo is_bidirectional é recomendado",
+		"required": "O campo is_bidirectional é obrigatório"
+	},
+	"pathways_is_bidirectional_valid": {
+		"exit_gate_bidirectional": "O campo \"is_bidirectional\" deve ser 0 quando \"pathway_mode\" é 7 (porta de saída). Portas de saída não podem ser bidirecionais",
+		"forbidden": "O campo \"is_bidirectional\" é proibido",
+		"generic": "O campo \"is_bidirectional\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"is_bidirectional\" deve ser 0 ou 1, recebido: %s",
+		"not_allowed": "O campo \"is_bidirectional\" \"%s\" não é permitido",
+		"recommended": "O campo \"is_bidirectional\" é recomendado",
+		"required": "O campo \"is_bidirectional\" é obrigatório"
+	},
+	"pathways_length_field": {
+		"generic": "O campo \"length\" não está preenchido.",
+		"informational": "O campo length é informativo",
+		"recommended": "O campo length é recomendado",
+		"required": "O campo length é obrigatório"
+	},
+	"pathways_length_valid": {
+		"forbidden": "O campo \"length\" é proibido",
+		"generic": "O campo \"length\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"length\" \"%s\" tem um valor numérico inválido",
+		"negative": "O campo \"length\" \"%f\" deve ser um número não negativo",
+		"recommended": "O campo \"length\" é recomendado",
+		"required": "O campo \"length\" é obrigatório"
+	},
+	"pathways_max_slope_field": {
+		"generic": "O campo \"max_slope\" não está preenchido.",
+		"informational": "O campo max_slope é informativo",
+		"recommended": "O campo max_slope é recomendado",
+		"required": "O campo max_slope é obrigatório"
+	},
+	"pathways_max_slope_valid": {
+		"forbidden": "O campo \"max_slope\" é proibido",
+		"generic": "O campo \"max_slope\" está preenchido para um modo de percurso que não o permite.",
+		"not_allowed_pathway_mode": "O campo \"max_slope\" não é permitido para o pathway_mode \"%s\"",
+		"recommended": "O campo \"max_slope\" é recomendado",
+		"required": "O campo \"max_slope\" é obrigatório"
+	},
+	"pathways_min_width_field": {
+		"generic": "O campo \"min_width\" não está preenchido.",
+		"informational": "O campo min_width é informativo",
+		"recommended": "O campo min_width é recomendado",
+		"required": "O campo min_width é obrigatório"
+	},
+	"pathways_min_width_valid": {
+		"forbidden": "O campo \"min_width\" é proibido",
+		"generic": "O campo \"min_width\" contém um valor inválido, igual a zero ou negativo.",
+		"invalid": "O campo \"min_width\" \"%s\" não é um número válido",
+		"negative": "O campo \"min_width\" deve ser um número positivo",
+		"recommended": "O campo \"min_width\" é recomendado",
+		"required": "O campo \"min_width\" é obrigatório"
+	},
+	"pathways_pathway_id_field": {
+		"generic": "O campo \"pathway_id\" não está preenchido.",
+		"informational": "O campo pathway_id é informativo",
+		"recommended": "O campo pathway_id é recomendado",
+		"required": "O campo pathway_id é obrigatório"
+	},
+	"pathways_pathway_id_unique": {
+		"duplicate": "Campo \"pathway_id\" \"%s\" duplicado encontrado. O campo \"pathway_id\" deve ser único",
+		"forbidden": "O campo \"pathway_id\" é proibido",
+		"generic": "Existem valores duplicados no campo \"pathway_id\".",
+		"recommended": "O campo \"pathway_id\" é recomendado",
+		"required": "O campo \"pathway_id\" é obrigatório"
+	},
+	"pathways_pathway_mode_field": {
+		"generic": "O campo \"pathway_mode\" não está preenchido.",
+		"informational": "O campo pathway_mode é informativo",
+		"recommended": "O campo pathway_mode é recomendado",
+		"required": "O campo pathway_mode é obrigatório"
+	},
+	"pathways_pathway_mode_valid": {
+		"forbidden": "O campo \"pathway_mode\" é proibido",
+		"generic": "O campo \"pathway_mode\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"pathway_mode\" deve ser 0, 1, 2, 3, 4 ou 5, recebido: %s",
+		"not_allowed": "O campo \"pathway_mode\" \"%s\" não é permitido",
+		"recommended": "O campo \"pathway_mode\" é recomendado",
+		"required": "O campo \"pathway_mode\" é obrigatório"
+	},
+	"pathways_reversed_signposted_as_field": {
+		"generic": "O campo \"reversed_signposted_as\" não está preenchido.",
+		"informational": "O campo reversed_signposted_as é informativo",
+		"recommended": "O campo reversed_signposted_as é recomendado",
+		"required": "O campo reversed_signposted_as é obrigatório"
+	},
+	"pathways_signposted_as_field": {
+		"generic": "O campo \"signposted_as\" não está preenchido.",
+		"informational": "O campo signposted_as é informativo",
+		"recommended": "O campo signposted_as é recomendado",
+		"required": "O campo signposted_as é obrigatório"
+	},
+	"pathways_stair_count_field": {
+		"generic": "O campo \"stair_count\" não está preenchido.",
+		"informational": "O campo stair_count é informativo",
+		"recommended": "O campo stair_count é recomendado",
+		"required": "O campo stair_count é obrigatório"
+	},
+	"pathways_stair_count_valid": {
+		"forbidden": "O campo \"stair_count\" é proibido",
+		"generic": "O campo \"stair_count\" contém um número de degraus inválido.",
+		"invalid": "O campo \"stair_count\" \"%s\" tem um valor numérico inválido",
+		"recommended": "O campo \"stair_count\" é recomendado",
+		"required": "O campo \"stair_count\" é obrigatório"
+	},
+	"pathways_to_stop_id_field": {
+		"generic": "O campo \"to_stop_id\" não está preenchido.",
+		"informational": "O campo to_stop_id é informativo",
+		"recommended": "O campo to_stop_id é recomendado",
+		"required": "O campo to_stop_id é obrigatório"
+	},
+	"pathways_to_stop_id_foreign": {
+		"forbidden": "O campo \"to_stop_id\" é proibido",
+		"forbidden_stop_access_1": "O campo \"to_stop_id\" \"%s\" referencia uma paragem (location_type=0 ou vazio) com stop_access=1. Paragens com stop_access=1 são proibidas para pathways",
+		"generic": "O campo \"to_stop_id\" contém uma referência inválida a stops.txt.",
+		"invalid_location_type_pathway": "O campo \"to_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser plataforma (0 ou vazio), entrada/saída (2), nó genérico (3) ou área de embarque (4)",
+		"invalid_location_type_station": "O campo \"to_stop_id\" \"%s\" referencia uma estação (location_type=1). Estações são proibidas para pathways",
+		"not_found": "O campo \"to_stop_id\" \"%s\" não existe em stops.txt",
+		"recommended": "O campo \"to_stop_id\" é recomendado",
+		"required": "O campo \"to_stop_id\" é obrigatório"
+	},
+	"pathways_traversal_time_field": {
+		"generic": "O campo \"traversal_time\" não está preenchido.",
+		"informational": "O campo traversal_time é informativo",
+		"recommended": "O campo traversal_time é recomendado",
+		"required": "O campo traversal_time é obrigatório"
+	},
+	"pathways_traversal_time_valid": {
+		"forbidden": "O campo \"traversal_time\" é proibido",
+		"generic": "O campo \"traversal_time\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"traversal_time\" \"%s\" tem um valor numérico inválido",
+		"negative": "O campo \"traversal_time\" \"%s\" deve ser um número não negativo",
+		"recommended": "O campo \"traversal_time\" é recomendado",
+		"required": "O campo \"traversal_time\" é obrigatório"
+	},
+	"rider_categories_eligibility_url_field": {
+		"generic": "O campo \"eligibility_url\" não está preenchido.",
+		"informational": "O campo eligibility_url é informativo",
+		"recommended": "O campo eligibility_url é recomendado",
+		"required": "O campo eligibility_url é obrigatório"
+	},
+	"rider_categories_eligibility_url_valid": {
+		"forbidden": "O campo \"eligibility_url\" é proibido",
+		"generic": "O campo \"eligibility_url\" contém um URL HTTP inválido.",
+		"invalid": "O campo \"eligibility_url\" deve ser um URL válido",
+		"recommended": "O campo \"eligibility_url\" é recomendado",
+		"required": "O campo \"eligibility_url\" é obrigatório"
+	},
+	"rider_categories_is_default_fare_category_field": {
+		"generic": "O campo \"is_default_fare_category\" não está preenchido.",
+		"informational": "O campo is_default_fare_category é informativo",
+		"recommended": "O campo is_default_fare_category é recomendado",
+		"required": "O campo is_default_fare_category é obrigatório"
+	},
+	"rider_categories_is_default_fare_category_valid": {
+		"forbidden": "O campo \"is_default_fare_category\" é proibido",
+		"generic": "O campo \"is_default_fare_category\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"is_default_fare_category\" deve ser 0 ou 1",
+		"not_allowed": "O campo \"is_default_fare_category\" \"%s\" não é permitido",
+		"recommended": "O campo \"is_default_fare_category\" é recomendado",
+		"required": "O campo \"is_default_fare_category\" é obrigatório"
+	},
+	"rider_categories_rider_category_id_field": {
+		"generic": "O campo \"rider_category_id\" não está preenchido.",
+		"informational": "O campo rider_category_id é informativo",
+		"recommended": "O campo rider_category_id é recomendado",
+		"required": "O campo rider_category_id é obrigatório"
+	},
+	"rider_categories_rider_category_id_unique": {
+		"duplicate": "Campo \"rider_category_id\" \"%s\" duplicado encontrado. O campo \"rider_category_id\" deve ser único",
+		"forbidden": "O campo \"rider_category_id\" é proibido",
+		"generic": "Existem valores duplicados no campo \"rider_category_id\".",
+		"recommended": "O campo \"rider_category_id\" é recomendado",
+		"required": "O campo \"rider_category_id\" é obrigatório"
+	},
+	"rider_categories_rider_category_name_field": {
+		"generic": "O campo \"rider_category_name\" não está preenchido.",
+		"informational": "O campo rider_category_name é informativo",
+		"recommended": "O campo rider_category_name é recomendado",
+		"required": "O campo rider_category_name é obrigatório"
+	},
+	"routes_agency_id_field": {
+		"generic": "O campo \"agency_id\" não está preenchido.",
+		"informational": "O campo agency_id é informativo",
+		"recommended": "O campo agency_id é recomendado",
+		"required": "O campo agency_id é obrigatório"
+	},
+	"routes_agency_id_foreign": {
+		"generic": "O campo \"agency_id\" contém uma referência inválida a agency.txt.",
+		"not_found": "O valor \"%s\" do campo \"agency_id\" não foi encontrado em agency.txt"
+	},
+	"routes_continuous_drop_off_field": {
+		"generic": "O campo \"continuous_drop_off\" não está preenchido.",
+		"informational": "O campo continuous_drop_off é informativo",
+		"recommended": "O campo continuous_drop_off é recomendado",
+		"required": "O campo continuous_drop_off é obrigatório"
+	},
+	"routes_continuous_drop_off_valid": {
+		"forbidden_with_window": "O campo \"continuous_drop_off\" deve estar vazio ou ter o valor 1 quando uma viagem desta rota tem uma janela de recolha ou largada em stop_times.txt",
+		"generic": "O valor de \"continuous_drop_off\" é incompatível com as condições do serviço contínuo ou com as janelas de embarque e desembarque.",
+		"recommended": "Recomenda-se que o campo \"continuous_drop_off\" permita o serviço contínuo; um valor vazio ou 1 desativa-o",
+		"required": "O campo \"continuous_drop_off\" deve permitir o serviço contínuo; um valor vazio ou 1 desativa-o"
+	},
+	"routes_continuous_pickup_field": {
+		"generic": "O campo \"continuous_pickup\" não está preenchido.",
+		"informational": "O campo continuous_pickup é informativo",
+		"recommended": "O campo continuous_pickup é recomendado",
+		"required": "O campo continuous_pickup é obrigatório"
+	},
+	"routes_continuous_pickup_valid": {
+		"forbidden_with_window": "O campo \"continuous_pickup\" deve estar vazio ou ter o valor 1 quando uma viagem desta rota tem uma janela de recolha ou largada em stop_times.txt",
+		"generic": "O valor de \"continuous_pickup\" é incompatível com as condições do serviço contínuo ou com as janelas de embarque e desembarque.",
+		"recommended": "Recomenda-se que o campo \"continuous_pickup\" permita o serviço contínuo; um valor vazio ou 1 desativa-o",
+		"required": "O campo \"continuous_pickup\" deve permitir o serviço contínuo; um valor vazio ou 1 desativa-o"
+	},
+	"routes_line_id_equal_route_short_name": {
+		"generic": "Os valores de \"line_id\" e \"route_short_name\" são diferentes.",
+		"not_equal_to_route_short_name": "O valor \"%s\" do campo \"line_id\" deve ser igual ao valor \"%s\" do campo \"route_short_name\""
+	},
+	"routes_line_id_field": {
+		"generic": "O campo \"line_id\" não está preenchido.",
+		"informational": "O campo line_id é informativo",
+		"recommended": "O campo line_id é recomendado",
+		"required": "O campo line_id é obrigatório"
+	},
+	"routes_line_long_name_field": {
+		"generic": "O campo \"line_long_name\" não está preenchido.",
+		"informational": "O campo line_long_name é informativo",
+		"recommended": "O campo line_long_name é recomendado",
+		"required": "O campo line_long_name é obrigatório"
+	},
+	"routes_line_short_name_equal_route_short_name": {
+		"generic": "Os valores de \"line_short_name\" e \"route_short_name\" são diferentes.",
+		"not_equal_to_route_short_name": "O valor \"%s\" do campo \"line_short_name\" deve ser igual ao valor \"%s\" do campo \"route_short_name\""
+	},
+	"routes_line_short_name_field": {
+		"generic": "O campo \"line_short_name\" não está preenchido.",
+		"informational": "O campo line_short_name é informativo",
+		"recommended": "O campo line_short_name é recomendado",
+		"required": "O campo line_short_name é obrigatório"
+	},
+	"routes_network_id_field": {
+		"generic": "O campo \"network_id\" não está preenchido.",
+		"informational": "O campo network_id é informativo",
+		"recommended": "O campo network_id é recomendado",
+		"required": "O campo network_id é obrigatório"
+	},
+	"routes_network_id_foreign": {
+		"generic": "O campo \"network_id\" contém uma referência inválida a route_networks.txt.",
+		"not_found": "O valor \"%s\" do campo \"network_id\" não foi encontrado em route_networks.txt"
+	},
+	"routes_path_type_field": {
+		"generic": "O campo \"path_type\" não está preenchido.",
+		"informational": "O campo path_type é informativo",
+		"recommended": "O campo path_type é recomendado",
+		"required": "O campo path_type é obrigatório"
+	},
+	"routes_path_type_valid": {
+		"generic": "O campo \"path_type\" contém um valor inválido ou não permitido.",
+		"not_valid": "O valor \"%s\" do campo \"path_type\" deve ser um dos seguintes: 1, 2, 3"
+	},
+	"routes_route_color_field": {
+		"generic": "O campo \"route_color\" não está preenchido.",
+		"informational": "O campo route_color é informativo",
+		"recommended": "O campo route_color é recomendado",
+		"required": "O campo route_color é obrigatório"
+	},
+	"routes_route_color_valid": {
+		"generic": "O campo \"route_color\" não contém uma cor hexadecimal válida de seis dígitos sem #.",
+		"not_valid": "O valor \"%s\" do campo \"route_color\" deve ser uma cor hexadecimal de seis dígitos, sem #"
+	},
+	"routes_route_desc_field": {
+		"generic": "O campo \"route_desc\" não está preenchido.",
+		"informational": "O campo route_desc é informativo",
+		"recommended": "O campo route_desc é recomendado",
+		"required": "O campo route_desc é obrigatório"
+	},
+	"routes_route_id_field": {
+		"generic": "O campo \"route_id\" não está preenchido.",
+		"informational": "O campo route_id é informativo",
+		"recommended": "O campo route_id é recomendado",
+		"required": "O campo route_id é obrigatório"
+	},
+	"routes_route_id_format": {
+		"generic": "O campo \"route_id\" não corresponde à combinação de \"route_short_name\" e \"route_sort_order\" separados por um underscore.",
+		"invalid": "O valor \"%s\" do campo \"route_id\" deve ser \"%s\", formado pelo valor \"%s\" de \"route_short_name\" e pelo valor \"%s\" de \"route_sort_order\", separados por um sublinhado"
+	},
+	"routes_route_id_unique": {
+		"duplicate": "O valor \"%s\" do campo \"route_id\" deve ser único em routes.txt",
+		"generic": "Existem valores duplicados no campo \"route_id\"."
+	},
+	"routes_route_long_name_field": {
+		"generic": "O campo \"route_long_name\" não está preenchido.",
+		"informational": "O campo route_long_name é informativo",
+		"recommended": "O campo route_long_name é recomendado",
+		"required": "O campo route_long_name é obrigatório"
+	},
+	"routes_route_short_name_field": {
+		"generic": "O campo \"route_short_name\" não está preenchido.",
+		"informational": "O campo route_short_name é informativo",
+		"recommended": "O campo route_short_name é recomendado",
+		"required": "O campo route_short_name é obrigatório"
+	},
+	"routes_route_sort_order_field": {
+		"generic": "O campo \"route_sort_order\" não está preenchido.",
+		"informational": "O campo route_sort_order é informativo",
+		"recommended": "O campo route_sort_order é recomendado",
+		"required": "O campo route_sort_order é obrigatório"
+	},
+	"routes_route_sort_order_valid": {
+		"generic": "O campo \"route_sort_order\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O valor \"%s\" do campo \"route_sort_order\" deve ser um número inteiro não negativo"
+	},
+	"routes_route_text_color_field": {
+		"generic": "O campo \"route_text_color\" não está preenchido.",
+		"informational": "O campo route_text_color é informativo",
+		"recommended": "O campo route_text_color é recomendado",
+		"required": "O campo route_text_color é obrigatório"
+	},
+	"routes_route_text_color_valid": {
+		"generic": "O campo \"route_text_color\" não contém uma cor hexadecimal válida de seis dígitos sem #.",
+		"invalid": "O valor \"%s\" do campo \"route_text_color\" deve ser uma cor hexadecimal de seis dígitos, sem #"
+	},
+	"routes_route_type_field": {
+		"generic": "O campo \"route_type\" não está preenchido.",
+		"informational": "O campo route_type é informativo",
+		"recommended": "O campo route_type é recomendado",
+		"required": "O campo route_type é obrigatório"
+	},
+	"routes_route_type_valid": {
+		"generic": "O campo \"route_type\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"route_type\" deve ser um dos seguintes: 1, 2, 3, 4, 5, 6, 7, 11, 12"
+	},
+	"routes_route_url_different_from_agency_url": {
+		"generic": "O campo \"route_url\" repete o URL do operador associado.",
+		"invalid": "O valor \"%s\" do campo \"route_url\" deve ser diferente do URL da agência da rota"
+	},
+	"routes_route_url_field": {
+		"generic": "O campo \"route_url\" não está preenchido.",
+		"informational": "O campo route_url é informativo",
+		"recommended": "O campo route_url é recomendado",
+		"required": "O campo route_url é obrigatório"
+	},
+	"routes_route_url_valid": {
+		"generic": "O campo \"route_url\" contém um URL inválido.",
+		"invalid": "O campo \"route_url\" \"%s\" não é um URL válido"
+	},
+	"shape_dist_traveled_non_decreasing_with_sequence": {
+		"generic": "Os valores de \"shape_dist_traveled\" diminuem ao longo do traçado.",
+		"not_increasing": "Os valores de \"shape_dist_traveled\" para o shape_id \"%s\" não podem diminuir por ordem de sequência"
+	},
+	"shape_pt_sequence_strictly_increasing": {
+		"generic": "Os valores de \"shape_pt_sequence\" estão repetidos ou não são estritamente crescentes no traçado.",
+		"not_increasing": "Os valores de \"shape_pt_sequence\" para o shape_id \"%s\" devem ser únicos e estritamente crescentes por ordem de sequência"
+	},
+	"shapes_shape_dist_traveled_block_valid": {
+		"generic": "A distância acumulada registada difere da distância geométrica do bloco para além da tolerância configurada.",
+		"invalid_distances": "A distância total esperada (shape_dist_traveled) para a shape \"%s\" é %.2f metros, a distância geométrica real é %.2f metros (diferença: %.2f metros)"
+	},
+	"shapes_shape_dist_traveled_field": {
+		"generic": "O campo \"shape_dist_traveled\" não está preenchido.",
+		"informational": "O campo shape_dist_traveled é informativo",
+		"recommended": "O campo shape_dist_traveled é recomendado",
+		"required": "O campo shape_dist_traveled é obrigatório"
+	},
+	"shapes_shape_dist_traveled_segment_valid": {
+		"generic": "O incremento de \"shape_dist_traveled\" difere da distância entre pontos consecutivos para além da tolerância configurada.",
+		"invalid_distances": "Entre os pontos (%s, %s) e (%s, %s), shape_dist_traveled aumenta %.2f metros, mas a distância de Haversine é %.2f metros. Shape %s, sequências %d a %d; tolerância de %.2f metros."
+	},
+	"shapes_shape_dist_traveled_valid": {
+		"generic": "O campo \"shape_dist_traveled\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O valor \"%s\" do campo \"shape_dist_traveled\" deve ser um número não negativo"
+	},
+	"shapes_shape_id_field": {
+		"generic": "O campo \"shape_id\" não está preenchido.",
+		"informational": "O campo shape_id é informativo",
+		"recommended": "O campo shape_id é recomendado",
+		"required": "O campo shape_id é obrigatório"
+	},
+	"shapes_shape_point_spacing_valid": {
+		"generic": "A distância entre pontos consecutivos do traçado ultrapassa o limite configurado.",
+		"invalid_consistent_distance": "A shape %s tem as coordenadas (%.6f, %.6f) na sequência %d demasiado distantes de (%.6f, %.6f) na sequência %d: %.2f metros excedem o limite de %.2f metros."
+	},
+	"shapes_shape_pt_lat_field": {
+		"generic": "O campo \"shape_pt_lat\" não está preenchido.",
+		"informational": "O campo shape_pt_lat é informativo",
+		"recommended": "O campo shape_pt_lat é recomendado",
+		"required": "O campo shape_pt_lat é obrigatório"
+	},
+	"shapes_shape_pt_lat_valid": {
+		"generic": "O campo \"shape_pt_lat\" contém uma latitude inválida; o intervalo permitido é de -90 a 90 graus.",
+		"invalid": "O valor \"%s\" do campo \"shape_pt_lat\" deve ser uma latitude válida entre -90 e 90"
+	},
+	"shapes_shape_pt_lon_field": {
+		"generic": "O campo \"shape_pt_lon\" não está preenchido.",
+		"informational": "O campo shape_pt_lon é informativo",
+		"recommended": "O campo shape_pt_lon é recomendado",
+		"required": "O campo shape_pt_lon é obrigatório"
+	},
+	"shapes_shape_pt_lon_valid": {
+		"generic": "O campo \"shape_pt_lon\" contém uma longitude inválida; o intervalo permitido é de -180 a 180 graus.",
+		"invalid": "O valor \"%s\" do campo \"shape_pt_lon\" deve ser uma longitude válida entre -180 e 180"
+	},
+	"shapes_shape_pt_sequence_field": {
+		"generic": "O campo \"shape_pt_sequence\" não está preenchido.",
+		"informational": "O campo shape_pt_sequence é informativo",
+		"recommended": "O campo shape_pt_sequence é recomendado",
+		"required": "O campo shape_pt_sequence é obrigatório"
+	},
+	"shapes_shape_pt_sequence_non_negative": {
+		"generic": "O campo \"shape_pt_sequence\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"shape_pt_sequence\" deve ser um número inteiro não negativo"
+	},
+	"stop_times_arrival_departure_time_sequence": {
+		"decreasing": "Os campos \"arrival_time\" e \"departure_time\" não podem decrescer por \"stop_sequence\" para o trip_id \"%s\"; a stop_sequence anterior \"%d\" termina às \"%s\" e a stop_sequence atual \"%d\" começa às \"%s\"",
+		"generic": "As horas de chegada ou partida recuam entre paragens consecutivas da viagem."
+	},
+	"stop_times_arrival_time_field": {
+		"generic": "O campo \"arrival_time\" não está preenchido.",
+		"informational": "O campo arrival_time é informativo",
+		"recommended": "O campo arrival_time é recomendado",
+		"required": "O campo arrival_time é obrigatório"
+	},
+	"stop_times_arrival_time_valid": {
+		"generic": "O campo \"arrival_time\" contém uma hora inválida.",
+		"invalid": "O valor \"%s\" do campo \"arrival_time\" deve ser uma hora válida no formato HH:MM:SS"
+	},
+	"stop_times_continuous_drop_off_field": {
+		"generic": "O campo \"continuous_drop_off\" não está preenchido.",
+		"informational": "O campo continuous_drop_off é informativo",
+		"recommended": "O campo continuous_drop_off é recomendado",
+		"required": "O campo continuous_drop_off é obrigatório"
+	},
+	"stop_times_continuous_drop_off_valid_gtfs_enum": {
+		"forbidden_with_window": "O campo \"continuous_drop_off\" deve ser 1 ou vazio se start_pickup_drop_off_window ou end_pickup_drop_off_window estiver definido",
+		"generic": "O valor de \"continuous_drop_off\" é inválido ou incompatível com as janelas de embarque e desembarque.",
+		"invalid": "O campo \"continuous_drop_off\" deve ser um número inteiro entre 0 e 3"
+	},
+	"stop_times_continuous_pickup_field": {
+		"generic": "O campo \"continuous_pickup\" não está preenchido.",
+		"informational": "O campo continuous_pickup é informativo",
+		"recommended": "O campo continuous_pickup é recomendado",
+		"required": "O campo continuous_pickup é obrigatório"
+	},
+	"stop_times_continuous_pickup_valid_gtfs_enum": {
+		"forbidden_with_window": "O campo \"continuous_pickup\" deve ser 1 ou vazio se start_pickup_drop_off_window ou end_pickup_drop_off_window estiver definido",
+		"generic": "O valor de \"continuous_pickup\" é inválido ou incompatível com as janelas de embarque e desembarque.",
+		"invalid": "O campo \"continuous_pickup\" deve ser um número inteiro entre 0 e 3"
+	},
+	"stop_times_departure_time_field": {
+		"generic": "O campo \"departure_time\" não está preenchido.",
+		"informational": "O campo departure_time é informativo",
+		"recommended": "O campo departure_time é recomendado",
+		"required": "O campo departure_time é obrigatório"
+	},
+	"stop_times_departure_time_valid": {
+		"generic": "O campo \"departure_time\" contém uma hora inválida.",
+		"invalid": "O valor \"%s\" do campo \"departure_time\" deve ser uma hora válida no formato HH:MM:SS"
+	},
+	"stop_times_drop_off_booking_rule_id_field": {
+		"generic": "O campo \"drop_off_booking_rule_id\" não está preenchido.",
+		"informational": "O campo drop_off_booking_rule_id é informativo",
+		"recommended": "O campo drop_off_booking_rule_id é recomendado",
+		"required": "O campo drop_off_booking_rule_id é obrigatório"
+	},
+	"stop_times_drop_off_booking_rule_id_foreign": {
+		"generic": "O campo \"drop_off_booking_rule_id\" contém uma referência inválida a booking_rules.txt.",
+		"not_found": "O valor \"%s\" do campo \"drop_off_booking_rule_id\" não existe em booking_rules.txt"
+	},
+	"stop_times_drop_off_type_field": {
+		"generic": "O campo \"drop_off_type\" não está preenchido.",
+		"informational": "O campo drop_off_type é informativo",
+		"recommended": "O campo drop_off_type é recomendado",
+		"required": "O campo drop_off_type é obrigatório"
+	},
+	"stop_times_drop_off_type_valid": {
+		"generic": "O campo \"drop_off_type\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"drop_off_type\" deve ser um número inteiro entre 0 e 3"
+	},
+	"stop_times_end_pickup_drop_off_window_field": {
+		"generic": "O campo \"end_pickup_drop_off_window\" não está preenchido.",
+		"informational": "O campo end_pickup_drop_off_window é informativo",
+		"recommended": "O campo end_pickup_drop_off_window é recomendado",
+		"required": "O campo end_pickup_drop_off_window é obrigatório"
+	},
+	"stop_times_end_pickup_drop_off_window_valid": {
+		"forbidden_arrival_departure": "O campo \"end_pickup_drop_off_window\" é proibido se arrival_time ou departure_time estiverem definidos",
+		"generic": "O campo \"end_pickup_drop_off_window\" está em falta, contém uma hora inválida ou é incompatível com as horas de chegada e partida.",
+		"invalid": "O valor \"%s\" do campo \"end_pickup_drop_off_window\" deve ser uma hora válida no formato HH:MM:SS",
+		"required_location_group_id_start_pickup_dropoff": "O campo \"end_pickup_drop_off_window\" é obrigatório se \"location_group_id\", \"location_id\" ou \"start_pickup_drop_off_window\" estiver definido"
+	},
+	"stop_times_location_group_id_field": {
+		"forbidden_stop_location": "O campo \"location_group_id\" é proibido se stop_id ou location_id estiverem definidos",
+		"generic": "O valor de \"location_group_id\" entra em conflito com \"stop_id\" ou \"location_id\"."
+	},
+	"stop_times_location_group_id_forbidden": {
+		"forbidden": "O campo \"location_group_id\" é proibido quando \"stop_id\" ou \"location_id\" está definido",
+		"generic": "O campo \"location_group_id\" está preenchido em simultâneo com \"stop_id\" ou \"location_id\"."
+	},
+	"stop_times_location_id_forbidden": {
+		"forbidden": "O campo \"location_id\" é proibido quando \"stop_id\" ou \"location_group_id\" está definido",
+		"generic": "O campo \"location_id\" está preenchido em simultâneo com \"stop_id\" ou \"location_group_id\"."
+	},
+	"stop_times_pickup_booking_rule_id_field": {
+		"generic": "O campo \"pickup_booking_rule_id\" não está preenchido.",
+		"informational": "O campo pickup_booking_rule_id é informativo",
+		"recommended": "O campo pickup_booking_rule_id é recomendado",
+		"required": "O campo pickup_booking_rule_id é obrigatório"
+	},
+	"stop_times_pickup_booking_rule_id_foreign": {
+		"generic": "O campo \"pickup_booking_rule_id\" contém uma referência inválida a booking_rules.txt.",
+		"not_found": "O valor \"%s\" do campo \"pickup_booking_rule_id\" não existe em booking_rules.txt"
+	},
+	"stop_times_pickup_type_field": {
+		"generic": "O campo \"pickup_type\" não está preenchido.",
+		"informational": "O campo pickup_type é informativo",
+		"recommended": "O campo pickup_type é recomendado",
+		"required": "O campo pickup_type é obrigatório"
+	},
+	"stop_times_pickup_type_valid": {
+		"generic": "O campo \"pickup_type\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"pickup_type\" deve ser um número inteiro entre 0 e 3"
+	},
+	"stop_times_shape_dist_traveled_field": {
+		"generic": "O campo \"shape_dist_traveled\" não está preenchido.",
+		"informational": "O campo shape_dist_traveled é informativo",
+		"recommended": "O campo shape_dist_traveled é recomendado",
+		"required": "O campo shape_dist_traveled é obrigatório"
+	},
+	"stop_times_shape_dist_traveled_valid": {
+		"generic": "O campo \"shape_dist_traveled\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O valor \"%s\" do campo \"shape_dist_traveled\" deve ser um número não negativo"
+	},
+	"stop_times_start_pickup_drop_off_window_field": {
+		"generic": "O campo \"start_pickup_drop_off_window\" não está preenchido.",
+		"informational": "O campo start_pickup_drop_off_window é informativo",
+		"recommended": "O campo start_pickup_drop_off_window é recomendado",
+		"required": "O campo start_pickup_drop_off_window é obrigatório"
+	},
+	"stop_times_start_pickup_drop_off_window_valid": {
+		"forbidden_arrival_departure": "O campo \"start_pickup_drop_off_window\" é proibido se arrival_time ou departure_time estiverem definidos",
+		"generic": "O campo \"start_pickup_drop_off_window\" está em falta, contém uma hora inválida ou é incompatível com as horas de chegada e partida.",
+		"invalid": "O valor \"%s\" do campo \"start_pickup_drop_off_window\" deve ser uma hora válida no formato HH:MM:SS",
+		"required_location_group_id_start_pickup_dropoff": "O campo \"start_pickup_drop_off_window\" é obrigatório se \"location_group_id\", \"location_id\" ou \"end_pickup_drop_off_window\" estiver definido"
+	},
+	"stop_times_stop_headsign_field": {
+		"generic": "O campo \"stop_headsign\" não está preenchido.",
+		"informational": "O campo stop_headsign é informativo",
+		"recommended": "O campo stop_headsign é recomendado",
+		"required": "O campo stop_headsign é obrigatório"
+	},
+	"stop_times_stop_id_field": {
+		"generic": "O campo \"stop_id\" não está preenchido.",
+		"informational": "O campo stop_id é informativo",
+		"recommended": "O campo stop_id é recomendado",
+		"required": "O campo stop_id é obrigatório"
+	},
+	"stop_times_stop_id_foreign": {
+		"generic": "O campo \"stop_id\" contém uma referência inválida a stops.txt.",
+		"not_found": "O valor \"%s\" do campo \"stop_id\" não existe em stops.txt"
+	},
+	"stop_times_timepoint_field": {
+		"generic": "O campo \"timepoint\" não está preenchido.",
+		"informational": "O campo timepoint é informativo",
+		"recommended": "O campo timepoint é recomendado",
+		"required": "O campo timepoint é obrigatório"
+	},
+	"stop_times_timepoint_valid": {
+		"generic": "O campo \"timepoint\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"timepoint\" deve ser 0 ou 1"
+	},
+	"stop_times_trip_id_field": {
+		"generic": "O campo \"trip_id\" não está preenchido.",
+		"informational": "O campo trip_id é informativo",
+		"recommended": "O campo trip_id é recomendado",
+		"required": "O campo trip_id é obrigatório"
+	},
+	"stop_times_trip_id_foreign": {
+		"generic": "O campo \"trip_id\" contém uma referência inválida a trips.txt.",
+		"not_found": "O valor \"%s\" do campo \"trip_id\" não existe em trips.txt"
+	},
+	"stops_file_missing": {
+		"stops_required_when_locations_missing": "stops.txt é obrigatório quando locations.geojson não está presente"
+	},
+	"stops_has_bench_allowed": {
+		"generic": "O valor de \"has_bench\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"has_bench\" não é permitido"
+	},
+	"stops_has_bench_field": {
+		"generic": "O campo \"has_bench\" não está preenchido.",
+		"informational": "O campo has_bench é informativo",
+		"recommended": "O campo has_bench é recomendado",
+		"required": "O campo has_bench é obrigatório"
+	},
+	"stops_has_bench_valid": {
+		"generic": "O campo \"has_bench\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"has_bench\" deve ser 0, 1, 2 ou 3"
+	},
+	"stops_has_network_map_allowed": {
+		"generic": "O valor de \"has_network_map\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"has_network_map\" não é permitido"
+	},
+	"stops_has_network_map_field": {
+		"generic": "O campo \"has_network_map\" não está preenchido.",
+		"informational": "O campo has_network_map é informativo",
+		"recommended": "O campo has_network_map é recomendado",
+		"required": "O campo has_network_map é obrigatório"
+	},
+	"stops_has_network_map_valid": {
+		"generic": "O campo \"has_network_map\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"has_network_map\" deve ser 0, 1, 2 ou 3"
+	},
+	"stops_has_pip_real_time_allowed": {
+		"generic": "O valor de \"has_pip_real_time\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"has_pip_real_time\" não é permitido"
+	},
+	"stops_has_pip_real_time_field": {
+		"generic": "O campo \"has_pip_real_time\" não está preenchido.",
+		"informational": "O campo has_pip_real_time é informativo",
+		"recommended": "O campo has_pip_real_time é recomendado",
+		"required": "O campo has_pip_real_time é obrigatório"
+	},
+	"stops_has_pip_real_time_valid": {
+		"generic": "O campo \"has_pip_real_time\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"has_pip_real_time\" deve ser 0, 1 ou 2"
+	},
+	"stops_has_schedules_allowed": {
+		"generic": "O valor de \"has_schedules\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"has_schedules\" não é permitido"
+	},
+	"stops_has_schedules_field": {
+		"generic": "O campo \"has_schedules\" não está preenchido.",
+		"informational": "O campo has_schedules é informativo",
+		"recommended": "O campo has_schedules é recomendado",
+		"required": "O campo has_schedules é obrigatório"
+	},
+	"stops_has_schedules_valid": {
+		"generic": "O campo \"has_schedules\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"has_schedules\" deve ser 0, 1, 2 ou 3"
+	},
+	"stops_has_shelter_allowed": {
+		"generic": "O valor de \"has_shelter\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"has_shelter\" não é permitido"
+	},
+	"stops_has_shelter_field": {
+		"generic": "O campo \"has_shelter\" não está preenchido.",
+		"informational": "O campo has_shelter é informativo",
+		"recommended": "O campo has_shelter é recomendado",
+		"required": "O campo has_shelter é obrigatório"
+	},
+	"stops_has_shelter_valid": {
+		"generic": "O campo \"has_shelter\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"has_shelter\" deve ser 0, 1, 2 ou 3"
+	},
+	"stops_has_stop_sign_allowed": {
+		"generic": "O valor de \"has_stop_sign\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"has_stop_sign\" não é permitido"
+	},
+	"stops_has_stop_sign_field": {
+		"generic": "O campo \"has_stop_sign\" não está preenchido.",
+		"informational": "O campo has_stop_sign é informativo",
+		"recommended": "O campo has_stop_sign é recomendado",
+		"required": "O campo has_stop_sign é obrigatório"
+	},
+	"stops_has_stop_sign_valid": {
+		"generic": "O campo \"has_stop_sign\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"has_stop_sign\" deve ser 0, 1, 2 ou 3"
+	},
+	"stops_has_tariffs_information_allowed": {
+		"generic": "O valor de \"has_tariffs_information\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"has_tariffs_information\" não é permitido"
+	},
+	"stops_has_tariffs_information_field": {
+		"generic": "O campo \"has_tariffs_information\" não está preenchido.",
+		"informational": "O campo has_tariffs_information é informativo",
+		"recommended": "O campo has_tariffs_information é recomendado",
+		"required": "O campo has_tariffs_information é obrigatório"
+	},
+	"stops_has_tariffs_information_valid": {
+		"generic": "O campo \"has_tariffs_information\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"has_tariffs_information\" deve ser 0, 1, 2 ou 3"
+	},
+	"stops_level_id_field": {
+		"generic": "O campo \"level_id\" não está preenchido.",
+		"informational": "O campo level_id é informativo",
+		"recommended": "O campo level_id é recomendado",
+		"required": "O campo level_id é obrigatório"
+	},
+	"stops_level_id_foreign": {
+		"generic": "O campo \"level_id\" contém uma referência inválida a levels.txt.",
+		"not_found": "O valor \"%s\" do campo \"level_id\" não existe em levels.txt"
+	},
+	"stops_location_type_allowed": {
+		"generic": "O valor de \"location_type\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"location_type\" não é permitido"
+	},
+	"stops_location_type_field": {
+		"generic": "O campo \"location_type\" não está preenchido.",
+		"informational": "O campo location_type é informativo",
+		"recommended": "O campo location_type é recomendado",
+		"required": "O campo location_type é obrigatório"
+	},
+	"stops_location_type_valid": {
+		"generic": "O campo \"location_type\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"location_type\" deve ser 0, 1, 2, 3 ou 4"
+	},
+	"stops_municipality_id_allowed": {
+		"generic": "O valor de \"municipality_id\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"municipality_id\" não é permitido"
+	},
+	"stops_municipality_id_field": {
+		"generic": "O campo \"municipality_id\" não está preenchido.",
+		"informational": "O campo municipality_id é informativo",
+		"recommended": "O campo municipality_id é recomendado",
+		"required": "O campo municipality_id é obrigatório"
+	},
+	"stops_parent_station_empty_location_types": {
+		"generic": "O campo \"parent_station\" não está preenchido para um \"location_type\" com valor 2, 3 ou 4.",
+		"required_location_type": "O campo \"parent_station\" é obrigatório quando \"location_type\" é 2, 3 ou 4"
+	},
+	"stops_parent_station_field": {
+		"generic": "O campo \"parent_station\" não está preenchido.",
+		"informational": "O campo parent_station é informativo",
+		"recommended": "O campo parent_station é recomendado",
+		"required": "O campo parent_station é obrigatório"
+	},
+	"stops_parent_station_for_location_type_one": {
+		"forbidden": "O campo \"location_type\" deve ser 1 (estação)",
+		"generic": "O campo \"location_type\" não tem o valor 1 que identifica uma estação."
+	},
+	"stops_parent_station_foreign": {
+		"duplicate": "O valor do campo \"parent_station\" está duplicado em stops.txt",
+		"generic": "Existem valores repetidos no campo \"parent_station\"."
+	},
+	"stops_parish_id_allowed": {
+		"generic": "O valor de \"parish_id\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"parish_id\" não é permitido"
+	},
+	"stops_parish_id_field": {
+		"generic": "O campo \"parish_id\" não está preenchido.",
+		"informational": "O campo parish_id é informativo",
+		"recommended": "O campo parish_id é recomendado",
+		"required": "O campo parish_id é obrigatório"
+	},
+	"stops_platform_code_allowed": {
+		"generic": "O valor de \"platform_code\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"platform_code\" não é permitido"
+	},
+	"stops_platform_code_field": {
+		"generic": "O campo \"platform_code\" não está preenchido.",
+		"informational": "O campo platform_code é informativo",
+		"recommended": "O campo platform_code é recomendado",
+		"required": "O campo platform_code é obrigatório"
+	},
+	"stops_public_visible_field": {
+		"generic": "O campo \"public_visible\" não está preenchido.",
+		"informational": "O campo public_visible é informativo",
+		"recommended": "O campo public_visible é recomendado",
+		"required": "O campo public_visible é obrigatório"
+	},
+	"stops_public_visible_valid": {
+		"generic": "O campo \"public_visible\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"public_visible\" deve ser 0 ou 1"
+	},
+	"stops_region_id_allowed": {
+		"generic": "O valor de \"region_id\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"region_id\" não é permitido"
+	},
+	"stops_region_id_field": {
+		"generic": "O campo \"region_id\" não está preenchido.",
+		"informational": "O campo region_id é informativo",
+		"recommended": "O campo region_id é recomendado",
+		"required": "O campo region_id é obrigatório"
+	},
+	"stops_shelter_code_field": {
+		"generic": "O campo \"shelter_code\" não está preenchido.",
+		"informational": "O campo shelter_code é informativo",
+		"recommended": "O campo shelter_code é recomendado",
+		"required": "O campo shelter_code é obrigatório"
+	},
+	"stops_shelter_maintainer_field": {
+		"generic": "O campo \"shelter_maintainer\" não está preenchido.",
+		"informational": "O campo shelter_maintainer é informativo",
+		"recommended": "O campo shelter_maintainer é recomendado",
+		"required": "O campo shelter_maintainer é obrigatório"
+	},
+	"stops_stop_access_differente_location_type_zero": {
+		"forbidden": "O campo \"stop_access\" não é permitido quando \"location_type\" é diferente de 0",
+		"generic": "O valor de \"location_type\" não permite o uso de \"stop_access\"."
+	},
+	"stops_stop_access_field": {
+		"generic": "O campo \"stop_access\" não está preenchido.",
+		"informational": "O campo stop_access é informativo",
+		"recommended": "O campo stop_access é recomendado",
+		"required": "O campo stop_access é obrigatório"
+	},
+	"stops_stop_access_forbidden_parent_station": {
+		"forbidden": "O campo \"stop_access\" não é permitido quando \"parent_station\" está vazio",
+		"generic": "Não existe um valor de \"parent_station\" que permita o uso de \"stop_access\"."
+	},
+	"stops_stop_access_valid": {
+		"generic": "O campo \"stop_access\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"stop_access\" deve ser 0 ou 1"
+	},
+	"stops_stop_code_field": {
+		"generic": "O campo \"stop_code\" não está preenchido.",
+		"informational": "O campo stop_code é informativo",
+		"recommended": "O campo stop_code é recomendado",
+		"required": "O campo stop_code é obrigatório"
+	},
+	"stops_stop_code_unique": {
+		"duplicate": "O valor \"%s\" do campo \"stop_code\" deve ser único",
+		"generic": "Existem valores duplicados no campo \"stop_code\"."
+	},
+	"stops_stop_desc_different_stop_name": {
+		"duplicate": "O valor \"%s\" do campo \"stop_desc\" deve ser diferente do valor \"%s\" do campo \"stop_name\"",
+		"generic": "Os campos \"stop_desc\" e \"stop_name\" têm o mesmo valor."
+	},
+	"stops_stop_desc_field": {
+		"generic": "O campo \"stop_desc\" não está preenchido.",
+		"informational": "O campo stop_desc é informativo",
+		"recommended": "O campo stop_desc é recomendado",
+		"required": "O campo stop_desc é obrigatório"
+	},
+	"stops_stop_id_field": {
+		"generic": "O campo \"stop_id\" não está preenchido.",
+		"informational": "O campo stop_id é informativo",
+		"recommended": "O campo stop_id é recomendado",
+		"required": "O campo stop_id é obrigatório"
+	},
+	"stops_stop_id_unique": {
+		"duplicate": "O valor \"%s\" do campo \"stop_id\" deve ser único",
+		"generic": "Existem valores duplicados no campo \"stop_id\"."
+	},
+	"stops_stop_lat_field": {
+		"generic": "O campo \"stop_lat\" não está preenchido.",
+		"informational": "O campo stop_lat é informativo",
+		"recommended": "O campo stop_lat é recomendado",
+		"required": "O campo stop_lat é obrigatório"
+	},
+	"stops_stop_lat_valid": {
+		"generic": "O campo \"stop_lat\" contém uma latitude inválida; o intervalo permitido é de -90 a 90 graus.",
+		"invalid": "O valor \"%s\" do campo \"stop_lat\" deve ser uma latitude válida entre -90 e 90"
+	},
+	"stops_stop_lon_field": {
+		"generic": "O campo \"stop_lon\" não está preenchido.",
+		"informational": "O campo stop_lon é informativo",
+		"recommended": "O campo stop_lon é recomendado",
+		"required": "O campo stop_lon é obrigatório"
+	},
+	"stops_stop_lon_valid": {
+		"generic": "O campo \"stop_lon\" contém uma longitude inválida; o intervalo permitido é de -180 a 180 graus.",
+		"invalid": "O valor \"%s\" do campo \"stop_lon\" deve ser uma longitude válida entre -180 e 180"
+	},
+	"stops_stop_name_field": {
+		"generic": "O campo \"stop_name\" não está preenchido.",
+		"informational": "O campo stop_name é informativo",
+		"recommended": "O campo stop_name é recomendado",
+		"required": "O campo stop_name é obrigatório"
+	},
+	"stops_stop_short_name_field": {
+		"generic": "O campo \"stop_short_name\" não está preenchido.",
+		"informational": "O campo stop_short_name é informativo",
+		"recommended": "O campo stop_short_name é recomendado",
+		"required": "O campo stop_short_name é obrigatório"
+	},
+	"stops_stop_timezone_field": {
+		"generic": "O campo \"stop_timezone\" não está preenchido.",
+		"informational": "O campo stop_timezone é informativo",
+		"recommended": "O campo stop_timezone é recomendado",
+		"required": "O campo stop_timezone é obrigatório"
+	},
+	"stops_stop_timezone_valid": {
+		"generic": "O campo \"stop_timezone\" contém um fuso horário inválido.",
+		"invalid": "O valor \"%s\" do campo \"stop_timezone\" deve ser um fuso horário válido"
+	},
+	"stops_stop_url_field": {
+		"generic": "O campo \"stop_url\" não está preenchido.",
+		"informational": "O campo stop_url é informativo",
+		"recommended": "O campo stop_url é recomendado",
+		"required": "O campo stop_url é obrigatório"
+	},
+	"stops_stop_url_valid": {
+		"generic": "O campo \"stop_url\" contém um URL inválido.",
+		"invalid": "O valor \"%s\" do campo \"stop_url\" deve ser um URL válido"
+	},
+	"stops_tts_stop_name_field": {
+		"generic": "O campo \"tts_stop_name\" não está preenchido.",
+		"informational": "O campo tts_stop_name é informativo",
+		"recommended": "O campo tts_stop_name é recomendado",
+		"required": "O campo tts_stop_name é obrigatório"
+	},
+	"stops_wheelchair_boarding_allowed": {
+		"generic": "O valor de \"wheelchair_boarding\" não pertence ao conjunto de valores permitidos.",
+		"not_allowed": "O valor \"%s\" do campo \"wheelchair_boarding\" não é permitido"
+	},
+	"stops_wheelchair_boarding_field": {
+		"generic": "O campo \"wheelchair_boarding\" não está preenchido.",
+		"informational": "O campo wheelchair_boarding é informativo",
+		"recommended": "O campo wheelchair_boarding é recomendado",
+		"required": "O campo wheelchair_boarding é obrigatório"
+	},
+	"stops_wheelchair_boarding_valid": {
+		"generic": "O campo \"wheelchair_boarding\" contém um valor inválido ou não permitido.",
+		"invalid": "O valor \"%s\" do campo \"wheelchair_boarding\" deve ser 0, 1 ou 2"
+	},
+	"stops_zone_id_field": {
+		"generic": "O campo \"zone_id\" não está preenchido.",
+		"informational": "O campo zone_id é informativo",
+		"recommended": "O campo zone_id é recomendado",
+		"required": "O campo zone_id é obrigatório"
+	},
+	"transfers_from_route_id_field": {
+		"generic": "O campo \"from_route_id\" não está preenchido.",
+		"informational": "O campo from_route_id é informativo",
+		"recommended": "O campo from_route_id é recomendado",
+		"required": "O campo from_route_id é obrigatório"
+	},
+	"transfers_from_route_id_foreign": {
+		"forbidden": "O campo \"from_route_id\" é proibido",
+		"generic": "O campo \"from_route_id\" contém uma referência inválida a routes.txt.",
+		"not_found": "O campo \"from_route_id\" \"%s\" não existe em routes.txt",
+		"recommended": "O campo \"from_route_id\" é recomendado",
+		"trip_must_belong_to_route": "Quando from_trip_id e from_route_id estão definidos, from_trip_id \"%s\" deve pertencer a from_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfers_from_stop_id_field": {
+		"generic": "O campo \"from_stop_id\" não está preenchido.",
+		"informational": "O campo from_stop_id é informativo",
+		"recommended": "O campo from_stop_id é recomendado",
+		"required": "O campo from_stop_id é obrigatório"
+	},
+	"transfers_from_stop_id_foreign": {
+		"generic": "O campo \"from_stop_id\" contém uma referência inválida a stops.txt.",
+		"invalid_location_type": "O campo \"from_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser uma paragem (location_type=0) ou estação (location_type=1)",
+		"must_be_stop_for_transfer_type_4_5": "O campo \"from_stop_id\" \"%s\" deve referenciar uma paragem (location_type=0) quando transfer_type é %d. Estações (location_type=1) não são permitidas para transfer_type 4 ou 5",
+		"not_found": "O campo \"from_stop_id\" \"%s\" não existe em stops.txt",
+		"recommended": "O campo \"from_stop_id\" é recomendado",
+		"required": "O campo \"from_stop_id\" é obrigatório"
+	},
+	"transfers_from_trip_id_field": {
+		"generic": "O campo \"from_trip_id\" não está preenchido.",
+		"informational": "O campo from_trip_id é informativo",
+		"recommended": "O campo from_trip_id é recomendado",
+		"required": "O campo from_trip_id é obrigatório"
+	},
+	"transfers_from_trip_id_foreign": {
+		"generic": "O campo \"from_trip_id\" contém uma referência inválida a trips.txt.",
+		"not_found": "O campo \"from_trip_id\" \"%s\" não existe em trips.txt",
+		"recommended": "O campo \"from_trip_id\" é recomendado",
+		"required": "O campo \"from_trip_id\" é obrigatório",
+		"trip_must_belong_to_route": "Quando from_trip_id e from_route_id estão definidos, from_trip_id \"%s\" deve pertencer a from_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfers_min_transfer_time_field": {
+		"generic": "O campo \"min_transfer_time\" não está preenchido.",
+		"informational": "O campo min_transfer_time é informativo",
+		"recommended": "O campo min_transfer_time é recomendado",
+		"required": "O campo min_transfer_time é obrigatório"
+	},
+	"transfers_min_transfer_time_valid": {
+		"forbidden": "O campo \"min_transfer_time\" é proibido",
+		"generic": "O campo \"min_transfer_time\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"transfer_duration\" deve ser maior que 0. Recebido: \"%s\"",
+		"recommended": "O campo \"min_transfer_time\" é recomendado",
+		"required": "O campo \"min_transfer_time\" é obrigatório"
+	},
+	"transfers_to_route_id_field": {
+		"generic": "O campo \"to_route_id\" não está preenchido.",
+		"informational": "O campo to_route_id é informativo",
+		"recommended": "O campo to_route_id é recomendado",
+		"required": "O campo to_route_id é obrigatório"
+	},
+	"transfers_to_route_id_foreign": {
+		"forbidden": "O campo \"to_route_id\" é proibido",
+		"generic": "O campo \"to_route_id\" contém uma referência inválida a routes.txt.",
+		"not_found": "O campo \"to_route_id\" \"%s\" não existe em routes.txt",
+		"recommended": "O campo \"to_route_id\" é recomendado",
+		"trip_must_belong_to_route": "Quando to_trip_id e to_route_id estão definidos, to_trip_id \"%s\" deve pertencer a to_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfers_to_stop_id_field": {
+		"generic": "O campo \"to_stop_id\" não está preenchido.",
+		"informational": "O campo to_stop_id é informativo",
+		"recommended": "O campo to_stop_id é recomendado",
+		"required": "O campo to_stop_id é obrigatório"
+	},
+	"transfers_to_stop_id_foreign": {
+		"generic": "O campo \"to_stop_id\" contém uma referência inválida a stops.txt.",
+		"invalid_location_type": "O campo \"to_stop_id\" \"%s\" referencia uma paragem com location_type inválido \"%d\". Deve ser uma paragem (location_type=0) ou estação (location_type=1)",
+		"must_be_different_from_from_stop_id": "O campo \"to_stop_id\" \"%s\" deve ser diferente do \"from_stop_id\" \"%s\". Uma transferência não pode ter a mesma paragem para origem e destino",
+		"must_be_stop_for_transfer_type_4_5": "O campo \"to_stop_id\" \"%s\" deve referenciar uma paragem (location_type=0) quando transfer_type é %d. Estações (location_type=1) não são permitidas para transfer_type 4 ou 5",
+		"not_found": "O campo \"to_stop_id\" \"%s\" não existe em stops.txt",
+		"recommended": "O campo \"to_stop_id\" é recomendado",
+		"required": "O campo \"to_stop_id\" é obrigatório"
+	},
+	"transfers_to_trip_id_field": {
+		"generic": "O campo \"to_trip_id\" não está preenchido.",
+		"informational": "O campo to_trip_id é informativo",
+		"recommended": "O campo to_trip_id é recomendado",
+		"required": "O campo to_trip_id é obrigatório"
+	},
+	"transfers_to_trip_id_foreign": {
+		"generic": "O campo \"to_trip_id\" contém uma referência inválida a trips.txt.",
+		"not_found": "O campo \"to_trip_id\" \"%s\" não existe em trips.txt",
+		"recommended": "O campo \"to_trip_id\" é recomendado",
+		"required": "O campo \"to_trip_id\" é obrigatório",
+		"trip_must_belong_to_route": "Quando to_trip_id e to_route_id estão definidos, to_trip_id \"%s\" deve pertencer a to_route_id \"%s\". A viagem referencia a rota \"%s\""
+	},
+	"transfers_transfer_type_field": {
+		"generic": "O campo \"transfer_type\" não está preenchido.",
+		"informational": "O campo transfer_type é informativo",
+		"recommended": "O campo transfer_type é recomendado",
+		"required": "O campo transfer_type é obrigatório"
+	},
+	"transfers_transfer_type_valid": {
+		"generic": "O campo \"transfer_type\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"transfer_type\" deve ser 0, 1, 2, 3, 4 ou 5, recebido: %s",
+		"not_allowed": "O campo \"transfer_type\" \"%s\" não é permitido",
+		"required": "O campo \"transfer_type\" é obrigatório"
+	},
+	"trip_headsign_present_when_short_name_absent": {
+		"forbidden": "O campo \"trip_headsign\" é proibido",
+		"generic": "O campo \"trip_headsign\" não está preenchido e \"trip_short_name\" está vazio.",
+		"recommended": "O campo \"trip_headsign\" é recomendado",
+		"required": "O campo \"trip_headsign\" é obrigatório"
+	},
+	"trip_short_name_exclusivity": {
+		"forbidden": "O campo \"trip_short_name\" é proibido",
+		"generic": "O valor de \"trip_short_name\" é partilhado por viagens diferentes.",
+		"recommended": "O campo \"trip_short_name\" é recomendado",
+		"required": "O campo \"trip_short_name\" é obrigatório"
+	},
+	"trips_bikes_allowed_field": {
+		"generic": "O campo \"bikes_allowed\" não está preenchido.",
+		"informational": "O campo bikes_allowed é informativo",
+		"recommended": "O campo bikes_allowed é recomendado",
+		"required": "O campo bikes_allowed é obrigatório"
+	},
+	"trips_bikes_allowed_valid": {
+		"forbidden": "O campo \"bikes_allowed\" é proibido",
+		"generic": "O campo \"bikes_allowed\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"bikes_allowed\" deve ser 0, 1 ou 2",
+		"not_allowed": "O campo \"bikes_allowed\" \"%s\" não é permitido",
+		"recommended": "O campo \"bikes_allowed\" é recomendado",
+		"required": "O campo \"bikes_allowed\" é obrigatório"
+	},
+	"trips_block_id_field": {
+		"generic": "O campo \"block_id\" não está preenchido.",
+		"informational": "O campo block_id é informativo",
+		"recommended": "O campo block_id é recomendado",
+		"required": "O campo block_id é obrigatório"
+	},
+	"trips_block_id_in_allowed_set": {
+		"forbidden": "O campo \"block_id\" é proibido",
+		"generic": "O valor de \"block_id\" não pertence ao conjunto de valores permitidos.",
+		"recommended": "O campo \"block_id\" é recomendado",
+		"required": "O campo \"block_id\" é obrigatório"
+	},
+	"trips_direction_id_field": {
+		"generic": "O campo \"direction_id\" não está preenchido.",
+		"informational": "O campo direction_id é informativo",
+		"recommended": "O campo direction_id é recomendado",
+		"required": "O campo direction_id é obrigatório"
+	},
+	"trips_direction_id_pattern_consistent": {
+		"different_direction_ids_in_pattern": "pattern_id %s tem viagens com direction_ids diferentes: %s. Todas as viagens com o mesmo pattern_id devem ter o mesmo direction_id",
+		"generic": "As viagens com o mesmo \"pattern_id\" têm valores diferentes de \"direction_id\"."
+	},
+	"trips_direction_id_valid": {
+		"forbidden": "O campo \"direction_id\" é proibido",
+		"generic": "O campo \"direction_id\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"direction_id\" deve ser 0 ou 1",
+		"not_allowed": "O campo \"direction_id\" \"%s\" não é permitido",
+		"recommended": "O campo \"direction_id\" é recomendado",
+		"required": "O campo \"direction_id\" é obrigatório"
+	},
+	"trips_direction_pattern_id_match": {
+		"generic": "O valor de \"direction_id\" não corresponde ao sentido indicado em \"pattern_id\".",
+		"invalid_direction_id": "O campo \"direction_id\" deve ser um número inteiro entre 0 e 1, recebido: %s",
+		"invalid_pattern_id": "O campo \"pattern_id\" deve ser um ID válido no formato \"XXXX_[0|1]_1\", recebido: %s",
+		"not_matching": "O campo \"direction_id\" \"%s\" não corresponde do pattern_id \"%s\"",
+		"required": "Os campos \"pattern_id\" e \"direction_id\" são obrigatórios para validar a correspondência"
+	},
+	"trips_one_pattern_per_shape": {
+		"generic": "O mesmo \"shape_id\" está associado a mais do que um \"pattern_id\".",
+		"multiple_shape_id_in_unique_pattern_id": "O shape_id \"%s\" é utilizado em múltiplos pattern_ids"
+	},
+	"trips_one_shape_per_pattern": {
+		"different_shape_id": "Encontrados shape_id's diferentes para o mesmo pattern_id: %s",
+		"generic": "O mesmo \"pattern_id\" está associado a mais do que um \"shape_id\"."
+	},
+	"trips_pattern_id_field": {
+		"generic": "O campo \"pattern_id\" não está preenchido.",
+		"informational": "O campo pattern_id é informativo",
+		"recommended": "O campo pattern_id é recomendado",
+		"required": "O campo pattern_id é obrigatório"
+	},
+	"trips_pattern_id_format": {
+		"generic": "O campo \"pattern_id\" não segue o formato definido para o GTFS.",
+		"invalid": "O campo \"pattern_id\" deve ser um ID válido no formato \"%s\", recebido: \"%s\""
+	},
+	"trips_pattern_id_present_and_references_consistent": {
+		"forbidden": "O campo \"pattern_id\" é proibido",
+		"generic": "O campo \"pattern_id\" está em falta ou é incompatível com as referências da viagem.",
+		"recommended": "O campo \"pattern_id\" é recomendado",
+		"required": "O campo \"pattern_id\" é obrigatório"
+	},
+	"trips_pattern_id_same_shape_id": {
+		"generic": "Os valores de \"pattern_id\" e \"shape_id\" são diferentes.",
+		"not_matching": "O campo \"pattern_id\" \"%s\" é diferente do campo \"shape_id\" \"%s\", devem ser iguais."
+	},
+	"trips_pattern_required_fields": {
+		"direction_id_not_found": "O campo \"direction_id\" não foi encontrado",
+		"generic": "A viagem tem campos em falta que impedem o agrupamento por \"pattern_id\".",
+		"route_id_not_found": "O campo \"route_id\" não foi encontrado",
+		"shape_id_not_found": "O campo \"shape_id\" não foi encontrado",
+		"trip_headsign_not_found": "O campo \"trip_headsign\" não foi encontrado"
+	},
+	"trips_pattern_single_signature": {
+		"generic": "As viagens com o mesmo \"pattern_id\" têm sequências de paragens diferentes.",
+		"multiple_stop_sequence_variations": "Para o pattern_id %s, existem viagens com múltiplas variações de sequência de paragens"
+	},
+	"trips_route_id_field": {
+		"generic": "O campo \"route_id\" não está preenchido.",
+		"informational": "O campo route_id é informativo",
+		"recommended": "O campo route_id é recomendado",
+		"required": "O campo route_id é obrigatório"
+	},
+	"trips_route_id_foreign": {
+		"forbidden": "O campo \"route_id\" é proibido",
+		"generic": "O campo \"route_id\" contém uma referência inválida a routes.txt.",
+		"not_found": "O campo \"route_id\" \"%s\" não existe em routes.txt",
+		"recommended": "O campo \"route_id\" é recomendado",
+		"required": "O campo \"route_id\" é obrigatório"
+	},
+	"trips_route_id_pattern_consistent": {
+		"different_route_ids_in_pattern": "pattern_id %s tem viagens com route_ids diferentes: %s. Todas as viagens com o mesmo pattern_id devem ter o mesmo route_id",
+		"generic": "As viagens com o mesmo \"pattern_id\" têm valores diferentes de \"route_id\"."
+	},
+	"trips_service_id_field": {
+		"generic": "O campo \"service_id\" não está preenchido.",
+		"informational": "O campo service_id é informativo",
+		"recommended": "O campo service_id é recomendado",
+		"required": "O campo service_id é obrigatório"
+	},
+	"trips_service_id_foreign": {
+		"forbidden": "O campo \"service_id\" é proibido",
+		"generic": "O campo \"service_id\" contém uma referência inválida a calendar.txt ou calendar_dates.txt.",
+		"not_found": "O campo \"service_id\" \"%s\" não existe em calendar.txt ou calendar_dates.txt",
+		"recommended": "O campo \"service_id\" é recomendado",
+		"required": "O campo \"service_id\" é obrigatório"
+	},
+	"trips_shape_id_field": {
+		"generic": "O campo \"shape_id\" não está preenchido.",
+		"informational": "O campo shape_id é informativo",
+		"recommended": "O campo shape_id é recomendado",
+		"required": "O campo shape_id é obrigatório"
+	},
+	"trips_shape_id_foreign": {
+		"forbidden": "O campo \"shape_id\" é proibido",
+		"generic": "O campo \"shape_id\" contém uma referência inválida a shapes.txt.",
+		"not_found": "O campo \"shape_id\" \"%s\" não existe em shapes.txt",
+		"recommended": "O campo \"shape_id\" é recomendado",
+		"required": "O campo \"shape_id\" é obrigatório"
+	},
+	"trips_shape_id_max_two_per_route": {
+		"generic": "A mesma linha tem mais de dois valores distintos de \"shape_id\".",
+		"max_two": "O route_id \"%s\" deve ter no máximo dois valores distintos de \"%s\"; encontrados %d: %s"
+	},
+	"trips_shape_id_route_direction_consistent": {
+		"generic": "A mesma combinação de linha e sentido tem valores diferentes de \"shape_id\".",
+		"inconsistent_direction": "O route_id \"%s\" com direction_id %d deve ter um único valor de \"%s\"; encontrados: %s"
+	},
+	"trips_shape_id_route_direction_match": {
+		"generic": "O valor de \"shape_id\" não corresponde à combinação de \"route_id\" e \"direction_id\".",
+		"not_matching": "O campo \"shape_id\" \"%s\" deve ser \"%s\", combinando route_id \"%s\" e direction_id \"%d\""
+	},
+	"trips_stop_coordinates": {
+		"generic": "Há paragens demasiado afastadas do traçado da viagem.",
+		"invalid_distance_to_shape": "As coordenadas (%.6f, %.6f) desta paragem (%s) estao demasiado distantes das shapes, a shape mais proxima \"%s\" na sequencia %d em (%.6f, %.6f) (%.2f m)"
+	},
+	"trips_stop_sequence": {
+		"consecutive_stop_ids": "Não é possível ter a mesma paragem \"%s\", diretamente uma depois da outra na viagem \"%s\"",
+		"generic": "Os valores de \"stop_sequence\" não aumentam de um em um ao longo da viagem.",
+		"invalid": "O campo \"stop_sequence\" deve ser um número inteiro não negativo",
+		"invalid_shape_dist": "O campo \"shape_dist_traveled\" deve ser um número válido para validar stop_sequence",
+		"non_increasing_sequence": "Os valores de \"stop_sequence\" devem ser crescentes ao longo da viagem ('%s')",
+		"non_increasing_shape_dist": "Os valores de \"shape_dist_traveled\" devem ser crescentes ao longo da viagem ('%s')"
+	},
+	"trips_trip_headsign_field": {
+		"generic": "O campo \"trip_headsign\" não está preenchido.",
+		"informational": "O campo trip_headsign é informativo",
+		"recommended": "O campo trip_headsign é recomendado",
+		"required": "O campo trip_headsign é obrigatório"
+	},
+	"trips_trip_headsign_max_two_per_route": {
+		"generic": "A mesma linha tem mais de dois valores distintos de \"trip_headsign\".",
+		"max_two": "O route_id \"%s\" deve ter no máximo dois valores distintos de \"%s\"; encontrados %d: %s"
+	},
+	"trips_trip_headsign_pattern_consistent": {
+		"different_headsigns_in_pattern": "pattern_id %s tem viagens com headsigns diferentes: %s. Todas as viagens com o mesmo pattern_id devem ter o mesmo headsign",
+		"generic": "As viagens com o mesmo \"pattern_id\" têm valores diferentes de \"trip_headsign\"."
+	},
+	"trips_trip_headsign_route_direction_consistent": {
+		"generic": "A mesma combinação de linha e sentido tem valores diferentes de \"trip_headsign\".",
+		"inconsistent_direction": "O route_id \"%s\" com direction_id %d deve ter um único valor de \"%s\"; encontrados: %s"
+	},
+	"trips_trip_id_field": {
+		"generic": "O campo \"trip_id\" não está preenchido.",
+		"informational": "O campo trip_id é informativo",
+		"recommended": "O campo trip_id é recomendado",
+		"required": "O campo trip_id é obrigatório"
+	},
+	"trips_trip_id_max_length": {
+		"generic": "O campo \"trip_id\" excede o número máximo de caracteres permitido.",
+		"too_long": "O campo \"trip_id\" deve ter no máximo 36 caracteres"
+	},
+	"trips_trip_id_unique": {
+		"duplicate": "Campo \"trip_id\" \"%s\" duplicado encontrado. O campo \"trip_id\" deve ser único",
+		"forbidden": "O campo \"trip_id\" é proibido",
+		"generic": "Existem valores duplicados no campo \"trip_id\".",
+		"recommended": "O campo \"trip_id\" é recomendado",
+		"required": "O campo \"trip_id\" é obrigatório"
+	},
+	"trips_trip_short_name_field": {
+		"generic": "O campo \"trip_short_name\" não está preenchido.",
+		"informational": "O campo trip_short_name é informativo",
+		"recommended": "O campo trip_short_name é recomendado",
+		"required": "O campo trip_short_name é obrigatório"
+	},
+	"trips_wheelchair_accessible_field": {
+		"generic": "O campo \"wheelchair_accessible\" não está preenchido.",
+		"informational": "O campo wheelchair_accessible é informativo",
+		"recommended": "O campo wheelchair_accessible é recomendado",
+		"required": "O campo wheelchair_accessible é obrigatório"
+	},
+	"trips_wheelchair_accessible_valid": {
+		"forbidden": "O campo \"wheelchair_accessible\" é proibido",
+		"generic": "O campo \"wheelchair_accessible\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"wheelchair_accessible\" deve ser 0, 1 ou 2, recebido: %s",
+		"not_allowed": "O campo \"wheelchair_accessible\" \"%s\" não é permitido"
+	},
+	"vehicles_agency_id_field": {
+		"generic": "O campo \"agency_id\" não está preenchido.",
+		"informational": "O campo agency_id é informativo",
+		"recommended": "O campo agency_id é recomendado",
+		"required": "O campo agency_id é obrigatório"
+	},
+	"vehicles_agency_id_foreign": {
+		"generic": "O campo \"agency_id\" contém uma referência inválida a agency.txt.",
+		"not_found": "O campo \"agency_id\" \"%s\" não existe em agency.txt"
+	},
+	"vehicles_bicycles_capacity_field": {
+		"generic": "O campo \"bicycles_capacity\" não está preenchido.",
+		"informational": "O campo bicycles_capacity é informativo",
+		"recommended": "O campo bicycles_capacity é recomendado",
+		"required": "O campo bicycles_capacity é obrigatório"
+	},
+	"vehicles_bicycles_capacity_valid": {
+		"forbidden": "O campo \"bicycles_capacity\" é proibido",
+		"generic": "O campo \"bicycles_capacity\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"bicycles_capacity\" \"%s\" deve ser um número inteiro não negativo",
+		"recommended": "O campo \"bicycles_capacity\" é recomendado",
+		"required": "O campo \"bicycles_capacity\" é obrigatório"
+	},
+	"vehicles_car_capacity_field": {
+		"generic": "O campo \"car_capacity\" não está preenchido.",
+		"informational": "O campo car_capacity é informativo",
+		"recommended": "O campo car_capacity é recomendado",
+		"required": "O campo car_capacity é obrigatório"
+	},
+	"vehicles_car_capacity_valid": {
+		"forbidden": "O campo \"car_capacity\" é proibido",
+		"generic": "O campo \"car_capacity\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"car_capacity\" \"%s\" deve ser um número inteiro não negativo",
+		"recommended": "O campo \"car_capacity\" é recomendado",
+		"required": "O campo \"car_capacity\" é obrigatório"
+	},
+	"vehicles_emission_field": {
+		"generic": "O campo \"emission\" não está preenchido.",
+		"informational": "O campo emission é informativo",
+		"recommended": "O campo emission é recomendado",
+		"required": "O campo emission é obrigatório"
+	},
+	"vehicles_emission_valid": {
+		"forbidden": "O campo \"emission\" é proibido",
+		"generic": "O campo \"emission\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"emission\" \"%s\" não é um tipo de emissão válido",
+		"not_allowed": "O campo \"emission\" \"%s\" não é permitido",
+		"recommended": "O campo \"emission\" é recomendado",
+		"required": "O campo \"emission\" é obrigatório"
+	},
+	"vehicles_make_field": {
+		"generic": "O campo \"make\" não está preenchido.",
+		"informational": "O campo make é informativo",
+		"recommended": "O campo make é recomendado",
+		"required": "O campo make é obrigatório"
+	},
+	"vehicles_model_field": {
+		"generic": "O campo \"model\" não está preenchido.",
+		"informational": "O campo model é informativo",
+		"recommended": "O campo model é recomendado",
+		"required": "O campo model é obrigatório"
+	},
+	"vehicles_propulsion_field": {
+		"generic": "O campo \"propulsion\" não está preenchido.",
+		"informational": "O campo propulsion é informativo",
+		"recommended": "O campo propulsion é recomendado",
+		"required": "O campo propulsion é obrigatório"
+	},
+	"vehicles_propulsion_valid": {
+		"forbidden": "O campo \"propulsion\" é proibido",
+		"generic": "O campo \"propulsion\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"propulsion\" \"%s\" não é um tipo de propulsão válido",
+		"not_allowed": "O campo \"propulsion\" \"%s\" não é permitido",
+		"recommended": "O campo \"propulsion\" é recomendado",
+		"required": "O campo \"propulsion\" é obrigatório"
+	},
+	"vehicles_registration_date_field": {
+		"generic": "O campo \"registration_date\" não está preenchido.",
+		"informational": "O campo registration_date é informativo",
+		"recommended": "O campo registration_date é recomendado",
+		"required": "O campo registration_date é obrigatório"
+	},
+	"vehicles_registration_date_valid": {
+		"forbidden": "O campo \"registration_date\" é proibido",
+		"generic": "O campo \"registration_date\" contém uma data inválida.",
+		"invalid": "O campo \"registration_date\" \"%s\" não é uma data válida, deve estar no formato AAAAMMDD",
+		"recommended": "O campo \"registration_date\" é recomendado",
+		"required": "O campo \"registration_date\" é obrigatório"
+	},
+	"vehicles_total_capacity_field": {
+		"generic": "O campo \"total_capacity\" não está preenchido.",
+		"informational": "O campo total_capacity é informativo",
+		"recommended": "O campo total_capacity é recomendado",
+		"required": "O campo total_capacity é obrigatório"
+	},
+	"vehicles_total_capacity_valid": {
+		"forbidden": "O campo \"total_capacity\" é proibido",
+		"generic": "O campo \"total_capacity\" contém um valor numérico inválido ou negativo.",
+		"invalid": "O campo \"total_capacity\" \"%s\" deve ser um número inteiro não negativo",
+		"recommended": "O campo \"total_capacity\" é recomendado",
+		"required": "O campo \"total_capacity\" é obrigatório"
+	},
+	"vehicles_vehicle_code_field": {
+		"generic": "O campo \"vehicle_code\" não está preenchido.",
+		"informational": "O campo vehicle_code é informativo",
+		"recommended": "O campo vehicle_code é recomendado",
+		"required": "O campo vehicle_code é obrigatório"
+	},
+	"vehicles_vehicle_code_valid": {
+		"duplicate": "O valor \"%s\" do campo \"vehicle_code\" está duplicado para o mesmo vehicle_type.",
+		"forbidden": "O campo \"vehicle_code\" é proibido",
+		"generic": "O campo \"vehicle_code\" contém um identificador de veículo inválido ou duplicado.",
+		"invalid": "O valor \"%s\" do campo \"vehicle_code\" não é válido para o tipo de veículo: utilize uma matrícula para veículos rodoviários ou um MMSI para ferries.",
+		"recommended": "O campo \"vehicle_code\" é recomendado",
+		"required": "O campo \"vehicle_code\" é obrigatório"
+	},
+	"vehicles_vehicle_id_field": {
+		"generic": "O campo \"vehicle_id\" não está preenchido.",
+		"informational": "O campo vehicle_id é informativo",
+		"recommended": "O campo vehicle_id é recomendado",
+		"required": "O campo vehicle_id é obrigatório"
+	},
+	"vehicles_vehicle_id_unique": {
+		"duplicate": "Campo \"vehicle_id\" \"%s\" duplicado encontrado. O campo \"vehicle_id\" deve ser único",
+		"forbidden": "O campo \"vehicle_id\" é proibido",
+		"generic": "Existem valores duplicados no campo \"vehicle_id\".",
+		"recommended": "O campo \"vehicle_id\" é recomendado",
+		"required": "O campo \"vehicle_id\" é obrigatório"
+	},
+	"vehicles_vehicle_type_field": {
+		"generic": "O campo \"vehicle_type\" não está preenchido.",
+		"informational": "O campo vehicle_type é informativo",
+		"recommended": "O campo vehicle_type é recomendado",
+		"required": "O campo vehicle_type é obrigatório"
+	},
+	"vehicles_vehicle_type_valid": {
+		"forbidden": "O campo \"vehicle_type\" é proibido",
+		"generic": "O campo \"vehicle_type\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"vehicle_type\" \"%s\" não é um tipo de veículo válido",
+		"not_allowed": "O campo \"vehicle_type\" \"%s\" não é permitido",
+		"recommended": "O campo \"vehicle_type\" é recomendado",
+		"required": "O campo \"vehicle_type\" é obrigatório"
+	},
+	"vehicles_wheelchair_accessible_field": {
+		"generic": "O campo \"wheelchair_accessible\" não está preenchido.",
+		"informational": "O campo wheelchair_accessible é informativo",
+		"recommended": "O campo wheelchair_accessible é recomendado",
+		"required": "O campo wheelchair_accessible é obrigatório"
+	},
+	"vehicles_wheelchair_accessible_valid": {
+		"forbidden": "O campo \"wheelchair_accessible\" é proibido",
+		"generic": "O campo \"wheelchair_accessible\" contém um valor inválido ou não permitido.",
+		"invalid": "O campo \"wheelchair_accessible\" deve ser 0, 1 ou 2, recebido: %s",
+		"not_allowed": "O campo \"wheelchair_accessible\" \"%s\" não é permitido",
+		"recommended": "O campo \"wheelchair_accessible\" é recomendado",
+		"required": "O campo \"wheelchair_accessible\" é obrigatório"
+	}
+}

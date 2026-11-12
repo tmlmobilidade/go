@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"fmt"
 	"path"
+	"slices"
 	"strings"
 
 	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
@@ -133,7 +134,7 @@ func importGtfsTables(config ImportGtfsConfig, instance *sql.DB, archive *zip.Re
 		// Files may be nested inside ZIP folders; only the final name identifies a table.
 		fileName := path.Base(file.Name)
 		tableName, found := strings.CutSuffix(fileName, ".txt")
-		if file.FileInfo().IsDir() || !found || !isGtfsTable(tableName) {
+		if file.FileInfo().IsDir() || !found || (!isGtfsTable(tableName) && !slices.Contains(config.AdditionalTables, tableName)) {
 			continue
 		}
 

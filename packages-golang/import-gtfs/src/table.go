@@ -23,7 +23,7 @@ func isGtfsTable(tableName string) bool {
 		"fare_products", "fare_leg_rules", "fare_leg_join_rules", "fare_transfer_rules",
 		"areas", "stop_areas", "networks", "route_networks", "shapes", "frequencies",
 		"transfers", "pathways", "levels", "location_groups", "location_group_stops",
-		"booking_rules", "translations", "feed_info", "attributions":
+		"booking_rules", "translations", "feed_info", "attributions", "vehicles":
 		return true
 	}
 	return false

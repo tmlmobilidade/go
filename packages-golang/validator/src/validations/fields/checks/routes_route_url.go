@@ -1,0 +1,58 @@
+package fields
+
+import (
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
+)
+
+/*
+# Attributes
+
+  - File: [routes.txt]
+  - Field: route_url
+  - Presence: Optional
+  - Type: URL
+
+# Description
+
+Web page specific to the route, distinct from the agency's general website.
+
+Presence and type follow [GTFS Standard].
+
+[routes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/routes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#routestxt
+*/
+func RouteUrlField(ctx *contextTypes.ValidationContext) error {
+	//
+
+	//
+	// 1. Select the source table and fields for this rule
+
+	return context.ForEachRow(ctx, "routes", []string{"route_url"}, func(row *contextTypes.ValidationContext) error {
+		//
+		// 2. Get the route_url value
+
+		value, err := queries.Field(row.Source, "route_url")
+		if err != nil {
+			return err
+		}
+
+		//
+		// 3. Check if the route_url is required
+
+		if value == "" {
+			if context.ShouldIgnore(row) {
+				return nil
+			}
+
+			context.AddMessage(row, context.GetSeverityMessage(row, "required", "recommended", "informational"))
+			return nil
+		}
+
+		//
+		// 4. Return success
+
+		return nil
+	})
+}

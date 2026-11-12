@@ -1,6 +1,6 @@
 /* * */
 
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ApiResponseErrorSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { readApiResponse } from './read-api-response';

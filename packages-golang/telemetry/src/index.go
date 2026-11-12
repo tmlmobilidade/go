@@ -18,6 +18,7 @@ type LoggerApi = logger.LoggerApi
 type LogRenderer = logger.LogRenderer
 type OtelLogRecord = logger.OtelLogRecord
 type Timer = timer.Timer
+type PerformanceTracker = logger.PerformanceTracker
 
 func NewTimer() *Timer                          { return timer.NewTimer() }
 func CreateLogger(render LogRenderer) LoggerApi { return logger.CreateLogger(render) }

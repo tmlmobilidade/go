@@ -182,6 +182,7 @@ export const API_ROUTES = Object.freeze({
 		AGENCIES_DETAIL_LOCK: (id: string) => `${getModuleConfig('core', 'api_url')}/agencies/${encodeURIComponent(id)}/lock`,
 		AGENCIES_LIST: `${getModuleConfig('core', 'api_url')}/agencies`,
 		AGENCIES_LOOKUP: `${getModuleConfig('core', 'api_url')}/platform/agencies/lookup`,
+		AGENCIES_VALIDATION_RULES_REPORT: `${getModuleConfig('core', 'api_url')}/agencies/validation-rules-report`,
 
 		// APP-CONFIGS
 		APP_CONFIGS_BANNER: `${getModuleConfig('core', 'api_url')}/app-configs/banner`,

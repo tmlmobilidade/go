@@ -15,7 +15,7 @@ export interface TagProps {
 	onClick?: () => void
 	style?: React.CSSProperties
 	tooltip?: string
-	variant?: 'danger' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
+	variant?: 'danger' | 'info' | 'muted' | 'primary' | 'secondary' | 'success' | 'warning'
 }
 
 /* * */

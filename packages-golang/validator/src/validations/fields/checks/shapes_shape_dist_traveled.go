@@ -1,0 +1,59 @@
+package fields
+
+import (
+	context "github.com/tmlmobilidade/go/packages-golang/validator/src/lib/context"
+	"github.com/tmlmobilidade/go/packages-golang/validator/src/services/sqlite/queries"
+	contextTypes "github.com/tmlmobilidade/go/packages-golang/validator/src/types/context"
+)
+
+/*
+# Attributes
+
+  - File: [shapes.txt]
+  - Field: shape_dist_traveled
+  - Presence: Optional
+  - Type: Non-negative float
+
+# Description
+
+Distance traveled from the first point of the shape to this point. It must increase with shape_pt_sequence and use
+the same units as stop_times.shape_dist_traveled.
+
+Presence and type follow [GTFS Standard].
+
+[shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#shapestxt
+*/
+func ShapesShapeDistTraveledField(ctx *contextTypes.ValidationContext) error {
+	//
+
+	//
+	// 1. Select the source table and fields for this rule
+
+	return context.ForEachRow(ctx, "shapes", []string{"shape_dist_traveled"}, func(row *contextTypes.ValidationContext) error {
+		//
+		// 2. Get the shape_dist_traveled value
+
+		value, err := queries.Field(row.Source, "shape_dist_traveled")
+		if err != nil {
+			return err
+		}
+
+		//
+		// 3. Check if the shape_dist_traveled is required
+
+		if value == "" {
+			if context.ShouldIgnore(row) {
+				return nil
+			}
+
+			context.AddMessage(row, context.GetSeverityMessage(row, "required", "recommended", "informational"))
+			return nil
+		}
+
+		//
+		// 4. Return success
+
+		return nil
+	})
+}
