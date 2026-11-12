@@ -2,8 +2,8 @@ name: Sync Issue Quarter
 
 on:
   schedule:
-    # At least every 30 minutes; event triggers below are the fast path.
-    - cron: '*/30 * * * *'
+    # Daily reconciliation; event triggers below are the fast path.
+    - cron: '0 3 * * *'
   workflow_dispatch:
   issues:
     types: [opened, field_added, field_removed]
