@@ -25,19 +25,19 @@ server.register(
 
 		instance.get(
 			'/list',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read]) },
+			{ preHandler: authorizationMiddleware() },
 			listAnnotationsHandler,
 		);
 
 		instance.get(
 			'/list-agencies',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read, PermissionCatalog.all.annotations.actions.create]) },
+			{ preHandler: authorizationMiddleware() },
 			listAgenciesHandler,
 		);
 
 		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read]) },
+			{ preHandler: authorizationMiddleware() },
 			getAnnotationHandler,
 		);
 

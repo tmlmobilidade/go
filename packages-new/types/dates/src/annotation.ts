@@ -9,7 +9,8 @@ import { AnnotationCategorySchema } from './annotation-category.js';
 /* * */
 
 export const AnnotationSchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).min(1),
+	/** Affected agencies, regardless of cause. Empty means none specifically identified. */
+	agency_ids: z.array(z.string()).default([]),
 	/** Null explicitly clears the category; absent on legacy annotations. */
 	category: AnnotationCategorySchema.nullable().optional(),
 	dates: z.array(OperationalDateIntSchema).default([]),

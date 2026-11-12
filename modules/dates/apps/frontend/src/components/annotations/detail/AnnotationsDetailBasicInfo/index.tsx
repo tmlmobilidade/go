@@ -69,13 +69,13 @@ export function AnnotationsDetailBasicInfo() {
 				render={({ field, fieldState }) => (
 					<MultiSelect
 						data={options}
+						description={t('default:annotations.fields.agency_ids.description')}
 						disabled={!capabilities.editEnabled || isLoading || !!error}
 						error={fieldState.error?.message}
 						label={t('default:annotations.fields.agency_ids.label')}
 						onChange={field.onChange}
 						value={field.value ?? []}
 						w="100%"
-						withAsterisk={!CreateAnnotationSchema.shape.agency_ids.isOptional()}
 					/>
 				)}
 			/>

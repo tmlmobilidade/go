@@ -52,6 +52,7 @@ async function invoke(handler: Handler, body: unknown, permissions: Permission[]
 	let payload: unknown;
 	const reply = {
 		header: () => reply,
+		request: { headers: {} },
 		send: (value: unknown) => {
 			payload = value;
 			return reply;
@@ -112,13 +113,14 @@ for (const resource of resources) {
 			assert.equal(WRITES.length, 0);
 		});
 
-		test('rejects missing agencies on create and empty agencies on create/update without writes', async () => {
+		test('validates optional annotation agencies and required holiday agencies', async () => {
 			const withoutAgencies = { code: 'CODE', [resource.label]: 'Record' };
-			assert.equal((await invoke(handlers.create, withoutAgencies, [permission(resource.plural, 'create')])).httpStatus, 400);
+			const expectedStatus = resource.plural === 'annotations' ? 200 : 400;
+			assert.equal((await invoke(handlers.create, withoutAgencies, [permission(resource.plural, 'create')])).httpStatus, expectedStatus);
 			for (const action of ['create', 'update'] as const) {
-				assert.equal((await invoke(handlers[action], { ...validBody, agency_ids: [] }, [permission(resource.plural, action)])).httpStatus, 400);
+				assert.equal((await invoke(handlers[action], { ...validBody, agency_ids: [] }, [permission(resource.plural, action)])).httpStatus, expectedStatus);
 			}
-			assert.equal(WRITES.length, 0);
+			assert.equal(WRITES.length, resource.plural === 'annotations' ? 3 : 0);
 		});
 
 		test('requires permissions for all agencies on create', async () => {
@@ -145,7 +147,10 @@ for (const resource of resources) {
 		});
 
 		test('denies every action without the required permissions', async () => {
-			for (const handler of Object.values(handlers)) assert.equal((await invoke(handler, validBody, [])).httpStatus, 403);
+			for (const [action, handler] of Object.entries(handlers)) {
+				const expectedStatus = resource.plural === 'annotations' && action === 'list' ? 200 : 403;
+				assert.equal((await invoke(handler, validBody, [])).httpStatus, expectedStatus);
+			}
 			assert.equal(WRITES.length, 0);
 			assert.equal(DELETED.length, 0);
 		});
@@ -160,9 +165,10 @@ for (const resource of resources) {
 			assert.equal(WRITES.length, 0);
 		});
 
-		test('reads records with any matching agency and denies nonmatching agencies', async () => {
+		test('enforces the agency read policy for each resource', async () => {
 			ROW = { ...ROW, agency_ids: ['A', 'B'] };
-			assert.equal((await invoke(handlers.get, undefined, [readPermission])).httpStatus, 200);
+			assert.equal((await invoke(handlers.get, undefined, [readPermission])).httpStatus, resource.plural === 'annotations' ? 403 : 200);
+			assert.equal((await invoke(handlers.get, undefined, [permission(resource.plural, 'read', ['A', 'B'])])).httpStatus, 200);
 			ROW = { ...ROW, agency_ids: ['B'] };
 			assert.equal((await invoke(handlers.get, undefined, [readPermission])).httpStatus, 403);
 		});
@@ -172,7 +178,9 @@ for (const resource of resources) {
 			const result = await invoke(handlers.list, undefined, [readPermission]);
 			assert.equal(result.httpStatus, 200);
 			assert.deepEqual(result.response.data, []);
-			assert.deepEqual(LIST_QUERY, { agency_ids: { $in: ['A'] } });
+			assert.deepEqual(LIST_QUERY, resource.plural === 'annotations'
+				? { agency_ids: { $not: { $elemMatch: { $nin: ['A'] } } } }
+				: { agency_ids: { $in: ['A'] } });
 		});
 
 		test('honors allow-all list access', async () => {

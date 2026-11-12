@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 import { useAnnotationsAgenciesData } from '../shared/use-annotations-agencies-data';
 import { useAnnotationsData } from '../shared/use-annotations-data';
-import { useAnnotationsListFilterAgencies } from './AnnotationsListFilterAgencies/use-annotations-list-filter-agencies';
+import { ANNOTATIONS_WITHOUT_AGENCIES, useAnnotationsListFilterAgencies } from './AnnotationsListFilterAgencies/use-annotations-list-filter-agencies';
 import { useAnnotationsListFilterSearch } from './AnnotationsListFilterSearch/use-annotations-list-filter-search';
 
 /* * */
@@ -57,7 +57,9 @@ export function useAnnotationsListData(): UseAnnotationsListDataReturnType {
 	const filtered = useMemo(() => {
 		return matches
 			.filter((item) => {
-				const matchesAgencies = item.agency_ids.some(id => agencyFilter.value.includes(id));
+				const matchesAgencies = item.agency_ids.length
+					? item.agency_ids.some(id => agencyFilter.value.includes(id))
+					: agencyFilter.value.includes(ANNOTATIONS_WITHOUT_AGENCIES);
 				const matchesDates = !datesFilter.value.length || item.dates.some(date => datesFilter.value.includes(String(date)));
 				return matchesAgencies && matchesDates;
 			})

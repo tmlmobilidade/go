@@ -9,6 +9,7 @@ import { after, beforeEach, mock, test } from 'node:test';
 let PERMISSIONS: Permission[];
 let WRITES: Record<string, unknown>[];
 let AGENCIES: Record<string, unknown>[];
+let AFFECTED_AGENCY_IDS: string[];
 
 mock.module('@tmlmobilidade/go-providers-auth', {
 	namedExports: {
@@ -27,6 +28,7 @@ mock.module('@tmlmobilidade/go-interfaces-godb', {
 			core: { agencies: { findMany: async () => AGENCIES } },
 			dates: {
 				annotations: {
+					findById: async () => AnnotationSchema.parse({ _id: 'annotation', agency_ids: AFFECTED_AGENCY_IDS, created_at: 1_792_368_000_000, created_by: 'actor', title: 'Annotation', updated_at: 1_792_368_000_000 }),
 					insertOne: async (data: Record<string, unknown>) => {
 						WRITES.push(data);
 						return AnnotationSchema.parse({ ...data, _id: 'annotation', created_at: 1_792_368_000_000, updated_at: 1_792_368_000_000 });
@@ -53,6 +55,7 @@ beforeEach(() => {
 	PERMISSIONS = [{ action: 'create', resources: { agency_ids: ['A'] }, scope: 'annotations' }];
 	WRITES = [];
 	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'omit', short_name: 'CCFL' }];
+	AFFECTED_AGENCY_IDS = [];
 });
 
 /* * */
@@ -69,12 +72,13 @@ test('the generated annotation create URL reaches the authenticated handler', as
 	assert.equal(WRITES.length, 1);
 });
 
-test('annotation creation rejects missing and empty operators before storage writes', async () => {
+test('annotation creation accepts missing and empty affected operators', async () => {
 	for (const payload of [{ title: 'Annotation' }, { agency_ids: [], title: 'Annotation' }]) {
 		const response = await server.inject({ cookies, method: 'POST', payload, url: createPath });
-		assert.equal(response.statusCode, 400);
+		assert.equal(response.statusCode, 200);
+		assert.deepEqual(response.json().data.agency_ids, []);
 	}
-	assert.deepEqual(WRITES, []);
+	assert.equal(WRITES.length, 2);
 });
 
 test('annotation creation denies users without create permission', async () => {
@@ -82,6 +86,25 @@ test('annotation creation denies users without create permission', async () => {
 	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], title: 'Annotation' }, url: createPath });
 	assert.equal(response.statusCode, 403);
 	assert.deepEqual(WRITES, []);
+});
+
+test('unassigned annotations are readable without annotation permissions but still require authentication', async () => {
+	PERMISSIONS = [];
+	const response = await server.inject({ cookies, method: 'GET', url: '/annotations/annotation' });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(response.json().data.agency_ids, []);
+	assert.equal((await server.inject({ method: 'GET', url: '/annotations/annotation' })).statusCode, 401);
+	assert.equal((await server.inject({ cookies, method: 'GET', url: '/annotations/list-agencies' })).statusCode, 200);
+});
+
+test('assigned annotation reads require access to every affected operator', async () => {
+	AFFECTED_AGENCY_IDS = ['A', 'B'];
+	for (const agencyIds of [[], ['A'], ['B']]) {
+		PERMISSIONS = [{ action: 'read', resources: { agency_ids: agencyIds }, scope: 'annotations' }];
+		assert.equal((await server.inject({ cookies, method: 'GET', url: '/annotations/annotation' })).statusCode, 403);
+	}
+	PERMISSIONS = [{ action: 'read', resources: { agency_ids: ['A', 'B'] }, scope: 'annotations' }];
+	assert.equal((await server.inject({ cookies, method: 'GET', url: '/annotations/annotation' })).statusCode, 200);
 });
 
 test('creation is not registered at collection or list URLs', async () => {
