@@ -1,7 +1,7 @@
 'use client';
 
 import { OfferZonesV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
-import { ErrorDisplay, Grid, MultiSelect, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { ErrorDisplay, MultiSelect, Section, Select, StandardFormController } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -36,43 +36,23 @@ export function ZonesExtractProperties() {
 					/>
 				)}
 			/>
-			<Grid columns="ab" gap="md">
-				<StandardFormController
-					control={form.control}
-					name="properties.agency_ids"
-					render={({ field, fieldState }) => {
-						const selectedValues: string[] = field.value ?? [];
-						const areAllOptionsSelected = options.length > 0 && options.length === selectedValues.length && options.every(option => selectedValues.includes(option.value));
-
-						return (
-							<MultiSelect
-								classNames={{ pillsList: styles.selectedFilters }}
-								data={options}
-								disabled={!capabilities?.editEnabled || isLoading}
-								error={fieldState.error?.message}
-								label={t('default:zones.extract.ZonesExtractProperties.fields.agency_ids.label')}
-								onChange={field.onChange}
-								placeholder={areAllOptionsSelected ? t('default:zones.extract.ZonesExtractProperties.no_filter') : t('default:zones.extract.ZonesExtractProperties.placeholder')}
-								value={areAllOptionsSelected ? [] : selectedValues}
-								w="100%"
-							/>
-						);
-					}}
-				/>
-				<StandardFormController
-					control={form.control}
-					name="properties.search"
-					render={({ field, fieldState }) => (
-						<TextInput
-							disabled={!capabilities?.editEnabled}
-							error={fieldState.error?.message}
-							label={t('default:zones.extract.ZonesExtractProperties.fields.search.label')}
-							onChange={field.onChange}
-							value={field.value ?? ''}
-						/>
-					)}
-				/>
-			</Grid>
+			<StandardFormController
+				control={form.control}
+				name="properties.agency_ids"
+				render={({ field, fieldState }) => (
+					<MultiSelect
+						classNames={{ pillsList: styles.selectedFilters }}
+						data={options}
+						disabled={!capabilities?.editEnabled || isLoading}
+						error={fieldState.error?.message}
+						label={t('default:zones.extract.ZonesExtractProperties.fields.agency_ids.label')}
+						onChange={field.onChange}
+						placeholder={t('default:zones.extract.ZonesExtractProperties.placeholder')}
+						value={field.value ?? []}
+						w="100%"
+					/>
+				)}
+			/>
 		</Section>
 	);
 }

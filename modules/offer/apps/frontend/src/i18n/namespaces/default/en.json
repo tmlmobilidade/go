@@ -496,14 +496,10 @@
 					"agency_ids": {
 						"label": "Operators"
 					},
-					"search": {
-						"label": "Search"
-					},
 					"version": {
 						"label": "Version"
 					}
 				},
-				"no_filter": "No filter",
 				"placeholder": "Select one or more options..."
 			}
 		},

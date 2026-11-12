@@ -332,14 +332,10 @@
 					"agency_ids": {
 						"label": "Operadores"
 					},
-					"search": {
-						"label": "Pesquisa"
-					},
 					"version": {
 						"label": "Versão"
 					}
 				},
-				"no_filter": "Sem filtro",
 				"placeholder": "Selecione uma ou mais opções..."
 			}
 		},
