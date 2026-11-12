@@ -125,6 +125,10 @@ export class SQLiteTableInstance<T> {
 		//
 		// Prepare insert statement
 
+		this.prepareInsertStatement();
+	}
+
+	private prepareInsertStatement(): void {
 		const placeholders = this.columns.map(() => '?').join(', ');
 		const insertSQL = `INSERT INTO ${this.tableName} (${this.columns.map(c => `"${c.name.replaceAll('"', '""')}"`).join(', ')}) VALUES (${placeholders})`;
 		this.insertStatement = this.databaseInstance.prepare(insertSQL);
@@ -219,6 +223,16 @@ export class SQLiteTableInstance<T> {
 	 */
 	query<R>(sqlQuery = '', params: (boolean | number | string)[] = []) {
 		return this.databaseInstance.prepare(sqlQuery).all(...params) as R[];
+	}
+
+	/**
+	 * Refresh the writer after columns are added to the existing SQLite table.
+	 */
+	refreshColumns(): void {
+		this.flush();
+		const tableName = this.tableName.replaceAll('"', '""');
+		this.columns = this.databaseInstance.prepare(`PRAGMA table_info("${tableName}")`).all() as SQLiteColumn<T>[];
+		this.prepareInsertStatement();
 	}
 
 	/**

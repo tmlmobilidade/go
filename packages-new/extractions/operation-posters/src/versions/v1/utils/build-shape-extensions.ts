@@ -42,14 +42,33 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, O
 		//
 		// 2. Assign sequence, priority and the variant note
 
+		let variantCount = 0;
 		for (const [index, shapeId] of shapeIds.entries()) {
+			//
+			// A. setup variables
+
 			const sequence = index + 1;
 			const isBase = isBaseShape(shapeId, baseRouteId);
+			let variantIdentifier = '';
+
+			//
+			// B. Build the variant identifier
+
+			if (!isBase) {
+				variantCount++;
+				for (let value = variantCount; value > 0; value = Math.floor((value - 1) / 26)) {
+					variantIdentifier = String.fromCharCode(65 + (value - 1) % 26) + variantIdentifier;
+				}
+			}
+
+			//
+			// C. Add the extension
+
 			const existing = extensions.get(shapeId);
 			if (existing && existing.sequence_number !== sequence) throw new Error(`Shape ${shapeId} has conflicting variant orders.`);
 			extensions.set(shapeId, {
 				direction_description: '',
-				note: isBase ? '' : `O número ${sequence} corresponde a outro percurso da mesma linha`,
+				note: isBase ? '' : `Corresponde a outro percurso da linha ${baseRouteId}`,
 				priority_number: isBase ? 1 : 2,
 				sequence_number: sequence,
 				shape_id: shapeId,
