@@ -3,7 +3,6 @@ package gtfsvalidator
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	"os"
@@ -54,24 +53,22 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 	//
 	// 3. Import the GTFS data into a SQLite database
 	// Own one temporary directory for the database and its SQLite sidecar files.
-	directory, err := os.MkdirTemp("", "gtfs-validator-*")
-	if err != nil {
-		return summary, err
-	}
-	defer func() { err = errors.Join(err, os.RemoveAll(directory)) }()
-
-	databasePath, err := importFeed(options.Source, filepath.Join(directory, "gtfs.db"))
-	if err != nil {
-		return summary, err
-	}
-	if err := ctx.Err(); err != nil {
-		return summary, err
-	}
+	database, err := importFeed(options.Source)
 
 	//
 	// 4. Run the validation rules
-	if err = validateDatabase(ctx, databasePath, graph, max(options.Concurrency, 1), collector); err != nil {
-		return summary, err
+	results, err := graph.Execute(ctx, database.DatabaseInstance, max(options.Concurrency, 1))
+	for _, result := range results {
+		for _, finding := range result.Value {
+			collector.Add(types.Message{
+				Rows:     finding.Rows,
+				Field:    finding.Field,
+				FileName: finding.FileName,
+				Message:  finding.Message,
+				RuleID:   result.ID,
+				Severity: finding.Severity,
+			}, finding.Description)
+		}
 	}
 
 	//
@@ -93,40 +90,36 @@ func validateOptions(options Options) error {
 
 // importFeed imports the entire archive into SQLite and returns the resulting
 // database path. The importer closes the database before returning.
-func importFeed(source importgtfs.ImportGtfsConfigSource, databasePath string) (string, error) {
+func importFeed(source importgtfs.ImportGtfsConfigSource) (*sqlite.SQLiteDatabase, error) {
+	//
+
+	//
+	// Create a temporary directory for the database and its SQLite sidecar files.
+	directory, err := os.MkdirTemp("", "gtfs-validator-*")
+	if err != nil {
+		return nil, err
+	}
+	defer func() { err = errors.Join(err, os.RemoveAll(directory)) }()
+
+	//
+	// Import the GTFS data into the database
 	config := importgtfs.ImportGtfsConfig{
 		Source:        source,
-		Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: databasePath},
+		Sqlite_config: sqlite.SQLiteDatabaseConfig{InstancePath: filepath.Join(directory, "gtfs.db")},
 	}
-	importedPath, err := importgtfs.ImportGtfsToDatabase(config)
+	
+	databasePath, err := importgtfs.ImportGtfsToDatabase(config)
 	if err != nil {
-		return "", fmt.Errorf("import GTFS: %w", err)
+		return nil, fmt.Errorf("import GTFS: %w", err)
 	}
-	return importedPath, nil
-}
-
-// validateDatabase opens the imported database, runs the configured rules, and
-// adds their findings to collector even if execution fails. It closes the
-// database before returning and includes any close failure in the returned error.
-func validateDatabase(ctx context.Context, databasePath string, graph *services.DAG[*sql.DB, []rules.Finding], concurrency int, collector *services.ReportService) (err error) {
+	
+	//
+	// Open the database and return it
 	database, err := sqlite.NewSQLiteDatabase(sqlite.SQLiteDatabaseConfig{InstancePath: databasePath})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer func() { err = errors.Join(err, database.DatabaseInstance.Close()) }()
-
-	results, err := graph.Execute(ctx, database.DatabaseInstance, concurrency)
-	for _, result := range results {
-		for _, finding := range result.Value {
-			collector.Add(types.Message{
-				Rows:     finding.Rows,
-				Field:    finding.Field,
-				FileName: finding.FileName,
-				Message:  finding.Message,
-				RuleID:   result.ID,
-				Severity: finding.Severity,
-			}, finding.Description)
-		}
-	}
-	return err
+	
+	return database, nil
 }
