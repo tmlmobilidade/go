@@ -3,7 +3,7 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
@@ -82,7 +82,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 			//
 			// 1. Import the GTFS file for the current plan
 
-			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: plan.attachments.operation_gtfs_normalized });
+			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: plan.attachments.operation_gtfs_normalized ?? undefined });
 			const importedGtfs = await importGtfsToDatabase<OperationPostersV1Tables>({
 				source: { url: operationFileUrl },
 				time_range: { date_range: { end: plan.active_until, start: plan.active_from } },
@@ -95,8 +95,8 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 				const agencyHolidays = await goDb.dates.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } });
 				const calendar: GtfsCalendar = {
 					dates: buildDatesMap({
-						end: validateOperationalDate(String(plan.active_until)),
-						start: validateOperationalDate(String(plan.active_from)),
+						end: OperationalDateIntSchema.parse(plan.active_until),
+						start: OperationalDateIntSchema.parse(plan.active_from),
 					}, agencyHolidays),
 					plan_id: plan._id,
 				};
@@ -116,6 +116,8 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 
 		//
 		// E. Export the combined database once
+
+		if (!sqlGtfs) throw new Error('No GTFS database was initialized for poster export.');
 
 		Logger.info({ message: `Exporting ${plans.length} plans to one HiTouch GTFS...` });
 		const exportTimer = new Timer();

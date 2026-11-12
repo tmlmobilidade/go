@@ -1,7 +1,7 @@
 /* * */
 
 import { type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationalDate, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
@@ -13,7 +13,7 @@ import { yieldToEventLoop } from './yield-to-event-loop.js';
 
 interface CalendarService {
 	_id: string
-	dates: OperationalDate[]
+	dates: OperationalDateInt[]
 	day_type: GtfsDate['day_type']
 }
 
@@ -26,7 +26,7 @@ interface TripGroup {
 }
 
 interface DateGroup {
-	dates: Set<OperationalDate>
+	dates: Set<OperationalDateInt>
 	day_type: GtfsDate['day_type']
 }
 
@@ -77,7 +77,7 @@ export async function rebuildCalendarServices(tables: OperationPostersV1Tables, 
 		// Reuse services with identical dates and day types within the same plan
 
 		for (const dateGroup of dateGroups) {
-			const dates = [...dateGroup.dates].sort();
+			const dates = [...dateGroup.dates].sort((a, b) => a - b);
 			const key = `${calendar.plan_id}|${dateGroup.day_type}|${dates.join('|')}`;
 			let service = services.get(key);
 			if (!service) {
@@ -158,7 +158,7 @@ function groupServiceDates(tables: OperationPostersV1Tables, serviceIds: string[
 
 	for (const serviceId of serviceIds) {
 		for (const gtfsDate of tables.calendar_dates[serviceId]) {
-			const date = validateOperationalDate(String(gtfsDate));
+			const date = OperationalDateIntSchema.parse(gtfsDate);
 			const metadata = calendar.dates.get(date);
 			if (!metadata) throw new Error(`Date ${date} for service_id ${serviceId} has no generated date metadata.`);
 			const key = metadata.day_type;

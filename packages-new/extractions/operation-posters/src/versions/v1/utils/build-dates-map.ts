@@ -1,7 +1,7 @@
 /* * */
 
-import { type Holiday } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate, OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, getOperationalDatesFromRange } from '@tmlmobilidade/go-utils-dates';
 
 import { type GtfsDate } from '../types/gtfs-date.js';
@@ -14,13 +14,13 @@ import { type GtfsDate } from '../types/gtfs-date.js';
  * @param holidays - The holidays to build the map for.
  * @returns A map of dates to GtfsDate objects.
  */
-export function buildDatesMap(dateRange: { end: OperationalDate, start: OperationalDate }, holidays: Holiday[]): Map<OperationalDate, GtfsDate> {
+export function buildDatesMap(dateRange: { end: OperationalDateInt, start: OperationalDateInt }, holidays: Holiday[]): Map<OperationalDateInt, GtfsDate> {
 	//
 
 	//
 	// A. Collect holiday names by operating date
 
-	const holidayByDate = new Map<OperationalDate, string[]>();
+	const holidayByDate = new Map<OperationalDateInt, string[]>();
 
 	for (const holiday of holidays) {
 		for (const date of holiday.dates) {
@@ -33,13 +33,13 @@ export function buildDatesMap(dateRange: { end: OperationalDate, start: Operatio
 	//
 	// B. Classify dates as weekdays, Saturdays or Sundays and holidays
 
-	const datesMap = new Map<OperationalDate, GtfsDate>();
+	const datesMap = new Map<OperationalDateInt, GtfsDate>();
 
 	for (const dateInt of getOperationalDatesFromRange(OperationalDateIntSchema.parse(dateRange.start), OperationalDateIntSchema.parse(dateRange.end))) {
-		const date = validateOperationalDate(String(dateInt));
+		const date = OperationalDateIntSchema.parse(dateInt);
 		const holidayNames = holidayByDate.get(date) ?? [];
 		const holiday = holidayNames.length > 0;
-		const weekday = Dates.fromOperationalDateInt(dateInt, 'Europe/Lisbon').toFormat('c');
+		const weekday = Dates.fromOperationalDateInt(date, 'Europe/Lisbon').toFormat('c');
 
 		const dayType: GtfsDate['day_type'] = holiday || weekday === '7'
 			? '3'

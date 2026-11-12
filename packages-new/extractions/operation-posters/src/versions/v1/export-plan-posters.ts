@@ -1,8 +1,9 @@
 /* * */
 
-import { PlanPostersExportPropertiesSchema } from '@tmlmobilidade/go-types-downloads';
 import { type ExtractionTaskContext, type OperationPostersV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { PlanPostersCanvasProfileSchema } from '@tmlmobilidade/go-types-downloads';
+
 import fs from 'node:fs';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
@@ -12,15 +13,22 @@ import { generatePlansPostersDownloadUrl } from './pipeline.js';
 /* * */
 
 export async function exportPlansPostersFile(context: ExtractionTaskContext, plans: Plan[], extractionId: string, properties: OperationPostersV1ExtractionProperties): Promise<void> {
+	//
+
+	//
+	// A. Retrieve the plan posters download URL
+
 	for (const plan of plans) {
 		if (!plan.attachments.operation_gtfs_normalized) {
 			throw new Error(`Plan ${plan._id} has no normalized operation GTFS attachment for poster export`);
 		}
 	}
 
-	const canvasProfile = properties.content_mode === 'all'
-		? '0Master.C'
-		: PlanPostersExportPropertiesSchema.shape.properties.shape.canvas_profile.parse(properties.canvas_profile);
+	//
+	// B. Generate the plan posters download URL
+
+	const canvasProfile = properties.canvas_profile ? PlanPostersCanvasProfileSchema.parse(properties.canvas_profile) : undefined;
+
 	const downloadUrl = await generatePlansPostersDownloadUrl(plans, extractionId, {
 		canvas_profile: canvasProfile,
 		content_mode: properties.content_mode,
@@ -29,11 +37,18 @@ export async function exportPlansPostersFile(context: ExtractionTaskContext, pla
 		stop_ids: properties.stop_ids ?? [],
 		stops_mode: properties.stops_mode,
 	});
+
+	//
+	// C. Download the plan posters
+
 	const outputFile = path.join(context.output_path, `posters-${extractionId}.zip`);
 
 	const response = await fetch(downloadUrl, { signal: AbortSignal.timeout(300_000) });
 	if (!response.ok) throw new Error(`Poster ZIP download failed: HTTP ${response.status}.`);
 	if (!response.body) throw new Error('Poster ZIP download returned no body.');
+
+	//
+	// D. Write the plan posters to the output file
 
 	await pipeline(response.body, fs.createWriteStream(outputFile));
 	if (!fs.statSync(outputFile).size) throw new Error('Poster ZIP download returned an empty file.');

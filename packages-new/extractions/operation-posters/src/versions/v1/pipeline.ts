@@ -23,8 +23,16 @@ function waitForNextStatusCheck(): Promise<void> {
 /* * */
 
 export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: string, options?: ExportHitouchOptions): Promise<string> {
+	//
+
+	//
+	// A. setup variables
+
 	const postersController = new PostersController();
 	let exportConfig: ExportHitouchConfig | undefined;
+
+	//
+	// B. import plans to sqlite
 
 	try {
 		Logger.info({ message: `Preparing combined GTFS files for poster export ${exportId} (${plans.length} plans).` });
