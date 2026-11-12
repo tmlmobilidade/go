@@ -68,6 +68,10 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 		return summary, err
 	}
 
+	if err := createValidationIndexes(ctx, database.DatabaseInstance); err != nil {
+		return summary, err
+	}
+
 	//
 	// 4. Run the validation rules
 	results, err := graph.Execute(ctx, database.DatabaseInstance, max(options.Concurrency, 1))
