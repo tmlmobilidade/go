@@ -1,20 +1,6 @@
 /* * */
 
-import {
-	type Agency,
-	type CalendarAssignmentsExt,
-	type CalendarDates,
-	type Calendars,
-	type DayTypesExt,
-	type Routes,
-	type RoutesToCanvasExt,
-	type Shapes,
-	type ShapesExt,
-	type Stops,
-	type StopTimes,
-	type StopToCanvasExt,
-	type Trips,
-} from '@tmlmobilidade/go-types-gtfs-hitouch';
+import { type Agency, type CalendarAssignmentsExt, type CalendarDates, type Calendars, type DayTypesExt, type Routes, type RoutesToCanvasExt, type Shapes, type ShapesExt, type Stops, type StopTimes, type StopToCanvasExt, type Trips } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { type BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { type GtfsStrictV30SQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 
