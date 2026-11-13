@@ -8,7 +8,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { DAY_TYPES } from '../day-types.js';
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
-import { type GtfsCalendar } from '../types/gtfs-date.js';
+import { type GtfsCalendar } from '../types/interfaces.js';
 import { rebuildCalendarServices } from '../utils/calendar-services/rebuild-calendar-services.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
