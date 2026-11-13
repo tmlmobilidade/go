@@ -13,6 +13,8 @@ import { type GtfsSQLTables } from './types/index.js';
 
 export function initGtfsSqlTables<T extends GtfsSQLTables>(source: Buffer | string): T {
 	const database = new SQLiteDatabase(typeof source === 'string' ? { instancePath: source } : { databaseInstance: new BSQLite3(source), memory: true });
+	// The Go importer's filtering indexes belong to temporary tables. Recreate
+	// lookup indexes on the final tables before consumers query or rewrite them.
 
 	// Read the actual headers rather than imposing a GTFS schema.
 	const registerTable = (tableName: string, indexColumns: string[] = []) => {
