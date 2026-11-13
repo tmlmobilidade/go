@@ -12,6 +12,7 @@ import { getPDFStatus } from './controller/get-pdf-status.js';
 import { importPlansToSqlite } from './import-plan-to-sqlite.js';
 import { waitForNextStatusCheck } from './lib/wait-for-next-status-check.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
+import { type PDFStatus } from './types/interfaces.js';
 
 /* * */
 
@@ -22,6 +23,7 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 	// A. setup variables
 
 	let exportConfig: ExportHitouchConfig | undefined;
+	let pdfStatus: PDFStatus | undefined;
 
 	//
 	// B. import plans to sqlite
@@ -40,6 +42,7 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 
 		const requestZipPath = path.resolve(exportConfig.workdir, exportConfig.output);
 		const preservedRequestZipPath = `/tmp/hitouch/export-${exportId}-request.zip`;
+
 		fs.copyFileSync(requestZipPath, preservedRequestZipPath);
 		Logger.info({ message: `Preserved HiTouch request ZIP at ${preservedRequestZipPath}.` });
 
@@ -60,7 +63,7 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 		//
 		// 5. Wait for the PDF status
 
-		let pdfStatus = await getPDFStatus(pdfId);
+		pdfStatus = await getPDFStatus(pdfId);
 
 		while (pdfStatus.status !== 'done') {
 			if (pdfStatus.status === 'error' || pdfStatus.status === 'failed') {
