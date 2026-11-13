@@ -2,7 +2,7 @@
 
 import { type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 
-import { type TripGroup } from '../../types/calendar-services.js';
+import { type TripGroup } from '../../types/interfaces.js';
 
 /* * */
 

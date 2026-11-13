@@ -1,6 +1,6 @@
 /* * */
 
-import { type DayTypeConfig } from './types/day-type-config.js';
+import { type DayTypeConfig } from './types/interfaces.js';
 
 /* * */
 

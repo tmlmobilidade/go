@@ -3,9 +3,8 @@
 import { type GtfsStrictV30StopTimes, type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-import { type CalendarService, type DateGroup } from '../../types/calendar-services.js';
 import { type OperationPostersV1Tables } from '../../types/context.js';
-import { type GtfsCalendar } from '../../types/gtfs-date.js';
+import { type CalendarService, type DateGroup, type GtfsCalendar } from '../../types/interfaces.js';
 import { yieldToEventLoop } from '../yield-to-event-loop.js';
 import { createTripReplacer } from './create-trip-replacer.js';
 import { groupServiceDates } from './group-service-dates.js';
