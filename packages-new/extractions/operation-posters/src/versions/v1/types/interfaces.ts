@@ -85,3 +85,13 @@ export interface PosterWriterOptions<T> {
 	newline?: string
 	quotes?: Papa.UnparseConfig['quotes']
 }
+
+/* * */
+
+// stop route direction group types
+export interface StopRouteDirectionGroup {
+	direction_id: number
+	routes: Set<string>
+	stop_id: string
+	stopCount: number
+}

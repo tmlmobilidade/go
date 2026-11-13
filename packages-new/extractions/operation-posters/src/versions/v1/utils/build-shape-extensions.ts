@@ -17,7 +17,13 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, S
 	//
 
 	//
-	// A. Group trips by poster route and direction
+	// A. Setup variables
+
+	let variantCount: number;
+	let variantIdentifier: string;
+
+	//
+	// B. Group trips by poster route and direction
 
 	const groups = new Map<string, GtfsStrictV30Trips[]>();
 	for (const trip of trips) {
@@ -28,7 +34,7 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, S
 	}
 
 	//
-	// B. Order each group's patterns and build one extension per shape
+	// C. Order each group's patterns and build one extension per shape
 
 	const extensions = new Map<string, ShapesExt>();
 	for (const group of groups.values()) {
@@ -42,14 +48,14 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, S
 		//
 		// 2. Assign sequence, priority and the variant note
 
-		let variantCount = 0;
+		variantCount = 0;
 		for (const [index, shapeId] of shapeIds.entries()) {
 			//
 			// A. setup variables
 
 			const sequence = index + 1;
 			const isBase = isBaseShape(shapeId, baseRouteId);
-			let variantIdentifier = '';
+			variantIdentifier = '';
 
 			//
 			// B. Build the variant identifier
@@ -78,7 +84,7 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, S
 	}
 
 	//
-	// C. Return the shape extensions
+	// D. Return the shape extensions
 
 	return extensions;
 }
