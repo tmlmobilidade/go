@@ -62,6 +62,29 @@
 			"title": "Annotations",
 			"description": "Annotations record events that help explain changes in transport operations and data, such as weather conditions, strikes, accidents or technology failures.",
 			"context": "Each event brings together dates, locations, operators, sources and observed impacts, preserving context for analysis and follow-up."
+		},
+		"AnnotationsListExport": {
+			"title": "Export annotations",
+			"version": "Version"
+		},
+		"AnnotationsListHeaderMenu": {
+			"export": "Export CSV"
+		},
+		"AnnotationsListExportProperties": {
+			"operators": "Operators",
+			"all_operators": "All operators",
+			"categories": "Categories",
+			"all_categories": "All categories",
+			"locations": "Location",
+			"all_locations": "All locations"
+		},
+		"AnnotationsListExportDates": {
+			"start": "Start date",
+			"end": "End date",
+			"placeholder": "No limit"
+		},
+		"AnnotationsListExportFooter": {
+			"submit": "Export"
 		}
 	}
 }

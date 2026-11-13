@@ -62,6 +62,29 @@
 			"title": "Anotações",
 			"description": "As anotações registam acontecimentos que ajudam a interpretar variações na operação e nos dados de transporte, como condições meteorológicas, greves, acidentes ou falhas tecnológicas.",
 			"context": "Cada ocorrência reúne datas, localização, operadores envolvidos, fontes e impactos observados, preservando o contexto para análise e acompanhamento."
+		},
+		"AnnotationsListExport": {
+			"title": "Exportar anotações",
+			"version": "Versão"
+		},
+		"AnnotationsListHeaderMenu": {
+			"export": "Exportar CSV"
+		},
+		"AnnotationsListExportProperties": {
+			"operators": "Operadores",
+			"all_operators": "Todos os operadores",
+			"categories": "Categorias",
+			"all_categories": "Todas as categorias",
+			"locations": "Localização",
+			"all_locations": "Todos os locais"
+		},
+		"AnnotationsListExportDates": {
+			"start": "Data de início",
+			"end": "Data de fim",
+			"placeholder": "Sem limite"
+		},
+		"AnnotationsListExportFooter": {
+			"submit": "Exportar"
 		}
 	}
 }
