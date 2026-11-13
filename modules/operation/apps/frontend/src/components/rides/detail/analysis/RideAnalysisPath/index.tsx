@@ -180,9 +180,11 @@ export function RideAnalysisPath() {
 					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
 					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
 				]) as UnixMilliseconds;
+				const validationPassengers = validationsByStopId[item.stop_id]?.length ?? 0;
+				const bankingPassengers = bankingTapsByStopId[item.stop_id]?.reduce((total, tap) => total + (tap.group_dimension ?? 1), 0) ?? 0;
 				// Return the data
 				return {
-					passengers_observed: validationsByStopId[item.stop_id]?.filter(validation => validation.is_passenger).length || 0,
+					passengers_observed: validationPassengers + bankingPassengers,
 					passengers_observed_banking_taps_qty: bankingTapsByStopId[item.stop_id]?.length || 0,
 					passengers_observed_prepaid_amount: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'prepaid' && validation.is_passenger).reduce((acc, validation) => acc + validation.units_qty, 0) || 0,
 					passengers_observed_prepaid_qty: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'prepaid' && validation.is_passenger).length || 0,
