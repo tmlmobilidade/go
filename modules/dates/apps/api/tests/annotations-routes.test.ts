@@ -1,5 +1,6 @@
 import { API_ROUTES, getModuleConfig } from '@tmlmobilidade/consts';
 import { AnnotationSchema } from '@tmlmobilidade/go-types-dates';
+import { type LocationTreeNode } from '@tmlmobilidade/go-types-locations';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import assert from 'node:assert/strict';
 import { after, beforeEach, mock, test } from 'node:test';
@@ -10,6 +11,11 @@ let PERMISSIONS: Permission[];
 let WRITES: Record<string, unknown>[];
 let AGENCIES: Record<string, unknown>[];
 let AFFECTED_AGENCY_IDS: string[];
+let LOCATION_TREE: LocationTreeNode[];
+
+mock.module('@tmlmobilidade/go-providers-locations', {
+	namedExports: { locationsProvider: { findAdministrativeTree: async () => LOCATION_TREE } },
+});
 
 mock.module('@tmlmobilidade/go-providers-auth', {
 	namedExports: {
@@ -56,6 +62,7 @@ beforeEach(() => {
 	WRITES = [];
 	AGENCIES = [{ _id: 'A', code: '1', name: 'Carris', private_field: 'omit', short_name: 'CCFL' }];
 	AFFECTED_AGENCY_IDS = [];
+	LOCATION_TREE = [{ admin_level: '2', children: [{ admin_level: '7', children: [], code: '1503', id: '2', name: 'Almada' }], code: null, id: '1', name: 'Portugal' }];
 });
 
 /* * */
@@ -131,4 +138,27 @@ test('annotation labels tolerate agencies without short names', async () => {
 	const response = await server.inject({ cookies, method: 'GET', url: agenciesPath });
 	assert.equal(response.statusCode, 200);
 	assert.deepEqual(response.json().data, [{ _id: 'A', code: '1', name: 'Carris', short_name: '' }]);
+});
+
+const locationsPath = API_ROUTES.dates.ANNOTATIONS_LIST_LOCATIONS.replace(getModuleConfig('dates', 'api_url'), '');
+
+test('annotation locations expose the authoritative hierarchy to authenticated users', async () => {
+	PERMISSIONS = [];
+	const response = await server.inject({ cookies, method: 'GET', url: locationsPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(response.json().data, LOCATION_TREE);
+	assert.equal((await server.inject({ method: 'GET', url: locationsPath })).statusCode, 401);
+});
+
+test('creation resolves and deduplicates location IDs using canonical reference data', async () => {
+	const location = { admin_level: 'incorrect', code: 'incorrect', name: 'Incorrect name', osm_id: 1 };
+	const response = await server.inject({ cookies, method: 'POST', payload: { locations: [location, location], title: 'National event' }, url: createPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(WRITES[0].locations, [{ admin_level: '2', code: null, name: 'Portugal', osm_id: 1 }]);
+});
+
+test('creation rejects unknown geographic IDs without writing the annotation', async () => {
+	const response = await server.inject({ cookies, method: 'POST', payload: { locations: [{ admin_level: '7', name: 'Unknown place', osm_id: 999 }], title: 'Event' }, url: createPath });
+	assert.equal(response.statusCode, 400);
+	assert.deepEqual(WRITES, []);
 });

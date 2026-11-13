@@ -11,12 +11,20 @@ type Handler = (request: FastifyRequest<{ Body: unknown, Params: { id: string } 
 
 const resources = [{ entity: 'Annotation', label: 'title', plural: 'annotations', singular: 'annotation' }, { entity: 'Holiday', label: 'title', plural: 'holidays', singular: 'holiday' }];
 
-// Only storage is mocked. Tests execute the real handlers, schemas, permissions and response helpers.
+// Storage and location reference lookups are mocked. Handlers, schemas and permissions are real.
 let ROW: Record<string, unknown> | undefined;
 let ROWS: Record<string, unknown>[];
 let WRITES: Record<string, unknown>[];
 let DELETED: string[];
 let LIST_QUERY: unknown;
+
+mock.module('@tmlmobilidade/go-providers-locations', {
+	namedExports: {
+		locationsProvider: {
+			findAdministrativeTree: async () => [{ admin_level: '2', children: [], code: null, id: '1', name: 'Portugal' }],
+		},
+	},
+});
 
 const collection = {
 	deleteById: async (id: string) => { DELETED.push(id); },
@@ -145,6 +153,26 @@ for (const resource of resources) {
 			assert.equal(result.httpStatus, 200);
 			assert.deepEqual(WRITES[0].agency_ids, ['B']);
 		});
+
+		if (resource.plural === 'annotations') {
+			test('updates locations using canonical reference data and rejects unknown IDs', async () => {
+				const locations = [{ admin_level: 'incorrect', name: 'Incorrect name', osm_id: 1 }];
+				assert.equal((await invoke(handlers.update, { locations }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[0].locations, [{ admin_level: '2', code: null, name: 'Portugal', osm_id: 1 }]);
+				assert.equal((await invoke(handlers.update, { locations: [{ ...locations[0], osm_id: 999 }] }, [permission(resource.plural, 'update')])).httpStatus, 400);
+				assert.equal(WRITES.length, 1);
+			});
+
+			test('preserves omitted locations and allows clearing the geographic selection', async () => {
+				const locations = [{ admin_level: '2', code: null, name: 'Portugal', osm_id: 1 }];
+				ROW = { ...ROW, locations };
+				const result = await invoke(handlers.update, { title: 'Edited' }, [permission(resource.plural, 'update')]);
+				assert.deepEqual((result.response.data as Record<string, unknown>).locations, locations);
+				assert.equal(Object.hasOwn(WRITES[0], 'locations'), false);
+				assert.equal((await invoke(handlers.update, { locations: [] }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[1].locations, []);
+			});
+		}
 
 		test('denies every action without the required permissions', async () => {
 			for (const [action, handler] of Object.entries(handlers)) {
