@@ -19,7 +19,7 @@ import { exportStopsFile } from './exports/stops.js';
 import { exportTripsFile } from './exports/trips.js';
 import { type OperationPostersV1Tables } from './types/context.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
-import { type GtfsCalendar } from './types/gtfs-date.js';
+import { type GtfsCalendar } from './types/interfaces.js';
 import { buildDatesMap } from './utils/build-dates-map.js';
 import { createHitouchZip } from './utils/create-hitouch-zip.js';
 import { initOperationPostersV1Context } from './utils/init-context.js';
@@ -34,6 +34,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 	// A. Validate every plan before importing any GTFS
 
 	if (!plans.length) throw new Error('At least one plan is required for poster export.');
+
 	for (const plan of plans) {
 		if (!plan.active_from || !plan.active_until || plan.active_from > plan.active_until) {
 			throw new Error(`Plan ${plan._id} has missing or invalid active_from / active_until dates.`);

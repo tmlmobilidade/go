@@ -50,5 +50,6 @@ export async function exportPlansPostersFile(context: ExtractionTaskContext, pla
 	// D. Write the plan posters to the output file
 
 	await pipeline(response.body, fs.createWriteStream(outputFile));
+
 	if (!fs.statSync(outputFile).size) throw new Error('Poster ZIP download returned an empty file.');
 }

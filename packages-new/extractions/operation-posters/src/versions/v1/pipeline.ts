@@ -10,17 +10,8 @@ import { generatePDF } from './controller/generate-pdf.js';
 import { generateToken } from './controller/generate-token.js';
 import { getPDFStatus } from './controller/get-pdf-status.js';
 import { importPlansToSqlite } from './import-plan-to-sqlite.js';
+import { waitForNextStatusCheck } from './lib/wait-for-next-status-check.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
-
-/* * */
-
-const PDF_STATUS_POLL_INTERVAL_MS = 15_000;
-
-/* * */
-
-function waitForNextStatusCheck(): Promise<void> {
-	return new Promise(resolve => setTimeout(resolve, PDF_STATUS_POLL_INTERVAL_MS));
-}
 
 /* * */
 
