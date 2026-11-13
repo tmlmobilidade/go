@@ -46,13 +46,17 @@ export async function removeOldGtfsValidationsTask() {
 
 		const fileDeletionTimer = new Timer();
 
-		await storageProvider.delete(validationData.file_id, {
-			onSuccess: async () => {
-				await goDb.operation.gtfsValidations.deleteById(validationData._id);
-			},
-		});
+		try {
+			await storageProvider.delete(validationData.file_id, {
+				onSuccess: async () => {
+					await goDb.operation.gtfsValidations.deleteById(validationData._id);
+				},
+			});
 
-		Logger.success(`Deleted validation ${validationData._id} and its associated file ${validationData.file_id} in ${fileDeletionTimer.get()}.`);
+			Logger.success(`Deleted validation ${validationData._id} and its associated file ${validationData.file_id} in ${fileDeletionTimer.get()}.`);
+		} catch (error) {
+			Logger.error({ error, message: `Error deleting expired validation "${validationData._id}" and file "${validationData.file_id}".` });
+		}
 
 		//
 	}

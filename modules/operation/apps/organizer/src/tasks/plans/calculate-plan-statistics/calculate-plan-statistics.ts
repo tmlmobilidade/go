@@ -1,0 +1,96 @@
+/* * */
+
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+import { calculateGtfsStatistics, type GtfsStatistics } from './steps/calculate-gtfs-statistics.js';
+import { calculatePlanCost } from './steps/calculate-plan-cost.js';
+import { importPlanGtfs } from './steps/import-plan-gtfs.js';
+import { planStatisticsWriter } from './writer.js';
+
+/* * */
+
+/** Imports normalized GTFS files, persists their statistics and logs the calculated totals. */
+export async function calculatePlanStatisticsTask() {
+	//
+	// Select normalized plans whose current hash has not yet been processed.
+
+	const plans = await goDb.operation.plans.findMany({
+		'$expr': {
+			$and: [
+				{ $eq: ['$hash', '$apps.organizer.last_hash'] },
+				{ $ne: ['$hash', { $ifNull: ['$apps.plans_statistics.last_hash', null] }] },
+			],
+		},
+		'apps.organizer.status': 'complete',
+		'attachments.operation_gtfs_normalized': { $ne: null },
+	});
+
+	Logger.info({ message: `Found ${plans.length} plans pending statistics.` });
+
+	//
+	// Keep the database files in the system's temporary directory, one per plan.
+
+	const directory = path.join(os.tmpdir(), 'plans-statistics');
+	fs.mkdirSync(directory, { recursive: true });
+
+	//
+	// Process plans sequentially so only one GTFS import runs at a time.
+
+	for (const plan of plans) {
+		const fileId = plan.attachments.operation_gtfs_normalized;
+		if (!fileId) continue;
+
+		const databasePath = path.join(directory, `${encodeURIComponent(plan._id)}.db`);
+
+		try {
+			await setPlanStatus(plan._id, 'plans_statistics', 'processing');
+
+			Logger.info({ message: `Importing normalized GTFS for plan "${plan._id}" to calculate statistics.` });
+
+			const gtfs = await importPlanGtfs(fileId, databasePath);
+			let statistics: GtfsStatistics;
+
+			try {
+				// Calculate totals while the imported SQLite connection is still open.
+				statistics = calculateGtfsStatistics(gtfs, plan.active_from, plan.active_until);
+			} finally {
+				// Close without cleanup(), which would also delete the SQLite file.
+				gtfs._db.databaseInstance.close();
+			}
+
+			// Read the current rate from the operator associated with this plan.
+			const agency = await goDb.core.agencies.findById(plan.agency_id, { projection: { 'financials.price_per_km': 1 } });
+			const cost = calculatePlanCost(statistics.vkm_count, agency?.financials?.price_per_km);
+
+			// Persist the totals and applied rate, flushing before leaving this task run.
+			await planStatisticsWriter.write({
+				file_id: fileId,
+				hash: plan.hash,
+				plan_id: plan._id,
+				statistics: {
+					...statistics,
+					plan_cost: cost,
+					price_per_km: cost.status === 'ready' ? Number(agency?.financials?.price_per_km) : null,
+				},
+			});
+			await planStatisticsWriter.flush();
+			await setPlanStatus(plan._id, 'plans_statistics', 'complete', plan.hash);
+
+			const costLabel = cost.status === 'ready'
+				? new Intl.NumberFormat('pt-PT', { currency: 'EUR', style: 'currency' }).format(cost.amount)
+				: cost.status;
+
+			const vkmLabel = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(statistics.vkm_count);
+
+			Logger.success(`Imported plan "${plan._id}" to ${databasePath}. Trips: ${statistics.trip_count}. Lines: ${statistics.line_count}. VKM: ${vkmLabel} km. Estimated cost: ${costLabel}.`);
+		} catch (error) {
+			Logger.error({ error, message: `Error processing plan "${plan._id}".` });
+			await setPlanStatus(plan._id, 'plans_statistics', 'error');
+		}
+	}
+}

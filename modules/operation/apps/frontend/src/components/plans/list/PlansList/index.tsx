@@ -10,6 +10,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { AgencyTag, DataTable, type DataTableColumn, ErrorDisplay, IdTag, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { keepUrlParams } from '@tmlmobilidade/ui';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 import { usePlansListData } from '../use-plans-list-data';
 
@@ -23,6 +24,7 @@ export function PlansList() {
 
 	const router = useRouter();
 	const params = useParams<{ id?: string }>();
+	const { t } = useTranslation();
 
 	const plansData = usePlansListData();
 
@@ -101,6 +103,25 @@ export function PlansList() {
 				/>
 			),
 			title: 'Normalização',
+			width: 135,
+		},
+		{
+			accessor: 'apps.plans_statistics',
+			render: (item) => {
+				const app = item.apps?.plans_statistics;
+				const isOutdated = app?.status === 'complete' && app.last_hash !== item.hash;
+				const status = isOutdated ? 'waiting' : app?.status ?? 'waiting';
+
+				return (
+					<ProcessingStatusDisplay
+						value={status}
+						tooltip={app?.timestamp ? Dates.fromUnixMilliseconds(app.timestamp)
+							.setZone('Europe/Lisbon', 'offset_only')
+							.toFormat('yyyy-LL-dd HH:mm') : undefined}
+					/>
+				);
+			},
+			title: t('plans:list.PlansList.statistics'),
 			width: 135,
 		},
 	];
