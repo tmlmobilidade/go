@@ -45,6 +45,7 @@ export async function rebuildCalendarServices(tables: OperationPostersV1Tables, 
 	const database = tables._db.databaseInstance;
 	const deleteTrip = database.prepare('DELETE FROM trips WHERE trip_id = ?');
 	const deleteStopTimes = database.prepare('DELETE FROM stop_times WHERE trip_id = ?');
+
 	let processedShapes = 0;
 	let processedTrips = 0;
 	let processedGroups = 0;
@@ -54,10 +55,11 @@ export async function rebuildCalendarServices(tables: OperationPostersV1Tables, 
 	// B. Track progress and yield while reading trips
 
 	const logProgress = () => {
-		if (Date.now() - lastProgressAt < 5_000 && processedShapes !== shapeIds.length) return;
+		if (Date.now() - lastProgressAt < 10_000) return;
 		Logger.info({ message: `Rebuilding poster calendars: ${processedShapes}/${shapeIds.length} shapes, ${processedTrips}/${totalTrips} trips read.` });
 		lastProgressAt = Date.now();
 	};
+
 	const onTripRead = async () => {
 		processedTrips++;
 		logProgress();
