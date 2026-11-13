@@ -31,7 +31,12 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 	//
 
 	//
-	// A. Validate every plan before importing any GTFS
+	// A. Setup variables
+
+	let sqlGtfs: OperationPostersV1Tables | undefined;
+
+	//
+	// B. Validate every plan before importing any GTFS
 
 	if (!plans.length) throw new Error('At least one plan is required for poster export.');
 
@@ -45,9 +50,10 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 	}
 
 	//
-	// B. Setup one output directory for the combined export
+	// C. Setup one output directory for the combined export
 
 	const runId = plans.map(plan => plan._id).join('-');
+
 	const exportConfig: ExportHitouchConfig = {
 		canvas_profile: options?.canvas_profile ?? 'auto',
 		content_mode: options?.content_mode ?? 'all',
@@ -65,18 +71,17 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 	};
 
 	//
-	// C. Setup the output directory and context
+	// D. Setup the output directory and context
 
 	if (fs.existsSync(exportConfig.workdir)) {
 		fs.rmSync(exportConfig.workdir, { recursive: true });
 	}
 
 	//
-	// D. Initialize the context and calendars map
+	// E. Initialize the context and calendars map
 
 	const context = initOperationPostersV1Context(runId, exportConfig.workdir);
 	const calendarsByService = new Map<string, GtfsCalendar>();
-	let sqlGtfs: OperationPostersV1Tables | undefined;
 
 	try {
 		for (const plan of plans) {
@@ -124,9 +129,9 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 		const exportTimer = new Timer();
 
 		await exportCalendarFiles(context, sqlGtfs, exportConfig, calendarsByService);
+
 		const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
 
-		// Finish every export before cleanup, including when one fails.
 		const results = await Promise.allSettled([
 			exportTripsFile(context, sqlGtfs, routeIds, exportConfig),
 			exportStopTimesFile(context, sqlGtfs, exportConfig),
@@ -148,12 +153,20 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 		// E. Package all exported TXT files into one ZIP archive
 
 		const outputPath = await createHitouchZip(exportConfig);
+
 		Logger.info({ message: `Created combined HiTouch ZIP at ${outputPath} (${fs.statSync(outputPath).size} bytes).` });
+
 		return exportConfig;
 	} catch (error) {
+		//
+		// 5. Cleanup the context and workdir
+
 		context.workdir.remove();
 		throw error;
 	} finally {
+		//
+		// 6. Cleanup the SQL database
+
 		sqlGtfs?._db.cleanup();
 	}
 }

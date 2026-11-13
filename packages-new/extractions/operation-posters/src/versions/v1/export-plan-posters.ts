@@ -43,6 +43,7 @@ export async function exportPlansPostersFile(context: ExtractionTaskContext, pla
 	const outputFile = path.join(context.output_path, `posters-${extractionId}.zip`);
 
 	const response = await fetch(downloadUrl, { signal: AbortSignal.timeout(300_000) });
+
 	if (!response.ok) throw new Error(`Poster ZIP download failed: HTTP ${response.status}.`);
 	if (!response.body) throw new Error('Poster ZIP download returned no body.');
 
