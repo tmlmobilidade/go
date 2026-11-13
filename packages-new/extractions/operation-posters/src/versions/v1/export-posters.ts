@@ -11,7 +11,7 @@ import { generatePlanDownload } from './generate-plan-download.js';
 
 /* * */
 
-export async function exportPlansPostersFile(context: ExtractionTaskContext, plans: Plan[], extractionId: string, properties: OperationPostersV1ExtractionProperties): Promise<void> {
+export async function exportPostersFile(context: ExtractionTaskContext, plans: Plan[], extractionId: string, properties: OperationPostersV1ExtractionProperties): Promise<void> {
 	//
 
 	//

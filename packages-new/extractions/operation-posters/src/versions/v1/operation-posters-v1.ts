@@ -4,7 +4,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext, type ExtractionTaskResult, type OperationPostersV1Extraction, OperationPostersV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-import { exportPlansPostersFile } from './export-plan-posters.js';
+import { exportPostersFile } from './export-posters.js';
 
 /* * */
 
@@ -28,14 +28,14 @@ export async function operationPostersV1Extraction(context: ExtractionTaskContex
 	if (plans.length !== properties.plan_ids.length) throw new Error('Some selected plans were not found for the selected agencies.');
 
 	//
-	// C. Set the attachment name
+	// D. Set the attachment name
 
 	context.attachment_name = `posters-v1-${extraction._id}.zip`;
 
 	//
-	// D. Export the plans posters
+	// E. Export the plans posters
 
-	await exportPlansPostersFile(context, plans, extraction._id, properties);
+	await exportPostersFile(context, plans, extraction._id, properties);
 
 	Logger.success(`Exported ${plans.length} plans posters in extraction ${extraction._id}.`);
 }
