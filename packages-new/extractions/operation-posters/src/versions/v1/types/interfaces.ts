@@ -5,6 +5,7 @@ import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
+// controller types
 export interface PDFStatus {
 	[key: string]: unknown
 	downloadLink?: string
@@ -16,6 +17,7 @@ export interface TokenResponse {
 	expires_in: number
 }
 
+// GTFS types
 export interface GtfsDate {
 	date: OperationalDateInt
 	day_type: '1' | '2' | '3'
@@ -28,6 +30,7 @@ export interface GtfsCalendar {
 	plan_id: string
 }
 
+// operation posters types
 export interface DayTypeConfig {
 	_id: string
 	day_type: '1' | '2' | '3'
@@ -35,6 +38,7 @@ export interface DayTypeConfig {
 	name: string
 }
 
+// calendar services types
 export interface CalendarService {
 	_id: string
 	dates: OperationalDateInt[]
