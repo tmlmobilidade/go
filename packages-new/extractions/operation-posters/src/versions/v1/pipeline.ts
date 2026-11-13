@@ -10,7 +10,7 @@ import { generatePDF } from './controller/generate-pdf.js';
 import { generateToken } from './controller/generate-token.js';
 import { getPDFStatus } from './controller/get-pdf-status.js';
 import { importPlansToSqlite } from './import-plan-to-sqlite.js';
-import { waitForNextStatusCheck } from './lib/wait-for-next-status-check.js';
+import { waitCheckStatus } from './lib/wait-check-status.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 import { type PDFStatus } from './types/interfaces.js';
 
@@ -71,7 +71,7 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 			}
 
 			Logger.info({ message: `ZPHERES PDF job ${pdfId} is ${pdfStatus.status}.` });
-			await waitForNextStatusCheck();
+			await waitCheckStatus();
 			pdfStatus = await getPDFStatus(pdfId);
 		}
 
