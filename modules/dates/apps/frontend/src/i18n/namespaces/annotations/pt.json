@@ -4,11 +4,6 @@
 		"description": "Classifique o evento pelo que aconteceu. A categoria não identifica quem o causou nem altera quem o pode ver.",
 		"no_results": "Nenhuma categoria encontrada"
 	},
-	"AnnotationsSourceInput": {
-		"label": "Fonte ou referência",
-		"description": "Origem da informação: ligação, assunto de email, relatório ou comunicação interna.",
-		"placeholder": "Ex.: Email do operador: perturbação do serviço"
-	},
 	"AnnotationsImpactInput": {
 		"label": "Impacto na operação ou nos dados",
 		"description": "Descreva os efeitos observados no serviço ou nos dados, separadamente do que aconteceu.",
@@ -91,5 +86,19 @@
 		"prompt": "Selecione as datas da ocorrência",
 		"remove_month": "Remover mês",
 		"select_month": "Selecionar mês"
+	},
+	"AnnotationsSourcesInput": {
+		"label": "Fontes",
+		"description": "Adicione notícias, emails ou outras referências. Cada fonte deve ter um nome ou uma ligação.",
+		"empty": "Sem fontes adicionadas",
+		"add": "Adicionar fonte"
+	},
+	"AnnotationsSourceRow": {
+		"name": "Nome ou referência",
+		"name_placeholder": "Ex.: Notícia sobre a greve ou assunto do email",
+		"url": "Ligação (opcional)",
+		"open": "Abrir fonte",
+		"remove": "Remover fonte",
+		"url_placeholder": "https://…"
 	}
 }

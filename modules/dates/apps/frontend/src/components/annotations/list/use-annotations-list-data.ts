@@ -55,7 +55,7 @@ export function useAnnotationsListData(): UseAnnotationsListDataReturnType {
 	const searchData = useMemo(() => data.map(item => ({
 		...item,
 		search_text: [
-			item.source,
+			...item.sources.flatMap(source => [source.name, source.url]),
 			item.impact,
 			...summarizeLocations(item.locations ?? [], true).flatMap(location => [location.label, location.name]),
 			...(item.locations ?? []).map(location => location.name),

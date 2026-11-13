@@ -4,11 +4,6 @@
 		"description": "Classify the event by what happened. This does not identify who caused it or change who can view it.",
 		"no_results": "No categories found"
 	},
-	"AnnotationsSourceInput": {
-		"label": "Source or reference",
-		"description": "Where the information came from: a link, email subject, report or internal communication.",
-		"placeholder": "E.g. Operator email: service disruption"
-	},
 	"AnnotationsImpactInput": {
 		"label": "Operational or data impact",
 		"description": "Describe the observed effects on services or data, separately from what happened.",
@@ -91,5 +86,19 @@
 		"prompt": "Select occurrence dates",
 		"remove_month": "Remove month",
 		"select_month": "Select month"
+	},
+	"AnnotationsSourcesInput": {
+		"label": "Sources",
+		"description": "Add news articles, emails or other references. Each source needs a name or a URL.",
+		"empty": "No sources added",
+		"add": "Add source"
+	},
+	"AnnotationsSourceRow": {
+		"name": "Name or reference",
+		"name_placeholder": "E.g. Strike news article or email subject",
+		"url": "URL (optional)",
+		"open": "Open source",
+		"remove": "Remove source",
+		"url_placeholder": "https://…"
 	}
 }

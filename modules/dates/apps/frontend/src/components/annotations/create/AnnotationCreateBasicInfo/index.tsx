@@ -9,7 +9,7 @@ import { AnnotationsCategorySelect } from '../../shared/AnnotationsCategorySelec
 import { AnnotationsDatesSelect } from '../../shared/AnnotationsDatesSelect';
 import { AnnotationsImpactInput } from '../../shared/AnnotationsImpactInput';
 import { AnnotationsLocationsSelect } from '../../shared/AnnotationsLocationsSelect';
-import { AnnotationsSourceInput } from '../../shared/AnnotationsSourceInput';
+import { AnnotationsSourcesInput } from '../../shared/AnnotationsSourcesInput';
 import { useAnnotationsAgenciesData } from '../../shared/use-annotations-agencies-data';
 import { useAnnotationsCreateFormContext } from '../AnnotationsCreateForm.context';
 
@@ -84,9 +84,9 @@ export function AnnotationCreateBasicInfo() {
 			/>
 			<StandardFormController
 				control={form.control}
-				name="source"
+				name="sources"
 				render={({ field, fieldState }) => (
-					<AnnotationsSourceInput error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
+					<AnnotationsSourcesInput error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
 				)}
 			/>
 			<StandardFormController

@@ -7,7 +7,9 @@
 			"event_id": "Must be uppercase letters, numbers, or underscores",
 			"overlap": "Dates cannot be added and removed in the same request: {dates}",
 			"period_name": "Enter a period name",
-			"period_required": "Select a period"
+			"period_required": "Select a period",
+			"source_required": "Enter a source name or URL",
+			"source_url": "Enter a valid HTTP or HTTPS URL"
 		},
 		"documents": {
 			"changes_required": "multiple_fields requires metadata.changes array",

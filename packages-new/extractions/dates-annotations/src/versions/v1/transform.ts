@@ -17,7 +17,7 @@ export function formatAnnotationCsvRow(annotation: Annotation, agencyNames: Read
 		location_ids: (annotation.locations ?? []).map(location => location.osm_id).join(' | '),
 		locations: (annotation.locations ?? []).map(location => location.name).join(' | '),
 		operators: annotation.agency_ids.map(id => agencyNames.get(id) ?? id).join(' | '),
-		source: annotation.source ?? '',
+		sources: JSON.stringify(annotation.sources),
 		title: annotation.title,
 	});
 }

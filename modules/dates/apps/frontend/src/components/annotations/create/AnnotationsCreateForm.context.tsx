@@ -48,7 +48,7 @@ export function AnnotationsCreateFormContextProvider({ children }: PropsWithChil
 			impact: '',
 			is_locked: false,
 			locations: [],
-			source: '',
+			sources: [],
 			title: '',
 		},
 		schema: CreateAnnotationSchema,

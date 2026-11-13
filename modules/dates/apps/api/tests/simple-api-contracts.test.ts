@@ -162,6 +162,14 @@ for (const resource of resources) {
 				assert.deepEqual(LIST_OPTIONS, { sort: [['dates', -1], ['created_at', -1], ['_id', 1]] });
 			});
 
+			test('updates and clears structured sources', async () => {
+				const sources = [{ name: 'Article', url: 'https://example.com/article' }];
+				assert.equal((await invoke(handlers.update, { sources }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[0].sources, sources);
+				assert.equal((await invoke(handlers.update, { sources: [] }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[1].sources, []);
+			});
+
 			test('rejects removing all dates while allowing partial edits without changing dates', async () => {
 				const access = [permission(resource.plural, 'update')];
 				assert.equal((await invoke(handlers.update, { dates: [] }, access)).httpStatus, 400);

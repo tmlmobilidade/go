@@ -170,3 +170,16 @@ test('annotation creation requires at least one occurrence date', async () => {
 	}
 	assert.deepEqual(WRITES, []);
 });
+
+test('annotation sources retain names and URLs with localized validation', async () => {
+	const sources = [{ name: 'Article title', url: 'https://example.com/article' }, { name: 'Email: operator notice', url: null }, { name: '', url: 'https://example.com/notice' }];
+	const response = await server.inject({ cookies, method: 'POST', payload: { dates: [20261113], sources, title: 'Event' }, url: createPath });
+	assert.equal(response.statusCode, 200);
+	assert.deepEqual(WRITES[0].sources, sources);
+	for (const source of [{ name: '', url: null }, { name: 'Unsafe URL', url: 'javascript:alert(1)' }, { name: 'Invalid URL', url: 'not-a-url' }]) {
+		const invalid = await server.inject({ cookies, headers: { 'accept-language': 'en' }, method: 'POST', payload: { dates: [20261113], sources: [source], title: 'Event' }, url: createPath });
+		assert.equal(invalid.statusCode, 400);
+		assert.ok(invalid.json().issues.some(issue => issue.path[0] === 'sources'));
+	}
+	assert.equal(WRITES.length, 1);
+});

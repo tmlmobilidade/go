@@ -5,6 +5,7 @@ import { BaseDocumentSchema, OperationalDateIntSchema, partialWithoutDefaults } 
 import { z } from 'zod';
 
 import { AnnotationCategorySchema } from './annotation-category.js';
+import { AnnotationSourceSchema } from './annotation-source.js';
 
 /* * */
 
@@ -20,8 +21,7 @@ export const AnnotationSchema = BaseDocumentSchema.extend({
 	is_locked: z.boolean().default(false),
 	/** OSM divisions at any administrative level, independent of agency assignment. */
 	locations: z.array(LocationItemSchema).optional(),
-	/** URL or free-text reference, e.g. an email subject or internal communication. */
-	source: z.string().optional(),
+	sources: z.array(AnnotationSourceSchema).default([]),
 	title: z.string().min(1),
 });
 

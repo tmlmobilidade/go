@@ -12,10 +12,10 @@ export const DatesAnnotationsV1OutputRowSchema = z.object({
 	location_ids: z.string(),
 	locations: z.string(),
 	operators: z.string(),
-	source: z.string(),
+	sources: z.string(),
 	title: z.string(),
 });
 
 export type DatesAnnotationsV1OutputRow = z.infer<typeof DatesAnnotationsV1OutputRowSchema>;
 
-export const DatesAnnotationsV1CsvColumns = ['id', 'title', 'locations', 'location_ids', 'dates', 'category', 'operators', 'agency_ids', 'description', 'source', 'impact'] satisfies (keyof DatesAnnotationsV1OutputRow)[];
+export const DatesAnnotationsV1CsvColumns = ['id', 'title', 'locations', 'location_ids', 'dates', 'category', 'operators', 'agency_ids', 'description', 'sources', 'impact'] satisfies (keyof DatesAnnotationsV1OutputRow)[];
