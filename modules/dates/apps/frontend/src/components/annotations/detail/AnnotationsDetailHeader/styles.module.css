@@ -1,0 +1,31 @@
+.header {
+	box-sizing: border-box;
+	min-width: 0;
+}
+
+.heading {
+	display: flex;
+	flex: 1 1 240px;
+	gap: var(--size-spacing-md);
+	align-items: center;
+	min-width: 0;
+}
+
+.heading > :not(.title) {
+	flex-shrink: 0;
+}
+
+.title {
+	flex: 1;
+	min-width: 0;
+}
+
+.actions {
+	display: flex;
+	flex-shrink: 0;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-md);
+	align-items: center;
+	max-width: 100%;
+	margin-left: auto;
+}

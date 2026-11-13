@@ -28,5 +28,5 @@ export function AnnotationsCategoryLabel({ category }: AnnotationsCategoryLabelP
 	//
 	// B. Render components
 
-	return <Tag icon={<Icon size={18} aria-hidden />} label={label} tooltip={label} variant="muted" />;
+	return <Tag icon={<Icon aria-label={label} role="img" size={18} />} tooltip={label} variant="muted" />;
 }

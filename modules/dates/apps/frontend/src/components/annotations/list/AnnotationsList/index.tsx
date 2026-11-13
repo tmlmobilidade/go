@@ -39,6 +39,12 @@ export function AnnotationsList() {
 			width: 100,
 		},
 		{
+			accessor: 'category',
+			render: item => <AnnotationsCategoryLabel category={item.category} />,
+			title: '',
+			width: 50,
+		},
+		{
 			accessor: 'title',
 			render: item => <AnnotationsListCellTitle title={item.title} />,
 			title: t('default:annotations.list.columns.title'),
@@ -55,12 +61,6 @@ export function AnnotationsList() {
 			render: item => <AnnotationsListCellDates dates={item.dates} />,
 			title: t('default:annotations.list.columns.dates'),
 			width: 300,
-		},
-		{
-			accessor: 'category',
-			render: item => <AnnotationsCategoryLabel category={item.category} />,
-			title: t('annotations:list.AnnotationsList.category'),
-			width: 440,
 		},
 		{
 			accessor: 'agency_ids',
