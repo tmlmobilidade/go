@@ -126,7 +126,15 @@
 				"b": "Model B",
 				"c": "Model C",
 				"f": "Model F"
-			}
+			},
+			"contentModeAll": "All",
+			"contentModeLabel": "Content to export",
+			"contentModeLinesStops": "Lines and stops",
+			"contentModeStops": "Stops",
+			"filterModeExclude": "All except selected",
+			"filterModeInclude": "Only selected",
+			"line_ids_exclude_label": "Line IDs to exclude",
+			"line_ids_include_label": "Line IDs to export"
 		},
 		"agenciesDescription": "Select operators and select a plan for each operator.",
 		"agenciesLabel": "Select operators",

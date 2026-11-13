@@ -90,13 +90,12 @@ export function PlanPostersExtractBody() {
 				<Section gap="md">
 					<SegmentedControl
 						fullWidth={true}
-						label="Conteúdo a exportar"
+						label={t('default:posterExport.PlanPostersExtractBody.contentModeLabel')}
 						onChange={value => context.actions.setContentMode(value as PlanPostersContentMode)}
 						value={context.data.contentMode}
 						data={[
-							{ label: 'Tudo', value: 'all' },
-							// { label: 'Linhas', value: 'lines' },
-							{ label: 'Paragens', value: 'stops' },
+							{ label: t('default:posterExport.PlanPostersExtractBody.contentModeAll'), value: 'all' },
+							{ label: t('default:posterExport.PlanPostersExtractBody.contentModeStops'), value: 'stops' },
 							{ label: t('default:posterExport.linesAndStops'), value: 'lines_stops' },
 						]}
 					/>
@@ -108,24 +107,23 @@ export function PlanPostersExtractBody() {
 							onChange={value => context.actions.setFilterMode(value as PlanPostersFilterMode)}
 							value={context.data.filterMode}
 							data={[
-								{ label: 'Apenas selecionadas', value: 'include' },
-								{ label: 'Todas exceto selecionadas', value: 'exclude' },
+								{ label: t('default:posterExport.PlanPostersExtractBody.filterModeInclude'), value: 'include' },
+								{ label: t('default:posterExport.PlanPostersExtractBody.filterModeExclude'), value: 'exclude' },
 							]}
 						/>
 					)}
 
-					{/* TODO: Re-enable after route export is implemented by hitouch */}
-					{/* {(context.data.contentMode === 'lines' || context.data.contentMode === 'lines_stops') && (
+					{(context.data.contentMode === 'lines' || context.data.contentMode === 'lines_stops') && (
 						<TagsInput
 							description={t('shared:filters.TagFilter.description')}
-							label={context.data.filterMode === 'include' ? 'IDs das linhas a exportar' : 'IDs das linhas a excluir'}
+							label={context.data.filterMode === 'include' ? t('default:posterExport.PlanPostersExtractBody.line_ids_include_label') : t('default:posterExport.PlanPostersExtractBody.line_ids_exclude_label')}
 							onChange={context.actions.setLineIds}
 							placeholder={t('shared:filters.TagFilter.placeholder')}
 							splitChars={[' ', ',', ';', '|']}
 							value={context.data.lineIds}
 							w="100%"
 						/>
-					)} */}
+					)}
 
 					{(context.data.contentMode === 'stops' || context.data.contentMode === 'lines_stops') && (
 						<TagsInput
