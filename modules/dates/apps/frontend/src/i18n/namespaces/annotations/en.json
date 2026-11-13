@@ -86,5 +86,10 @@
 		"AnnotationsListExportFooter": {
 			"submit": "Export"
 		}
+	},
+	"AnnotationsDatesSelect": {
+		"prompt": "Select occurrence dates",
+		"remove_month": "Remove month",
+		"select_month": "Select month"
 	}
 }

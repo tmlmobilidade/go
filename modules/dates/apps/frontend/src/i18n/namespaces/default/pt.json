@@ -28,11 +28,6 @@
 		"create": {
 			"title": "Nova anotação"
 		},
-		"dates": {
-			"prompt": "Selecione as datas da ocorrência",
-			"removeMonth": "Remover mês",
-			"selectMonth": "Selecionar mês"
-		},
 		"detail": {
 			"cancel": "Cancelar",
 			"confirm": "Eliminar",

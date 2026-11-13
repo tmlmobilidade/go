@@ -77,7 +77,7 @@ export function useAnnotationsListData(): UseAnnotationsListDataReturnType {
 				const matchesCategory = categoryFilter.value.includes(item.category ?? ANNOTATIONS_WITHOUT_CATEGORY);
 				return matchesAgencies && matchesDates && matchesCategory && matchesLocations;
 			})
-			.sort((a, b) => b.created_at - a.created_at);
+			.sort((a, b) => Math.max(0, ...b.dates) - Math.max(0, ...a.dates) || b.created_at - a.created_at || a._id.localeCompare(b._id));
 	}, [matches, agencyFilter.value, categoryFilter.value, datesFilter.isActive, datesFilter.startDate, datesFilter.endDate, locationFilter.value, locationFilter.matchingIds]);
 
 	//

@@ -43,7 +43,7 @@ export async function extractDatesAnnotationsV1(context: ExtractionTaskContext, 
 		max_retries: 0,
 		title: 'dates_annotations_v1',
 	});
-	for (const annotation of annotations.sort((a, b) => b.created_at - a.created_at)) {
+	for (const annotation of annotations.sort((a, b) => Math.max(0, ...b.dates) - Math.max(0, ...a.dates) || b.created_at - a.created_at || a._id.localeCompare(b._id))) {
 		await writer.write(formatAnnotationCsvRow(AnnotationSchema.parse(annotation), agencyNames));
 	}
 	await writer.flush();

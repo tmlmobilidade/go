@@ -86,5 +86,10 @@
 		"AnnotationsListExportFooter": {
 			"submit": "Exportar"
 		}
+	},
+	"AnnotationsDatesSelect": {
+		"prompt": "Seleccione las fechas de la incidencia",
+		"remove_month": "Quitar mes",
+		"select_month": "Seleccionar mes"
 	}
 }

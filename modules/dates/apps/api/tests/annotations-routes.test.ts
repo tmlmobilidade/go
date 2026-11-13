@@ -34,7 +34,7 @@ mock.module('@tmlmobilidade/go-interfaces-godb', {
 			core: { agencies: { findMany: async () => AGENCIES } },
 			dates: {
 				annotations: {
-					findById: async () => AnnotationSchema.parse({ _id: 'annotation', agency_ids: AFFECTED_AGENCY_IDS, created_at: 1_792_368_000_000, created_by: 'actor', title: 'Annotation', updated_at: 1_792_368_000_000 }),
+					findById: async () => AnnotationSchema.parse({ _id: 'annotation', agency_ids: AFFECTED_AGENCY_IDS, created_at: 1_792_368_000_000, created_by: 'actor', dates: [20261113], title: 'Annotation', updated_at: 1_792_368_000_000 }),
 					insertOne: async (data: Record<string, unknown>) => {
 						WRITES.push(data);
 						return AnnotationSchema.parse({ ...data, _id: 'annotation', created_at: 1_792_368_000_000, updated_at: 1_792_368_000_000 });
@@ -71,7 +71,7 @@ const cookies = { session_token: 'test-session' };
 const createPath = API_ROUTES.dates.ANNOTATIONS_CREATE.replace(getModuleConfig('dates', 'api_url'), '');
 
 test('the generated annotation create URL reaches the authenticated handler', async () => {
-	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], created_by: 'spoof', title: 'Annotation' }, url: createPath });
+	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], created_by: 'spoof', dates: [20261113], title: 'Annotation' }, url: createPath });
 	assert.equal(response.statusCode, 200);
 	assert.equal(response.json().status_code, '200');
 	assert.equal(response.json().data.created_by, 'actor');
@@ -80,7 +80,7 @@ test('the generated annotation create URL reaches the authenticated handler', as
 });
 
 test('annotation creation accepts missing and empty affected operators', async () => {
-	for (const payload of [{ title: 'Annotation' }, { agency_ids: [], title: 'Annotation' }]) {
+	for (const payload of [{ dates: [20261113], title: 'Annotation' }, { agency_ids: [], dates: [20261113], title: 'Annotation' }]) {
 		const response = await server.inject({ cookies, method: 'POST', payload, url: createPath });
 		assert.equal(response.statusCode, 200);
 		assert.deepEqual(response.json().data.agency_ids, []);
@@ -90,7 +90,7 @@ test('annotation creation accepts missing and empty affected operators', async (
 
 test('annotation creation denies users without create permission', async () => {
 	PERMISSIONS = [{ action: 'read', resources: { agency_ids: ['A'] }, scope: 'annotations' }];
-	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], title: 'Annotation' }, url: createPath });
+	const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], dates: [20261113], title: 'Annotation' }, url: createPath });
 	assert.equal(response.statusCode, 403);
 	assert.deepEqual(WRITES, []);
 });
@@ -116,7 +116,7 @@ test('assigned annotation reads require access to every affected operator', asyn
 
 test('creation is not registered at collection or list URLs', async () => {
 	for (const url of ['/annotations', '/annotations/list']) {
-		const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], title: 'Annotation' }, url });
+		const response = await server.inject({ cookies, method: 'POST', payload: { agency_ids: ['A'], dates: [20261113], title: 'Annotation' }, url });
 		assert.equal(response.statusCode, 404);
 	}
 	assert.deepEqual(WRITES, []);
@@ -152,13 +152,21 @@ test('annotation locations expose the authoritative hierarchy to authenticated u
 
 test('creation resolves and deduplicates location IDs using canonical reference data', async () => {
 	const location = { admin_level: 'incorrect', code: 'incorrect', name: 'Incorrect name', osm_id: 1 };
-	const response = await server.inject({ cookies, method: 'POST', payload: { locations: [location, location], title: 'National event' }, url: createPath });
+	const response = await server.inject({ cookies, method: 'POST', payload: { dates: [20261113], locations: [location, location], title: 'National event' }, url: createPath });
 	assert.equal(response.statusCode, 200);
 	assert.deepEqual(WRITES[0].locations, [{ admin_level: '2', code: null, name: 'Portugal', osm_id: 1 }]);
 });
 
 test('creation rejects unknown geographic IDs without writing the annotation', async () => {
-	const response = await server.inject({ cookies, method: 'POST', payload: { locations: [{ admin_level: '7', name: 'Unknown place', osm_id: 999 }], title: 'Event' }, url: createPath });
+	const response = await server.inject({ cookies, method: 'POST', payload: { dates: [20261113], locations: [{ admin_level: '7', name: 'Unknown place', osm_id: 999 }], title: 'Event' }, url: createPath });
 	assert.equal(response.statusCode, 400);
+	assert.deepEqual(WRITES, []);
+});
+
+test('annotation creation requires at least one occurrence date', async () => {
+	for (const payload of [{ title: 'Event' }, { dates: [], title: 'Event' }, { dates: null, title: 'Event' }]) {
+		const response = await server.inject({ cookies, method: 'POST', payload, url: createPath });
+		assert.equal(response.statusCode, 400);
+	}
 	assert.deepEqual(WRITES, []);
 });

@@ -31,7 +31,7 @@ export async function listAnnotationsHandler(request: FastifyRequest, reply: Fas
 	//
 	// Fetch annotations based on query filters
 
-	const allAnnotations = await goDb.dates.annotations.findMany(queryFilters);
+	const allAnnotations = await goDb.dates.annotations.findMany(queryFilters, { sort: [['dates', -1], ['created_at', -1], ['_id', 1]] });
 
 	return sendSuccessApiResponse(reply, allAnnotations);
 

@@ -13,7 +13,7 @@ export const AnnotationSchema = BaseDocumentSchema.extend({
 	agency_ids: z.array(z.string()).default([]),
 	/** Null explicitly clears the category; absent on legacy annotations. */
 	category: AnnotationCategorySchema.nullable().optional(),
-	dates: z.array(OperationalDateIntSchema).default([]),
+	dates: z.array(OperationalDateIntSchema).min(1),
 	description: z.string().optional(),
 	/** Observed operational or data impact, separate from the event description. */
 	impact: z.string().optional(),

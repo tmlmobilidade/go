@@ -6,6 +6,7 @@ import { ErrorDisplay, MultiSelect, Section, StandardFormController, Textarea, T
 import { useTranslation } from 'react-i18next';
 
 import { AnnotationsCategorySelect } from '../../shared/AnnotationsCategorySelect';
+import { AnnotationsDatesSelect } from '../../shared/AnnotationsDatesSelect';
 import { AnnotationsImpactInput } from '../../shared/AnnotationsImpactInput';
 import { AnnotationsLocationsSelect } from '../../shared/AnnotationsLocationsSelect';
 import { AnnotationsSourceInput } from '../../shared/AnnotationsSourceInput';
@@ -111,6 +112,14 @@ export function AnnotationCreateBasicInfo() {
 					/>
 				)}
 			/>
+			<StandardFormController
+				control={form.control}
+				name="dates"
+				render={({ field, fieldState }) => (
+					<AnnotationsDatesSelect error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
+				)}
+			/>
+
 		</Section>
 	);
 
