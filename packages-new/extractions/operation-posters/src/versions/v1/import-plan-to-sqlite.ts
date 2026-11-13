@@ -9,6 +9,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
 import fs from 'node:fs';
 
+import { createHitouchZip } from './create-hitouch-zip.js';
 import { exportAgencyFile } from './exports/agency.js';
 import { exportCalendarFiles } from './exports/calendars.js';
 import { exportDayTypesFile } from './exports/day_types.js';
@@ -21,7 +22,6 @@ import { type OperationPostersV1Tables } from './types/context.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 import { type GtfsCalendar } from './types/interfaces.js';
 import { buildDatesMap } from './utils/build-dates-map.js';
-import { createHitouchZip } from './utils/create-hitouch-zip.js';
 import { initOperationPostersV1Context } from './utils/init-context.js';
 import { mergeGtfsTables } from './utils/merge-gtfs-tables.js';
 

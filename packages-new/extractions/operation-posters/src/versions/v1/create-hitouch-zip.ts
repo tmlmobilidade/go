@@ -5,8 +5,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ZipFile } from 'yazl';
 
-import { ZIP_TIMEOUT_MS } from '../types/consts.js';
-import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
+import { ZIP_TIMEOUT_MS } from './types/consts.js';
+import { type ExportHitouchConfig } from './types/export-hitouch-config.js';
 
 /* * */
 
