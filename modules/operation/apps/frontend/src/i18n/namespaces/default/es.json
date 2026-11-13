@@ -116,6 +116,10 @@
 		"list": {
 			"PlansListCellFeedDates": {
 				"has_overlap": "Las fechas de validez de este plano están superpuestas con otros planes. Solo un plano debe estar activo para un período determinado."
+			},
+			"PlansListHeader": {
+				"extract": "Exportar",
+				"extractPDFs": "Exportar PDFs"
 			}
 		}
 	},
