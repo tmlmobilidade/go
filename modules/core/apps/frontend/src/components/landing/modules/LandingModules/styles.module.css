@@ -1,0 +1,35 @@
+/* * */
+/* GRID */
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	align-items: flex-start;
+	justify-content: flex-start;
+	gap: 100px 80px;
+	margin-top: 75px;
+}
+
+/* .grid > * {
+	grid-row: span 2;
+}
+
+.grid > *:nth-child(odd) {
+	grid-column: 1;
+} */
+
+.grid > *:nth-child(even) {
+	transform: translateY(100px);
+}
+
+/* * */
+/* LAST BLOCK & MEETINGS BLOCK */
+
+.lastBlock {
+	display: flex;
+	flex-direction: column;
+}
+
+.meetingsBlock {
+	padding: 30px;
+}
