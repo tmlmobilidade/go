@@ -2,9 +2,9 @@
 
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 
-import { type OperationPostersV1Tables } from '../../types/context.js';
-import { type DateGroup } from '../../types/interfaces.js';
-import { type GtfsCalendar, type GtfsDate } from '../../types/interfaces.js';
+import { type OperationPostersV1Tables } from '../types/context.js';
+import { type DateGroup } from '../types/interfaces.js';
+import { type GtfsCalendar, type GtfsDate } from '../types/interfaces.js';
 
 /* * */
 

@@ -25,9 +25,9 @@ import { exportTripsFile } from './exports/trips.js';
 import { type OperationPostersV1Tables } from './types/context.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 import { buildShapeExtensions } from './utils/build-shape-extensions.js';
-import { prepareCalendarServices } from './utils/calendar-services/prepare-calendar-services.js';
 import { initOperationPostersV1Context } from './utils/init-context.js';
 import { mergeGtfsTables } from './utils/merge-gtfs-tables.js';
+import { prepareCalendarServices } from './utils/prepare-calendar-services.js';
 
 /* * */
 

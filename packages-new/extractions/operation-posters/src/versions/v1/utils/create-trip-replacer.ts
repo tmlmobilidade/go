@@ -2,9 +2,9 @@
 
 import { generateRandomString } from '@tmlmobilidade/strings';
 
-import { type OperationPostersV1Tables } from '../../types/context.js';
-import { type GtfsCalendar } from '../../types/interfaces.js';
-import { type CalendarService, type DateGroup, type TripGroup } from '../../types/interfaces.js';
+import { type OperationPostersV1Tables } from '../types/context.js';
+import { type GtfsCalendar } from '../types/interfaces.js';
+import { type CalendarService, type DateGroup, type TripGroup } from '../types/interfaces.js';
 
 /* * */
 

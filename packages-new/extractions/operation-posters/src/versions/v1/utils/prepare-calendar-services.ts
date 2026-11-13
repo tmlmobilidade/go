@@ -5,9 +5,9 @@ import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-import { type OperationPostersV1Tables } from '../../types/context.js';
-import { type CalendarService, type GtfsCalendar } from '../../types/interfaces.js';
-import { buildDatesMap } from '../build-dates-map.js';
+import { type OperationPostersV1Tables } from '../types/context.js';
+import { type CalendarService, type GtfsCalendar } from '../types/interfaces.js';
+import { buildDatesMap } from './build-dates-map.js';
 import { rebuildCalendarServices } from './rebuild-calendar-services.js';
 
 /* * */
