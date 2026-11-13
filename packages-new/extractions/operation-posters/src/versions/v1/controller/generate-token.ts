@@ -1,16 +1,11 @@
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-import { getRequiredEnv } from './get-required-env.js';
-
-const TOKEN_TIMEOUT_MS = 30_000;
+import { getRequiredEnv } from '../lib/get-required-env.js';
+import { TOKEN_TIMEOUT_MS } from '../types/consts.js';
+import { TokenResponse } from '../types/controller.js';
 
 let ACCESS_TOKEN: string | undefined;
 let TOKEN_EXPIRES_AT = 0;
-
-interface TokenResponse {
-	access_token: string
-	expires_in: number
-}
 
 /**
 * Returns a valid access token, requesting a new one when needed.
@@ -19,14 +14,14 @@ export async function generateToken(): Promise<string> {
 	//
 
 	//
-	// Reuse the current token while it is still valid.
+	// A. Reuse the current token while it is still valid.
 
 	if (ACCESS_TOKEN && Date.now() < TOKEN_EXPIRES_AT) {
 		return ACCESS_TOKEN;
 	}
 
 	//
-	// Request a new token from the API.
+	// B. Request a new token from the API.
 
 	const body = new URLSearchParams({
 		client_id: getRequiredEnv('CLIENT_ID'),
@@ -36,6 +31,10 @@ export async function generateToken(): Promise<string> {
 	});
 
 	Logger.info({ message: 'Requesting ZPHERES access token.' });
+
+	//
+	// C. Send the request to the API
+
 	const response = await fetch(getRequiredEnv('ZPHERES_API_TOKEN_URL'), {
 		body,
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -48,7 +47,11 @@ export async function generateToken(): Promise<string> {
 		throw new Error(`Token request failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 	}
 
+	//
+	// D. Read the ZPHERES token response body
+
 	Logger.info({ message: 'Reading ZPHERES token response body.' });
+
 	const tokenData = await response.json().catch((error: unknown) => {
 		throw new Error('Failed to read ZPHERES token response body within the request timeout or parse it as JSON.', { cause: error });
 	}) as TokenResponse;
@@ -58,11 +61,15 @@ export async function generateToken(): Promise<string> {
 	}
 
 	//
-	// Refresh one minute before expiry to avoid using a token while it expires.
+	// E. Refresh one minute before expiry to avoid using a token while it expires.
 
 	ACCESS_TOKEN = tokenData.access_token;
 	TOKEN_EXPIRES_AT = Date.now() + Math.max(tokenData.expires_in - 60, 0) * 1_000;
+
 	Logger.info({ message: 'Received ZPHERES access token.' });
+
+	//
+	// F. Return the access token
 
 	return ACCESS_TOKEN;
 }

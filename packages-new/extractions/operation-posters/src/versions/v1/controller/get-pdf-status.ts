@@ -1,19 +1,16 @@
+import { getRequiredEnv } from '../lib/get-required-env.js';
+import { STATUS_TIMEOUT_MS } from '../types/consts.js';
+import { PDFStatus } from '../types/controller.js';
 import { generateToken } from './generate-token.js';
-import { getRequiredEnv } from './get-required-env.js';
-
-const STATUS_TIMEOUT_MS = 30_000;
-
-export interface PDFStatus {
-	[key: string]: unknown
-	downloadLink?: string
-	status: string
-}
 
 /**
-	 * Gets the status of a PDF generation in the API.
-	 */
+* Gets the status of a PDF generation in the API.
+*/
 export async function getPDFStatus(id: string): Promise<PDFStatus> {
 	//
+
+	//
+	// A. Send the request to the API
 
 	const accessToken = await generateToken();
 	const response = await fetch(getRequiredEnv('ZPHERES_SVG_STATUS_URL').replace(':id', id), {
@@ -30,11 +27,17 @@ export async function getPDFStatus(id: string): Promise<PDFStatus> {
 		throw new Error(`PDF status failed (${response.status}): ${responseBody.slice(0, 1_000)}`);
 	}
 
+	//
+	// C. Read the response body
+
 	const responseData: unknown = await response.json();
 
 	if (!responseData || typeof responseData !== 'object') {
 		throw new Error('PDF status response is missing a valid status.');
 	}
+
+	//
+	// D. Extract the download link and status from the response body
 
 	const { downloadLink, status } = responseData as Record<string, unknown>;
 
@@ -45,6 +48,9 @@ export async function getPDFStatus(id: string): Promise<PDFStatus> {
 	if (downloadLink !== undefined && typeof downloadLink !== 'string') {
 		throw new Error('PDF status response has an invalid download URL.');
 	}
+
+	//
+	// E. Return the PDF status
 
 	return {
 		...responseData,
