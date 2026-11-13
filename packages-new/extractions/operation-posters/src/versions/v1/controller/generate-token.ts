@@ -4,6 +4,9 @@ import { getRequiredEnv } from './get-required-env.js';
 
 const TOKEN_TIMEOUT_MS = 30_000;
 
+let ACCESS_TOKEN: string | undefined;
+let TOKEN_EXPIRES_AT = 0;
+
 interface TokenResponse {
 	access_token: string
 	expires_in: number
@@ -18,8 +21,8 @@ export async function generateToken(): Promise<string> {
 	//
 	// Reuse the current token while it is still valid.
 
-	if (this.accessToken && Date.now() < this.tokenExpiresAt) {
-		return this.accessToken;
+	if (ACCESS_TOKEN && Date.now() < TOKEN_EXPIRES_AT) {
+		return ACCESS_TOKEN;
 	}
 
 	//
@@ -57,9 +60,9 @@ export async function generateToken(): Promise<string> {
 	//
 	// Refresh one minute before expiry to avoid using a token while it expires.
 
-	this.accessToken = tokenData.access_token;
-	this.tokenExpiresAt = Date.now() + Math.max(tokenData.expires_in - 60, 0) * 1_000;
+	ACCESS_TOKEN = tokenData.access_token;
+	TOKEN_EXPIRES_AT = Date.now() + Math.max(tokenData.expires_in - 60, 0) * 1_000;
 	Logger.info({ message: 'Received ZPHERES access token.' });
 
-	return this.accessToken;
+	return ACCESS_TOKEN;
 }

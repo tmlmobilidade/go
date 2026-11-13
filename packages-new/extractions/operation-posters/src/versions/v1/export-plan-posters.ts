@@ -1,9 +1,8 @@
 /* * */
 
+import { PlanPostersCanvasProfileSchema } from '@tmlmobilidade/go-types-downloads';
 import { type ExtractionTaskContext, type OperationPostersV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { PlanPostersCanvasProfileSchema } from '@tmlmobilidade/go-types-downloads';
-
 import fs from 'node:fs';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
