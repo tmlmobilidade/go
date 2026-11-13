@@ -34,6 +34,9 @@
 		}
 	},
 	"versions": {
+		"dates-annotations-v1": {
+			"title": "Annotations (v1)"
+		},
 		"infrastructure-nodes-v1": {
 			"title": "Nodes (v1)"
 		},

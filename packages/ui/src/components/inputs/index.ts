@@ -4,6 +4,8 @@ export * from './ColorInput';
 export * from './CoordinatesInput';
 export * from './Dropzone';
 export * from './GeoJsonInput';
+export * from './GroupedTreeSelect';
+export * from './LocationsSelect';
 export * from './MultiSelect';
 export * from './NumberInput';
 export * from './PasswordInput';

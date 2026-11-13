@@ -5,6 +5,10 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ErrorDisplay, MultiSelect, Section, StandardFormController, Textarea, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { AnnotationsCategorySelect } from '../../shared/AnnotationsCategorySelect';
+import { AnnotationsImpactInput } from '../../shared/AnnotationsImpactInput';
+import { AnnotationsLocationsSelect } from '../../shared/AnnotationsLocationsSelect';
+import { AnnotationsSourcesInput } from '../../shared/AnnotationsSourcesInput';
 import { useAnnotationsAgenciesData } from '../../shared/use-annotations-agencies-data';
 import { useAnnotationsDetailFormContext } from '../AnnotationsDetailForm.context';
 
@@ -49,6 +53,13 @@ export function AnnotationsDetailBasicInfo() {
 			/>
 			<StandardFormController
 				control={form.control}
+				name="category"
+				render={({ field, fieldState }) => (
+					<AnnotationsCategorySelect error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
+				)}
+			/>
+			<StandardFormController
+				control={form.control}
 				name="description"
 				render={({ field, fieldState }) => (
 					<Textarea
@@ -65,17 +76,38 @@ export function AnnotationsDetailBasicInfo() {
 			/>
 			<StandardFormController
 				control={form.control}
+				name="impact"
+				render={({ field, fieldState }) => (
+					<AnnotationsImpactInput error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
+				)}
+			/>
+			<StandardFormController
+				control={form.control}
+				name="sources"
+				render={({ field, fieldState }) => (
+					<AnnotationsSourcesInput error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
+				)}
+			/>
+			<StandardFormController
+				control={form.control}
+				name="locations"
+				render={({ field, fieldState }) => (
+					<AnnotationsLocationsSelect error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
+				)}
+			/>
+			<StandardFormController
+				control={form.control}
 				name="agency_ids"
 				render={({ field, fieldState }) => (
 					<MultiSelect
 						data={options}
+						description={t('default:annotations.fields.agency_ids.description')}
 						disabled={!capabilities.editEnabled || isLoading || !!error}
 						error={fieldState.error?.message}
 						label={t('default:annotations.fields.agency_ids.label')}
 						onChange={field.onChange}
 						value={field.value ?? []}
 						w="100%"
-						withAsterisk={!CreateAnnotationSchema.shape.agency_ids.isOptional()}
 					/>
 				)}
 			/>

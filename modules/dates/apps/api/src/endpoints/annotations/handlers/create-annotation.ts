@@ -5,6 +5,8 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
+import { resolveAnnotationLocations } from '../utils/resolve-annotation-locations.js';
+
 /**
  * Inserts a new annotation into the database.
  * @param request The request object containing the annotation data in the body.
@@ -50,6 +52,20 @@ export async function createAnnotationHandler(request: FastifyRequest<{ Body: Cr
 			error: 'User not authorized to create annotations for at least one of the specified agencies.',
 			status_code: '403',
 		});
+	}
+
+	//
+	// Resolve submitted location IDs against the authoritative hierarchy.
+
+	if (validatedAnnotation.data.locations) {
+		const locations = await resolveAnnotationLocations(validatedAnnotation.data.locations);
+		if (!locations) {
+			return sendErrorApiResponse(reply, {
+				error: 'One or more selected locations are not available',
+				status_code: '400',
+			});
+		}
+		validatedAnnotation.data.locations = locations;
 	}
 
 	//

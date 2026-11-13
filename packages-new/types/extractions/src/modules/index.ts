@@ -1,3 +1,4 @@
+export * from './dates/index.js';
 export * from './infrastructure/index.js';
 export * from './offer/index.js';
 export * from './operation/index.js';

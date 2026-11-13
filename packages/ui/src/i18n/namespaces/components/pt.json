@@ -230,5 +230,9 @@
 		"WeekdaySelector": {
 			"sundayAndHolidays": "{day} e feriados"
 		}
+	},
+	"LocationsSelect": {
+		"no_results": "Nenhum local encontrado",
+		"placeholder": "Pesquisar ou explorar locais"
 	}
 }

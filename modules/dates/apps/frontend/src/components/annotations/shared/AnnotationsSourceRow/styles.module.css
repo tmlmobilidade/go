@@ -1,0 +1,16 @@
+.row {
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 4px;
+}
+
+.link {
+	display: inline-flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	color: var(--color-primary);
+	overflow-wrap: anywhere;
+}
+
+.link svg {
+	flex-shrink: 0;
+}

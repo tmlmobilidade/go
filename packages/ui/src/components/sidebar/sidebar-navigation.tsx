@@ -141,10 +141,7 @@ export const sidebarNavigationGroups = [
 				_id: 'calendar',
 				href: PAGE_ROUTES.dates.CALENDAR_LIST,
 				icon: <IconCalendarEvent />,
-				permissions: [
-					{ action: 'read', resources: { agency_ids: [] }, scope: 'year_periods' },
-					{ action: 'read', resources: { agency_ids: [] }, scope: 'annotations' },
-				],
+				permissions: [],
 			},
 
 			{
@@ -158,7 +155,7 @@ export const sidebarNavigationGroups = [
 				_id: 'annotations',
 				href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 				icon: <IconNote />,
-				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'annotations' }],
+				permissions: [],
 			},
 		],
 	},

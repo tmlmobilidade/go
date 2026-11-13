@@ -26,32 +26,16 @@ export async function getAnnotationHandler(request: FastifyRequest<{ Params: { i
 	}
 
 	//
-	// Get the resource permissions for annotations for the current user.
+	// Unassigned annotations are readable by every authenticated user. Assigned
+	// annotations require read access to every affected agency.
 
-	const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.read);
-
-	//
-	// If no permission found, deny access
-
-	if (!userAnnotationPermissions) {
-		return sendErrorApiResponse(reply, {
-			error: 'You are not authorized to read annotations',
-			status_code: '403',
-		});
-	}
-
-	//
-	// Validate that user has permission for at least one of this annotation's agencies
-
-	const hasPermissionForAnyAgency = PermissionCatalog.hasPermissionResource({
-		action: PermissionCatalog.all.annotations.actions.read,
+	const access = PermissionCatalog.getPermissionResourceAccess<string>({
+		checks: [{ action: PermissionCatalog.all.annotations.actions.read, scope: PermissionCatalog.all.annotations.scope }],
 		permissions: request.permissions,
 		resource_key: 'agency_ids',
-		scope: PermissionCatalog.all.annotations.scope,
-		value: annotationData.agency_ids,
 	});
 
-	if (!hasPermissionForAnyAgency) {
+	if (!access.allowAll && (annotationData.agency_ids ?? []).some(id => !access.values.includes(id))) {
 		return sendErrorApiResponse(reply, {
 			error: 'You are not authorized to read this annotation',
 			status_code: '403',
