@@ -1,13 +1,13 @@
 /* * */
 
-import { PlanPostersCanvasProfileSchema } from '@tmlmobilidade/go-types-downloads';
+import { type PlanPostersCanvasProfile } from '@tmlmobilidade/go-types-downloads';
 import { type ExtractionTaskContext, type OperationPostersV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
 
-import { generatePlansPostersDownloadUrl } from './pipeline.js';
+import { generatePlanDownload } from './generate-plan-download.js';
 
 /* * */
 
@@ -15,7 +15,7 @@ export async function exportPlansPostersFile(context: ExtractionTaskContext, pla
 	//
 
 	//
-	// A. Retrieve the plan posters download URL
+	// A. Validate the plans
 
 	for (const plan of plans) {
 		if (!plan.attachments.operation_gtfs_normalized) {
@@ -24,12 +24,10 @@ export async function exportPlansPostersFile(context: ExtractionTaskContext, pla
 	}
 
 	//
-	// B. Generate the plan posters download URL
+	// B. Generate the plan posters download
 
-	const canvasProfile = properties.canvas_profile ? PlanPostersCanvasProfileSchema.parse(properties.canvas_profile) : undefined;
-
-	const downloadUrl = await generatePlansPostersDownloadUrl(plans, extractionId, {
-		canvas_profile: canvasProfile,
+	const downloadUrl = await generatePlanDownload(plans, extractionId, {
+		canvas_profile: properties.canvas_profile as PlanPostersCanvasProfile ?? 'auto',
 		content_mode: properties.content_mode,
 		line_codes: properties.line_ids ?? [],
 		lines_mode: properties.lines_mode,
@@ -51,6 +49,9 @@ export async function exportPlansPostersFile(context: ExtractionTaskContext, pla
 	// D. Write the plan posters to the output file
 
 	await pipeline(response.body, fs.createWriteStream(outputFile));
+
+	//
+	// E. Validate the output file
 
 	if (!fs.statSync(outputFile).size) throw new Error('Poster ZIP download returned an empty file.');
 }

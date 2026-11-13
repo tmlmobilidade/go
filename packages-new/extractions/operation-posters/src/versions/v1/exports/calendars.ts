@@ -1,40 +1,25 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { type CalendarAssignmentsExt, type CalendarDates, type Calendars } from '@tmlmobilidade/go-types-gtfs-hitouch';
+import { type Calendars } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-import { DAY_TYPES } from '../day-types.js';
-import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
+import { type OperationPostersV1Context } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
-import { type GtfsCalendar } from '../types/interfaces.js';
-import { rebuildCalendarServices } from '../utils/calendar-services/rebuild-calendar-services.js';
-import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
+import { type CalendarService } from '../types/interfaces.js';
 
 /* * */
 
-export async function exportCalendarFiles(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig, calendarsByService: Map<string, GtfsCalendar>) {
+export async function exportCalendarFile(context: OperationPostersV1Context, services: readonly CalendarService[], exportConfig: ExportHitouchConfig) {
 	//
 
 	//
-	// A. Rebuild services and prepare the calendar assignments
+	// A. Write each rebuilt service's date range
+	// Dates are activated explicitly in calendar_dates.txt, so all weekdays stay off.
 
-	const services = await rebuildCalendarServices(sqlTables, calendarsByService);
-	const assignments: CalendarAssignmentsExt[] = [];
-	let exportedDates = 0;
-
-	//
-	// B. Write calendars, day-type assignments and operating dates
-
-	Logger.info({ message: 'Writing rebuilt calendar files...' });
-
-	for (const service of services) {
-		//
-		// 1. Write the service date range
-		// Dates are activated explicitly in calendar_dates.txt, so all weekdays stay off.
-
-		if (exportConfig.source_has_calendar) {
+	if (exportConfig.source_has_calendar) {
+		for (const service of services) {
 			const calendar: Calendars = {
 				service_id: service._id,
 				start_date: OperationalDateIntSchema.parse(service.dates.at(0) ?? exportConfig.date_range.start),
@@ -49,50 +34,12 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 			};
 			await context.writers.calendars.write(calendar);
 		}
-
-		//
-		// 2. Assign the service to its matching day type
-
-		for (const dayType of DAY_TYPES) {
-			if (service.day_type !== dayType.day_type) continue;
-			assignments.push({ day_type_id: dayType._id, service_id: service._id });
-		}
-
-		//
-		// 3. Activate each operating date explicitly
-
-		for (const date of service.dates) {
-			const calendarDate: CalendarDates = {
-				date: OperationalDateIntSchema.parse(date),
-				exception_type: '1',
-				service_id: service._id,
-			};
-			await context.writers.calendar_dates.write(calendarDate);
-			await yieldToEventLoop(++exportedDates);
-		}
 	}
 
 	//
-	// C. Flush the calendar files and assignments
+	// B. Flush calendar.txt
 
 	await context.writers.calendars.flush();
-	await context.writers.calendar_dates.flush();
-	if (assignments.length) {
-		await context.writers.calendar_assignments_ext.write(assignments);
-		await context.writers.calendar_assignments_ext.flush();
-	}
 
-	//
-	// D. Log the exported files and service date counts
-
-	const files = [
-		...(exportConfig.source_has_calendar ? ['calendar.txt'] : []),
-		'calendar_dates.txt',
-		...(assignments.length ? ['calendar_assignmentsExt.txt'] : []),
-	];
-	Logger.info({ message: `Exported ${files.join(', ')} files.` });
-	Logger.info({ message: 'Merged service IDs into new calendars.' });
-	for (const service of services) {
-		Logger.info({ message: `Service ID "${service._id}" has ${service.dates.length} dates.` });
-	}
+	Logger.info({ message: exportConfig.source_has_calendar ? 'Exported calendar.txt file.' : 'Skipped calendar.txt file because the source has no calendar.' });
 }

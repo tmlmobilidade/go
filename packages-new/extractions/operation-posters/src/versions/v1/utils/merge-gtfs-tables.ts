@@ -28,14 +28,18 @@ export function mergeGtfsTables(target: OperationPostersV1Tables | undefined, so
 	}
 
 	//
-	// C. Attach the next plan's database for the merge
+	// C. Open the source and target databases
 
 	const sourceDb = source._db.databaseInstance;
 	const targetDb = target._db.databaseInstance;
+
+	//
+	// D. Attach the source database to the target database
+
 	targetDb.prepare('ATTACH DATABASE ? AS imported_plan').run(sourceDb.name);
 	try {
 		//
-		// D. Extend the combined schema and copy rows by column name in one transaction
+		// E. Extend the combined schema and copy rows by column name in one transaction
 
 		targetDb.transaction(() => {
 			for (const table of ['routes', 'trips', 'stop_times', 'shapes', 'stops'] as const) {

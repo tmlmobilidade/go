@@ -16,7 +16,7 @@ import { type PDFStatus } from './types/interfaces.js';
 
 /* * */
 
-export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: string, options?: ExportHitouchOptions): Promise<string> {
+export async function generatePlanDownload(plans: Plan[], exportId: string, options?: ExportHitouchOptions): Promise<string> {
 	//
 
 	//
@@ -35,6 +35,7 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 		// 1. Prepare the combined GTFS files
 
 		Logger.info({ message: `Preparing combined GTFS files for poster export ${exportId} (${plans.length} plans).` });
+
 		exportConfig = await importPlansToSqlite(plans, { ...options, workdir: `/tmp/hitouch/export-${exportId}` });
 
 		//

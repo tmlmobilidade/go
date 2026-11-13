@@ -1,9 +1,8 @@
 /* * */
 
-import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
-import { OperationalDateIntSchema, validateOperationalDate } from '@tmlmobilidade/go-types-shared';
+import { validateOperationalDate } from '@tmlmobilidade/go-types-shared';
 import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { Timer } from '@tmlmobilidade/timer';
@@ -11,17 +10,22 @@ import fs from 'node:fs';
 
 import { createHitouchZip } from './create-hitouch-zip.js';
 import { exportAgencyFile } from './exports/agency.js';
-import { exportCalendarFiles } from './exports/calendars.js';
+import { exportCalendarAssignmentsExtFile } from './exports/calendar_assignments_ext.js';
+import { exportCalendarDatesFile } from './exports/calendar_dates.js';
+import { exportCalendarFile } from './exports/calendars.js';
 import { exportDayTypesFile } from './exports/day_types.js';
 import { exportRoutesFile } from './exports/routes.js';
-import { exportShapesFiles } from './exports/shapes.js';
+import { exportRoutesToCanvasExtFile } from './exports/routes_to_canvas_ext.js';
+import { exportShapesFile } from './exports/shapes.js';
+import { exportShapesExtFile } from './exports/shapes_ext.js';
 import { exportStopTimesFile } from './exports/stop-times.js';
 import { exportStopsFile } from './exports/stops.js';
+import { exportStopsToCanvasExtFile } from './exports/stops_to_canvas_ext.js';
 import { exportTripsFile } from './exports/trips.js';
 import { type OperationPostersV1Tables } from './types/context.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
-import { type GtfsCalendar } from './types/interfaces.js';
-import { buildDatesMap } from './utils/build-dates-map.js';
+import { buildShapeExtensions } from './utils/build-shape-extensions.js';
+import { prepareCalendarServices } from './utils/calendar-services/prepare-calendar-services.js';
 import { initOperationPostersV1Context } from './utils/init-context.js';
 import { mergeGtfsTables } from './utils/merge-gtfs-tables.js';
 
@@ -78,17 +82,20 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 	}
 
 	//
-	// E. Initialize the context and calendars map
+	// E. Initialize the context and track each service's source plan
 
 	const context = initOperationPostersV1Context(runId, exportConfig.workdir);
-	const calendarsByService = new Map<string, GtfsCalendar>();
+	const plansByService = new Map<string, Plan>();
 
 	try {
 		for (const plan of plans) {
 			//
-			// 1. Import the GTFS file for the current plan
+
+			//
+			// 1. Import the plan's GTFS file to the combined database
 
 			const operationFileUrl = await storageProvider.getSignedUrl({ fileId: plan.attachments.operation_gtfs_normalized ?? undefined });
+
 			const importedGtfs = await importGtfsToDatabase<OperationPostersV1Tables>({
 				source: { url: operationFileUrl },
 				time_range: { date_range: { end: plan.active_until, start: plan.active_from } },
@@ -98,23 +105,19 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 			// 2. Merge the GTFS tables with the combined database
 
 			try {
-				const agencyHolidays = await goDb.dates.holidays.findMany({ agency_ids: { $in: [plan.agency_id] } });
-				const calendar: GtfsCalendar = {
-					dates: buildDatesMap({
-						end: OperationalDateIntSchema.parse(plan.active_until),
-						start: OperationalDateIntSchema.parse(plan.active_from),
-					}, agencyHolidays),
-					plan_id: plan._id,
-				};
-
 				sqlGtfs = mergeGtfsTables(sqlGtfs, importedGtfs);
+
+				//
+				// Preserve service ownership before cleaning up the imported database.
+				// Calendar export uses the source plan to classify operating dates later.
 				for (const serviceId of Object.keys(importedGtfs.calendar_dates)) {
-					calendarsByService.set(serviceId, calendar);
+					plansByService.set(serviceId, plan);
 				}
+
 				Logger.info({ message: `Imported plan ${plan._id} into the combined poster database.` });
 			} finally {
 				//
-				// 3. Cleanup the imported GTFS database
+				// 3. Cleanup the imported plan's GTFS database
 
 				if (importedGtfs !== sqlGtfs) importedGtfs._db.cleanup();
 			}
@@ -128,15 +131,24 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 		Logger.info({ message: `Exporting ${plans.length} plans to one HiTouch GTFS...` });
 		const exportTimer = new Timer();
 
-		await exportCalendarFiles(context, sqlGtfs, exportConfig, calendarsByService);
+		// Rebuild services once: every exporter must use the final trip and stop-time IDs.
+		const services = await prepareCalendarServices(sqlGtfs, plansByService);
+		const shapeExtensions = buildShapeExtensions(sqlGtfs.trips.all());
 
-		const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
+		const routeIds = await exportRoutesFile(context, sqlGtfs);
 
+		// Each exporter owns one output file; finish all writes before database cleanup.
 		const results = await Promise.allSettled([
+			exportCalendarFile(context, services, exportConfig),
+			exportCalendarDatesFile(context, services),
+			exportCalendarAssignmentsExtFile(context, services),
+			exportRoutesToCanvasExtFile(context, sqlGtfs, exportConfig, routeIds),
 			exportTripsFile(context, sqlGtfs, routeIds, exportConfig),
 			exportStopTimesFile(context, sqlGtfs, exportConfig),
-			exportShapesFiles(context, sqlGtfs),
-			exportStopsFile(context, sqlGtfs, exportConfig, routeIds),
+			exportShapesFile(context, sqlGtfs, shapeExtensions),
+			exportShapesExtFile(context, sqlGtfs, shapeExtensions),
+			exportStopsFile(context, sqlGtfs),
+			exportStopsToCanvasExtFile(context, sqlGtfs, exportConfig, routeIds),
 			(async () => {
 				// Keep writes to the shared agency file in plan order.
 				for (const plan of plans) await exportAgencyFile(context, plan);
