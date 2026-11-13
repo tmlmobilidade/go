@@ -2,7 +2,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { getRequiredEnv } from '../lib/get-required-env.js';
 import { TOKEN_TIMEOUT_MS } from '../types/consts.js';
-import { TokenResponse } from '../types/controller.js';
+import { TokenResponse } from '../types/interfaces.js';
 
 let ACCESS_TOKEN: string | undefined;
 let TOKEN_EXPIRES_AT = 0;

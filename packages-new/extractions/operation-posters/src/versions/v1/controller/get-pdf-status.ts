@@ -1,6 +1,6 @@
 import { getRequiredEnv } from '../lib/get-required-env.js';
 import { STATUS_TIMEOUT_MS } from '../types/consts.js';
-import { PDFStatus } from '../types/controller.js';
+import { PDFStatus } from '../types/interfaces.js';
 import { generateToken } from './generate-token.js';
 
 /**
