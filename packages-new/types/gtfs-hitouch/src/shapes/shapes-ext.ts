@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationPostersV1ShapesExtSchema = z.object({
+export const ShapesExtSchema = z.object({
 	direction_description: z.string(),
 	note: z.string(),
 	priority_number: z.number(),
@@ -13,4 +13,4 @@ export const OperationPostersV1ShapesExtSchema = z.object({
 	via_text: z.string(),
 });
 
-export type OperationPostersV1ShapesExt = z.output<typeof OperationPostersV1ShapesExtSchema>;
+export type ShapesExt = z.output<typeof ShapesExtSchema>;

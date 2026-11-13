@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationPostersV1CalendarsSchema = z.object({
+export const CalendarsSchema = z.object({
 	end_date: OperationalDateIntSchema,
 	friday: z.enum(['0', '1']).default('0'),
 	monday: z.enum(['0', '1']).default('0'),
@@ -18,4 +18,4 @@ export const OperationPostersV1CalendarsSchema = z.object({
 	wednesday: z.enum(['0', '1']).default('0'),
 });
 
-export type OperationPostersV1Calendars = z.output<typeof OperationPostersV1CalendarsSchema>;
+export type Calendars = z.output<typeof CalendarsSchema>;

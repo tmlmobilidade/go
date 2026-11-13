@@ -3,7 +3,6 @@
 export * from './agency/index.js';
 export * from './calendars/index.js';
 export * from './day-types/index.js';
-export * from './feed-info/index.js';
 export * from './routes/index.js';
 export * from './shapes/index.js';
 export * from './stop-times/index.js';

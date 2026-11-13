@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationPostersV1AgencySchema = z.object({
+export const AgencySchema = z.object({
 	agency_email: z.string().optional(),
 	agency_fare_url: z.string().optional(),
 	agency_id: z.string(),
@@ -15,4 +15,4 @@ export const OperationPostersV1AgencySchema = z.object({
 	agency_url: z.string().url(),
 });
 
-export type OperationPostersV1Agency = z.output<typeof OperationPostersV1AgencySchema>;
+export type Agency = z.output<typeof AgencySchema>;

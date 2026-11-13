@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationPostersV1ShapesSchema = z.object({
+export const ShapesSchema = z.object({
 	shape_dist_traveled: z.number().nonnegative(),
 	shape_id: z.string(),
 	shape_pt_lat: z.number().min(-90).max(90),
@@ -12,4 +12,4 @@ export const OperationPostersV1ShapesSchema = z.object({
 	shape_pt_sequence: z.number().int().nonnegative(),
 });
 
-export type OperationPostersV1Shapes = z.output<typeof OperationPostersV1ShapesSchema>;
+export type Shapes = z.output<typeof ShapesSchema>;

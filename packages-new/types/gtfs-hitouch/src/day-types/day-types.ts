@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationPostersV1DayTypesExtSchema = z.object({
+export const DayTypesExtSchema = z.object({
 	day_type_id: z.string(),
 	friday: z.string(),
 	monday: z.string(),
@@ -17,4 +17,4 @@ export const OperationPostersV1DayTypesExtSchema = z.object({
 	wednesday: z.string(),
 });
 
-export type OperationPostersV1DayTypesExt = z.output<typeof OperationPostersV1DayTypesExtSchema>;
+export type DayTypesExt = z.output<typeof DayTypesExtSchema>;
