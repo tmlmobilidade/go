@@ -10,15 +10,6 @@ import { usePlanPostersExtractFormContext } from '../PlanPostersExtract.context'
 
 /* * */
 
-const canvasProfileOptions = [
-	{ label: 'Canvas A', value: '0Master.A' },
-	{ label: 'Canvas B', value: '0Master.B' },
-	{ label: 'Canvas C', value: '0Master.C' },
-	{ label: 'Canvas F', value: '0Master.F' },
-];
-
-/* * */
-
 export function PlanPostersExtractBody() {
 	//
 
@@ -27,10 +18,19 @@ export function PlanPostersExtractBody() {
 
 	const context = usePlanPostersExtractFormContext();
 	const { t } = useTranslation();
+
+	//
+	// B. Transform data
+
 	const availableCanvasProfiles = [
 		{ label: t('default:posterExport.PlanPostersExtractBody.canvasProfileAutomatic'), value: 'auto' },
-		...canvasProfileOptions,
+		{ label: t('default:posterExport.PlanPostersExtractBody.canvas_profiles.a'), value: '0Master.A' },
+		{ label: t('default:posterExport.PlanPostersExtractBody.canvas_profiles.b'), value: '0Master.B' },
+		{ label: t('default:posterExport.PlanPostersExtractBody.canvas_profiles.c'), value: '0Master.C' },
+		{ label: t('default:posterExport.PlanPostersExtractBody.canvas_profiles.f'), value: '0Master.F' },
 	];
+
+	//
 
 	const plansOptions = useMemo(() => context.data.agencyIds.map(agencyId => ({
 		agencyId,

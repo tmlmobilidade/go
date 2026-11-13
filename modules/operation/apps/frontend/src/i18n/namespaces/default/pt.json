@@ -119,8 +119,14 @@
 	"posterExport": {
 		"PlanPostersExtractBody": {
 			"canvasProfileAutomatic": "Automático",
-			"canvasProfileDescription": "Escolha Automático para selecionar o modelo por paragem e sentido, ou aplique um modelo fixo às paragens exportadas.",
-			"canvasProfileLabel": "Modelo de Canvas"
+			"canvasProfileDescription": "Escolha Automático para selecionar o modelo por paragem, ou aplique um modelo fixo aos PDFs exportados.",
+			"canvasProfileLabel": "Modelo do PDF",
+			"canvas_profiles": {
+				"a": "Modelo A",
+				"b": "Modelo B",
+				"c": "Modelo C",
+				"f": "Modelo F"
+			}
 		},
 		"agenciesDescription": "Selecione os operadores e escolha um plano por operador.",
 		"agenciesLabel": "Selecionar operadores",

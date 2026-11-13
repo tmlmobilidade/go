@@ -1,11 +1,4 @@
 {
-	"posterExport": {
-		"PlanPostersExtractBody": {
-			"canvasProfileAutomatic": "Automatic",
-			"canvasProfileDescription": "Choose Automatic to select the model per stop and direction, or apply a fixed model to the exported stops.",
-			"canvasProfileLabel": "Canvas model"
-		}
-	},
 	"list": {
 		"RidesList": {
 			"columns": {
@@ -122,6 +115,25 @@
 				"has_overlap": "The validity dates of this plan are overlapping with other plans. Only one plan should be active for a given period."
 			}
 		}
+	},
+	"posterExport": {
+		"PlanPostersExtractBody": {
+			"canvasProfileAutomatic": "Automatic",
+			"canvasProfileDescription": "Choose Automatic to select the model per stop, or apply a fixed model to the exported PDFs.",
+			"canvasProfileLabel": "PDF model",
+			"canvas_profiles": {
+				"a": "Model A",
+				"b": "Model B",
+				"c": "Model C",
+				"f": "Model F"
+			}
+		},
+		"agenciesDescription": "Select operators and select a plan for each operator.",
+		"agenciesLabel": "Select operators",
+		"combinedFilter": "Lines and stops filter",
+		"linesAndStops": "Lines and stops",
+		"planDescription": "Select a single plan for this operator.",
+		"planLabel": "Select plan"
 	},
 	"rides": {
 		"acceptance": {
