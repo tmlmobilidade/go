@@ -476,6 +476,33 @@
 			"confirmMessage": "¿Eliminar esta zona? Esta acción no se puede deshacer.",
 			"confirmTitle": "Eliminar zona"
 		},
+		"extract": {
+			"ZonesExtract": {
+				"action": {
+					"error_title": "Error al solicitar la exportación",
+					"success_title": "Exportación solicitada"
+				}
+			},
+			"ZonesExtractFooter": {
+				"button": {
+					"label": "Exportar"
+				}
+			},
+			"ZonesExtractHeader": {
+				"title": "Exportar zonas"
+			},
+			"ZonesExtractProperties": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"version": {
+						"label": "Versión"
+					}
+				},
+				"placeholder": "Seleccione una o más opciones..."
+			}
+		},
 		"fields": {
 			"agency_ids": {
 				"label": "Operadores"
@@ -494,6 +521,11 @@
 			}
 		},
 		"list": {
+			"actions": {
+				"extract": {
+					"label": "Exportar zonas"
+				}
+			},
 			"columns": {
 				"agency_ids": "Operadores",
 				"code": "Código",
