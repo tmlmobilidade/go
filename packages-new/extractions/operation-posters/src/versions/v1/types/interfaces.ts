@@ -17,6 +17,8 @@ export interface TokenResponse {
 	expires_in: number
 }
 
+/* * */
+
 // GTFS types
 export interface GtfsDate {
 	date: OperationalDateInt
@@ -30,6 +32,8 @@ export interface GtfsCalendar {
 	plan_id: string
 }
 
+/* * */
+
 // operation posters types
 export interface DayTypeConfig {
 	_id: string
@@ -37,6 +41,8 @@ export interface DayTypeConfig {
 	index: number
 	name: string
 }
+
+/* * */
 
 // calendar services types
 export interface CalendarService {
@@ -56,4 +62,26 @@ export interface TripGroup {
 export interface DateGroup {
 	dates: Set<OperationalDateInt>
 	day_type: GtfsDate['day_type']
+}
+
+/* * */
+
+// stop canvas targets types
+
+export interface StopRouteDirection {
+	direction_id: number
+	route_id: string
+	stop_count: number
+	stop_id: string
+}
+
+/* * */
+
+// writer options types
+export interface PosterWriterOptions<T> {
+	batch_size?: number
+	fields?: Extract<keyof T, string>[]
+	include_bom?: boolean
+	newline?: string
+	quotes?: Papa.UnparseConfig['quotes']
 }

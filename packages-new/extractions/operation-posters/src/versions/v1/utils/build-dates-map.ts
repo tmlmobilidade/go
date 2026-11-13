@@ -55,5 +55,8 @@ export function buildDatesMap(dateRange: { end: OperationalDateInt, start: Opera
 		});
 	}
 
+	//
+	// C. Return the dates map
+
 	return datesMap;
 }

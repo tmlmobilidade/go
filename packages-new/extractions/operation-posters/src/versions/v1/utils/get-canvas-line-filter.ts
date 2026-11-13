@@ -20,6 +20,7 @@ export function getCanvasLineFilter(routeIds: string[], config: ExportHitouchCon
 	if (config.content_mode !== 'lines' && config.content_mode !== 'lines_stops') {
 		return { clause: '', parameters: [] };
 	}
+
 	//
 	// B. Validate the selection and apply include or exclude mode
 
@@ -29,6 +30,7 @@ export function getCanvasLineFilter(routeIds: string[], config: ExportHitouchCon
 		const selected = selectedLines.has(getPosterRouteId(routeId));
 		return config.lines_mode === 'exclude' ? !selected : selected;
 	});
+
 	//
 	// C. Build the SQL condition and its bound route IDs
 

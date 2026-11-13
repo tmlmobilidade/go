@@ -1,6 +1,6 @@
 /* * */
 
-const ROWS_PER_EVENT_LOOP_YIELD = 1_000;
+import { ROWS_PER_EVENT_LOOP_YIELD } from '../types/consts.js';
 
 /**
  * Allow database and SSH keepalive timers to run during large synchronous exports.

@@ -5,12 +5,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ZipFile } from 'yazl';
 
+import { ZIP_TIMEOUT_MS } from '../types/consts.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
-
-/* * */
-
-const UNSUPPORTED_HITOUCH_FILES = new Set(['feed_info.txt']);
-const ZIP_TIMEOUT_MS = 2 * 60_000;
 
 /* * */
 
@@ -31,10 +27,8 @@ export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promi
 
 	const textFiles = fs.readdirSync(exportConfig.workdir, { withFileTypes: true })
 		.filter((entry) => {
-			const isSupported = !UNSUPPORTED_HITOUCH_FILES.has(entry.name.toLowerCase());
 			const isTextFile = path.extname(entry.name).toLowerCase() === '.txt';
-
-			return entry.isFile() && isTextFile && isSupported;
+			return entry.isFile() && isTextFile;
 		})
 		.map(entry => entry.name)
 		.sort();
@@ -43,6 +37,9 @@ export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promi
 		throw new Error(`No TXT files found in ${exportConfig.workdir}.`);
 	}
 
+	//
+	// C. Reject empty TXT files
+
 	const emptyTextFiles = textFiles.filter(fileName => fs.statSync(path.join(exportConfig.workdir, fileName)).size === 0);
 
 	if (emptyTextFiles.length) {
@@ -50,7 +47,7 @@ export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promi
 	}
 
 	//
-	// C. Prepare the archive with TXT files at its root
+	// D. Prepare the archive with TXT files at its root
 
 	Logger.info({ message: `Zipping ${textFiles.length} HiTouch files from ${exportConfig.workdir}...` });
 
@@ -65,9 +62,11 @@ export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promi
 	}
 
 	//
-	// D. Stream the archive to disk with timeout and error handling
+	// E. Stream the archive to disk with timeout and error handling
 
 	await new Promise<void>((resolve, reject) => {
+		//
+
 		//
 		// 1. Open the output stream and start the timeout
 
@@ -107,7 +106,7 @@ export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promi
 	});
 
 	//
-	// E. Validate the completed archive and move it to the final path
+	// F. Validate the completed archive and move it to the final path
 
 	const zipSize = fs.statSync(temporaryOutputPath).size;
 
@@ -117,6 +116,9 @@ export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promi
 	}
 
 	fs.renameSync(temporaryOutputPath, outputPath);
+
+	//
+	// G. Return the output path
 
 	return outputPath;
 }

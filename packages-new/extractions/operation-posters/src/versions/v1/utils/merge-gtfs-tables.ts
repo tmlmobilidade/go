@@ -69,5 +69,8 @@ export function mergeGtfsTables(target: OperationPostersV1Tables | undefined, so
 		targetDb.exec('DETACH DATABASE imported_plan');
 	}
 
+	//
+	// F. Return the merged tables
+
 	return target;
 }

@@ -77,6 +77,9 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, O
 		}
 	}
 
+	//
+	// C. Return the shape extensions
+
 	return extensions;
 }
 

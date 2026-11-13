@@ -6,16 +6,7 @@ import path from 'node:path';
 import Papa from 'papaparse';
 
 import { type OperationPostersV1Context } from '../types/context.js';
-
-/* * */
-
-interface PosterWriterOptions<T> {
-	batch_size?: number
-	fields?: Extract<keyof T, string>[]
-	include_bom?: boolean
-	newline?: string
-	quotes?: Papa.UnparseConfig['quotes']
-}
+import { type PosterWriterOptions } from '../types/interfaces.js';
 
 /* * */
 
