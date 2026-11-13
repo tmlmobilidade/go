@@ -6,11 +6,11 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { generatePDF } from './controller/generate-pdf.js';
+import { generateToken } from './controller/generate-token.js';
+import { getPDFStatus } from './controller/get-pdf-status.js';
 import { importPlansToSqlite } from './import-plan-to-sqlite.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
-import { generateToken } from './controller/generate-token.js';
-import { generatePDF } from './controller/generate-pdf.js';
-import { getPDFStatus } from './controller/get-pdf-status.js';
 
 /* * */
 
@@ -38,7 +38,6 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 	try {
 		//
 
-
 		//
 		// 1. Prepare the combined GTFS files
 
@@ -62,7 +61,9 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 		// 4. Submit the poster GTFS to ZPHERES
 
 		Logger.info({ message: `Submitting poster GTFS for export ${exportId} to ZPHERES.` });
+
 		const pdfId = await generatePDF(exportConfig);
+
 		Logger.info({ message: `Created ZPHERES PDF job ${pdfId} for poster export ${exportId}.` });
 
 		//
@@ -92,6 +93,7 @@ export async function generatePlansPostersDownloadUrl(plans: Plan[], exportId: s
 
 		const downloadUrl = FileExportDownloadUrlSchema.parse(pdfStatus.downloadLink);
 		Logger.info({ message: `Poster export ${exportId} is ready for download from ZPHERES.` });
+
 		return downloadUrl;
 	} finally {
 		if (exportConfig) {

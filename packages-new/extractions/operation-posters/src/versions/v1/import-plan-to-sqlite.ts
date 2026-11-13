@@ -124,12 +124,22 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 
 		await exportCalendarFiles(context, sqlGtfs, exportConfig, calendarsByService);
 		const routeIds = await exportRoutesFile(context, sqlGtfs, exportConfig);
-		await exportTripsFile(context, sqlGtfs, routeIds, exportConfig);
-		await exportStopTimesFile(context, sqlGtfs, exportConfig);
-		await exportShapesFiles(context, sqlGtfs);
-		await exportStopsFile(context, sqlGtfs, exportConfig, routeIds);
-		for (const plan of plans) await exportAgencyFile(context, plan);
-		await exportDayTypesFile(context);
+
+		// Finish every export before cleanup, including when one fails.
+		const results = await Promise.allSettled([
+			exportTripsFile(context, sqlGtfs, routeIds, exportConfig),
+			exportStopTimesFile(context, sqlGtfs, exportConfig),
+			exportShapesFiles(context, sqlGtfs),
+			exportStopsFile(context, sqlGtfs, exportConfig, routeIds),
+			(async () => {
+				// Keep writes to the shared agency file in plan order.
+				for (const plan of plans) await exportAgencyFile(context, plan);
+			})(),
+			exportDayTypesFile(context),
+		]);
+
+		const failedExport = results.find(result => result.status === 'rejected');
+		if (failedExport) throw failedExport.reason;
 
 		Logger.info({ message: `Exported files in ${exportTimer.get()} seconds` });
 
