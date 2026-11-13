@@ -29,10 +29,10 @@ export function buildStopCanvasTargets(rows: StopRouteDirection[], config: Pick<
 	}
 
 	//
-	// B. Automatically fit all-content exports or keep the selected stop profile
+	// B. Fit automatic profiles per stop and direction or keep the selected profile
 
 	return [...groups.values()].map(group => ({
-		canvas_profile: config.content_mode === 'all' ? getAutomaticCanvasProfile(group.routes.size, group.stopCount) : config.canvas_profile,
+		canvas_profile: config.content_mode === 'all' || config.canvas_profile === 'auto' ? getAutomaticCanvasProfile(group.routes.size, group.stopCount) : config.canvas_profile,
 		direction_id: group.direction_id,
 		stop_id: group.stop_id,
 	}));

@@ -1,4 +1,11 @@
 {
+	"posterExport": {
+		"PlanPostersExtractBody": {
+			"canvasProfileAutomatic": "Automatic",
+			"canvasProfileDescription": "Choose Automatic to select the model per stop and direction, or apply a fixed model to the exported stops.",
+			"canvasProfileLabel": "Canvas model"
+		}
+	},
 	"list": {
 		"RidesList": {
 			"columns": {

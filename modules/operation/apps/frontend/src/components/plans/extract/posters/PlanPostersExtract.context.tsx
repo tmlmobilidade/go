@@ -67,7 +67,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	const form = useForm<OperationPostersV1ExtractionProperties>({
 		initialValues: {
 			agency_ids: [],
-			canvas_profile: '0Master.C',
+			canvas_profile: 'auto',
 			content_mode: 'all',
 			plan_ids: [],
 		},
@@ -166,7 +166,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		const extractionDto: OperationPostersV1ExtractionCreate = {
 			properties: {
 				...values,
-				canvas_profile: values.content_mode === 'all' ? '0Master.C' : values.canvas_profile,
+				canvas_profile: values.content_mode === 'all' ? 'auto' : values.canvas_profile,
 				line_ids: includesLines ? values.line_ids : undefined,
 				lines_mode: includesLines ? values.lines_mode : undefined,
 				stop_ids: includesStops ? values.stop_ids : undefined,

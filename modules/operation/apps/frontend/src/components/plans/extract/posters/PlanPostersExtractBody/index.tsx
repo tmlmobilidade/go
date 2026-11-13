@@ -27,6 +27,10 @@ export function PlanPostersExtractBody() {
 
 	const context = usePlanPostersExtractFormContext();
 	const { t } = useTranslation();
+	const availableCanvasProfiles = [
+		{ label: t('default:posterExport.PlanPostersExtractBody.canvasProfileAutomatic'), value: 'auto' },
+		...canvasProfileOptions,
+	];
 
 	const plansOptions = useMemo(() => context.data.agencyIds.map(agencyId => ({
 		agencyId,
@@ -137,9 +141,9 @@ export function PlanPostersExtractBody() {
 
 					{context.data.contentMode !== 'all' && context.data.contentMode !== 'lines' && (
 						<Select
-							data={canvasProfileOptions}
-							description="Este perfil será aplicado às paragens exportadas"
-							label="Canvas profile"
+							data={availableCanvasProfiles}
+							description={t('default:posterExport.PlanPostersExtractBody.canvasProfileDescription')}
+							label={t('default:posterExport.PlanPostersExtractBody.canvasProfileLabel')}
 							onChange={value => context.actions.setCanvasProfile(value as typeof context.data.canvasProfile)}
 							value={context.data.canvasProfile}
 							w="100%"

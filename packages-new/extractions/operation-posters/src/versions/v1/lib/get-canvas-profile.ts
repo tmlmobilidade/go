@@ -4,7 +4,7 @@ import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 
 /* * */
 
-export function getAutomaticCanvasProfile(routeCount: number, stopCount: number): ExportHitouchConfig['canvas_profile'] {
+export function getAutomaticCanvasProfile(routeCount: number, stopCount: number): Exclude<ExportHitouchConfig['canvas_profile'], 'auto'> {
 	//
 
 	//

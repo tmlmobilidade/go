@@ -49,7 +49,7 @@ export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouch
 
 	const runId = plans.map(plan => plan._id).join('-');
 	const exportConfig: ExportHitouchConfig = {
-		canvas_profile: options?.canvas_profile ?? '0Master.C',
+		canvas_profile: options?.canvas_profile ?? 'auto',
 		content_mode: options?.content_mode ?? 'all',
 		date_range: {
 			end: validateOperationalDate(String(Math.max(...plans.map(plan => plan.active_until)))),

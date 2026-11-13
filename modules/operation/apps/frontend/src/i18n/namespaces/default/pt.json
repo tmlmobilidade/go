@@ -117,6 +117,11 @@
 		}
 	},
 	"posterExport": {
+		"PlanPostersExtractBody": {
+			"canvasProfileAutomatic": "Automático",
+			"canvasProfileDescription": "Escolha Automático para selecionar o modelo por paragem e sentido, ou aplique um modelo fixo às paragens exportadas.",
+			"canvasProfileLabel": "Modelo de Canvas"
+		},
 		"agenciesDescription": "Selecione os operadores e escolha um plano por operador.",
 		"agenciesLabel": "Selecionar operadores",
 		"combinedFilter": "Filtro de linhas e paragens",
