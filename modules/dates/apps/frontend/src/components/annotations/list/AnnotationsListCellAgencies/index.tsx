@@ -1,7 +1,6 @@
 'use client';
 
-import { AgencyTagGroup, Text } from '@tmlmobilidade/ui';
-import { useTranslation } from 'react-i18next';
+import { AgencyTagGroup } from '@tmlmobilidade/ui';
 
 import { useAnnotationsAgenciesData } from '../../shared/use-annotations-agencies-data';
 
@@ -20,12 +19,11 @@ export function AnnotationsListCellAgencies({ agencyIds }: AnnotationsListCellAg
 	// A. Fetch data
 
 	const { data } = useAnnotationsAgenciesData();
-	const { t } = useTranslation();
 
 	//
 	// B. Render components
 
-	if (!agencyIds.length) return <Text size="sm">{t('default:annotations.fields.agency_ids.unassigned')}</Text>;
+	if (!agencyIds.length) return null;
 
 	return (
 		<AgencyTagGroup agencyIds={agencyIds} data={data} />

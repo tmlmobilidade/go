@@ -23,9 +23,9 @@
 		},
 		"fields": {
 			"agency_ids": {
-				"description": "Select operators whose operations or data are affected, regardless of the cause. Leave empty if none are specifically identified; all signed-in users can then view this annotation. Otherwise, viewing requires annotation read access to every selected operator.",
-				"label": "Affected operators",
-				"unassigned": "No specific operators identified"
+				"description": "Optional. With no selection, visible to everyone; otherwise, access to every selected operator is required.",
+				"label": "Operators",
+				"unassigned": "No operators"
 			},
 			"description": {
 				"label": "Description",
@@ -38,7 +38,7 @@
 		},
 		"list": {
 			"columns": {
-				"agency_ids": "Affected operators",
+				"agency_ids": "Operators",
 				"dates": "Dates",
 				"id": "#ID",
 				"title": "Title"

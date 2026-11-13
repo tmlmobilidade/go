@@ -1,0 +1,67 @@
+{
+	"AnnotationsCategorySelect": {
+		"label": "Categoría",
+		"description": "Clasifique el evento según lo ocurrido. La categoría no identifica quién lo causó ni cambia quién puede verlo.",
+		"no_results": "No se han encontrado categorías"
+	},
+	"AnnotationsSourceInput": {
+		"label": "Fuente o referencia",
+		"description": "Origen de la información: enlace, asunto de correo, informe o comunicación interna.",
+		"placeholder": "Ej.: Correo del operador: perturbación del servicio"
+	},
+	"AnnotationsImpactInput": {
+		"label": "Impacto en la operación o los datos",
+		"description": "Describa los efectos observados en el servicio o los datos, por separado de lo ocurrido.",
+		"placeholder": "Ej.: Retrasos en las líneas afectadas y falta de mensajes en tiempo real"
+	},
+	"AnnotationsLocationsSelect": {
+		"label": "Ámbito geográfico",
+		"description": "Seleccione uno o varios países, distritos o regiones, municipios o divisiones locales de la jerarquía disponible. Cada lugar marcado se guarda individualmente; seleccionar un país no selecciona todas las localidades. Los lugares indican dónde ocurrió el evento y no cambian los operadores afectados ni la visibilidad.",
+		"load_error": "No se han podido cargar los lugares. Se han conservado las selecciones guardadas.",
+		"retry": "Volver a cargar los lugares"
+	},
+	"categories": {
+		"uncategorized": "Sin categoría",
+		"values": {
+			"weather": "Meteorología",
+			"accident": "Accidente",
+			"roadworks_restrictions": "Obras y restricciones",
+			"strike_worker_meeting": "Huelgas y reuniones de trabajadores",
+			"public_event_protest": "Eventos públicos y manifestaciones",
+			"technology_data_failure": "Fallos tecnológicos y de datos",
+			"transport_disruption": "Perturbaciones del transporte",
+			"school_calendar_change": "Cambios escolares y de calendario",
+			"fare_policy_change": "Cambios de tarifas y políticas",
+			"other": "Otro"
+		}
+	},
+	"list": {
+		"AnnotationsList": {
+			"category": "Categoría",
+			"locations": "Ubicación"
+		},
+		"AnnotationsListFilterCategories": {
+			"label": "Categoría"
+		},
+		"AnnotationsListCellLocations": {
+			"empty": "Sin ubicación"
+		},
+		"AnnotationsListFilterLocations": {
+			"label": "Ubicación",
+			"empty": "Sin ubicación",
+			"description": "Incluye lugares contenidos y ámbitos geográficos más amplios.",
+			"clear": "Borrar selección"
+		},
+		"AnnotationsListFilterDates": {
+			"label": "Fechas",
+			"start": "Desde",
+			"end": "Hasta",
+			"placeholder": "Seleccione una fecha"
+		},
+		"AnnotationsEmptyState": {
+			"title": "Anotaciones",
+			"description": "Las anotaciones registran acontecimientos que ayudan a interpretar variaciones en la operación y los datos del transporte, como condiciones meteorológicas, huelgas, accidentes o fallos tecnológicos.",
+			"context": "Cada acontecimiento reúne fechas, ubicaciones, operadores, fuentes e impactos observados, conservando el contexto para su análisis y seguimiento."
+		}
+	}
+}

@@ -41,9 +41,9 @@
 		},
 		"fields": {
 			"agency_ids": {
-				"description": "Seleccione los operadores cuya operación o datos se ven afectados, independientemente de la causa. Déjelo vacío si no se ha identificado ninguno específicamente; todos los usuarios autenticados podrán ver esta anotación. En caso contrario, se requiere acceso de lectura de anotaciones de todos los operadores seleccionados.",
-				"label": "Operadores afectados",
-				"unassigned": "Sin operadores específicos identificados"
+				"description": "Opcional. Sin selección, visible para todos; con selección, requiere acceso a todos los operadores seleccionados.",
+				"label": "Operadores",
+				"unassigned": "Sin operadores"
 			},
 			"description": {
 				"label": "Descripción",
@@ -56,7 +56,7 @@
 		},
 		"list": {
 			"columns": {
-				"agency_ids": "Operadores afectados",
+				"agency_ids": "Operadores",
 				"dates": "Fechas",
 				"id": "#ID",
 				"title": "Título"

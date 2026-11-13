@@ -34,7 +34,7 @@ export function AnnotationsListCellDates({ dates }: AnnotationsListCellDatesProp
 
 	return (
 
-		<TagGroup limit={4} tags={preparedTags} />
+		<TagGroup limit={2} tags={preparedTags} />
 
 	);
 
