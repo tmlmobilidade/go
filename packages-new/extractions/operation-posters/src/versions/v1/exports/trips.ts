@@ -1,6 +1,6 @@
 /* * */
 
-import { OperationPostersV1TripsSchema } from '@tmlmobilidade/go-types-operation';
+import { TripsSchema } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
@@ -33,7 +33,7 @@ export async function exportTripsFile(context: OperationPostersV1Context, sqlTab
 		//
 		// 2. Validate and write the trip
 
-		const data = OperationPostersV1TripsSchema.parse({
+		const data = TripsSchema.parse({
 			direction_id: tripData.direction_id,
 			route_id: routeId,
 			service_id: tripData.service_id,

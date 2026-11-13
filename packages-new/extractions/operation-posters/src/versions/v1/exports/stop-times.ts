@@ -1,7 +1,6 @@
 /* * */
 
-import { GtfsStrictV30StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationPostersV1StopTimesSchema } from '@tmlmobilidade/go-types-operation';
+import { StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
@@ -29,9 +28,8 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 	//
 	// C. Export the stop times
 
-	for (const row of sqlTables.stop_times.all(`${tripFilter} ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC`, parameters)) {
-		const stopTimeData = GtfsStrictV30StopTimesSchema.parse(row);
-		const data = OperationPostersV1StopTimesSchema.parse({
+	for (const stopTimeData of sqlTables.stop_times.all(`${tripFilter} ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC`, parameters)) {
+		const data = StopTimesSchema.parse({
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
 			drop_off_type: stopTimeData.drop_off_type,
@@ -42,6 +40,7 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 			timepoint: stopTimeData.timepoint,
 			trip_id: stopTimeData.trip_id,
 		});
+
 		await context.writers.stop_times.write(data);
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);

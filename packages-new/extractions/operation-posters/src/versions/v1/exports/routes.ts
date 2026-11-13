@@ -1,7 +1,7 @@
 /* * */
 
+import { RoutesSchema, type RoutesToCanvasExt } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { type GtfsStrictV30Routes } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationPostersV1RoutesSchema, type OperationPostersV1RoutesToCanvasExt } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
@@ -35,7 +35,7 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	// B. Validate and write routes.txt
 
 	for (const [routeId, route] of posterRoutes) {
-		const data = OperationPostersV1RoutesSchema.parse({
+		const data = RoutesSchema.parse({
 			agency_id: route.agency_id,
 			route_color: route.route_color,
 			route_id: routeId,
@@ -73,7 +73,7 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 		ORDER BY trips.route_id ASC, trips.direction_id ASC `,
 		parameters,
 	);
-	const targets = new Map<string, OperationPostersV1RoutesToCanvasExt>();
+	const targets = new Map<string, RoutesToCanvasExt>();
 	for (const row of directions) {
 		const routeId = routeIds.get(row.route_id);
 		if (!routeId) throw new Error(`Cannot export canvas target: route ${row.route_id} was not exported.`);

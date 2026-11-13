@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationPostersV1DayTypesExt } from '@tmlmobilidade/go-types-operation';
+import { type DayTypesExt } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { DAY_TYPES } from '../day-types.js';
@@ -14,7 +14,7 @@ export async function exportDayTypesFile(context: OperationPostersV1Context) {
 	//
 	// A. Export day types file
 
-	const dayTypesExtRows: OperationPostersV1DayTypesExt[] = DAY_TYPES.map((dayType) => {
+	const dayTypesExtRows: DayTypesExt[] = DAY_TYPES.map((dayType) => {
 		return {
 			day_type_id: dayType._id,
 			friday: '',

@@ -1,7 +1,7 @@
 /* * */
 
+import { type ShapesExt } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type OperationPostersV1ShapesExt } from '@tmlmobilidade/go-types-operation';
 
 import { isBaseShape } from '../lib/is-base-shape.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
@@ -13,7 +13,7 @@ import { getPosterRouteId } from './get-poster-route-id.js';
  * @param trips - Trips with their original route and shape IDs.
  * @returns Pattern ordering, priority and notes keyed by shape ID.
  */
-export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, OperationPostersV1ShapesExt> {
+export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, ShapesExt> {
 	//
 
 	//
@@ -30,7 +30,7 @@ export function buildShapeExtensions(trips: GtfsStrictV30Trips[]): Map<string, O
 	//
 	// B. Order each group's patterns and build one extension per shape
 
-	const extensions = new Map<string, OperationPostersV1ShapesExt>();
+	const extensions = new Map<string, ShapesExt>();
 	for (const group of groups.values()) {
 		//
 		// 1. Place every _0 shape first, followed by the remaining distinct variants

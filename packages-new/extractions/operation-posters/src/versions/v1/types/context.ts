@@ -1,21 +1,20 @@
 /* * */
 
 import {
-	type OperationPostersV1Agency,
-	type OperationPostersV1CalendarAssignmentsExt,
-	type OperationPostersV1CalendarDates,
-	type OperationPostersV1Calendars,
-	type OperationPostersV1DayTypesExt,
-	type OperationPostersV1FeedInfo,
-	type OperationPostersV1Routes,
-	type OperationPostersV1RoutesToCanvasExt,
-	type OperationPostersV1Shapes,
-	type OperationPostersV1ShapesExt,
-	type OperationPostersV1Stops,
-	type OperationPostersV1StopTimes,
-	type OperationPostersV1StopToCanvasExt,
-	type OperationPostersV1Trips,
-} from '@tmlmobilidade/go-types-operation';
+	type Agency,
+	type CalendarAssignmentsExt,
+	type CalendarDates,
+	type Calendars,
+	type DayTypesExt,
+	type Routes,
+	type RoutesToCanvasExt,
+	type Shapes,
+	type ShapesExt,
+	type Stops,
+	type StopTimes,
+	type StopToCanvasExt,
+	type Trips,
+} from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { type BatchWriter } from '@tmlmobilidade/go-utils-exec';
 import { type GtfsStrictV30SQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
 
@@ -30,19 +29,18 @@ export interface OperationPostersV1Context {
 		remove: () => void
 	}
 	writers: {
-		agency: BatchWriter<OperationPostersV1Agency>
-		calendar_assignments_ext: BatchWriter<OperationPostersV1CalendarAssignmentsExt>
-		calendar_dates: BatchWriter<OperationPostersV1CalendarDates>
-		calendars: BatchWriter<OperationPostersV1Calendars>
-		day_types_ext: BatchWriter<OperationPostersV1DayTypesExt>
-		feed_info: BatchWriter<OperationPostersV1FeedInfo>
-		routes: BatchWriter<OperationPostersV1Routes>
-		routes_to_canvas_ext: BatchWriter<OperationPostersV1RoutesToCanvasExt>
-		shapes: BatchWriter<OperationPostersV1Shapes>
-		shapes_ext: BatchWriter<OperationPostersV1ShapesExt>
-		stop_times: BatchWriter<OperationPostersV1StopTimes>
-		stops: BatchWriter<OperationPostersV1Stops>
-		stops_to_canvas_ext: BatchWriter<OperationPostersV1StopToCanvasExt>
-		trips: BatchWriter<OperationPostersV1Trips>
+		agency: BatchWriter<Agency>
+		calendar_assignments_ext: BatchWriter<CalendarAssignmentsExt>
+		calendar_dates: BatchWriter<CalendarDates>
+		calendars: BatchWriter<Calendars>
+		day_types_ext: BatchWriter<DayTypesExt>
+		routes: BatchWriter<Routes>
+		routes_to_canvas_ext: BatchWriter<RoutesToCanvasExt>
+		shapes: BatchWriter<Shapes>
+		shapes_ext: BatchWriter<ShapesExt>
+		stop_times: BatchWriter<StopTimes>
+		stops: BatchWriter<Stops>
+		stops_to_canvas_ext: BatchWriter<StopToCanvasExt>
+		trips: BatchWriter<Trips>
 	}
 }

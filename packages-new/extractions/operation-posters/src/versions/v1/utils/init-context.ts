@@ -77,7 +77,6 @@ export function initOperationPostersV1Context(runId: string, workdirPath: string
 			fields: [...dayTypesFields],
 			quotes: (value, columnIndex) => columnIndex < 2 && !dayTypesFields.some(field => field === value),
 		}),
-		feed_info: createWriter('feed_info.txt', { batch_size: 10_000 }),
 		routes: createWriter('routes.txt'),
 		routes_to_canvas_ext: createWriter('routesToCanvasExt.txt', {
 			fields: ['route_id', 'canvas_profile', 'direction_id'],

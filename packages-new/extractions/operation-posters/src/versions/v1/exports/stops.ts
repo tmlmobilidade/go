@@ -1,7 +1,6 @@
 /* * */
 
-import { GtfsStrictV30StopsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationPostersV1StopsSchema } from '@tmlmobilidade/go-types-operation';
+import { StopsSchema } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
@@ -20,10 +19,8 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 
 	let exportedRows = 0;
 
-	for (const row of sqlTables.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times)')) {
-		const stopData = GtfsStrictV30StopsSchema.parse(row);
-		// SQLite returns null for absent optional fields; normalize them before validation.
-		const data = OperationPostersV1StopsSchema.parse({
+	for (const stopData of sqlTables.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times)')) {
+		const data = StopsSchema.parse({
 			location_type: stopData.location_type ?? '0',
 			parent_station: stopData.parent_station ?? '',
 			platform_code: stopData.platform_code ?? '',
@@ -34,6 +31,7 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 			stop_name: stopData.stop_name,
 			wheelchair_boarding: stopData.wheelchair_boarding ?? undefined,
 		});
+
 		await context.writers.stops.write(data);
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);

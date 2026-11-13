@@ -1,7 +1,8 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { OperationPostersV1AgencySchema, type Plan } from '@tmlmobilidade/go-types-operation';
+import { AgencySchema } from '@tmlmobilidade/go-types-gtfs-hitouch';
+import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context } from '../types/context.js';
@@ -21,7 +22,7 @@ export async function exportAgencyFile(context: OperationPostersV1Context, planD
 	//
 	// B. Validate and write the agency file
 
-	const data = OperationPostersV1AgencySchema.parse({
+	const data = AgencySchema.parse({
 		agency_email: agency.open_data?.details?.email,
 		agency_fare_url: agency.open_data?.details?.fare_url,
 		agency_id: agency.code,

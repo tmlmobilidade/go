@@ -1,6 +1,6 @@
 /* * */
 
-import { type OperationPostersV1StopToCanvasExt } from '@tmlmobilidade/go-types-operation';
+import { type StopToCanvasExt } from '@tmlmobilidade/go-types-gtfs-hitouch';
 
 import { getAutomaticCanvasProfile } from '../lib/get-canvas-profile.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
@@ -10,7 +10,7 @@ import { getPosterRouteId } from './get-poster-route-id.js';
 /* * */
 
 /** Choose one stop Canvas profile per direction, counting route variants as one route. */
-export function buildStopCanvasTargets(rows: StopRouteDirection[], config: Pick<ExportHitouchConfig, 'canvas_profile' | 'content_mode'>): OperationPostersV1StopToCanvasExt[] {
+export function buildStopCanvasTargets(rows: StopRouteDirection[], config: Pick<ExportHitouchConfig, 'canvas_profile' | 'content_mode'>): StopToCanvasExt[] {
 	//
 
 	//

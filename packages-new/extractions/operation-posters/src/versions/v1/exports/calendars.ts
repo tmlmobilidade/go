@@ -1,7 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 /* * */
 
-import { type OperationPostersV1CalendarAssignmentsExt, type OperationPostersV1CalendarDates, type OperationPostersV1Calendars } from '@tmlmobilidade/go-types-operation';
+import { type CalendarAssignmentsExt, type CalendarDates, type Calendars } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -21,7 +21,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 	// A. Rebuild services and prepare the calendar assignments
 
 	const services = await rebuildCalendarServices(sqlTables, calendarsByService);
-	const assignments: OperationPostersV1CalendarAssignmentsExt[] = [];
+	const assignments: CalendarAssignmentsExt[] = [];
 	let exportedDates = 0;
 
 	//
@@ -35,7 +35,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 		// Dates are activated explicitly in calendar_dates.txt, so all weekdays stay off.
 
 		if (exportConfig.source_has_calendar) {
-			const calendar: OperationPostersV1Calendars = {
+			const calendar: Calendars = {
 				service_id: service._id,
 				start_date: OperationalDateIntSchema.parse(service.dates.at(0) ?? exportConfig.date_range.start),
 				end_date: OperationalDateIntSchema.parse(service.dates.at(-1) ?? exportConfig.date_range.end),
@@ -62,7 +62,7 @@ export async function exportCalendarFiles(context: OperationPostersV1Context, sq
 		// 3. Activate each operating date explicitly
 
 		for (const date of service.dates) {
-			const calendarDate: OperationPostersV1CalendarDates = {
+			const calendarDate: CalendarDates = {
 				date: OperationalDateIntSchema.parse(date),
 				exception_type: '1',
 				service_id: service._id,

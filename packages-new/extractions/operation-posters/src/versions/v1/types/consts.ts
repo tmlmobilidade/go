@@ -11,3 +11,6 @@ export const STATUS_TIMEOUT_MS = 30_000; // 30 seconds
 export const ZIP_TIMEOUT_MS = 2 * 60_000; // 2 minutes
 
 export const ROWS_PER_EVENT_LOOP_YIELD = 1_000; // 1,000 rows
+
+export const LINES_MODE_VALUES = ['all', 'exclude', 'include'] as const;
+

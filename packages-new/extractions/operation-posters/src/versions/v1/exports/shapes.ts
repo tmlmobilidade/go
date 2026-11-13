@@ -1,7 +1,6 @@
 /* * */
 
-import { GtfsStrictV30ShapesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { OperationPostersV1ShapesSchema } from '@tmlmobilidade/go-types-operation';
+import { ShapesSchema } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
@@ -35,7 +34,7 @@ export async function exportShapesFiles(context: OperationPostersV1Context, sqlT
 
 		const extension = shapeExtensions.get(shapeData.shape_id);
 		if (!extension) continue;
-		await context.writers.shapes.write(OperationPostersV1ShapesSchema.parse(GtfsStrictV30ShapesSchema.parse(shapeData)));
+		await context.writers.shapes.write(ShapesSchema.parse(shapeData));
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 
