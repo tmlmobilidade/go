@@ -3,8 +3,9 @@
 import { buildRoutePreviewModel, buildRoutePreviewRecalculationPlan, composeRoutePreviewResponse, mergeRoutePreviewRange, type RoutePreviewPoint, type RoutePreviewResponse } from '@/utils/route-preview';
 import { applyRouteToPath, type ShapeEditorDraft } from '@/utils/shape-editor-draft';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PatternsDetailPathItem, RoutePreviewResponseSchema, ShapesRoutePreviewRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
+import { type PatternsDetailPathItem, PatternsResolveZonesResponseSchema, RoutePreviewResponseSchema, ShapesRoutePreviewRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
 import { type ShapeAnchor } from '@tmlmobilidade/go-types-offer';
+import { populateEmptyPathZones } from '@tmlmobilidade/go-utils-offer';
 import { fetchApiData, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +42,19 @@ async function requestRoutePreview(patternId: string, points: RoutePreviewPoint[
 	});
 	if (response.error || !response.data) throw new Error(response.error || emptyResponseMessage);
 	return RoutePreviewResponseSchema.parse(response.data);
+}
+
+async function resolvePathZones(patternId: string, path: PatternsDetailPathItem[], signal: AbortSignal, errorMessage: string) {
+	const stopIds = [...new Set(path.filter(item => !item.zones?.length).map(item => item.stop_id))];
+	if (!stopIds.length) return path;
+	const response = await fetchApiData<Record<string, string[]>>({
+		body: { stop_ids: stopIds },
+		method: 'POST',
+		options: { signal },
+		url: API_ROUTES.offer.PATTERNS_DETAIL_RESOLVE_ZONES(patternId),
+	});
+	if (response.error || !response.data) throw new Error(response.error || errorMessage);
+	return populateEmptyPathZones(path, PatternsResolveZonesResponseSchema.parse(response.data));
 }
 
 /** Owns cancellable routing work. Only the latest request may update the local draft. */
@@ -113,7 +127,10 @@ export function useShapeRoutePreview(options: UseShapeRoutePreviewOptions): UseS
 		const currentRevision = revision.current;
 		setIsLoading(true);
 		try {
-			const { points, response } = await calculate(path, anchors, controller.signal, forceFull);
+			const [{ points, response }, populatedPath] = await Promise.all([
+				calculate(path, anchors, controller.signal, forceFull),
+				resolvePathZones(latest.current.patternId, path, controller.signal, t('default:patterns.shapeEditor.unknownError')),
+			]);
 			if (controller.signal.aborted || !mounted.current || closed.current || !latest.current.editEnabled || currentRevision !== revision.current) return;
 			const shape = {
 				...latest.current.draft.shape,
@@ -123,7 +140,7 @@ export function useShapeRoutePreview(options: UseShapeRoutePreviewOptions): UseS
 				geojson: response.geojson,
 				legs: response.legs,
 			};
-			latest.current.onApply(applyRouteToPath(path, response, points), shape);
+			latest.current.onApply(applyRouteToPath(populatedPath, response, points), shape);
 			setRouteData(response);
 		} catch (error) {
 			const reportError = !controller.signal.aborted && mounted.current && !closed.current && currentRevision === revision.current;
