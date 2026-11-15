@@ -5,8 +5,8 @@ temporary SQLite database, then executes the configured rules. The database and 
 sidecar files are removed after success, validation failure, or operational failure.
 Requires Go 1.26 and a C compiler for the SQLite driver.
 
-**All registered checks currently return success as placeholders. An empty report
-only confirms that the feed was imported and the configured graph ran.**
+The agency email rules are implemented. The other registered checks currently
+return success as placeholders.
 
 ## CLI
 
@@ -24,10 +24,14 @@ JSON array. Each entry has a `rule_id` and `severity`. It can also supply
 ```json
 [
   {"rule_id": "agency_file_missing", "severity": "error"},
-  {"rule_id": "agency_name_field", "severity": "error", "depends_on": ["agency_file_missing"]},
-  {"rule_id": "agency_name_valid", "severity": "warning", "depends_on": ["agency_name_field"], "options": ["Example"]}
+  {"rule_id": "agency_email_field", "severity": "error", "depends_on": ["agency_file_missing"]},
+  {"rule_id": "agency_email_valid", "severity": "warning", "depends_on": ["agency_file_missing"]}
 ]
 ```
+
+`agency_email_field` requires the column and a value on every agency row when
+configured with `error` severity. At other severities, the field is optional.
+`agency_email_valid` checks any nonblank address.
 
 `-concurrency` defaults to 1 and must be positive. SQLite uses one connection,
 so concurrent rules still serialize database queries.
@@ -83,7 +87,7 @@ import and passes the context to rule callbacks during execution.
 
 ## Rules and dependencies
 
-The registry in `src/rules/registry.go` maps 367 executable IDs to functions.
+The registry in `src/rules/registry.go` maps executable rule IDs to functions.
 Each rule has its own `src/rules/<rule_id>.go` file.
 `file_validation` and `file_not_found_in_rules` are reserved notice IDs.
 
