@@ -1,4 +1,4 @@
-package rules
+package ridercategories
 
 import (
 	"context"
@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func riderCategoriesIsDefaultFareCategoryValid(context.Context, *sql.DB, types.Rule) (bool, []Finding, error) {
+func RiderCategoriesIsDefaultFareCategoryValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }

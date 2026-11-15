@@ -1,4 +1,4 @@
-package rules
+package routes
 
 import (
 	"context"
@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func routesRouteIDUnique(context.Context, *sql.DB, types.Rule) (bool, []Finding, error) {
+func RoutesRouteIDUnique(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }

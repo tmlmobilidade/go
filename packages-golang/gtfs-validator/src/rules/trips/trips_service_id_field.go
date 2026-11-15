@@ -1,4 +1,4 @@
-package rules
+package trips
 
 import (
 	"context"
@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func tripsServiceIDField(context.Context, *sql.DB, types.Rule) (bool, []Finding, error) {
+func TripsServiceIDField(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }

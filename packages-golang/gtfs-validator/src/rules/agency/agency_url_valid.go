@@ -1,4 +1,4 @@
-package rules
+package agency
 
 import (
 	"context"
@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func agencyURLValid(context.Context, *sql.DB, types.Rule) (bool, []Finding, error) {
+func AgencyURLValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }

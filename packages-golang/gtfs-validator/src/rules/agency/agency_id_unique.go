@@ -1,4 +1,4 @@
-package rules
+package agency
 
 import (
 	"context"
@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func agencyIDUnique(context.Context, *sql.DB, types.Rule) (bool, []Finding, error) {
+func AgencyIDUnique(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }
