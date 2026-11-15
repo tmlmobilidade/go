@@ -119,7 +119,6 @@ var registry = map[string]check{
 	"feed_info_feed_version_field":                               feedinfo.FeedInfoFeedVersionField,
 	"feed_info_file_missing":                                     feedinfo.FeedInfoFileMissing,
 	"feed_info_start_end_dates_valid":                            feedinfo.FeedInfoStartEndDatesValid,
-	"file_validation_gtfs_feed_file_presence_and_integrity_rule": fileValidationGTFSFeedFilePresenceAndIntegrityRule,
 	"frequencies_end_time_field":                                 frequencies.FrequenciesEndTimeField,
 	"frequencies_end_time_valid":                                 frequencies.FrequenciesEndTimeValid,
 	"frequencies_exact_times_field":                              frequencies.FrequenciesExactTimesField,
