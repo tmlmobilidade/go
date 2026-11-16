@@ -9,7 +9,7 @@ import path from 'node:path';
 import { generatePDF } from './controller/generate-pdf.js';
 import { generateToken } from './controller/generate-token.js';
 import { getPDFStatus } from './controller/get-pdf-status.js';
-import { importPlansToSqlite } from './import-plan-to-sqlite.js';
+import { importPlans } from './import-plans.js';
 import { waitCheckStatus } from './lib/wait-check-status.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 import { type PDFStatus } from './types/interfaces.js';
@@ -36,7 +36,7 @@ export async function generatePlanDownload(plans: Plan[], exportId: string, opti
 
 		Logger.info({ message: `Preparing combined GTFS files for poster export ${exportId} (${plans.length} plans).` });
 
-		exportConfig = await importPlansToSqlite(plans, { ...options, workdir: `/tmp/hitouch/export-${exportId}` });
+		exportConfig = await importPlans(plans, { ...options, workdir: `/tmp/hitouch/export-${exportId}` });
 
 		//
 		// 2. Preserve the HiTouch request ZIP file

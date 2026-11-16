@@ -31,7 +31,7 @@ import { prepareCalendarServices } from './utils/prepare-calendar-services.js';
 
 /* * */
 
-export async function importPlansToSqlite(plans: Plan[], options?: ExportHitouchOptions & { workdir?: string }): Promise<ExportHitouchConfig> {
+export async function importPlans(plans: Plan[], options?: ExportHitouchOptions & { workdir?: string }): Promise<ExportHitouchConfig> {
 	//
 
 	//
