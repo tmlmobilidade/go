@@ -2,11 +2,11 @@
 
 import { AcceptanceStatusTag } from '@/components/common/AcceptanceStatusTag';
 import { useRideAcceptanceData } from '@/components/rides/detail/acceptance/use-ride-acceptance-data';
-import { IconCheck, IconEdit } from '@tabler/icons-react';
+import { IconCheck, IconClock, IconEdit } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, HasPermission, IconButton, Section, Select, useHandleAction } from '@tmlmobilidade/ui';
+import { fetchApiData, HasPermission, IconButton, Section, Select, Tag, useHandleAction } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -47,7 +47,7 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 
 	if (isEditing) {
 		return (
-			<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
+			<Section alignItems="center" flexDirection="row" gap="xs" padding="none" width="auto">
 				<Select
 					clearable={false}
 					disabled={isChangingStatus}
@@ -71,8 +71,10 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 	}
 
 	return (
-		<Section alignItems="center" flexDirection="row" gap="xs" padding="none">
-			<AcceptanceStatusTag grade={grade} />
+		<Section alignItems="center" flexDirection="row" gap="xs" padding="none" width="auto">
+			{grade === 'under_review'
+				? <Tag icon={<IconClock />} label={t('ride_status:acceptance_status.under_review')} variant="warning" />
+				: <AcceptanceStatusTag grade={grade} />}
 			<HasPermission
 				action={PermissionCatalog.all.rides.actions.acceptance_change_status}
 				scope={PermissionCatalog.all.rides.scope}
@@ -80,8 +82,11 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 				<IconButton
 					aria-label={t('default:rides.acceptance.RideAcceptanceStatus.edit.aria_label')}
 					icon={<IconEdit />}
-					onClick={() => setIsEditing(true)}
 					variant="subtle"
+					onClick={() => {
+						setStatus(grade);
+						setIsEditing(true);
+					}}
 				/>
 			</HasPermission>
 		</Section>

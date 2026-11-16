@@ -1,82 +1,104 @@
 'use client';
 
-import { type AlertCause, AlertCauseValues } from '@tmlmobilidade/go-types-operation';
-import { Button, Select, Textarea, TextInput } from '@tmlmobilidade/ui';
+import { API_ROUTES } from '@tmlmobilidade/consts';
+import { AlertCauseValues, type RideAcceptance, type RideJustification } from '@tmlmobilidade/go-types-operation';
+import { Button, fetchApiData, Section, Select, Textarea, TextInput, useHandleAction } from '@tmlmobilidade/ui';
+import { type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-/* * */
+import styles from './styles.module.css';
 
-interface RideAcceptanceJustificationEditableProps {
-	cause?: AlertCause
-	isSubmitting?: boolean
-	manualTripId: string
-	message: string
-	onSubmit: () => void
-	setCause: (value: AlertCause) => void
-	setManualTripId: (value: string) => void
-	setMessage: (value: string) => void
-}
+import { useRidesDetailRideId } from '../../shared/use-rides-detail-ride-id';
+import { useRideAcceptanceData } from '../use-ride-acceptance-data';
 
 /* * */
 
-export function RideAcceptanceJustificationEditable({
-	cause,
-	isSubmitting,
-	manualTripId,
-	message,
-	onSubmit,
-	setCause,
-	setManualTripId,
-	setMessage,
-}: RideAcceptanceJustificationEditableProps) {
+type JustifyRideAcceptanceBody = Pick<RideJustification, 'justification_cause' | 'manual_trip_id' | 'pto_message'>;
+
+/* * */
+
+export function RideAcceptanceJustificationEditable({ justification }: { justification: RideAcceptance['justification'] }) {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const { rideId } = useRidesDetailRideId();
+	const { mutate } = useRideAcceptanceData();
 
 	//
-	// B. Render components
+	// B. Handle actions
+
+	const { action: justify, isLoading } = useHandleAction<RideAcceptance, JustifyRideAcceptanceBody>({
+		fetchFn: async body => await fetchApiData<RideAcceptance, JustifyRideAcceptanceBody>({
+			body,
+			method: 'PUT',
+			url: API_ROUTES.operation.RIDE_ACCEPTANCES_JUSTIFY(rideId),
+		}),
+		onSuccess: () => mutate(),
+	});
+
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (isLoading) return;
+		const data = new FormData(event.currentTarget);
+		const cause = AlertCauseValues.find(option => option === data.get('justification_cause'));
+		if (!cause) return;
+
+		void justify({
+			justification_cause: cause,
+			manual_trip_id: String(data.get('manual_trip_id') ?? '') || undefined,
+			pto_message: String(data.get('pto_message') ?? ''),
+		});
+	};
+
+	//
+	// C. Render components
 
 	return (
-		<>
-			<Select
-				disabled={isSubmitting}
-				label={t('default:rides.acceptance.RideAcceptanceJustification.fields.cause.label')}
-				onChange={setCause}
-				placeholder={t('default:rides.acceptance.RideAcceptanceJustification.fields.cause.placeholder')}
-				value={cause}
-				w="100%"
-				data={AlertCauseValues.map(option => ({
-					label: t(`shared:alerts.causes.${option}.title`),
-					value: option,
-				}))}
-			/>
-			<Textarea
-				disabled={isSubmitting}
-				label={t('default:rides.acceptance.RideAcceptanceJustification.fields.message.label')}
-				minRows={2}
-				onChange={e => setMessage(e.target.value)}
-				value={message}
-				w="100%"
-				autosize
-			/>
-			<TextInput
-				disabled={isSubmitting}
-				label={t('default:rides.acceptance.RideAcceptanceJustification.fields.manual_trip_id.label')}
-				onChange={e => setManualTripId(e.target.value)}
-				value={manualTripId ?? ''}
-				w="100%"
-			/>
-			<Button
-				disabled={isSubmitting}
-				label={t('default:rides.acceptance.RideAcceptanceJustification.SubmitButton.label')}
-				loading={isSubmitting}
-				onClick={onSubmit}
-				fullWidth
-			/>
-		</>
+		<form className={styles.form} onSubmit={handleSubmit}>
+			<Section gap="sm" padding="none">
+				<Select
+					defaultValue={justification?.justification_cause}
+					disabled={isLoading}
+					label={t('default:rides.acceptance.RideAcceptanceJustificationEditable.fields.cause.label')}
+					name="justification_cause"
+					placeholder={t('default:rides.acceptance.RideAcceptanceJustificationEditable.fields.cause.placeholder')}
+					w="100%"
+					data={AlertCauseValues.map(option => ({
+						label: t(`shared:alerts.causes.${option}.title`),
+						value: option,
+					}))}
+					required
+				/>
+				<Textarea
+					defaultValue={justification?.pto_message}
+					disabled={isLoading}
+					label={t('default:rides.acceptance.RideAcceptanceJustificationEditable.fields.message.label')}
+					maxLength={5000}
+					minLength={2}
+					minRows={2}
+					name="pto_message"
+					w="100%"
+					autosize
+					required
+				/>
+				<TextInput
+					defaultValue={justification?.manual_trip_id ?? ''}
+					disabled={isLoading}
+					label={t('default:rides.acceptance.RideAcceptanceJustificationEditable.fields.manual_trip_id.label')}
+					name="manual_trip_id"
+					w="100%"
+				/>
+				<Button
+					disabled={isLoading}
+					label={t('default:rides.acceptance.RideAcceptanceJustificationEditable.submit')}
+					loading={isLoading}
+					type="submit"
+				/>
+			</Section>
+		</form>
 	);
 
 	//

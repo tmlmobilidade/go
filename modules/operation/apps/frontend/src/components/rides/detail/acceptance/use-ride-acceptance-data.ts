@@ -16,7 +16,7 @@ interface UseRideAcceptanceDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: () => void
+	mutate: (data?: ApiResponse<RideAcceptance>) => void
 	timestamp: null | UnixMilliseconds
 }
 
@@ -43,7 +43,7 @@ export function useRideAcceptanceData(): UseRideAcceptanceDataReturnType {
 
 	return useMemo(() => ({
 		data: data?.data,
-		error: error?.error,
+		error: data?.error ?? error?.error,
 		isLoading,
 		isValidating,
 		mutate,

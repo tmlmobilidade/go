@@ -1,44 +1,94 @@
-
-.container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-
-    /* gap: var(--size-spacing-md); */
+.history {
+	flex: 1;
 }
 
-.label {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    
-    & > span {
-        &[data-variant='success'] {
-            color: var(--color-status-success-primary);
-        }
-
-        &[data-variant='danger'] {
-            color: var(--color-status-danger-primary);
-        }
-
-        &[data-variant='warning'] {
-            color: var(--color-status-warning-primary);
-        }
-    }
+.timeline {
+	display: grid;
+	gap: 0;
+	width: 100%;
+	max-height: 510px;
+	padding: 0;
+	margin: 0;
+	overflow-y: auto;
+	list-style: none;
 }
 
-.messageContainer {
-    display: flex;
-    flex-direction: column;
-    padding: var(--size-spacing-sm);
-    background-color: var(--color-system-background-100);
-    border: 2px solid var(--color-system-border-100);
-    border-radius: var(--border-radius-sm);
-    box-shadow: 2px 2px 5px 1px rgb(0 0 0 / 4%);
+.event {
+	position: relative;
+	display: grid;
+	grid-template-columns: 25px minmax(0, 1fr);
+	gap: var(--size-spacing-sm);
+	align-items: start;
 }
 
-.analysisSummaryMessageContainer {
-    display: flex;
-    flex-direction: row;
-    gap: var(--size-spacing-sm);
-    margin: var(--size-spacing-sm) 0;
+.event:not(:last-child)::before {
+	position: absolute;
+	inset-block: 17px -17px;
+	inset-inline-start: 11px;
+	width: 2px;
+	content: '';
+	background: var(--color-system-border-200);
+}
+
+.marker {
+	z-index: 1;
+	display: grid;
+	width: 18px;
+	height: 18px;
+	margin-block-start: 13px;
+	justify-self: center;
+	color: var(--color-system-text-200);
+	place-items: center;
+	background: var(--color-system-background-100);
+	border: 3px solid currentcolor;
+	border-radius: 50%;
+}
+
+.event[data-kind='alert'] .marker,
+.event[data-kind='note'] .marker {
+	width: 22px;
+	height: 22px;
+	margin-block-start: 11px;
+	border: 0;
+}
+
+.event[data-kind='alert'] .marker {
+	color: var(--color-status-danger-primary);
+}
+
+.event:has(+ .event[data-kind='alert'])::before,
+.event[data-kind='alert']:has(+ .event[data-kind='current'])::before {
+	background: var(--color-primary);
+}
+
+.event[data-kind='current'] .marker {
+	color: var(--color-primary);
+}
+
+.eventContent {
+	display: grid;
+	grid-template-columns: 5ch minmax(0, 1fr);
+	gap: var(--size-spacing-md);
+	align-items: baseline;
+	min-height: 72px;
+	padding: var(--size-spacing-sm);
+	border-radius: var(--border-radius-md);
+}
+
+.event[data-kind='alert'] .eventContent {
+	min-height: 0;
+	margin-block-end: var(--size-spacing-xs);
+	background: var(--color-background);
+}
+
+.time {
+	color: var(--color-system-text-200);
+	font-variant-numeric: tabular-nums;
+	font-weight: var(--font-weight-semibold);
+}
+
+.eventText {
+	min-width: 0;
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
 }

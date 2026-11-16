@@ -119,14 +119,41 @@
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
-				"title": "Atividade"
+				"line": "Linha",
+				"lock": "Bloquear aceitação",
+				"locked": "Bloqueada",
+				"title": "Aceitação da viagem",
+				"unlock": "Desbloquear aceitação",
+				"unlocked": "Desbloqueada"
+			},
+			"RideAcceptanceCheck": {
+				"grades": {
+					"error": "Erro",
+					"fail": "Falhou",
+					"pass": "Passou",
+					"skip": "Ignorada"
+				},
+				"no_details": "Sem detalhes registados.",
+				"required": "Obrigatória"
+			},
+			"RideAcceptanceChecks": {
+				"application": "Aplicação",
+				"check": "Verificação",
+				"empty": "Sem verificações registadas.",
+				"result": "Resultado",
+				"title": "SLAs e verificações"
+			},
+			"RideAcceptanceCommentForm": {
+				"placeholder": "Escrever um comentário…",
+				"submit": "Comentar"
 			},
 			"RideAcceptanceCommentList": {
-				"acceptance_status": {
-					"accepted": "A aceitação está aceite",
-					"justification_required": "É necessário justificar a circulação",
-					"rejected": "A aceitação está rejeitada",
-					"under_review": "A aceitação está em revisão"
+				"alert_linked": "Alerta associado",
+				"check": {
+					"error": "Erro na verificação",
+					"fail": "Verificação falhou",
+					"pass": "Verificação passou",
+					"skip": "Verificação ignorada"
 				},
 				"crud": {
 					"archive": "A aceitação foi arquivada",
@@ -135,6 +162,7 @@
 					"restore": "A aceitação foi restaurada",
 					"update": "A aceitação foi atualizada"
 				},
+				"current_status": "Estado atual",
 				"justification": {
 					"updated": "A justificação foi atualizada"
 				},
@@ -142,18 +170,19 @@
 					"lock": "A aceitação foi bloqueada",
 					"unlock": "A aceitação foi desbloqueada"
 				},
-				"note": {
-					"created": "A aceitação foi criada por sistema"
-				},
+				"manual_submitted": "Justificação manual submetida",
+				"ride_ended": "Viagem concluída",
 				"summary": {
 					"performed": "Foi realizada uma nova análise da viagem"
 				},
-				"system": "Sistema"
+				"system": "Sistema",
+				"title": "Histórico",
+				"updated": "Aceitação atualizada"
 			},
 			"RideAcceptanceJustification": {
-				"SubmitButton": {
-					"label": "Justificar"
-				},
+				"title": "Justificação"
+			},
+			"RideAcceptanceJustificationEditable": {
 				"fields": {
 					"cause": {
 						"label": "Motivo da justificação",
@@ -166,18 +195,32 @@
 						"label": "Mensagem de justificação"
 					}
 				},
-				"readonly": {
-					"cause": {
-						"label": "Motivo da justificação"
-					},
-					"manual_trip_id": {
-						"label": "ID da viagem manual"
-					},
-					"message": {
-						"label": "Mensagem de justificação"
-					}
+				"submit": "Justificar"
+			},
+			"RideAcceptanceJustificationReadOnly": {
+				"cause": "Causa",
+				"empty": "Sem justificação registada.",
+				"manual_trip_id": "ID da viagem manual",
+				"message": "Mensagem",
+				"source": {
+					"alert": "Automática · Alerta",
+					"manual": "Manual"
+				}
+			},
+			"RideAcceptanceSimpleThreeVehicleEvents": {
+				"criterion": "Pelo menos uma paragem detetada em cada troço.",
+				"criterion_title": "Critério",
+				"segment_results": {
+					"detected": "Detetada",
+					"missing": "Sem eventos",
+					"unevaluated": "Sem avaliação"
 				},
-				"title": "Justificação"
+				"segments": {
+					"first": "Início",
+					"last": "Fim",
+					"middle": "Meio"
+				},
+				"title": "Eventos do veículo em 3 troços"
 			},
 			"RideAcceptanceStatus": {
 				"confirm": {

@@ -119,14 +119,41 @@
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
-				"title": "Activity"
+				"line": "Line",
+				"lock": "Lock acceptance",
+				"locked": "Locked",
+				"title": "Ride acceptance",
+				"unlock": "Unlock acceptance",
+				"unlocked": "Unlocked"
+			},
+			"RideAcceptanceCheck": {
+				"grades": {
+					"error": "Error",
+					"fail": "Failed",
+					"pass": "Passed",
+					"skip": "Skipped"
+				},
+				"no_details": "No details recorded.",
+				"required": "Required"
+			},
+			"RideAcceptanceChecks": {
+				"application": "Application",
+				"check": "Check",
+				"empty": "No checks recorded.",
+				"result": "Result",
+				"title": "SLAs and checks"
+			},
+			"RideAcceptanceCommentForm": {
+				"placeholder": "Write a comment…",
+				"submit": "Comment"
 			},
 			"RideAcceptanceCommentList": {
-				"acceptance_status": {
-					"accepted": "Acceptance was approved",
-					"justification_required": "The ride requires justification",
-					"rejected": "Acceptance was rejected",
-					"under_review": "Acceptance is under review"
+				"alert_linked": "Alert associated",
+				"check": {
+					"error": "Check error",
+					"fail": "Check failed",
+					"pass": "Check passed",
+					"skip": "Check skipped"
 				},
 				"crud": {
 					"archive": "Acceptance was archived",
@@ -135,6 +162,7 @@
 					"restore": "Acceptance was restored",
 					"update": "Acceptance was updated"
 				},
+				"current_status": "Current status",
 				"justification": {
 					"updated": "Justification was updated"
 				},
@@ -142,18 +170,19 @@
 					"lock": "Acceptance was locked",
 					"unlock": "Acceptance was unlocked"
 				},
-				"note": {
-					"created": "Acceptance was created by the system"
-				},
+				"manual_submitted": "Manual justification submitted",
+				"ride_ended": "Ride completed",
 				"summary": {
 					"performed": "A new ride analysis was performed"
 				},
-				"system": "System"
+				"system": "System",
+				"title": "History",
+				"updated": "Acceptance updated"
 			},
 			"RideAcceptanceJustification": {
-				"SubmitButton": {
-					"label": "Justify"
-				},
+				"title": "Justification"
+			},
+			"RideAcceptanceJustificationEditable": {
 				"fields": {
 					"cause": {
 						"label": "Justification reason",
@@ -166,18 +195,32 @@
 						"label": "Justification message"
 					}
 				},
-				"readonly": {
-					"cause": {
-						"label": "Justification reason"
-					},
-					"manual_trip_id": {
-						"label": "Manual ride ID"
-					},
-					"message": {
-						"label": "Justification message"
-					}
+				"submit": "Justify"
+			},
+			"RideAcceptanceJustificationReadOnly": {
+				"cause": "Cause",
+				"empty": "No justification recorded.",
+				"manual_trip_id": "Manual ride ID",
+				"message": "Message",
+				"source": {
+					"alert": "Automatic · Alert",
+					"manual": "Manual"
+				}
+			},
+			"RideAcceptanceSimpleThreeVehicleEvents": {
+				"criterion": "At least one stop detected in each segment.",
+				"criterion_title": "Criterion",
+				"segment_results": {
+					"detected": "Detected",
+					"missing": "No events",
+					"unevaluated": "Not evaluated"
 				},
-				"title": "Justification"
+				"segments": {
+					"first": "Start",
+					"last": "End",
+					"middle": "Middle"
+				},
+				"title": "Vehicle events in 3 segments"
 			},
 			"RideAcceptanceStatus": {
 				"confirm": {
