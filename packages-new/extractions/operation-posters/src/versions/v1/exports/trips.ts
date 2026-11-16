@@ -38,7 +38,7 @@ export async function exportTripsFile(context: OperationPostersV1Context, sqlTab
 			route_id: routeId,
 			service_id: tripData.service_id,
 			shape_id: tripData.shape_id,
-			trip_headsign: tripData.trip_headsign,
+			trip_headsign: tripData.trip_headsign ?? undefined,
 			trip_id: tripData.trip_id,
 			wheelchair_accessible: tripData.wheelchair_accessible ?? '0',
 		});

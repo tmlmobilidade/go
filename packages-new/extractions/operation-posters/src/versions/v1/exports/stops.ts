@@ -23,8 +23,8 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 			platform_code: stopData.platform_code ?? '',
 			stop_code: stopData.stop_code,
 			stop_id: stopData.stop_id,
-			stop_lat: stopData.stop_lat,
-			stop_lon: stopData.stop_lon,
+			stop_lat: Number(stopData.stop_lat ?? undefined),
+			stop_lon: Number(stopData.stop_lon ?? undefined),
 			stop_name: stopData.stop_name,
 			wheelchair_boarding: stopData.wheelchair_boarding ?? undefined,
 		});

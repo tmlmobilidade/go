@@ -34,11 +34,11 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	for (const [routeId, route] of posterRoutes) {
 		const data = RoutesSchema.parse({
 			agency_id: route.agency_id,
-			route_color: route.route_color,
+			route_color: route.route_color ?? undefined,
 			route_id: routeId,
-			route_long_name: route.route_long_name,
-			route_short_name: route.route_short_name,
-			route_text_color: route.route_text_color,
+			route_long_name: route.route_long_name ?? undefined,
+			route_short_name: route.route_short_name ?? undefined,
+			route_text_color: route.route_text_color ?? undefined,
 			route_type: route.route_type,
 		});
 		await context.writers.routes.write(data);

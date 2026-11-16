@@ -32,12 +32,12 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 		const data = StopTimesSchema.parse({
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,
-			drop_off_type: stopTimeData.drop_off_type,
-			pickup_type: stopTimeData.pickup_type,
-			shape_dist_traveled: stopTimeData.shape_dist_traveled,
+			drop_off_type: stopTimeData.drop_off_type ?? undefined,
+			pickup_type: stopTimeData.pickup_type ?? undefined,
+			shape_dist_traveled: Number(stopTimeData.shape_dist_traveled ?? 0),
 			stop_id: stopTimeData.stop_id,
-			stop_sequence: stopTimeData.stop_sequence,
-			timepoint: stopTimeData.timepoint,
+			stop_sequence: Number(stopTimeData.stop_sequence ?? undefined),
+			timepoint: stopTimeData.timepoint ?? undefined,
 			trip_id: stopTimeData.trip_id,
 		});
 

@@ -18,7 +18,13 @@ export async function exportShapesFile(context: OperationPostersV1Context, sqlTa
 
 	for (const shapeData of sqlTables.shapes.all('ORDER BY shape_id ASC, CAST(shape_pt_sequence AS INTEGER) ASC')) {
 		if (!shapeExtensions.has(shapeData.shape_id)) continue;
-		await context.writers.shapes.write(ShapesSchema.parse(shapeData));
+		await context.writers.shapes.write(ShapesSchema.parse({
+			...shapeData,
+			shape_dist_traveled: Number(shapeData.shape_dist_traveled ?? undefined),
+			shape_pt_lat: Number(shapeData.shape_pt_lat ?? undefined),
+			shape_pt_lon: Number(shapeData.shape_pt_lon ?? undefined),
+			shape_pt_sequence: Number(shapeData.shape_pt_sequence ?? undefined),
+		}));
 		exportedRows++;
 		await yieldToEventLoop(exportedRows);
 	}
