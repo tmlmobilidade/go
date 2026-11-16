@@ -10,7 +10,7 @@ import { VehicleTypeSchema } from './vehicle_type.js';
 /* * */
 
 export const vehicleSchema = BaseDocumentSchema.extend({
-	agency_id: z.string().nullable().optional(),
+	agency_ids: z.array(z.string()).nullable().optional(),
 	bicycles_capacity: z.number(),
 	car_capacity: z.number().nullable().optional(),
 	emission: VehicleEmissionSchema,
@@ -19,7 +19,6 @@ export const vehicleSchema = BaseDocumentSchema.extend({
 	propulsion: VehiclePropulsionSchema,
 	registration_date: OperationalDateSchema,
 	total_capacity: z.number(),
-	vehicle_code: z.string(),
 	vehicle_id: z.string(),
 	vehicle_type: VehicleTypeSchema,
 	wheelchair_accessible: z.number(),

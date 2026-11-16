@@ -9,8 +9,6 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 import { VehiclesListFiltersBar } from '../filters/VehiclesListFiltersBar';
-import { VehiclesListCellAgency } from '../table/VehiclesListCellAgency';
-import { VehiclesListCellLicensePlate } from '../table/VehiclesListCellLicensePlate';
 import { useVehiclesListData } from '../use-vehicles-list-data';
 import { VehiclesListHeader } from '../VehiclesListHeader';
 
@@ -36,18 +34,6 @@ export function VehiclesList() {
 			render: item => <IdTag id={item._id} />,
 			title: t('default:vehicles.list.VehiclesList.columns.id.label'),
 			width: 100,
-		},
-		{
-			accessor: 'agency_id',
-			render: item => <VehiclesListCellAgency value={item.agency_id} />,
-			title: t('default:vehicles.list.VehiclesList.columns.agency_id.label'),
-			width: 350,
-		},
-		{
-			accessor: 'license_plate',
-			render: item => <VehiclesListCellLicensePlate value={item.license_plate} />,
-			title: t('default:vehicles.list.VehiclesList.columns.license_plate.label'),
-			width: 200,
 		},
 		{
 			accessor: 'registration_date',
