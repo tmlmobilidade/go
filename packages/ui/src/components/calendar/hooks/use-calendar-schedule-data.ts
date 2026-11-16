@@ -45,7 +45,7 @@ export function useCalendarScheduleData(selectedAgencyId: null | string): UseCal
 	const scopes = CALENDAR_SCOPES;
 	const canRead = (scope: Permission['scope']) => hasPermission(me?.permissions ?? [], { action: 'read', scope });
 	const canReadPeriods = canRead(scopes.year_periods.scope);
-	const canReadAnnotations = canRead(scopes.annotations.scope);
+	const canReadAnnotations = !!me;
 	const canReadHolidays = canRead(scopes.holidays.scope);
 	const canReadEvents = canRead(scopes.events.scope);
 
@@ -80,7 +80,10 @@ export function useCalendarScheduleData(selectedAgencyId: null | string): UseCal
 		};
 		const sources = {
 			agencies: availableAgencies,
-			annotations: filterRecords(annotations.error || annotations.data?.error ? undefined : annotations.data?.data, scopes.annotations.scope),
+			// The Dates API enforces visibility for every assigned agency. Unassigned
+			// annotations remain visible even when a calendar agency is selected.
+			annotations: (annotations.error || annotations.data?.error ? [] : annotations.data?.data ?? []).filter(annotation =>
+				!annotation.agency_ids.length || !selectedAgencyId || annotation.agency_ids.includes(selectedAgencyId)),
 			events: filterRecords(events.error || events.data?.error ? undefined : events.data?.data, scopes.events.scope),
 			holidays: filterRecords(holidays.error || holidays.data?.error ? undefined : holidays.data?.data, scopes.holidays.scope),
 			yearPeriods: filterRecords(yearPeriods.error || yearPeriods.data?.error ? undefined : yearPeriods.data?.data, scopes.year_periods.scope),

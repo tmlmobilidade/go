@@ -1,13 +1,9 @@
 'use client';
 
-import { useAnnotationsDetailFormContext } from '@/components/annotations/detail/AnnotationsDetailForm.context';
-import { type OperationalDateInt, OperationalDateIntSchema, toCalendarDate } from '@tmlmobilidade/go-types-shared';
-import { Button, MiniCalendar, Section, Text, TimeChip, useStandardFormWatch } from '@tmlmobilidade/ui';
-import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { StandardFormController } from '@tmlmobilidade/ui';
 
-import styles from './styles.module.css';
+import { AnnotationsDatesSelect } from '../../shared/AnnotationsDatesSelect';
+import { useAnnotationsDetailFormContext } from '../AnnotationsDetailForm.context';
 
 /* * */
 
@@ -17,173 +13,18 @@ export function AnnotationsDatesSelector() {
 	//
 	// A. Setup variables
 
-	const annotationsDetailContext = useAnnotationsDetailFormContext();
-	const { i18n, t } = useTranslation();
-	const isDisabled = !annotationsDetailContext.capabilities.editEnabled;
-	const formDates = useStandardFormWatch({ control: annotationsDetailContext.form.control, name: 'dates' });
-	const dates = useMemo(() => formDates ?? [], [formDates]);
-	const [selectedMonth, setDisplayedMonth] = useState<Date>();
+	const { capabilities, form } = useAnnotationsDetailFormContext();
 
 	//
-	// B. Local mini-calendar state (controlled month)
-
-	const selectedSet = useMemo(() => new Set(dates), [dates]);
-
-	const initialMonth = useMemo(() => {
-		// Prefer showing month of the most recently selected date; fallback to current month
-		if (dates.length > 0) {
-			const last = toCalendarDate(dates[dates.length - 1]).replaceAll('-', '');
-			// last is YYYYMMDD
-			const yyyy = Number.parseInt(last.slice(0, 4), 10);
-			const mm = Number.parseInt(last.slice(4, 6), 10);
-			return new Date(yyyy, mm - 1, 1);
-		}
-		return new Date();
-	}, [dates]);
-
-	// Follow loaded form dates until the user navigates or edits this calendar.
-	const displayedMonth = selectedMonth ?? initialMonth;
-
-	/** All operational dates in the currently displayed month */
-	const displayedMonthDates = useMemo(() => {
-		const year = displayedMonth.getFullYear();
-		const month = displayedMonth.getMonth();
-		const daysInMonth = new Date(year, month + 1, 0).getDate();
-		const result: OperationalDateInt[] = [];
-		for (let d = 1; d <= daysInMonth; d++) {
-			const mm = String(month + 1).padStart(2, '0');
-			const dd = String(d).padStart(2, '0');
-			result.push(OperationalDateIntSchema.parse(`${year}${mm}${dd}`));
-		}
-		return result;
-	}, [displayedMonth]);
-
-	const isAllDisplayedMonthSelected = useMemo(
-		() => displayedMonthDates.length > 0 && displayedMonthDates.every(d => selectedSet.has(d)),
-		[displayedMonthDates, selectedSet],
-	);
-
-	/** Dates grouped by "YYYY-MM" key, sorted chronologically */
-	const groupedByMonth = useMemo(() => {
-		const map = new Map<string, OperationalDateInt[]>();
-		for (const d of [...dates].sort()) {
-			const key = toCalendarDate(d).slice(0, 7);
-			const existing = map.get(key);
-			if (existing) existing.push(d);
-			else map.set(key, [d]);
-		}
-		return map;
-	}, [dates]);
-
-	//
-	// C. Handle actions
-
-	const setDates = (value: OperationalDateInt[]) => {
-		setDisplayedMonth(displayedMonth);
-		annotationsDetailContext.form.setValue('dates', value, { shouldDirty: true, shouldValidate: true });
-	};
-
-	const handleSelect = (date: Date) => {
-		const operationalDate = OperationalDateIntSchema.parse(dayjs(date).format('YYYYMMDD'));
-		const isSelected = dates.includes(operationalDate);
-
-		if (isSelected) {
-			// Remove date from annotation
-			setDates(dates.filter(d => d !== operationalDate));
-		} else {
-			// Add date to annotation
-			setDates([...dates, operationalDate]);
-		}
-	};
-
-	const handleRemove = (operationalDate: OperationalDateInt) => {
-		setDates(dates.filter(d => d !== operationalDate));
-	};
-
-	const handleToggleDisplayedMonth = () => {
-		if (isAllDisplayedMonthSelected) {
-			setDates(dates.filter(d => !displayedMonthDates.includes(d)));
-		} else {
-			const newDates = [...new Set([...dates, ...displayedMonthDates])].sort((left, right) => left - right);
-			setDates(newDates);
-		}
-	};
-
-	//
-	// D. Render components
+	// B. Render components
 
 	return (
-		<Section gap="md" padding="none">
-			<Text size="sm" weight="semibold">{t('default:annotations.dates.prompt')}</Text>
-
-			<Section flexDirection="row" gap="md" padding="none">
-				<Section alignItems="center" gap="md" padding="none" width="fit-content">
-					<MiniCalendar
-						displayedMonth={displayedMonth}
-						onDisplayedMonthChange={setDisplayedMonth}
-						isDateSelected={(date) => {
-							const operationalDate = OperationalDateIntSchema.parse(dayjs(date).format('YYYYMMDD'));
-							return selectedSet.has(operationalDate);
-						}}
-						onDayClick={(date) => {
-							if (isDisabled) return;
-							handleSelect(date);
-						}}
-					/>
-					{!isDisabled && (
-						<Button className={styles.calendarMonthButton} label={isAllDisplayedMonthSelected ? t('default:annotations.dates.removeMonth') : t('default:annotations.dates.selectMonth')} onClick={handleToggleDisplayedMonth} size="xs" variant="transparent" />
-					)}
-				</Section>
-
-				{dates.length > 0 && (
-					<div className={styles.months}>
-						{Array.from(groupedByMonth.entries()).map(([monthKey, monthDates]) => {
-							const [yyyy, mm] = monthKey.split('-');
-							const monthLabel = new Date(Number(yyyy), Number(mm) - 1, 1)
-								.toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' });
-
-							const removeMonth = () => {
-								setDates(dates.filter(d => !monthDates.includes(d)));
-							};
-
-							return (
-								<Section key={monthKey} gap="xs" padding="none">
-									<div className={styles.monthHeader}>
-										<Text className={styles.monthLabel} fw={600} size="sm">{monthLabel}</Text>
-										{!isDisabled && (
-											<button
-												className={styles.monthSmallButton}
-												onClick={removeMonth}
-												type="button"
-											>
-												{t('default:annotations.dates.removeMonth')}
-											</button>
-										)}
-									</div>
-									<div className={styles.days}>
-										{monthDates.map((date) => {
-											const jsDate = dayjs(toCalendarDate(date)).toDate();
-											const day = jsDate.getDate();
-											const weekdayShort = jsDate.toLocaleDateString(i18n.language, { weekday: 'short' }).slice(0, 3);
-											return (
-												<TimeChip
-													key={date}
-													onRemove={!isDisabled ? () => handleRemove(date) : undefined}
-													time={`${day} (${weekdayShort})`}
-												/>
-											);
-										})}
-									</div>
-								</Section>
-							);
-						})}
-					</div>
-				)}
-
-			</Section>
-		</Section>
-
+		<StandardFormController
+			control={form.control}
+			name="dates"
+			render={({ field, fieldState }) => (
+				<AnnotationsDatesSelect error={fieldState.error?.message} onChange={field.onChange} readOnly={!capabilities.editEnabled} value={field.value} />
+			)}
+		/>
 	);
-
-	//
 }

@@ -23,6 +23,8 @@ export function AnnotationsListCellAgencies({ agencyIds }: AnnotationsListCellAg
 	//
 	// B. Render components
 
+	if (!agencyIds.length) return null;
+
 	return (
 		<AgencyTagGroup agencyIds={agencyIds} data={data} />
 	);
