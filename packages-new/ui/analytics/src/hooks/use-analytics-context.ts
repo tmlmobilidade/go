@@ -3,14 +3,16 @@
 import { useContext } from 'react';
 
 import { AnalyticsContext } from '../contexts/Analytics.context';
+import { type AnalyticsContextState } from '../types/analytics';
 
 /* * */
 
-/** Reads analytics actions and status, enforcing usage within the provider. */
-export function useAnalyticsContext() {
+export function useAnalyticsContext(): AnalyticsContextState {
 	const context = useContext(AnalyticsContext);
+
 	if (!context) {
 		throw new Error('useAnalyticsContext must be used within an AnalyticsContextProvider');
 	}
+
 	return context;
 }

@@ -37,9 +37,11 @@ export interface UseUsersDetailSessionReplayReturnType {
 
 /* * */
 
-/** Owns replay mutations separately from saving the user's editable form. */
 export function useUsersDetailSessionReplay({ authorization, isLoading, onChange, permissions, userId }: UseUsersDetailSessionReplayProps): UseUsersDetailSessionReplayReturnType {
-	// A. Setup variables
+	//
+
+	//
+	// Setup variables
 
 	const { t } = useTranslation();
 	const data = getUsersDetailSessionReplayState(authorization, Date.now());
@@ -48,7 +50,8 @@ export function useUsersDetailSessionReplay({ authorization, isLoading, onChange
 		scope: PermissionCatalog.all.users.scope,
 	});
 
-	// B. Handle actions
+	//
+	// Handle actions
 
 	const { action: handleAuthorize, isLoading: isAuthorizing } = useHandleAction<UserSessionReplayResponse>({
 		fetchFn: async () => await fetchApiData<UserSessionReplayResponse>({ method: 'POST', url: API_ROUTES.core.USERS_DETAIL_SESSION_REPLAY(userId) }),
@@ -72,12 +75,13 @@ export function useUsersDetailSessionReplay({ authorization, isLoading, onChange
 		onSuccess: () => onChange(),
 	});
 
-	// C. Setup capabilities
+	//
+	// Setup capabilities
 
 	const { createEnabled: authorizeEnabled, deleteEnabled: cancelEnabled } = useStandardFormCapabilities({
 		create: { hasPermission: hasManagePermission },
 		delete: { hasPermission: hasManagePermission },
-		// Authorization has no editable fields and does not depend on the user's unsaved form values.
+		// Replay controls do not depend on unsaved user form values.
 		form: { isDirty: false, isValid: true },
 		loading: { isLoading: isLoading || isAuthorizing || isCancelling },
 	});
@@ -92,15 +96,20 @@ export function useUsersDetailSessionReplay({ authorization, isLoading, onChange
 		await handleCancel(authorization.activation_id);
 	}, [authorization, cancelEnabled, data.isAuthorized, handleCancel]);
 
-	// D. Revalidate at the deadline even if the polled user document stays unchanged.
+	//
+	// Setup effects
 
+	// Refresh at the deadline even if polling returns the same user document.
 	useEffect(() => {
 		if (!hasManagePermission || data.deadline === null) return;
+
 		const timeout = setTimeout(onChange, Math.max(0, data.deadline - Date.now()) + 1);
+
 		return () => clearTimeout(timeout);
 	}, [data.deadline, hasManagePermission, onChange]);
 
-	// E. Return state
+	//
+	// Return state
 
 	return useMemo(() => ({
 		actions: { authorize, cancel },

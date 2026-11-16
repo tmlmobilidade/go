@@ -21,29 +21,30 @@ interface UseReplayAuthorizationProps {
 const REPLAY_AUTHORIZATION_REFRESH_INTERVAL_MS = 30_000;
 const REPLAY_AUTHORIZATION_REQUEST_TIMEOUT_MS = 10_000;
 
-/** Polls GO for the current user's activation, ignoring responses from replaced identities. */
 export function useReplayAuthorization({ initialization, onError, ready, replayUrl, userId }: UseReplayAuthorizationProps): AnalyticsReplayActivation | undefined {
 	//
 
 	//
-	// A. Setup variables
+	// Setup variables
 
 	const authorizationContext = useMemo(() => {
 		if (!ready || !initialization || !replayUrl || !userId) return undefined;
 		return { initialization, replayUrl, userId };
 	}, [initialization, ready, replayUrl, userId]);
+
 	const [authorizationState, setAuthorizationState] = useState<{
 		activation: AnalyticsReplayActivation | undefined
 		context: typeof authorizationContext
 	}>();
 
 	//
-	// B. Setup effects
+	// Setup effects
 
 	useEffect(() => {
 		if (!authorizationContext) return;
 
 		const { client } = authorizationContext.initialization;
+
 		let isEffectActive = true;
 		let refreshTimeout: ReturnType<typeof setTimeout> | undefined;
 		let pendingRequestController: AbortController | undefined;
@@ -58,6 +59,7 @@ export function useReplayAuthorization({ initialization, onError, ready, replayU
 
 			const requestController = new AbortController();
 			pendingRequestController = requestController;
+
 			const requestTimeout = setTimeout(() => requestController.abort(), REPLAY_AUTHORIZATION_REQUEST_TIMEOUT_MS);
 
 			try {
@@ -65,7 +67,7 @@ export function useReplayAuthorization({ initialization, onError, ready, replayU
 				if (!isAuthorizationContextCurrent()) return;
 
 				setAuthorizationState((previousAuthorizationState) => {
-					// A repeated response must not restart the recorder or extend its local deadlines.
+					// Keep the same reference so polling does not restart capture or extend its deadline.
 					if (
 						activation
 						&& previousAuthorizationState?.context === authorizationContext
@@ -92,7 +94,7 @@ export function useReplayAuthorization({ initialization, onError, ready, replayU
 			}
 		};
 
-		// A restored page must revalidate before using authorization cached in the back-forward cache.
+		// Revalidate authorization when the browser restores a cached page.
 		const handlePageShow = () => {
 			if (!isAuthorizationContextCurrent()) return;
 
@@ -100,6 +102,7 @@ export function useReplayAuthorization({ initialization, onError, ready, replayU
 			clearTimeout(refreshTimeout);
 			void refreshAuthorization();
 		};
+
 		const handlePageHide = () => {
 			setAuthorizationState(undefined);
 			clearTimeout(refreshTimeout);
@@ -120,7 +123,7 @@ export function useReplayAuthorization({ initialization, onError, ready, replayU
 	}, [authorizationContext, onError]);
 
 	//
-	// C. Return activation
+	// Return activation
 
 	if (!authorizationContext || authorizationState?.context !== authorizationContext) return undefined;
 

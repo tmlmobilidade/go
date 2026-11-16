@@ -22,17 +22,16 @@ export interface UseReplayReturnType {
 
 /* * */
 
-/** Binds capture actions to the current analytics initialization without starting capture automatically. */
 export function useReplay({ activation, initialization, initializationRef, onError, ready }: UseReplayProps): UseReplayReturnType {
 	//
 
 	//
-	// A. Setup variables
+	// Setup variables
 
 	const userId = initialization?.client.getUserId();
 
 	//
-	// B. Handle actions
+	// Handle actions
 
 	const startReplay = useCallback(async () => {
 		if (
@@ -42,7 +41,7 @@ export function useReplay({ activation, initialization, initializationRef, onErr
 			|| !activation
 		) return false;
 
-		// A callback retained by the previous user must not authorize the new identity.
+		// Ignore callbacks retained by a previous user.
 		if (!userId || initialization.client.getUserId() !== userId) return false;
 
 		try {
@@ -58,7 +57,7 @@ export function useReplay({ activation, initialization, initializationRef, onErr
 	}, [initializationRef]);
 
 	//
-	// C. Return actions
+	// Return actions
 
 	return { startReplay, stopReplay };
 }

@@ -27,7 +27,7 @@ export function useMeData(enabled = true): UseMeDataReturnType {
 	//
 
 	//
-	// A. Fetch data
+	// Fetch data
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<User>, Error>(enabled ? API_ROUTES.core.ME_LIST : null, {
 		fetcher: fetchMeData,
@@ -35,7 +35,7 @@ export function useMeData(enabled = true): UseMeDataReturnType {
 	});
 
 	//
-	// B. Return data
+	// Return data
 
 	return useMemo(() => ({
 		data: data?.data,

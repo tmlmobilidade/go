@@ -6,19 +6,34 @@ import { type AnalyticsConfiguration, type AnalyticsContextProps } from '../type
 
 /* * */
 
-/** Resolves explicit settings and loads runtime configuration when no API key is supplied. */
-export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }: AnalyticsContextProps, onError: (cause: unknown) => void, onLoadStart: () => void) {
+interface UseAnalyticsConfigurationReturnType {
+	apiKey: string | undefined
+	options: AnalyticsContextProps['options']
+}
+
+/* * */
+
+export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }: AnalyticsContextProps, onError: (cause: unknown) => void, onLoadStart: () => void): UseAnalyticsConfigurationReturnType {
+	//
+
+	//
+	// Setup variables
+
 	const [configuration, setConfiguration] = useState<{
 		url: string
 		value: AnalyticsConfiguration
 	}>();
-	// Ignore settings fetched from a previous URL while the current request is pending.
+
+	// Ignore configuration fetched from a previous URL.
 	const remoteConfiguration = configuration?.url === configurationUrl ? configuration?.value : undefined;
-	// Explicit props take precedence over values returned by the configuration endpoint.
+
+	// Explicit props override runtime configuration.
 	const resolvedApiKey = apiKey ?? remoteConfiguration?.apiKey;
 	const resolvedOptions = useMemo(() => remoteConfiguration ? { ...remoteConfiguration.options, ...options } : options, [remoteConfiguration, options]);
 
-	// Keep the network request in React's lifecycle so URL changes and unmounts cancel it.
+	//
+	// Load configuration
+
 	useEffect(() => {
 		if (apiKey !== undefined || !configurationUrl) return;
 		onLoadStart();
@@ -39,11 +54,13 @@ export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }:
 			});
 
 		return () => {
-			// Abort the request and ignore responses that still complete after cleanup.
 			active = false;
 			controller.abort();
 		};
 	}, [apiKey, configurationUrl, onError, onLoadStart]);
+
+	//
+	// Return configuration
 
 	return { apiKey: resolvedApiKey, options: resolvedOptions };
 }
