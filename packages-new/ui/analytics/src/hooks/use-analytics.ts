@@ -12,7 +12,7 @@ import { useReplayAuthorization } from './use-replay-authorization';
 
 /* * */
 
-export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsContextProps): AnalyticsContextState {
+export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...configuration }: AnalyticsContextProps): AnalyticsContextState {
 	//
 
 	//
@@ -84,7 +84,7 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 		initializationPromise.then(() => {
 			if (!isInitializationActive) return;
 			client.setOptOut(options?.optOut ?? false);
-			// A new reference restarts identity synchronization and authorization polling.
+			// A new reference restarts identity synchronization and authorization checks.
 			const activatedInitialization = { ...pendingInitialization };
 			initializationRef.current = activatedInitialization;
 			setInitialization(activatedInitialization);
@@ -107,12 +107,13 @@ export function useAnalytics({ replayUrl, user, ...configuration }: AnalyticsCon
 	//
 	// Setup replay
 
-	// Synchronize identity before registering authorization polling.
+	// Synchronize identity before checking authorization from /me.
 	const replayActivation = useReplayAuthorization({
+		authorization: replayAuthorization,
 		initialization,
 		onError: handleError,
 		ready,
-		replayUrl,
+		startUrl: replayStartUrl,
 		userId: user?._id,
 	});
 

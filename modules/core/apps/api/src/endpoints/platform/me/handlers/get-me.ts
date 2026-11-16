@@ -12,6 +12,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * @param reply The reply object
  */
 export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<User>) {
+	reply.header('Cache-Control', 'no-store');
 	//
 
 	//

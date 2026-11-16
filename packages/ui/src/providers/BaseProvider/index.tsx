@@ -6,7 +6,7 @@ import { Notifications } from '@mantine/notifications';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type AnalyticsContextProps, AnalyticsContextProvider } from '@tmlmobilidade/go-ui-analytics';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { type PropsWithChildren, Suspense, useMemo } from 'react';
+import { type PropsWithChildren, Suspense, useEffect, useMemo } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
 import { useMeData } from '../../auth/use-me-data';
@@ -38,10 +38,10 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 	//
 
 	//
-	// A. Setup variables
+	// Setup variables
 
 	const analyticsApiKey = analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
-	const { data: meData, isAuthenticated } = useMeData(analyticsApiKey !== '');
+	const { data: meData, isAuthenticated, mutate: meMutate, replayAuthorization } = useMeData(analyticsApiKey !== '', 30_000);
 	const analyticsUser = useMemo<AnalyticsContextProps['user']>(() => {
 		if (analytics?.user !== undefined) return analytics.user;
 		if (isAuthenticated === undefined) return undefined;
@@ -69,7 +69,21 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 	};
 
 	//
-	// B. Render components
+	// Revalidate /me before resuming a page restored from the browser cache.
+	useEffect(() => {
+		if (analyticsApiKey === '') return;
+
+		const handlePageShow = (event: PageTransitionEvent) => {
+			if (event.persisted) meMutate();
+		};
+
+		window.addEventListener('pageshow', handlePageShow);
+
+		return () => window.removeEventListener('pageshow', handlePageShow);
+	}, [analyticsApiKey, meMutate]);
+
+	//
+	// Render components
 
 	return (
 		<html
@@ -86,7 +100,8 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 								apiKey={analyticsApiKey}
 								configurationUrl={analytics?.configurationUrl ?? `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/analytics`}
 								options={analyticsOptions}
-								replayUrl={analytics?.replayUrl ?? API_ROUTES.core.ME_SESSION_REPLAY}
+								replayAuthorization={analytics?.replayAuthorization ?? replayAuthorization}
+								replayStartUrl={analytics?.replayStartUrl ?? API_ROUTES.core.ME_SESSION_REPLAY_START}
 								user={analyticsUser}
 							>
 								<SWRConfig value={swrSettings}>

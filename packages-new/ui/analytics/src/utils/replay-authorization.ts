@@ -1,6 +1,7 @@
 import { type UserSessionReplayResponse, UserSessionReplayResponseSchema } from '@tmlmobilidade/go-types-core';
 
 import { type AnalyticsReplayActivation } from '../types/replay/activation';
+import { type AnalyticsReplayAuthorization } from '../types/replay/authorization';
 
 /* * */
 
@@ -12,16 +13,16 @@ interface RequestReplayAuthorizationReturnType {
 
 /* * */
 
-async function requestReplayAuthorization(url: string, userId: string, signal: AbortSignal, activationId?: string): Promise<RequestReplayAuthorizationReturnType> {
+async function requestReplayStart(url: string, userId: string, signal: AbortSignal, activationId: string): Promise<RequestReplayAuthorizationReturnType> {
 	const requestedAt = Date.now();
 	const monotonicRequestedAt = performance.now();
 
-	const response = await fetch(activationId ? `${url.replace(/\/$/, '')}/start` : url, {
-		body: activationId ? JSON.stringify({ activation_id: activationId }) : undefined,
+	const response = await fetch(url, {
+		body: JSON.stringify({ activation_id: activationId }),
 		cache: 'no-store',
 		credentials: 'include',
-		headers: activationId ? { 'Content-Type': 'application/json' } : undefined,
-		method: activationId ? 'POST' : 'GET',
+		headers: { 'Content-Type': 'application/json' },
+		method: 'POST',
 		signal,
 	});
 
@@ -41,19 +42,34 @@ async function requestReplayAuthorization(url: string, userId: string, signal: A
 
 /* * */
 
-export async function fetchReplayActivation(url: string, userId: string, signal: AbortSignal): Promise<AnalyticsReplayActivation | undefined> {
+export async function fetchReplayActivation(authorization: AnalyticsReplayAuthorization, startUrl: string, signal: AbortSignal): Promise<AnalyticsReplayActivation | undefined> {
 	//
-	// Load authorization
+	// Check authorization from /me
 
-	let response = await requestReplayAuthorization(url, userId, signal);
+	const current = authorization.authorization;
 
-	if (signal.aborted) return undefined;
+	if (signal.aborted || current?.cancelled_at !== null) return undefined;
+
+	const authorizationExpiry = current.started_at === null ? current.pending_expires_at : current.expires_at;
+
+	if (authorizationExpiry === null) return undefined;
+
+	const authorizationRemaining = authorizationExpiry - authorization.serverNow;
+
+	if (
+		authorization.requestedAt + authorizationRemaining <= Date.now()
+		|| authorization.monotonicRequestedAt + authorizationRemaining <= performance.now()
+	) return undefined;
+
+	let response: RequestReplayAuthorizationReturnType = {
+		monotonicRequestedAt: authorization.monotonicRequestedAt,
+		requestedAt: authorization.requestedAt,
+		value: { activation: current, server_now: authorization.serverNow, user_id: authorization.userId },
+	};
 
 	// The backend starts each activation once and preserves its deadline on reload.
-	const pending = response.value.activation;
-
-	if (pending?.started_at === null) {
-		response = await requestReplayAuthorization(url, userId, signal, pending.activation_id);
+	if (current.started_at === null) {
+		response = await requestReplayStart(startUrl, authorization.userId, signal, current.activation_id);
 	}
 
 	const { activation, server_now: serverNow } = response.value;

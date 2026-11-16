@@ -1,6 +1,7 @@
 import { type Types } from '@amplitude/analytics-browser';
 
 import { type AnalyticsEventInput } from './events/shared';
+import { type AnalyticsReplayAuthorization } from './replay/authorization';
 import { type AnalyticsReplayController } from './replay/controller';
 import { type AnalyticsUserProperties } from './user-properties';
 
@@ -12,8 +13,10 @@ export interface AnalyticsContextProps {
 	apiKey?: string
 	configurationUrl?: string
 	options?: Types.BrowserOptions
-	/** Authenticated GO endpoint for the current user's replay authorization. */
-	replayUrl?: string
+	/** Authorization received with the current user's /me response. */
+	replayAuthorization?: AnalyticsReplayAuthorization
+	/** Authenticated GO endpoint that accepts the first capture start. */
+	replayStartUrl?: string
 	/** Undefined leaves identity unchanged; null clears the authenticated user. */
 	user?: AnalyticsUserProperties | null
 }
