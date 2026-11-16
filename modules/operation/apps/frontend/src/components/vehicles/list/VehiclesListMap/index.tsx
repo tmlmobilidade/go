@@ -1,24 +1,24 @@
-'use client';
+// 'use client';
 
-import { useVehiclesPositionsData } from '@/components/vehicles/shared/use-vehicles-positions-data';
-import { MapOverlayVehicles, MapView } from '@tmlmobilidade/ui';
+// import { useVehiclesPositionsData } from '@/components/vehicles/shared/use-vehicles-positions-data';
+// import { MapOverlayVehicles, MapView } from '@tmlmobilidade/ui';
 
-/* * */
+// /* * */
 
-export function VehiclesListMap() {
-	//
+// export function VehiclesListMap() {
+// 	//
 
-	//
-	// A. Setup variables
+// 	//
+// 	// A. Setup variables
 
-	const { geoJson } = useVehiclesPositionsData();
+// 	const { geoJson } = useVehiclesPositionsData();
 
-	//
-	// B. Render components
+// 	//
+// 	// B. Render components
 
-	return (
-		<MapView id="PositionsMap" layers={{ scale: false }} toolbar={false}>
-			<MapOverlayVehicles showCounter="always" vehiclesData={geoJson} />
-		</MapView>
-	);
-}
+// 	return (
+// 		<MapView id="PositionsMap" layers={{ scale: false }} toolbar={false}>
+// 			<MapOverlayVehicles showCounter="always" vehiclesData={geoJson} />
+// 		</MapView>
+// 	);
+// }
