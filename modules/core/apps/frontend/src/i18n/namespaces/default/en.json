@@ -915,21 +915,9 @@
 						"description": "Capture is authorized until {{deadline}} (Lisbon time).",
 						"label": "Active"
 					},
-					"cancelled": {
-						"description": "The authorization was stopped. This does not delete data already sent to Amplitude.",
-						"label": "Stopped"
-					},
-					"completed": {
-						"description": "The five-minute capture window has ended. Replay availability can be checked in Amplitude.",
-						"label": "Finished"
-					},
-					"expired": {
-						"description": "The request expired without starting capture. Another capture must be authorized.",
-						"label": "Request expired"
-					},
-					"none": {
-						"description": "No capture has been requested for this user.",
-						"label": "No capture requested"
+					"inactive": {
+						"description": "No valid authorization exists to capture Session Replay for this user.",
+						"label": "Inactive"
 					},
 					"pending": {
 						"description": "Request valid until {{deadline}} (Lisbon time). The five-minute window begins with the first accepted start.",

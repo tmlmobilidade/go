@@ -945,21 +945,9 @@
 						"description": "A captura está autorizada até {{deadline}} (hora de Lisboa).",
 						"label": "Ativo"
 					},
-					"cancelled": {
-						"description": "A autorização foi interrompida. Isto não elimina dados já enviados ao Amplitude.",
-						"label": "Parada"
-					},
-					"completed": {
-						"description": "A janela de captura de cinco minutos terminou. A disponibilidade do replay pode ser confirmada no Amplitude.",
-						"label": "Terminada"
-					},
-					"expired": {
-						"description": "O pedido expirou sem iniciar a captura. É necessário autorizar outra captura.",
-						"label": "Pedido expirado"
-					},
-					"none": {
-						"description": "Não foi pedida uma captura para este utilizador.",
-						"label": "Sem pedido de captura"
+					"inactive": {
+						"description": "Não existe uma autorização válida para capturar Session Replay deste utilizador.",
+						"label": "Inativo"
 					},
 					"pending": {
 						"description": "Pedido válido até {{deadline}} (hora de Lisboa). Os cinco minutos começam no primeiro início aceite.",
