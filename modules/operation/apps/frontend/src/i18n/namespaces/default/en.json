@@ -115,9 +115,11 @@
 				"has_overlap": "The validity dates of this plan are overlapping with other plans. Only one plan should be active for a given period."
 			},
 			"PlansListHeader": {
-				"extract": "Export",
-				"extractPDFs": "Export PDFs",
 				"title": "Plans"
+			},
+			"PlansListHeaderMenu": {
+				"extract": "Export",
+				"extractPDFs": "Export PDFs"
 			}
 		}
 	},
