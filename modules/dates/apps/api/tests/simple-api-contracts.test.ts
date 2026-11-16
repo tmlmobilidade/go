@@ -11,18 +11,28 @@ type Handler = (request: FastifyRequest<{ Body: unknown, Params: { id: string } 
 
 const resources = [{ entity: 'Annotation', label: 'title', plural: 'annotations', singular: 'annotation' }, { entity: 'Holiday', label: 'title', plural: 'holidays', singular: 'holiday' }];
 
-// Only storage is mocked. Tests execute the real handlers, schemas, permissions and response helpers.
+// Storage and location reference lookups are mocked. Handlers, schemas and permissions are real.
 let ROW: Record<string, unknown> | undefined;
 let ROWS: Record<string, unknown>[];
 let WRITES: Record<string, unknown>[];
 let DELETED: string[];
 let LIST_QUERY: unknown;
+let LIST_OPTIONS: unknown;
+
+mock.module('@tmlmobilidade/go-providers-locations', {
+	namedExports: {
+		locationsProvider: {
+			findAdministrativeTree: async () => [{ admin_level: '2', children: [], code: null, id: '1', name: 'Portugal' }],
+		},
+	},
+});
 
 const collection = {
 	deleteById: async (id: string) => { DELETED.push(id); },
 	findById: async () => ROW,
-	findMany: async (query: unknown) => {
+	findMany: async (query: unknown, options: unknown) => {
 		LIST_QUERY = query;
+		LIST_OPTIONS = options;
 		return ROWS;
 	},
 	insertOne: async (data: Record<string, unknown>) => {
@@ -52,6 +62,7 @@ async function invoke(handler: Handler, body: unknown, permissions: Permission[]
 	let payload: unknown;
 	const reply = {
 		header: () => reply,
+		request: { headers: {} },
 		send: (value: unknown) => {
 			payload = value;
 			return reply;
@@ -78,7 +89,7 @@ for (const resource of resources) {
 			return [action, Object.values(exports)[0]];
 		}),
 	)) as Record<Action, Handler>;
-	const validBody = { agency_ids: ['A'], code: 'CODE', [resource.label]: 'Record' };
+	const validBody = { agency_ids: ['A'], code: 'CODE', ...(resource.plural === 'annotations' ? { dates: [20261113] } : {}), [resource.label]: 'Record' };
 	const readPermission = permission(resource.plural, 'read');
 
 	describe(`${resource.plural} API contracts`, () => {
@@ -98,7 +109,7 @@ for (const resource of resources) {
 			assert.equal(WRITES[0].created_by, 'actor');
 			assert.equal(WRITES[0].updated_by, 'actor');
 			for (const key of ['_id', 'created_at', 'updated_at']) assert.equal(key in WRITES[0], false);
-			assert.deepEqual(WRITES[0].dates, []);
+			assert.deepEqual(WRITES[0].dates, resource.plural === 'annotations' ? [20261113] : []);
 		});
 
 		test('rejects malformed and missing create/update bodies without writes', async () => {
@@ -112,13 +123,14 @@ for (const resource of resources) {
 			assert.equal(WRITES.length, 0);
 		});
 
-		test('rejects missing agencies on create and empty agencies on create/update without writes', async () => {
-			const withoutAgencies = { code: 'CODE', [resource.label]: 'Record' };
-			assert.equal((await invoke(handlers.create, withoutAgencies, [permission(resource.plural, 'create')])).httpStatus, 400);
+		test('validates optional annotation agencies and required holiday agencies', async () => {
+			const withoutAgencies = { code: 'CODE', ...(resource.plural === 'annotations' ? { dates: [20261113] } : {}), [resource.label]: 'Record' };
+			const expectedStatus = resource.plural === 'annotations' ? 200 : 400;
+			assert.equal((await invoke(handlers.create, withoutAgencies, [permission(resource.plural, 'create')])).httpStatus, expectedStatus);
 			for (const action of ['create', 'update'] as const) {
-				assert.equal((await invoke(handlers[action], { ...validBody, agency_ids: [] }, [permission(resource.plural, action)])).httpStatus, 400);
+				assert.equal((await invoke(handlers[action], { ...validBody, agency_ids: [] }, [permission(resource.plural, action)])).httpStatus, expectedStatus);
 			}
-			assert.equal(WRITES.length, 0);
+			assert.equal(WRITES.length, resource.plural === 'annotations' ? 3 : 0);
 		});
 
 		test('requires permissions for all agencies on create', async () => {
@@ -144,8 +156,52 @@ for (const resource of resources) {
 			assert.deepEqual(WRITES[0].agency_ids, ['B']);
 		});
 
+		if (resource.plural === 'annotations') {
+			test('lists annotations by latest occurrence with deterministic tie breakers', async () => {
+				assert.equal((await invoke(handlers.list, undefined, [readPermission])).httpStatus, 200);
+				assert.deepEqual(LIST_OPTIONS, { sort: [['dates', -1], ['created_at', -1], ['_id', 1]] });
+			});
+
+			test('updates and clears structured sources', async () => {
+				const sources = [{ name: 'Article', url: 'https://example.com/article' }];
+				assert.equal((await invoke(handlers.update, { sources }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[0].sources, sources);
+				assert.equal((await invoke(handlers.update, { sources: [] }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[1].sources, []);
+			});
+
+			test('rejects removing all dates while allowing partial edits without changing dates', async () => {
+				const access = [permission(resource.plural, 'update')];
+				assert.equal((await invoke(handlers.update, { dates: [] }, access)).httpStatus, 400);
+				assert.equal(WRITES.length, 0);
+				assert.equal((await invoke(handlers.update, { title: 'Edited' }, access)).httpStatus, 200);
+				assert.equal((await invoke(handlers.update, { dates: [20261113] }, access)).httpStatus, 200);
+			});
+
+			test('updates locations using canonical reference data and rejects unknown IDs', async () => {
+				const locations = [{ admin_level: 'incorrect', name: 'Incorrect name', osm_id: 1 }];
+				assert.equal((await invoke(handlers.update, { locations }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[0].locations, [{ admin_level: '2', code: null, name: 'Portugal', osm_id: 1 }]);
+				assert.equal((await invoke(handlers.update, { locations: [{ ...locations[0], osm_id: 999 }] }, [permission(resource.plural, 'update')])).httpStatus, 400);
+				assert.equal(WRITES.length, 1);
+			});
+
+			test('preserves omitted locations and allows clearing the geographic selection', async () => {
+				const locations = [{ admin_level: '2', code: null, name: 'Portugal', osm_id: 1 }];
+				ROW = { ...ROW, locations };
+				const result = await invoke(handlers.update, { title: 'Edited' }, [permission(resource.plural, 'update')]);
+				assert.deepEqual((result.response.data as Record<string, unknown>).locations, locations);
+				assert.equal(Object.hasOwn(WRITES[0], 'locations'), false);
+				assert.equal((await invoke(handlers.update, { locations: [] }, [permission(resource.plural, 'update')])).httpStatus, 200);
+				assert.deepEqual(WRITES[1].locations, []);
+			});
+		}
+
 		test('denies every action without the required permissions', async () => {
-			for (const handler of Object.values(handlers)) assert.equal((await invoke(handler, validBody, [])).httpStatus, 403);
+			for (const [action, handler] of Object.entries(handlers)) {
+				const expectedStatus = resource.plural === 'annotations' && action === 'list' ? 200 : 403;
+				assert.equal((await invoke(handler, validBody, [])).httpStatus, expectedStatus);
+			}
 			assert.equal(WRITES.length, 0);
 			assert.equal(DELETED.length, 0);
 		});
@@ -160,9 +216,10 @@ for (const resource of resources) {
 			assert.equal(WRITES.length, 0);
 		});
 
-		test('reads records with any matching agency and denies nonmatching agencies', async () => {
+		test('enforces the agency read policy for each resource', async () => {
 			ROW = { ...ROW, agency_ids: ['A', 'B'] };
-			assert.equal((await invoke(handlers.get, undefined, [readPermission])).httpStatus, 200);
+			assert.equal((await invoke(handlers.get, undefined, [readPermission])).httpStatus, resource.plural === 'annotations' ? 403 : 200);
+			assert.equal((await invoke(handlers.get, undefined, [permission(resource.plural, 'read', ['A', 'B'])])).httpStatus, 200);
 			ROW = { ...ROW, agency_ids: ['B'] };
 			assert.equal((await invoke(handlers.get, undefined, [readPermission])).httpStatus, 403);
 		});
@@ -172,7 +229,9 @@ for (const resource of resources) {
 			const result = await invoke(handlers.list, undefined, [readPermission]);
 			assert.equal(result.httpStatus, 200);
 			assert.deepEqual(result.response.data, []);
-			assert.deepEqual(LIST_QUERY, { agency_ids: { $in: ['A'] } });
+			assert.deepEqual(LIST_QUERY, resource.plural === 'annotations'
+				? { agency_ids: { $not: { $elemMatch: { $nin: ['A'] } } } }
+				: { agency_ids: { $in: ['A'] } });
 		});
 
 		test('honors allow-all list access', async () => {

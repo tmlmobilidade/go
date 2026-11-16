@@ -12,6 +12,9 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 import { useAnnotationsDetailAnnotationId } from '../../detail/use-annotations-detail-annotation-id';
+import { AnnotationsCategoryLabel } from '../../shared/AnnotationsCategoryLabel';
+import { AnnotationsListCellLocations } from '../table/AnnotationsListCellLocations';
+import { AnnotationsListCellTitle } from '../table/AnnotationsListCellTitle';
 import { useAnnotationsListData } from '../use-annotations-list-data';
 
 /* * */
@@ -36,21 +39,34 @@ export function AnnotationsList() {
 			width: 100,
 		},
 		{
-			accessor: 'title',
-			title: t('default:annotations.list.columns.title'),
-			width: 400,
+			accessor: 'category',
+			render: item => <AnnotationsCategoryLabel category={item.category} />,
+			title: '',
+			width: 50,
 		},
 		{
-			accessor: 'agency_ids',
-			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
-			title: t('default:annotations.list.columns.agency_ids'),
-			width: 200,
+			accessor: 'title',
+			render: item => <AnnotationsListCellTitle title={item.title} />,
+			title: t('default:annotations.list.columns.title'),
+			width: 480,
+		},
+		{
+			accessor: 'locations',
+			render: item => <AnnotationsListCellLocations locations={item.locations} />,
+			title: t('annotations:list.AnnotationsList.locations'),
+			width: 480,
 		},
 		{
 			accessor: 'dates',
 			render: item => <AnnotationsListCellDates dates={item.dates} />,
 			title: t('default:annotations.list.columns.dates'),
-			width: 500,
+			width: 300,
+		},
+		{
+			accessor: 'agency_ids',
+			render: item => <AnnotationsListCellAgencies agencyIds={item.agency_ids} />,
+			title: t('default:annotations.list.columns.agency_ids'),
+			width: 160,
 		},
 	];
 
