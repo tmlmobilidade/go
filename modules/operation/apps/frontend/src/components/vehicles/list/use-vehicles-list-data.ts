@@ -51,7 +51,7 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	// D. Transform data
 
 	const searchResultsData = useSearch<VehiclesListItem>({
-		accessors: ['_id', 'vehicle_id'],
+		accessors: ['_id', 'flags'],
 		data: data?.data,
 		query: filterSearch.value,
 	});
