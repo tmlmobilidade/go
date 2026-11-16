@@ -133,17 +133,13 @@
 			},
 			"contentModeAll": "All",
 			"contentModeLabel": "Content to export",
-			"contentModeLinesStops": "Lines and stops",
 			"contentModeStops": "Stops",
 			"filterModeExclude": "All except selected",
 			"filterModeInclude": "Only selected",
-			"line_ids_exclude_label": "Line IDs to exclude",
-			"line_ids_include_label": "Line IDs to export"
+			"stop_filter_label": "Stops filter"
 		},
 		"agenciesDescription": "Select operators and select a plan for each operator.",
 		"agenciesLabel": "Select operators",
-		"combinedFilter": "Lines and stops filter",
-		"linesAndStops": "Lines and stops",
 		"planDescription": "Select a single plan for this operator.",
 		"planLabel": "Select plan"
 	},

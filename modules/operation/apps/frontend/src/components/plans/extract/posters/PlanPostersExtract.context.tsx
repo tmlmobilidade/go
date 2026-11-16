@@ -144,9 +144,9 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	const selectedPlans = plansData.data.filter(plan => planIds.includes(plan._id) && agencyIds.includes(plan.agency_id));
 	const hasOnePlanPerAgency = new Set(selectedPlans.map(plan => plan.agency_id)).size === agencyIds.length && planIds.length === agencyIds.length;
 	const hasSelectedPlans = agencyIds.length > 0 && selectedPlans.length === planIds.length && hasOnePlanPerAgency && selectedPlans.every(plan => !!plan.attachments.operation_gtfs_normalized);
-	const hasSelectedLines = (contentMode === 'lines' || contentMode === 'lines_stops') && lineIds.length > 0;
-	const hasSelectedStops = (contentMode === 'stops' || contentMode === 'lines_stops') && stopIds.length > 0;
-	const hasSelectedContent = contentMode === 'all' || (contentMode === 'lines_stops' ? hasSelectedLines && hasSelectedStops : hasSelectedLines || hasSelectedStops);
+	const hasSelectedLines = contentMode === 'lines' && lineIds.length > 0;
+	const hasSelectedStops = contentMode === 'stops' && stopIds.length > 0;
+	const hasSelectedContent = contentMode === 'all' || hasSelectedLines || hasSelectedStops;
 	const canSave = !plansData.isLoading && !plansData.error && hasSelectedPlans && hasSelectedContent && (contentMode === 'all' || !!canvasProfile);
 
 	//
@@ -161,8 +161,8 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		if (loading || !canSave) return;
 
 		const values = form.getValues();
-		const includesLines = values.content_mode === 'lines' || values.content_mode === 'lines_stops';
-		const includesStops = values.content_mode === 'stops' || values.content_mode === 'lines_stops';
+		const includesLines = values.content_mode === 'lines';
+		const includesStops = values.content_mode === 'stops';
 		const extractionDto: OperationPostersV1ExtractionCreate = {
 			properties: {
 				...values,

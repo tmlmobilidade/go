@@ -5,12 +5,11 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 import { buildStopCanvasTargets } from '../utils/build-stop-canvas-targets.js';
-import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportStopsToCanvasExtFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig, routeIds: ReadonlyMap<string, string>) {
+export async function exportStopsToCanvasExtFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig) {
 	//
 
 	//
@@ -21,27 +20,15 @@ export async function exportStopsToCanvasExtFile(context: OperationPostersV1Cont
 	}
 
 	//
-	// B. Combine the selected line and stop filters
+	// B. Prepare the selected stop filter
 
-	const clauses: string[] = [];
-	const parameters: string[] = [];
-
-	if (exportConfig.content_mode === 'lines_stops') {
-		const lineFilter = getCanvasLineFilter([...routeIds.keys()], exportConfig);
-		clauses.push(lineFilter.clause);
-		parameters.push(...lineFilter.parameters);
-	}
-
-	if ((exportConfig.content_mode === 'stops' || exportConfig.content_mode === 'lines_stops') && exportConfig.stop_ids.length) {
-		const placeholders = exportConfig.stop_ids.map(() => '?').join(', ');
-		clauses.push(`stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${placeholders})`);
-		parameters.push(...exportConfig.stop_ids);
-	}
+	const parameters = exportConfig.content_mode === 'stops' ? exportConfig.stop_ids : [];
+	const placeholders = parameters.map(() => '?').join(', ');
+	const canvasFilter = parameters.length ? `WHERE stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${placeholders})` : '';
 
 	//
 	// C. Count stops per trip and choose one Canvas target per stop and direction
 
-	const canvasFilter = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
 	const servingRoutes = sqlTables.stop_times.query<{ direction_id: number, route_id: string, stop_count: number, stop_id: string }>(
 		` WITH trip_stop_counts AS (
 			SELECT trip_id, COUNT(*) AS stop_count FROM stop_times GROUP BY trip_id
@@ -61,9 +48,6 @@ export async function exportStopsToCanvasExtFile(context: OperationPostersV1Cont
 	// D. Reject filters that leave no stop poster targets
 
 	if (!targets.length) {
-		if (exportConfig.content_mode === 'lines_stops') {
-			throw new Error('The selected line and stop filters remove every stop poster target.');
-		}
 		if (exportConfig.content_mode === 'stops') {
 			throw new Error('The selected stop filter removes every stop poster target.');
 		}

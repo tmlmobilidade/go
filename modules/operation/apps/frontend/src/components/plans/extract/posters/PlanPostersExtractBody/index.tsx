@@ -96,14 +96,13 @@ export function PlanPostersExtractBody() {
 						data={[
 							{ label: t('default:posterExport.PlanPostersExtractBody.contentModeAll'), value: 'all' },
 							{ label: t('default:posterExport.PlanPostersExtractBody.contentModeStops'), value: 'stops' },
-							{ label: t('default:posterExport.linesAndStops'), value: 'lines_stops' },
 						]}
 					/>
 
 					{context.data.contentMode !== 'all' && (
 						<SegmentedControl
 							fullWidth={true}
-							label={context.data.contentMode === 'lines_stops' ? t('default:posterExport.combinedFilter') : context.data.contentMode === 'lines' ? 'Filtro de linhas' : 'Filtro de paragens'}
+							label={t('default:posterExport.PlanPostersExtractBody.stop_filter_label')}
 							onChange={value => context.actions.setFilterMode(value as PlanPostersFilterMode)}
 							value={context.data.filterMode}
 							data={[
@@ -113,22 +112,10 @@ export function PlanPostersExtractBody() {
 						/>
 					)}
 
-					{(context.data.contentMode === 'lines' || context.data.contentMode === 'lines_stops') && (
+					{context.data.contentMode === 'stops' && (
 						<TagsInput
 							description={t('shared:filters.TagFilter.description')}
-							label={context.data.filterMode === 'include' ? t('default:posterExport.PlanPostersExtractBody.line_ids_include_label') : t('default:posterExport.PlanPostersExtractBody.line_ids_exclude_label')}
-							onChange={context.actions.setLineIds}
-							placeholder={t('shared:filters.TagFilter.placeholder')}
-							splitChars={[' ', ',', ';', '|']}
-							value={context.data.lineIds}
-							w="100%"
-						/>
-					)}
-
-					{(context.data.contentMode === 'stops' || context.data.contentMode === 'lines_stops') && (
-						<TagsInput
-							description={t('shared:filters.TagFilter.description')}
-							label={context.data.filterMode === 'include' ? 'IDs das paragens a exportar' : 'IDs das paragens a excluir'}
+							label={t('default:posterExport.PlanPostersExtractBody.stop_filter_label')}
 							onChange={context.actions.setStopIds}
 							placeholder={t('shared:filters.TagFilter.placeholder')}
 							splitChars={[' ', ',', ';', '|']}
@@ -137,7 +124,7 @@ export function PlanPostersExtractBody() {
 						/>
 					)}
 
-					{context.data.contentMode !== 'all' && context.data.contentMode !== 'lines' && (
+					{context.data.contentMode !== 'all' && (
 						<Select
 							data={availableCanvasProfiles}
 							description={t('default:posterExport.PlanPostersExtractBody.canvasProfileDescription')}

@@ -17,7 +17,7 @@ export function getCanvasLineFilter(routeIds: string[], config: ExportHitouchCon
 	//
 	// A. Skip line filtering for exports without line selection
 
-	if (config.content_mode !== 'lines' && config.content_mode !== 'lines_stops') {
+	if (config.content_mode !== 'lines') {
 		return { clause: '', parameters: [] };
 	}
 

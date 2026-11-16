@@ -136,17 +136,13 @@
 			},
 			"contentModeAll": "Todos",
 			"contentModeLabel": "Contenido a exportar",
-			"contentModeLinesStops": "Líneas y paradas",
 			"contentModeStops": "Paradas",
 			"filterModeExclude": "Todas excepto seleccionadas",
 			"filterModeInclude": "Solo seleccionadas",
-			"line_ids_exclude_label": "IDs de las líneas a excluir",
-			"line_ids_include_label": "IDs de las líneas a exportar"
+			"stop_filter_label": "Filtro de paradas"
 		},
 		"agenciesDescription": "Seleccione los operadores y elija un plan por operador.",
 		"agenciesLabel": "Seleccionar operadores",
-		"combinedFilter": "Filtro de líneas y paradas",
-		"linesAndStops": "Líneas y paradas",
 		"planDescription": "Seleccione un único plan para este operador.",
 		"planLabel": "Seleccionar plan"
 	},

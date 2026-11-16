@@ -133,17 +133,13 @@
 			},
 			"contentModeAll": "Todos",
 			"contentModeLabel": "Conteúdo a exportar",
-			"contentModeLinesStops": "Linhas e paragens",
 			"contentModeStops": "Paragens",
 			"filterModeExclude": "Todas exceto selecionadas",
 			"filterModeInclude": "Apenas selecionadas",
-			"line_ids_exclude_label": "IDs das linhas a excluir",
-			"line_ids_include_label": "IDs das linhas a exportar"
+			"stop_filter_label": "Filtro de paragens"
 		},
 		"agenciesDescription": "Selecione os operadores e escolha um plano por operador.",
 		"agenciesLabel": "Selecionar operadores",
-		"combinedFilter": "Filtro de linhas e paragens",
-		"linesAndStops": "Linhas e paragens",
 		"planDescription": "Selecione um único plano para este operador.",
 		"planLabel": "Selecionar plano"
 	},

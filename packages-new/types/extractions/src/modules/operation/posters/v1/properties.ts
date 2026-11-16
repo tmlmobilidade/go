@@ -11,7 +11,7 @@ export const OperationPostersV1ExtractionPropertiesSchema = z.object({
 
 	canvas_profile: z.string().optional().nullable(),
 
-	content_mode: z.enum(['all', 'lines', 'stops', 'lines_stops']),
+	content_mode: z.enum(['all', 'lines', 'stops']),
 
 	line_ids: z.array(z.string()).optional(),
 

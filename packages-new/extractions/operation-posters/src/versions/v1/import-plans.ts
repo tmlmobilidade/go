@@ -66,11 +66,11 @@ export async function importPlans(plans: Plan[], options?: ExportHitouchOptions 
 			start: validateOperationalDate(String(Math.min(...plans.map(plan => plan.active_from)))),
 		},
 		line_codes: options?.line_codes ?? [],
-		lines_mode: (options?.content_mode === 'lines' || options?.content_mode === 'lines_stops') ? options.lines_mode ?? 'include' : undefined,
+		lines_mode: options?.content_mode === 'lines' ? options.lines_mode ?? 'include' : undefined,
 		output: 'hitouch-posters.zip',
 		source_has_calendar: true,
 		stop_ids: options?.stop_ids ?? [],
-		stops_mode: (options?.content_mode === 'stops' || options?.content_mode === 'lines_stops') ? options.stops_mode ?? 'include' : undefined,
+		stops_mode: options?.content_mode === 'stops' ? options.stops_mode ?? 'include' : undefined,
 		workdir: options?.workdir ?? `/tmp/hitouch/${runId}`,
 	};
 
@@ -148,7 +148,7 @@ export async function importPlans(plans: Plan[], options?: ExportHitouchOptions 
 			exportShapesFile(context, sqlGtfs, shapeExtensions),
 			exportShapesExtFile(context, sqlGtfs, shapeExtensions),
 			exportStopsFile(context, sqlGtfs),
-			exportStopsToCanvasExtFile(context, sqlGtfs, exportConfig, routeIds),
+			exportStopsToCanvasExtFile(context, sqlGtfs, exportConfig),
 			(async () => {
 				// Keep writes to the shared agency file in plan order.
 				for (const plan of plans) await exportAgencyFile(context, plan);
