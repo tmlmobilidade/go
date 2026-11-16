@@ -6,7 +6,7 @@ import { IconCheck, IconClock, IconEdit } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, HasPermission, IconButton, Section, Select, Tag, useHandleAction } from '@tmlmobilidade/ui';
+import { fetchApiData, IconButton, Section, Select, Tag, useHandleAction, useMeData } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,12 +23,23 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 	const { t } = useTranslation();
 	const { rideId } = useRidesDetailRideId();
 	const { mutate } = useRideAcceptanceData();
+	const { data: me } = useMeData();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [status, setStatus] = useState<RideAcceptance['acceptance_status']>(grade);
 
 	//
-	// B. Handle actions
+	// B. Transform data
+
+	const { actions, scope } = PermissionCatalog.all.rides;
+	const canChangeStatus = PermissionCatalog.hasPermission(me?.permissions, scope, actions.acceptance_change_status);
+	const canReopen = grade === 'under_review' && PermissionCatalog.hasPermission(me?.permissions, scope, actions.acceptance_justify);
+	const canEdit = canChangeStatus || canReopen;
+	const statusOptions: readonly RideAcceptance['acceptance_status'][] = canChangeStatus ? RideAcceptanceStatusSchema.options : ['justification_required'];
+	const selectedStatus = canChangeStatus ? status : 'justification_required';
+
+	//
+	// C. Handle actions
 
 	const { action: handleChangeStatus, isLoading: isChangingStatus } = useHandleAction<RideAcceptance, RideAcceptance['acceptance_status']>({
 		fetchFn: async acceptance_status => await fetchApiData<RideAcceptance, { acceptance_status: RideAcceptance['acceptance_status'] }>({
@@ -36,34 +47,34 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 			method: 'PUT',
 			url: API_ROUTES.operation.RIDE_ACCEPTANCES_CHANGE_STATUS(rideId),
 		}),
-		onSuccess: () => {
-			mutate();
+		onSuccess: (response) => {
+			mutate(response);
 			setIsEditing(false);
 		},
 	});
 
 	//
-	// C. Render components
+	// D. Render components
 
-	if (isEditing) {
+	if (isEditing && canEdit) {
 		return (
 			<Section alignItems="center" flexDirection="row" gap="xs" padding="none" width="auto">
 				<Select
 					clearable={false}
 					disabled={isChangingStatus}
 					onChange={value => setStatus(value as RideAcceptance['acceptance_status'])}
-					value={status}
+					value={selectedStatus}
 					w="100%"
-					data={RideAcceptanceStatusSchema.options.map(option => ({
+					data={statusOptions.map(option => ({
 						label: t(`ride_status:acceptance_status.${option}`),
 						value: option,
 					}))}
 				/>
 				<IconButton
-					aria-label={t('default:rides.acceptance.RideAcceptanceStatus.confirm.aria_label')}
 					icon={<IconCheck />}
 					isDisabled={isChangingStatus}
-					onClick={() => handleChangeStatus(status)}
+					onClick={() => handleChangeStatus(selectedStatus)}
+					tooltip={t('default:rides.acceptance.RideAcceptanceStatus.confirm.aria_label')}
 					variant="subtle"
 				/>
 			</Section>
@@ -75,20 +86,17 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 			{grade === 'under_review'
 				? <Tag icon={<IconClock />} label={t('ride_status:acceptance_status.under_review')} variant="warning" />
 				: <AcceptanceStatusTag grade={grade} />}
-			<HasPermission
-				action={PermissionCatalog.all.rides.actions.acceptance_change_status}
-				scope={PermissionCatalog.all.rides.scope}
-			>
+			{canEdit && (
 				<IconButton
-					aria-label={t('default:rides.acceptance.RideAcceptanceStatus.edit.aria_label')}
 					icon={<IconEdit />}
+					tooltip={t('default:rides.acceptance.RideAcceptanceStatus.edit.aria_label')}
 					variant="subtle"
 					onClick={() => {
 						setStatus(grade);
 						setIsEditing(true);
 					}}
 				/>
-			</HasPermission>
+			)}
 		</Section>
 	);
 
