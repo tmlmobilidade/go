@@ -10,7 +10,7 @@ import { type PosterWriterOptions } from '../types/interfaces.js';
 
 /* * */
 
-export function initOperationPostersV1Context(runId: string, workdirPath: string): OperationPostersV1Context {
+export function initContext(runId: string, workdirPath: string): OperationPostersV1Context {
 	//
 
 	//
