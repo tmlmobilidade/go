@@ -25,7 +25,7 @@ export function PlansListHeader() {
 
 	return (
 		<Toolbar>
-			<Label size="lg" caps singleLine>Planos</Label>
+			<Label size="lg" caps singleLine>{t('default:plans.list.PlansListHeader.title')}</Label>
 			<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />
 			<Spacer />
 			<PlansListFilterSearch />

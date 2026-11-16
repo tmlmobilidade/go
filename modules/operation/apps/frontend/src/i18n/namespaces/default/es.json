@@ -119,7 +119,8 @@
 			},
 			"PlansListHeader": {
 				"extract": "Exportar",
-				"extractPDFs": "Exportar PDFs"
+				"extractPDFs": "Exportar PDFs",
+				"title": "Planos"
 			}
 		}
 	},
