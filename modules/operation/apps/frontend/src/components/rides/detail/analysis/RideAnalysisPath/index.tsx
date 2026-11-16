@@ -163,34 +163,42 @@ export function RideAnalysisPath() {
 	const tableData: TableData[] = useMemo(() => {
 		// Skip if no hashed trip data
 		if (!hashedTripData) return [];
+		const countedStopIds = new Set<string>();
 		// From the hashed trip data calculate required data
-		return hashedTripData
+		return [...hashedTripData]
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
 			.map((item) => {
+				// Show each stop's transactions only on its first occurrence.
+				const alreadyCounted = countedStopIds.has(item.stop_id);
+				countedStopIds.add(item.stop_id);
+				const validations = alreadyCounted ? [] : validationsByStopId[item.stop_id] || [];
+				const bankingTaps = alreadyCounted ? [] : bankingTapsByStopId[item.stop_id] || [];
+				const sales = alreadyCounted ? [] : salesByStopId[item.stop_id] || [];
+				const refunds = alreadyCounted ? [] : refundsByStopId[item.stop_id] || [];
 				// Get oldest and latest timestamp of all APEX transactions
 				const seenFirstAt = Math.min(...[
-					...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
-					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
-					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
-					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
+					...validations.map(validation => validation.created_at),
+					...bankingTaps.map(bankingTap => bankingTap.created_at),
+					...sales.map(sale => sale.created_at),
+					...refunds.map(refund => refund.created_at),
 				]) as UnixMilliseconds;
 				const seenLastAt = Math.max(...[
-					...(validationsByStopId[item.stop_id]?.map(validation => validation.created_at) || []),
-					...(bankingTapsByStopId[item.stop_id]?.map(bankingTap => bankingTap.created_at) || []),
-					...(salesByStopId[item.stop_id]?.map(sale => sale.created_at) || []),
-					...(refundsByStopId[item.stop_id]?.map(refund => refund.created_at) || []),
+					...validations.map(validation => validation.created_at),
+					...bankingTaps.map(bankingTap => bankingTap.created_at),
+					...sales.map(sale => sale.created_at),
+					...refunds.map(refund => refund.created_at),
 				]) as UnixMilliseconds;
-				const validationPassengers = validationsByStopId[item.stop_id]?.length ?? 0;
-				const bankingPassengers = bankingTapsByStopId[item.stop_id]?.reduce((total, tap) => total + (tap.group_dimension ?? 1), 0) ?? 0;
+				const validationPassengers = validations.length;
+				const bankingPassengers = bankingTaps.reduce((total, tap) => total + (tap.group_dimension ?? 1), 0);
 				// Return the data
 				return {
 					passengers_observed: validationPassengers + bankingPassengers,
-					passengers_observed_banking_taps_qty: bankingTapsByStopId[item.stop_id]?.length || 0,
-					passengers_observed_prepaid_amount: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'prepaid' && validation.is_passenger).reduce((acc, validation) => acc + validation.units_qty, 0) || 0,
-					passengers_observed_prepaid_qty: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'prepaid' && validation.is_passenger).length || 0,
-					passengers_observed_sales_amount: salesByStopId[item.stop_id]?.filter(sale => sale.is_passenger).reduce((acc, sale) => acc + (sale.price * sale.product_quantity), 0) || 0,
-					passengers_observed_sales_qty: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'on_board_sale' && validation.is_passenger).length || 0,
-					passengers_observed_subscription_qty: validationsByStopId[item.stop_id]?.filter(validation => validation.category === 'subscription' && validation.is_passenger).length || 0,
+					passengers_observed_banking_taps_qty: bankingTaps.length,
+					passengers_observed_prepaid_amount: validations.filter(validation => validation.category === 'prepaid' && validation.is_passenger).reduce((acc, validation) => acc + validation.units_qty, 0),
+					passengers_observed_prepaid_qty: validations.filter(validation => validation.category === 'prepaid' && validation.is_passenger).length,
+					passengers_observed_sales_amount: sales.filter(sale => sale.is_passenger).reduce((acc, sale) => acc + (sale.price * sale.product_quantity), 0),
+					passengers_observed_sales_qty: validations.filter(validation => validation.category === 'on_board_sale' && validation.is_passenger).length,
+					passengers_observed_subscription_qty: validations.filter(validation => validation.category === 'subscription' && validation.is_passenger).length,
 					seen_first_at: seenFirstAt,
 					seen_last_at: seenLastAt,
 					stop_id: item.stop_id,
@@ -212,7 +220,7 @@ export function RideAnalysisPath() {
 				<DataTable
 					columns={columns}
 					records={tableData}
-					rowIdAccessor="stop_id"
+					rowIdAccessor="stop_sequence"
 				/>
 			</DataTableScroller>
 		</Collapsible>
