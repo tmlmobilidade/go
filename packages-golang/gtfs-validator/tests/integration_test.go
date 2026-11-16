@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
@@ -24,12 +24,16 @@ func TestIntegrationMockGTFS(t *testing.T) {
 		t.Run(scenario, func(t *testing.T) {
 			files := loadMockGTFS(t, "mock-gtfs")
 
-			expected := types.Summary{Messages: []types.RuleMessage{}}
+			var wantRule string
+			var wantLines []int
 			switch scenario {
 			case "empty agency names":
 				files = loadMockGTFS(t, "mock-gtfs-invalid")
+				wantRule = "agency_name_field"
+				wantLines = []int{2, 3}
 			case "missing agency file":
 				delete(files, "agency.txt")
+				wantRule = "agency_file_missing"
 			}
 
 			// Package the text fixture as a real ZIP and offer identical bytes over HTTP.
@@ -63,8 +67,18 @@ func TestIntegrationMockGTFS(t *testing.T) {
 					if err != nil {
 						t.Fatalf("validation did not complete: %v", err)
 					}
-					if !reflect.DeepEqual(report, expected) {
-						t.Fatalf("unexpected report:\n got: %+v\nwant: %+v", report, expected)
+					if wantRule == "" {
+						if len(report.Messages) != 0 {
+							t.Fatalf("unexpected findings: %+v", report)
+						}
+					} else {
+						if report.TotalErrors != 1 || len(report.Messages) != 1 || report.Messages[0].RuleID != wantRule {
+							t.Fatalf("expected one %s finding, got %+v", wantRule, report)
+						}
+						details := report.Messages[0].Messages
+						if len(details) != 1 || !slices.Equal(details[0].Rows, wantLines) {
+							t.Fatalf("expected one finding at lines %v, got %+v", wantLines, details)
+						}
 					}
 
 					// The source remains intact; all temporary databases and sidecars are gone.
@@ -81,10 +95,10 @@ func TestIntegrationMockGTFS(t *testing.T) {
 	}
 }
 
-// Build the config from rule files so an unregistered rule fails the integration test.
+// Build the config from agency rule files so an unregistered rule fails the integration test.
 func integrationRules(t *testing.T) []types.Rule {
 	t.Helper()
-	entries, err := os.ReadDir(filepath.Join("..", "src", "rules"))
+	entries, err := os.ReadDir(filepath.Join("..", "src", "rules", "agency"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -97,17 +111,15 @@ func integrationRules(t *testing.T) []types.Rule {
 
 	for _, entry := range entries {
 		name := entry.Name()
-		if entry.IsDir() || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
-			continue
-		}
-		switch name {
-		case "registry.go", "run-validations.go", "types.go":
+		if entry.IsDir() || !strings.HasPrefix(name, "agency_") || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
 			continue
 		}
 
 		id := strings.TrimSuffix(name, ".go")
 		if !configured[id] {
-			config = append(config, types.Rule{RuleID: id, Severity: types.SEVERITY_ERROR})
+			config = append(config, types.Rule{
+				RuleID: id, Severity: types.SEVERITY_WARNING, DependsOn: []string{"agency_file_missing"},
+			})
 		}
 	}
 	return config

@@ -5,8 +5,11 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/validators"
 )
 
-func AgencyFareURLValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
-	return true, nil, nil
+// AgencyFareURLValid checks the syntax of supplied fare URLs.
+func AgencyFareURLValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+	return fields.CheckValues(ctx, db, config, agencyTable, fareURLColumn, "The agency_fare_url field contains an invalid HTTP or HTTPS URL.", validators.ValidateURL)
 }

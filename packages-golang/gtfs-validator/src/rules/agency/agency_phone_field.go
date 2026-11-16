@@ -5,8 +5,12 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 )
 
-func AgencyPhoneField(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
-	return true, nil, nil
+const phoneColumn = "agency_phone"
+
+// AgencyPhoneField checks agency_phone when the rule is configured at error severity.
+func AgencyPhoneField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+	return fields.CheckPresence(ctx, db, config, agencyTable, phoneColumn, false)
 }

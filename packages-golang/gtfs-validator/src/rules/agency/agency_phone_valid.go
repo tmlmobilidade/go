@@ -5,8 +5,11 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/validators"
 )
 
-func AgencyPhoneValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
-	return true, nil, nil
+// AgencyPhoneValid checks the dialable format of supplied phone numbers.
+func AgencyPhoneValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+	return fields.CheckValues(ctx, db, config, agencyTable, phoneColumn, "The agency_phone field contains an invalid phone number.", validators.ValidatePhone)
 }

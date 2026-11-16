@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"net/mail"
 	"strings"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
-	sqlutils "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/sql"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/validators"
 )
 
 /*
@@ -36,28 +36,18 @@ Field definitions: [GTFS Standard].
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyEmailValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
-	hasColumn, err := sqlutils.ColumnExists(ctx, db, agencyTable, emailColumn)
-	if err != nil || !hasColumn {
-		return err == nil, nil, err
-	}
-
 	var findings []types.Finding
-	err = sqlutils.ForEachRow(ctx, db, agencyTable, []string{emailColumn}, func(row int, values map[string]string) error {
-		value := strings.TrimSpace(values[emailColumn])
-		if value == "" {
-			return nil
-		}
-		if _, err := mail.ParseAddress(value); err != nil {
+	err := fields.ForEachValue(ctx, db, agencyTable, emailColumn, func(row int, value string) {
+		if !validators.ValidateEmail(value) {
 			findings = append(findings, types.Finding{
 				Description: "The agency_email field contains an invalid email address.",
 				Severity:    config.Severity,
-				Message:     fmt.Sprintf("Invalid email address %q.", value),
+				Message:     fmt.Sprintf("Invalid email address %q.", strings.TrimSpace(value)),
 				FileName:    agencyFile,
 				Field:       emailColumn,
 				Rows:        []int{row},
 			})
 		}
-		return nil
 	})
 	if err != nil {
 		return false, nil, err

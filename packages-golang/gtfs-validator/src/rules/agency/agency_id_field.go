@@ -5,8 +5,24 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
+	sqlutils "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/sql"
 )
 
-func AgencyIDField(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
-	return true, nil, nil
+const idColumn = "agency_id"
+
+// AgencyIDField requires an ID for each row of a feed with multiple agencies.
+func AgencyIDField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+	if config.Severity == types.SEVERITY_ERROR {
+		return fields.CheckPresence(ctx, db, config, agencyTable, idColumn, true)
+	}
+	exists, err := sqlutils.TableExists(ctx, db, agencyTable)
+	if err != nil || !exists {
+		return err == nil, nil, err
+	}
+	count, err := sqlutils.CountRows(ctx, db, agencyTable)
+	if err != nil {
+		return false, nil, err
+	}
+	return fields.CheckPresence(ctx, db, config, agencyTable, idColumn, count > 1)
 }

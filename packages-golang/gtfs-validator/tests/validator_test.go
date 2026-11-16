@@ -48,17 +48,18 @@ func archive(t *testing.T, files map[string]string) []byte {
 	return buffer.Bytes()
 }
 
-// Both placeholder runs and import failures must remove the temporary database.
+// Both completed runs and import failures must remove the temporary database.
 func TestValidateLocalAndCleanup(t *testing.T) {
 	temp := t.TempDir()
 	t.Setenv("TMPDIR", temp)
 	for _, test := range []struct {
-		name  string
-		files map[string]string
+		name     string
+		files    map[string]string
+		wantRule string
 	}{
-		{"valid", map[string]string{"agency.txt": "agency_name\nExample\n"}},
-		{"missing file", map[string]string{}},
-		{"missing field", map[string]string{"agency.txt": "agency_id\n1\n"}},
+		{"valid", map[string]string{"agency.txt": "agency_name\nExample\n"}, ""},
+		{"missing file", map[string]string{}, "agency_file_missing"},
+		{"missing field", map[string]string{"agency.txt": "agency_id\n1\n"}, "agency_name_field"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			path := filepath.Join(temp, "feed.zip")
@@ -69,8 +70,15 @@ func TestValidateLocalAndCleanup(t *testing.T) {
 			report, err := validator.GtfsValidator(context.Background(), validator.Options{
 				Source: importgtfs.ImportGtfsConfigSource{Path: path}, Concurrency: 3, Rules: agencyRules(),
 			})
-			if err != nil || report.TotalErrors != 0 || len(report.Messages) != 0 {
-				t.Fatal(report, err)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if test.wantRule == "" {
+				if report.TotalErrors != 0 || len(report.Messages) != 0 {
+					t.Fatal("unexpected findings", report)
+				}
+			} else if report.TotalErrors != 1 || len(report.Messages) != 1 || report.Messages[0].RuleID != test.wantRule {
+				t.Fatalf("expected one %s finding, got %+v", test.wantRule, report)
 			}
 
 			entries, _ := filepath.Glob(filepath.Join(temp, "gtfs-validator-*"))

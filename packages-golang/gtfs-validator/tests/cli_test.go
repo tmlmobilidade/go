@@ -44,7 +44,7 @@ func TestCLI(t *testing.T) {
 		report bool
 	}{
 		{"valid", []string{"-path", feed, "-rules", rulesPath, "-concurrency", "2"}, 0, true},
-		{"placeholder on missing agency", []string{"-path", emptyFeed, "-rules", rulesPath}, 0, true},
+		{"missing agency", []string{"-path", emptyFeed, "-rules", rulesPath}, 1, true},
 		{"import error", []string{"-path", filepath.Join(directory, "missing.zip"), "-rules", rulesPath}, 2, true},
 		{"no source", nil, 2, false},
 		{"both sources", []string{"-path", feed, "-url", "https://example.invalid/feed.zip", "-rules", rulesPath}, 2, false},
@@ -87,7 +87,12 @@ func TestCLI(t *testing.T) {
 				if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
 					t.Fatalf("stdout is not a JSON report: %s", stdout.String())
 				}
-				if report.Messages == nil || len(report.Messages) != 0 || report.TotalErrors != 0 || report.TotalWarnings != 0 {
+				if code == 1 {
+					if report.TotalErrors != 1 || report.TotalWarnings != 0 ||
+						len(report.Messages) != 1 || report.Messages[0].RuleID != "agency_file_missing" {
+						t.Fatal("expected a missing agency finding", stdout.String())
+					}
+				} else if report.Messages == nil || len(report.Messages) != 0 || report.TotalErrors != 0 || report.TotalWarnings != 0 {
 					t.Fatal("unexpected report", stdout.String())
 				}
 			} else if stdout.Len() != 0 {

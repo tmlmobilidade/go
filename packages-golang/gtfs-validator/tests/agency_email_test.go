@@ -62,6 +62,7 @@ func TestAgencyEmailRules(t *testing.T) {
 		{
 			name:     "missing agency file",
 			severity: types.SEVERITY_ERROR,
+			want:     []expectedFinding{{"agency_file_missing", types.SEVERITY_ERROR, nil}},
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
@@ -92,9 +93,13 @@ func TestAgencyEmailRules(t *testing.T) {
 			}
 			for i, want := range test.want {
 				got := report.Messages[i]
+				field := "agency_email"
+				if want.ruleID == "agency_file_missing" {
+					field = ""
+				}
 				if got.RuleID != want.ruleID || got.Severity != want.severity ||
-					got.FileName != "agency.txt" || got.Field != "agency_email" {
-					t.Errorf("finding group = %+v, want %s at %s for agency.txt agency_email", got, want.ruleID, want.severity)
+					got.FileName != "agency.txt" || got.Field != field {
+					t.Errorf("finding group = %+v, want %s at %s for agency.txt field %q", got, want.ruleID, want.severity, field)
 				}
 				if len(got.Messages) != 1 || !slices.Equal(got.Messages[0].Rows, want.rows) {
 					t.Errorf("finding details = %+v, want one finding for rows %v", got.Messages, want.rows)

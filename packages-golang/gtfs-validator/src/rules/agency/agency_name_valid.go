@@ -5,8 +5,10 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 )
 
-func AgencyNameValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
-	return true, nil, nil
+// AgencyNameValid checks supplied values against the configured options.
+func AgencyNameValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+	return fields.CheckOptions(ctx, db, config, agencyTable, nameColumn)
 }

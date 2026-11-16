@@ -5,6 +5,7 @@ go 1.26.0
 require (
 	github.com/tmlmobilidade/go/packages-golang/import-gtfs v0.0.0
 	github.com/tmlmobilidade/go/packages-golang/sqlite v0.0.0
+	golang.org/x/text v0.43.0
 )
 
 require (

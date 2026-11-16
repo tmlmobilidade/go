@@ -5,7 +5,7 @@ temporary SQLite database, then executes the configured rules. The database and 
 sidecar files are removed after success, validation failure, or operational failure.
 Requires Go 1.26 and a C compiler for the SQLite driver.
 
-The agency email rules are implemented. The other registered checks currently
+The agency rules are implemented. The other registered checks currently
 return success as placeholders.
 
 ## CLI
@@ -29,9 +29,16 @@ JSON array. Each entry has a `rule_id` and `severity`. It can also supply
 ]
 ```
 
-`agency_email_field` requires the column and a value on every agency row when
-configured with `error` severity. At other severities, the field is optional.
-`agency_email_valid` checks any nonblank address.
+Agency field rules enforce GTFS-required fields at every active severity.
+For an optional field, use `error` severity on its `_field` rule to require
+the column and a value on each row. GTFS requires `agency_id` when there are
+multiple agencies. Configure agency field rules with `agency_file_missing` in
+`depends_on`.
+
+`agency_id_valid` and `agency_name_valid` accept all supplied values by default.
+Set `options` to allow specific values or use `all_options` to allow all values.
+`agency_id_matched_with_agency_name` uses `compare` entries whose `key` is the
+agency ID and whose `value` is the agency name.
 
 `-concurrency` defaults to 1 and must be positive. SQLite uses one connection,
 so concurrent rules still serialize database queries.
@@ -88,7 +95,7 @@ import and passes the context to rule callbacks during execution.
 ## Rules and dependencies
 
 The registry in `src/rules/registry.go` maps executable rule IDs to functions.
-Each rule has its own `src/rules/<rule_id>.go` file.
+Each rule has its own `src/rules/<table>/<rule_id>.go` file.
 `file_validation` and `file_not_found_in_rules` are reserved notice IDs.
 
 Every prerequisite must appear as a rule in the same array. Omit `depends_on`
