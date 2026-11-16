@@ -9,44 +9,63 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-// DAG is immutable after construction. Each Execute call owns its scheduling state.
-// Task functions must be safe for the concurrency and reuse requested by callers.
+// DAG runs a set of tasks in dependency order, optionally in parallel.
+//
+// Think of it as a to-do list with prerequisites: task B can only start after
+// task A finishes, and several independent tasks can run at the same time.
+//
+// Type parameters (the [I, T any] part):
+//   - I is the shared input every task receives (e.g. *sql.DB for the feed)
+//   - T is the value each task returns (e.g. []Finding)
+//
+// The graph is immutable after NewDAG. Each Execute call keeps its own
+// scheduling state, so the same DAG can be executed more than once.
+// Task Run functions must be safe for the concurrency level the caller requests.
 type DAG[I, T any] struct {
-	// Maps are dictionaries keyed by task ID. Reverse edges let a completed
-	// prerequisite find the tasks waiting for it without scanning the whole graph.
-	tasks      map[string]types.Task[I, T]
+	// tasks: task ID → task definition (lookup by name).
+	tasks map[string]types.Task[I, T]
+	// dependents: prerequisite ID → IDs of tasks that wait on it.
+	// Reverse of Dependencies, so finishing A can find B,C without scanning all tasks.
 	dependents map[string][]string
-	ids        []string
+	// ids: all task IDs in sorted order (stable report order).
+	ids []string
 }
 
-// NewDAG validates all nodes and edges, including cycles, before any work can run.
+// NewDAG validates the task list and builds the graph. Nothing runs yet.
+//
+// Checks: every task has an ID and Run function, no duplicate IDs, every
+// DependsOn target exists, no duplicate edges, and no cycles.
+//
+// Cycle detection uses a dry run of Kahn's algorithm (see Execute): walk nodes
+// with zero remaining prerequisites; if some nodes are never visited, there is
+// a cycle and construction fails.
 func NewDAG[I, T any](tasks []types.Task[I, T]) (*DAG[I, T], error) {
-	// First register every task so dependencies can refer to later entries.
-	// & creates a pointer to this graph; callers keep using the same graph object.
+	// &DAG{...} allocates the graph and returns a pointer. Callers share one object.
 	d := &DAG[I, T]{
 		tasks:      make(map[string]types.Task[I, T]),
 		dependents: make(map[string][]string),
 	}
 
-	// range visits each element; _ discards the index because only the task is needed.
+	// Register every task first so a dependency can point at a later list entry.
+	// range over a slice: _, task discards the index; only the value is used.
 	for _, task := range tasks {
 		if task.ID == "" || task.Run == nil {
 			return nil, errors.New("each task needs an ID and Run function")
 		}
 
-		// A map lookup can return both the value and whether the key exists.
+		// Map lookup returns (value, ok). ok is false when the key is missing.
 		if _, exists := d.tasks[task.ID]; exists {
 			return nil, fmt.Errorf("duplicate task %q", task.ID)
 		}
 
-		// Slices share underlying storage. Copy the dependencies so later caller
-		// edits cannot change the graph after it has been validated.
+		// Slices are references to shared backing arrays. Copy Dependencies so
+		// later edits by the caller cannot change the validated graph.
 		task.Dependencies = append([]string(nil), task.Dependencies...)
 		d.tasks[task.ID] = task
 		d.ids = append(d.ids, task.ID)
 	}
 
-	// Verify each edge, then store the reverse relationship: prerequisite → child.
+	// Build reverse edges: for each "B depends on A", record A → B in dependents.
 	sort.Strings(d.ids)
 	for _, id := range d.ids {
 		seen := make(map[string]bool)
@@ -64,13 +83,14 @@ func NewDAG[I, T any](tasks []types.Task[I, T]) (*DAG[I, T], error) {
 		}
 	}
 
-	// Dry-run Kahn's algorithm without calling task functions. Each completed
-	// node removes an incoming edge from its children. Unvisited nodes imply a cycle.
+	// Dry-run Kahn's algorithm (no task functions called). Each "completed" node
+	// decrements its children's remaining-prerequisite count. If we cannot visit
+	// every node, some are stuck in a cycle.
 	degrees, ready := d.initial()
 	visited := 0
 	for len(ready) > 0 {
 		id := ready[0]
-		ready = ready[1:]
+		ready = ready[1:] // pop front of the queue
 		visited++
 
 		for _, child := range d.dependents[id] {
@@ -88,8 +108,10 @@ func NewDAG[I, T any](tasks []types.Task[I, T]) (*DAG[I, T], error) {
 	return d, nil
 }
 
-// initial makes fresh counters for each run. A degree is the number of unfinished
-// prerequisites; zero-degree nodes can be considered immediately.
+// initial builds fresh scheduling counters for one Execute (or the cycle check).
+//
+// degrees[id] = how many prerequisites of id are still unfinished.
+// ready = IDs whose degree is already 0 (nothing to wait for).
 func (d *DAG[I, T]) initial() (map[string]int, []string) {
 	degrees := make(map[string]int, len(d.tasks))
 	ready := []string{}
@@ -104,36 +126,49 @@ func (d *DAG[I, T]) initial() (map[string]int, []string) {
 	return degrees, ready
 }
 
-// completion is a worker's message to the scheduler. Workers never edit the
-// scheduler's maps directly, so graph bookkeeping needs no shared-memory locks.
+// completion is one worker's report back to the scheduler.
+// Workers never mutate the scheduler's maps; they only send this message.
+// That way the main loop alone owns degrees/results and needs no locks.
 type completion[T any] struct {
 	id      string
 	outcome types.Outcome[T]
 	err     error
 }
 
-// Execute returns results in ID order, including skipped tasks after an abort.
-// Cancellation is cooperative: it cancels and joins all started tasks before returning.
+// Execute runs the graph and returns one Result per task, sorted by task ID.
+//
+// limit is the max number of tasks running at once (worker pool size).
+//
+// Behavior summary:
+//   - Prerequisites must finish before a dependent is considered.
+//   - A dependent only runs if every prerequisite Passed; otherwise it is Skipped.
+//   - Outcome.Failed marks the task Failed but does not abort the run (siblings continue).
+//   - A returned error (or panic) aborts: cancel workers, skip the rest.
+//   - Cancellation is cooperative: cancel the child context, wait for started
+//     workers to finish, then return — never leave orphaned work.
 func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types.Result[T], error) {
 	if limit < 1 {
 		return nil, errors.New("concurrency must be >= 1")
 	}
 
-	// This child context can stop sibling workers without canceling the caller.
+	// Child context: cancel() stops workers without canceling the caller's context.
+	// defer cancel() runs when Execute returns, so we always clean up.
 	ctx, cancel := context.WithCancel(parent)
 	defer cancel()
 
 	degrees, ready := d.initial()
 	results := make(map[string]types.Result[T], len(d.tasks))
 
-	// A channel is a typed message queue between goroutines (concurrent functions).
-	// Buffer one message per active slot so finished workers can report immediately.
+	// Channel = typed message queue between goroutines (lightweight threads).
+	// Buffered so a finishing worker can send without blocking if the scheduler
+	// is briefly busy. Size = number of slots that can be in flight.
 	done := make(chan completion[T], min(limit, len(d.tasks)))
 	running := 0
 	var firstErr error
 
-	// Once every prerequisite has finished, put the child in the ready queue.
-	// Readiness does not imply success: blockedBy checks that before it can run.
+	// After a task finishes (or is skipped), decrement children and enqueue
+	// those whose last prerequisite just completed. Ready ≠ eligible to run:
+	// blockedBy still decides whether prerequisites Passed.
 	unlock := func(id string) {
 		for _, child := range d.dependents[id] {
 			degrees[child]--
@@ -143,6 +178,7 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 		}
 	}
 
+	// Direct prerequisites that did not Pass (Failed / Skipped / Errored).
 	blockedBy := func(id string) []string {
 		blocked := []string{}
 		for _, dep := range d.tasks[id].Dependencies {
@@ -155,15 +191,16 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 		return blocked
 	}
 
-	// Only this scheduler loop changes counters and results. Workers return messages.
+	// Single-threaded scheduler: only this loop mutates degrees, ready, results.
+	// Workers only send completion messages on done.
 	for {
 		if firstErr == nil && parent.Err() != nil {
 			firstErr = parent.Err()
 			cancel()
 		}
 
-		// Fill available worker slots. Skipped nodes still unlock their children,
-		// allowing the skip to propagate through the entire dependent branch.
+		// Fill free worker slots from the ready queue.
+		// Skipped nodes still unlock children so the skip can cascade down the branch.
 		for firstErr == nil && ctx.Err() == nil && running < limit && len(ready) > 0 {
 			id := ready[0]
 			ready = ready[1:]
@@ -185,7 +222,7 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 				continue
 			}
 
-			// go starts the function concurrently; the scheduler continues immediately.
+			// go starts the function in parallel; the scheduler does not wait here.
 			running++
 			go runTask(ctx, input, task, done)
 		}
@@ -196,11 +233,11 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 
 		var result completion[T]
 		if firstErr != nil {
-			// After an abort, drain every started worker before returning.
-			// <- receives a message, waiting until one is available.
+			// Abort path: drain every in-flight worker before returning.
+			// <-done blocks until a completion message arrives.
 			result = <-done
 		} else {
-			// select waits for whichever arrives first: completion or cancellation.
+			// select waits for the first event: a worker finished, or cancel fired.
 			select {
 			case result = <-done:
 			case <-ctx.Done():
@@ -212,7 +249,8 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 
 		running--
 
-		// A failed outcome is a normal check result. An error aborts all branches.
+		// Failed outcome = the check found a problem (normal validation result).
+		// Non-nil err = operational failure → abort the whole run.
 		entry := types.Result[T]{
 			ID:     result.id,
 			Status: types.Passed,
@@ -237,7 +275,7 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 		}
 	}
 
-	// Populate every unfinished node before computing abort-related blockers.
+	// Tasks never started (e.g. after abort) still get a Skipped result.
 	for _, id := range d.ids {
 		if _, exists := results[id]; !exists {
 			results[id] = types.Result[T]{
@@ -248,7 +286,7 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 		}
 	}
 
-	// Completion order can vary with concurrency; report order must not.
+	// Concurrent completion order varies; callers always get sorted-by-ID order.
 	ordered := make([]types.Result[T], 0, len(d.ids))
 	for _, id := range d.ids {
 		entry := results[id]
@@ -265,12 +303,13 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 	return ordered, firstErr
 }
 
+// runTask is the worker body. It always sends exactly one completion on done,
+// including when the task panics (Go's equivalent of an uncaught exception).
 func runTask[I, T any](ctx context.Context, input I, task types.Task[I, T], done chan<- completion[T]) {
 	result := completion[T]{id: task.ID}
 
-	// defer always sends one completion, even after a panic (a runtime exception).
-	// recover catches that panic here and converts it into an operational error;
-	// a panicking rule is reported as an execution failure with a completion message.
+	// defer runs when the function returns (or panics). recover() catches a panic
+	// and turns it into a normal error so the scheduler still gets a message.
 	defer func() {
 		if value := recover(); value != nil {
 			result.err = fmt.Errorf("panic: %v", value)

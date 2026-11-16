@@ -45,13 +45,16 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 	if err := ctx.Err(); err != nil {
 		return summary, err
 	}
+
+	//
+	// 3. Create the validation graph
 	graph, err := rules.NewValidationGraph(options.Rules)
 	if err != nil {
 		return summary, err
 	}
 
 	//
-	// 3. Import the GTFS data into a SQLite database
+	// 4. Import the GTFS data into a SQLite database
 	// Own one temporary directory for the database and its SQLite sidecar files.
 	directory, err := os.MkdirTemp("", "gtfs-validator-*")
 	if err != nil {
@@ -73,7 +76,7 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 	}
 
 	//
-	// 4. Run the validation rules
+	// 5. Run the validation rules
 	results, err := graph.Execute(ctx, database.DatabaseInstance, max(options.Concurrency, 1))
 	if err != nil {
 		return summary, err
@@ -92,7 +95,7 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 	}
 
 	//
-	// 5. Return the summary
+	// 6. Return the summary
 	return collector.Summary(), nil
 }
 
