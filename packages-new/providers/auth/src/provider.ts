@@ -129,9 +129,13 @@ class AuthProviderClass {
 	 * @returns The verification token for email verification.
 	 */
 	async register(createUserDto: CreateUserDto): Promise<string> {
-		// Apply the public creation schema before persistence to exclude backend-managed replay authorization.
+		// Validate public fields before adding backend-managed defaults.
 		const validatedUser = CreateUserSchema.parse(createUserDto);
-		const insertNewUserResult = await goDb.core.users.insertOne(validatedUser);
+		const insertNewUserResult = await goDb.core.users.insertOne({
+			...validatedUser,
+			dismissed_banners: [],
+			seen_changelogs: [],
+		});
 
 		const verificationToken = generateRandomToken();
 		await goDb.core.verificationTokens.insertOne({
