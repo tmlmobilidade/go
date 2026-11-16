@@ -1,11 +1,15 @@
 'use client';
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { updateShapeEditorDraft } from '@/utils/shape-editor-draft';
 import { IconHistory } from '@tabler/icons-react';
-import { type UpdatePatternDto } from '@tmlmobilidade/go-types-offer';
+import { type PatternsDetailFormDto } from '@tmlmobilidade/go-offer-pckg-types';
 import { CommentInput, CommentItemField, CommentItemNote, Menu } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -15,20 +19,38 @@ export function PatternDetailHistory() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	const [revertingIndex, setRevertingIndex] = useState<null | number>(null);
+	const latest = useRef(patternDetailContext);
+	latest.current = patternDetailContext;
+	const mounted = useRef(true);
+	useEffect(() => {
+		mounted.current = true;
+		return () => {
+			mounted.current = false;
+		};
+	}, []);
 
-	const handleRevert = useCallback(async (idx: number, revertData: Partial<UpdatePatternDto>) => {
+	const handleRevert = useCallback(async (idx: number, revertData: Partial<PatternsDetailFormDto>) => {
+		if (!mounted.current || !latest.current.capabilities.editEnabled) return;
+		const patternId = latest.current.data.id;
 		setRevertingIndex(idx);
-		if (revertData.path) {
-			const enrichedPath = await patternDetailContext.actions.enrichPath(revertData.path);
-			revertData = { ...revertData, path: enrichedPath };
+		try {
+			if (revertData.path) {
+				const enrichedPath = await latest.current.actions.enrichPath(revertData.path);
+				if (!mounted.current || !latest.current.capabilities.editEnabled || latest.current.data.id !== patternId) return;
+				const current = latest.current;
+				const draft = updateShapeEditorDraft({ parameters: current.form.getValues().parameters, path: current.data.path, shape: current.data.shape ?? undefined }, enrichedPath, undefined);
+				revertData = { ...revertData, parameters: draft.parameters, path: enrichedPath, shape: null };
+			}
+			latest.current.actions.applyChanges(revertData);
+			useToast.info({ message: t('patterns:detail.PatternDetailHistory.fields_reverted') });
+		} finally {
+			if (mounted.current) setRevertingIndex(null);
 		}
-		patternDetailContext.data.form.setValues(revertData);
-		useToast.info({ message: 'Campos revertidos. Clique em Guardar para persistir as alterações.' });
-		setRevertingIndex(null);
-	}, [patternDetailContext.data.form, patternDetailContext.actions]);
+	}, [t]);
 
 	const commentItems = useMemo(() => {
 		const allComments = (patternDetailContext.data.pattern.comments || []);
@@ -40,7 +62,7 @@ export function PatternDetailHistory() {
 						key={idx}
 						comment={comment}
 						loading={revertingIndex === idx}
-						onRevert={revertData => handleRevert(idx, revertData)}
+						onRevert={!patternDetailContext.capabilities.editEnabled ? undefined : revertData => handleRevert(idx, revertData)}
 					/>
 				);
 			}
@@ -59,11 +81,11 @@ export function PatternDetailHistory() {
 			...items,
 			<CommentInput
 				key="comment-input"
-				disabled={patternDetailContext.flags.isReadOnly}
+				disabled={!patternDetailContext.capabilities.editEnabled}
 				onSubmit={patternDetailContext.actions.addComment}
 			/>,
 		];
-	}, [handleRevert, revertingIndex, patternDetailContext.actions.addComment, patternDetailContext.data.pattern.comments, patternDetailContext.flags.isReadOnly]);
+	}, [handleRevert, revertingIndex, patternDetailContext.actions.addComment, patternDetailContext.data.pattern.comments, patternDetailContext.capabilities.editEnabled]);
 
 	//
 	// C. Render components
@@ -71,14 +93,14 @@ export function PatternDetailHistory() {
 	if (!patternDetailContext.data.pattern) return null;
 
 	return (
-		<Menu icon={IconHistory} label="Histórico" variant="primary" width={400}>
+		<Menu icon={IconHistory} label={t('patterns:detail.PatternDetailHistory.history')} variant="primary" width={400}>
 			{commentItems.length > 0 ? (
-				<div style={{ maxHeight: '600px', overflowY: 'auto', padding: '8px' }}>
+				<div className={styles.comments}>
 					{commentItems}
 				</div>
 			) : (
-				<div style={{ color: 'var(--color-system-text-400)', fontSize: 'var(--font-size-sm)', padding: '16px', textAlign: 'center' }}>
-					Nenhuma atividade registrada para este pattern.
+				<div className={styles.empty}>
+					{t('patterns:detail.PatternDetailHistory.no_history')}
 				</div>
 			)}
 		</Menu>

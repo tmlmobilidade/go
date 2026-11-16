@@ -1,0 +1,12 @@
+.legend {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-spacing-sm) var(--size-spacing-md);
+	padding: var(--size-spacing-sm) var(--size-spacing-md);
+}
+
+.legend [aria-pressed='true'] {
+	font-weight: var(--font-weight-bold);
+	text-decoration: underline;
+}

@@ -13,7 +13,7 @@ export const RideJustificationSchema = BaseDocumentSchema
 		justification_cause: AlertCauseSchema,
 		justification_source: RideJustificationSourceSchema,
 		manual_trip_id: z.string().nullish().nullable(),
-		pto_message: z.string().min(2).max(5000).default(''),
+		pto_message: z.string().min(2).max(5000).prefault(''),
 	});
 
 export type RideJustification = z.infer<typeof RideJustificationSchema>;

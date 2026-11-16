@@ -1,5 +1,6 @@
 /* * */
 
+import { getOrganization } from '@/utils/organization.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
@@ -14,7 +15,7 @@ export async function getGtfsHandler(request: FastifyRequest, reply: FastifyRepl
 	//
 	// Retrieve the file data from the storage provider
 
-	const foundFileData = await storageProvider.findById('gtfs-latest');
+	const foundFileData = await storageProvider.findById(`gtfs-latest-${getOrganization(request)._id}`);
 
 	if (!foundFileData?.url) {
 		return sendErrorApiResponse(reply, {
@@ -40,7 +41,7 @@ export async function getGtfsHandler(request: FastifyRequest, reply: FastifyRepl
 	// and nginx buffering to memory
 
 	reply.header('access-control-allow-origin', '*');
-	reply.header('content-disposition', 'attachment; filename="gtfs-latest.zip"');
+	reply.header('content-disposition', `attachment; filename="gtfs-latest-${encodeURIComponent(getOrganization(request)._id)}.zip"`);
 	reply.header('content-type', 'application/zip');
 	reply.header('cache-control', 'no-store');
 	reply.header('X-Accel-Buffering', 'no');

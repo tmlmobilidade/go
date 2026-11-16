@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type VehiclesListFilters, VehiclesListFiltersSchema, type VehiclesListItem, VehiclesListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
@@ -27,7 +27,9 @@ export async function listVehiclesHandler(request: FastifyRequest<{ Body: Vehicl
 	//
 	// Validate the filters
 
-	const validatedFilters = VehiclesListFiltersSchema.parse(request.body);
+	const validatedFiltersResult = VehiclesListFiltersSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Fetch vehicles matching the filters

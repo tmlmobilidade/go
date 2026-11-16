@@ -1,7 +1,7 @@
 /* * */
 
 import { GtfsRtCauseSchema, GtfsRtEffectSchema } from '@tmlmobilidade/go-types-gtfs-rt';
-import { AlertReferenceSchema, AlertReferenceTypeSchema } from '@tmlmobilidade/go-types-operation';
+import { AlertReferenceSchema, AlertReferenceTypeSchema, AlertSchema } from '@tmlmobilidade/go-types-operation';
 import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
@@ -13,7 +13,7 @@ export const HubV1ApiAlertSchema = z.object({
 	active_period_start_date: UnixMillisecondsSchema,
 	agency_id: z.string(),
 	cause: GtfsRtCauseSchema,
-	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
+	coordinates: AlertSchema.shape.coordinates,
 	description: z.string(),
 	effect: GtfsRtEffectSchema,
 	image_url: z.string().nullable().default(null),

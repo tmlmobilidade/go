@@ -3,7 +3,8 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { PasswordRequirementsSchema, type Session } from '@tmlmobilidade/go-types-core';
+import { getPasswordRequirements, type Session } from '@tmlmobilidade/go-types-core';
+import { translateValidationMessage } from '@tmlmobilidade/go-utils-validation';
 import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import bcrypt from 'bcryptjs';
@@ -27,7 +28,8 @@ export function ChangePasswordForm() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
+	const locale = i18n.resolvedLanguage ?? i18n.language;
 
 	const [tokenValue] = useQueryState('token');
 	const [emailValue] = useQueryState('email');
@@ -39,21 +41,18 @@ export function ChangePasswordForm() {
 	// B. Transform data
 
 	const validationErrors: PasswordValidation[] = useMemo(() => {
-		const errors: PasswordValidation[] = [];
-		const result = PasswordRequirementsSchema.safeParse({ password: passwordValue });
-		if (result.error) {
-			errors.push(...result.error.issues
-				.map(issue => Object.values(JSON.parse(issue.message)))
-				.flat() as PasswordValidation[]);
-		}
+		const errors: PasswordValidation[] = getPasswordRequirements(passwordValue).map(requirement => ({
+			message: translateValidationMessage(requirement.key, requirement.values, locale),
+			valid: requirement.valid,
+		}));
 		if (passwordValue !== confirmPasswordValue) {
 			errors.push({
-				message: 'Passwords do not match',
+				message: translateValidationMessage('custom.password.mismatch', {}, locale),
 				valid: false,
 			});
 		}
 		return errors;
-	}, [passwordValue, confirmPasswordValue]);
+	}, [passwordValue, confirmPasswordValue, locale]);
 
 	const isDisabled = useMemo(() => {
 		return validationErrors.some(error => !error.valid);

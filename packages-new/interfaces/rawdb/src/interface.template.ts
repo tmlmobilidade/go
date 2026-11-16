@@ -1,6 +1,6 @@
 /* * */
 
-import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, Collection, CreateIndexesOptions, Db, Document, Filter, FindOptions, InsertOneOptions, isSameIndex, prepareMongoIndexOptions, SimplifiedMongoIndex, WithId } from '@tmlmobilidade/go-clients-mongo';
+import { AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, Collection, CreateIndexesOptions, Db, Document, Filter, FindOptions, InsertOneOptions, isSameIndex, type OptionalUnlessRequiredId, prepareMongoIndexOptions, SimplifiedMongoIndex, WithId } from '@tmlmobilidade/go-clients-mongo';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { z } from 'zod';
 
@@ -10,7 +10,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	//
 
 	private readonly collectionName: string;
-	private readonly createSchema: z.ZodSchema;
+	private readonly createSchema: z.ZodType<OptionalUnlessRequiredId<T>>;
 	private readonly database: Db;
 	private readonly indexDescription: false | SimplifiedMongoIndex<T>[];
 
@@ -25,7 +25,7 @@ export class MongoInterfaceTemplate<T extends Document, TCreate> {
 	 * @param createSchema - The schema to use for creating documents.
 	 * @param indexDescription - The index description to use for the collection.
 	 */
-	public constructor(collectionName: string, database: Db, createSchema: z.ZodSchema, indexDescription: false | SimplifiedMongoIndex<T>[] = []) {
+	public constructor(collectionName: string, database: Db, createSchema: z.ZodType<OptionalUnlessRequiredId<T>>, indexDescription: false | SimplifiedMongoIndex<T>[] = []) {
 		this.collectionName = collectionName;
 		this.collection = database.collection<T>(collectionName);
 		this.database = database;

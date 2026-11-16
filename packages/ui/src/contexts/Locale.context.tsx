@@ -55,6 +55,7 @@ export const LocaleContextProvider = ({ children, i18n }: PropsWithChildren<Loca
 
 	useEffect(() => {
 		void i18nInstance.changeLanguage(locale);
+		document.documentElement.lang = locale;
 	}, [i18nInstance, locale]);
 
 	const setLocale = useCallback((localeCode: string) => {

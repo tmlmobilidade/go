@@ -1,7 +1,6 @@
+import { CreateHolidaySchema, HolidaySchema, UpdateHolidaySchema } from '@tmlmobilidade/go-types-dates';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-
-import { CreateHolidaySchema, HolidaySchema, UpdateHolidaySchema } from '../src/dates/holiday.js';
 
 /* * */
 

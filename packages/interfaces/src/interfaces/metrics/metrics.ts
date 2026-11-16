@@ -15,8 +15,8 @@ export type MetricDocument = z.infer<typeof MetricSchema>;
 class MetricsClass extends MongoCollectionClass<MetricDocument, MetricDocument, MetricDocument> {
 	private static _instance: MetricsClass;
 
-	protected override createSchema: z.ZodSchema = MetricSchema;
-	protected override updateSchema: z.ZodSchema = MetricSchema;
+	protected override createSchema = MetricSchema;
+	protected override updateSchema = MetricSchema;
 
 	private constructor() {
 		super();

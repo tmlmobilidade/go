@@ -1,13 +1,14 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type AlertsListFilters, AlertsListFiltersSchema, type AlertsListItem, AlertsListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
+import { type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 
 /**
- * Get rides by query.
+ * Get alerts by query.
  * @param request The Fastify request object.
  * @param reply The Fastify reply object.
  */
@@ -25,13 +26,28 @@ export async function listAlertsHandler(request: FastifyRequest<{ Body: AlertsLi
 		values: request.body.agency_ids,
 	});
 
+	request.body.reference_type = filterPermissionResourceValues<AlertReferenceType>({
+		action: 'read',
+		permissions: request.permissions,
+		resourceKey: 'reference_types',
+		scope: 'alerts',
+		values: request.body.reference_type,
+	});
+
 	//
 	// Validate the filters
 
-	const validatedFilters = AlertsListFiltersSchema.parse(request.body);
+	const validatedFiltersResult = AlertsListFiltersSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Build aggregation pipeline
+
+	const activePeriodFilter = {
+		...(validatedFilters.active_period_filter_start !== undefined ? { $gte: validatedFilters.active_period_filter_start } : {}),
+		...(validatedFilters.active_period_filter_end !== undefined ? { $lte: validatedFilters.active_period_filter_end } : {}),
+	};
 
 	const pipeline: AggregationPipeline<Omit<AlertsListItem, 'title_normalized'>> = [
 		{
@@ -41,10 +57,11 @@ export async function listAlertsHandler(request: FastifyRequest<{ Body: AlertsLi
 				...{ reference_type: { $in: validatedFilters.reference_type ?? [] } },
 				...{ cause: { $in: validatedFilters.causes ?? [] } },
 				...{ effect: { $in: validatedFilters.effects ?? [] } },
-				...{ publish_start_date: { $gte: validatedFilters.publish_date_filter_start } },
-				...{ publish_start_date: { $lte: validatedFilters.publish_date_filter_end } },
-				...(validatedFilters.active_period_filter_start ? { active_period_start_date: { $gte: validatedFilters.active_period_filter_start } } : {}),
-				...(validatedFilters.active_period_filter_end ? { active_period_start_date: { $lte: validatedFilters.active_period_filter_end } } : {}),
+				publish_start_date: {
+					$gte: validatedFilters.publish_date_filter_start,
+					$lte: validatedFilters.publish_date_filter_end,
+				},
+				...(Object.keys(activePeriodFilter).length ? { active_period_start_date: activePeriodFilter } : {}),
 			},
 
 		},

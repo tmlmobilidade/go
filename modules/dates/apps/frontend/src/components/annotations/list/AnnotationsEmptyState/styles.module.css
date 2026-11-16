@@ -1,0 +1,32 @@
+.surface {
+	box-sizing: border-box;
+	padding: var(--size-spacing-2xl);
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-lg);
+	align-items: center;
+	width: 100%;
+	max-width: 560px;
+	color: var(--color-system-text-200);
+	text-align: center;
+}
+
+.icon {
+	flex-shrink: 0;
+}
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-xl);
+	font-weight: var(--font-weight-bold);
+	text-transform: uppercase;
+}
+
+.content p {
+	margin: 0;
+	font-size: var(--font-size-md);
+	line-height: 1.6;
+}

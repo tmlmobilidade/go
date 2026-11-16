@@ -5,3 +5,5 @@ export * from './DateTimePicker';
 export * from './MonthPicker';
 export * from './TimePicker';
 export * from './YearPicker';
+export { DatePicker } from '@mantine/dates';
+export type { DatePickerProps } from '@mantine/dates';

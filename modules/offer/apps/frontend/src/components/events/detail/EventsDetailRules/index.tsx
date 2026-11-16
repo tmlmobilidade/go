@@ -67,7 +67,7 @@ export function EventsDetailRules() {
 			{error && <ErrorDisplay message={error} />}
 			<Section gap="md" padding="none">
 				{rules.map(rule => (
-					<RuleCard key={rule._id} disabled={!capabilities.editEnabled} lines={eventLines} onEdit={handleOpenRule} rule={rule} />
+					<RuleCard key={rule._id} agencyIds={values.agency_ids ?? []} disabled={!capabilities.editEnabled} lines={eventLines} onEdit={handleOpenRule} rule={rule} />
 				))}
 				{!rules.length && <Text c="dimmed" size="sm">{t('default:events.rules.empty')}</Text>}
 			</Section>

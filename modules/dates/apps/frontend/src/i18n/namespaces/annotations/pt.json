@@ -1,0 +1,104 @@
+{
+	"AnnotationsCategorySelect": {
+		"label": "Categoria",
+		"description": "Classifique o evento pelo que aconteceu. A categoria não identifica quem o causou nem altera quem o pode ver.",
+		"no_results": "Nenhuma categoria encontrada"
+	},
+	"AnnotationsImpactInput": {
+		"label": "Impacto na operação ou nos dados",
+		"description": "Descreva os efeitos observados no serviço ou nos dados, separadamente do que aconteceu.",
+		"placeholder": "Ex.: Atrasos nas linhas afetadas e falhas nas mensagens de tempo real"
+	},
+	"AnnotationsLocationsSelect": {
+		"label": "Âmbito geográfico",
+		"description": "Selecione um ou mais países, distritos ou regiões, municípios ou freguesias na hierarquia disponível. Cada local assinalado é guardado individualmente; selecionar um país não seleciona todas as localidades. Os locais indicam onde ocorreu o evento e não alteram os operadores afetados nem a visibilidade.",
+		"load_error": "Não foi possível carregar os locais. As seleções guardadas foram mantidas.",
+		"retry": "Tentar carregar os locais novamente"
+	},
+	"categories": {
+		"uncategorized": "Sem categoria",
+		"values": {
+			"weather": "Meteorologia",
+			"accident": "Acidente",
+			"roadworks_restrictions": "Obras e condicionamentos",
+			"strike_worker_meeting": "Greves e plenários de trabalhadores",
+			"public_event_protest": "Eventos públicos e manifestações",
+			"technology_data_failure": "Falhas tecnológicas e de dados",
+			"transport_disruption": "Perturbações nos transportes",
+			"school_calendar_change": "Alterações escolares e de calendário",
+			"fare_policy_change": "Alterações tarifárias e de políticas",
+			"other": "Outro"
+		}
+	},
+	"list": {
+		"AnnotationsList": {
+			"category": "Categoria",
+			"locations": "Localização"
+		},
+		"AnnotationsListFilterCategories": {
+			"label": "Categoria"
+		},
+		"AnnotationsListCellLocations": {
+			"empty": "Sem localização"
+		},
+		"AnnotationsListFilterLocations": {
+			"label": "Localização",
+			"empty": "Sem localização",
+			"description": "Inclui locais contidos e âmbitos geográficos mais abrangentes.",
+			"clear": "Limpar seleção"
+		},
+		"AnnotationsListFilterDates": {
+			"label": "Datas",
+			"start": "Desde",
+			"end": "Até",
+			"placeholder": "Selecione uma data"
+		},
+		"AnnotationsEmptyState": {
+			"title": "Anotações",
+			"description": "As anotações registam acontecimentos que ajudam a interpretar variações na operação e nos dados de transporte, como condições meteorológicas, greves, acidentes ou falhas tecnológicas.",
+			"context": "Cada ocorrência reúne datas, localização, operadores envolvidos, fontes e impactos observados, preservando o contexto para análise e acompanhamento."
+		},
+		"AnnotationsListExport": {
+			"title": "Exportar anotações",
+			"version": "Versão"
+		},
+		"AnnotationsListHeaderMenu": {
+			"export": "Exportar CSV"
+		},
+		"AnnotationsListExportProperties": {
+			"operators": "Operadores",
+			"all_operators": "Todos os operadores",
+			"categories": "Categorias",
+			"all_categories": "Todas as categorias",
+			"locations": "Localização",
+			"all_locations": "Todos os locais"
+		},
+		"AnnotationsListExportDates": {
+			"start": "Data de início",
+			"end": "Data de fim",
+			"placeholder": "Sem limite"
+		},
+		"AnnotationsListExportFooter": {
+			"submit": "Exportar"
+		}
+	},
+	"AnnotationsDatesSelect": {
+		"prompt": "Selecione as datas da ocorrência",
+		"remove_month": "Remover mês",
+		"select_month": "Selecionar mês"
+	},
+	"AnnotationsSourcesInput": {
+		"label": "Fontes",
+		"description": "Adicione notícias, emails ou outras referências. Cada fonte deve ter um nome ou uma ligação.",
+		"empty": "Sem fontes adicionadas",
+		"add": "Adicionar fonte"
+	},
+	"AnnotationsSourceRow": {
+		"name": "Nome ou referência",
+		"name_placeholder": "Ex.: Notícia sobre a greve ou assunto do email",
+		"url": "Ligação (opcional)",
+		"open": "Abrir fonte",
+		"remove": "Remover fonte",
+		"url_placeholder": "https://…"
+	}
+}

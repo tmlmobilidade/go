@@ -20,7 +20,7 @@ export async function updateTypologyHandler(request: FastifyRequest<{ Body: Upda
 
 	if (!validatedTypology.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedTypology.error.message,
+			error: validatedTypology.error,
 			status_code: '400',
 		});
 	}

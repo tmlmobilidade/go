@@ -5,15 +5,16 @@ import { z } from 'zod';
 /* * */
 
 export const GtfsStrictV29ExtPeriodValues = [
-	'1', // School Period
-	'2', // School Holidays
-	'3', // Summer Period
+	'1',
+	'2',
+	'3',
 ] as const;
 
 export const GtfsStrictV29ExtPeriodSchema = z.enum(GtfsStrictV29ExtPeriodValues);
 
 /**
- * Represents the period of a service in the GTFS strict v1 format.
- * The period indicates similar days in the year, like Summer Time or Winter Time.
+ * Represents a numeric period identifier in GTFS v29.
+ * Current Offer exports number each agency's periods independently; these values
+ * do not imply school, school holidays or summer categories.
  */
 export type GtfsStrictV29ExtPeriod = z.infer<typeof GtfsStrictV29ExtPeriodSchema>;

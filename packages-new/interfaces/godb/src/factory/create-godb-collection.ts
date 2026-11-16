@@ -31,7 +31,7 @@ interface CreateGoDbCollectionParams<T extends Document> {
 	indexDescription: null | SimplifiedMongoIndex<T>[]
 	/** Fields owned by dedicated atomic operations, excluded from ordinary document updates. */
 	protectedUpdateFields?: (keyof T)[]
-	schema: null | z.ZodSchema
+	schema: null | z.ZodType<T>
 }
 
 /**

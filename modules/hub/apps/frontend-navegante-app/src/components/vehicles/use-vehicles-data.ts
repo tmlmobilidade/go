@@ -26,7 +26,7 @@ export function useVehiclesData(): UseVehiclesDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiVehiclePosition[]>>(API_ROUTES.hub.VEHICLES_POSITIONS, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiVehiclePosition[]>>(API_ROUTES.hub.VEHICLES_POSITIONS('0XJC9'), {
 		fetcher: async url => await fetchApiData<HubV1ApiVehiclePosition[]>({ options: { credentials: 'omit' }, url }),
 		refreshInterval: 5_000,
 	});

@@ -1,0 +1,6 @@
+.root {
+	max-height: 65vh;
+	padding: var(--size-spacing-lg);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}

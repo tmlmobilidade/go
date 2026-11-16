@@ -1,6 +1,7 @@
 /* * */
 
 import { OPERATIONAL_DATE_FORMAT } from '@/datetime/operational-date-int.js';
+import { validationTransform } from '@tmlmobilidade/go-utils-validation';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
@@ -18,7 +19,7 @@ export type OperationalDate = string & {
  */
 export const OperationalDateSchema = z
 	.string()
-	.transform(validateOperationalDate);
+	.transform(validationTransform(validateOperationalDate, 'custom.formats.date', { format: OPERATIONAL_DATE_FORMAT }));
 
 /**
  * This function validates if a string is a valid

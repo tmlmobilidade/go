@@ -20,11 +20,12 @@
 		"start": "node dist/index.js"
 	},
 	"dependencies": {
-		"@tmlmobilidade/dates": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
+		"@tmlmobilidade/go-interfaces-locationsdb": "*",
 		"@tmlmobilidade/go-providers-auth": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-core": "*",
+		"@tmlmobilidade/go-types-dates": "*",
 		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-geo": "*",
@@ -37,6 +38,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-files": "*",
+		"@tmlmobilidade/go-utils-offer": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/interfaces": "*",
 		"@tmlmobilidade/types": "*",

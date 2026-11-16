@@ -21,10 +21,11 @@
  *   ... --pattern 4432_0_1 --csv /tmp/missing.csv
  */
 
-import { buildOperationalDateRange, computeActiveRules, Dates, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/dates';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Pattern } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
+import { computeActiveRules, getPatternExtensionMeters, resolvePatternRules } from '@tmlmobilidade/go-utils-offer';
 import { writeFileSync } from 'node:fs';
 
 import {
@@ -35,7 +36,7 @@ import {
 } from './gtfs-export-io.js';
 
 interface MissingSlot {
-	date: OperationalDate
+	date: OperationalDateInt
 	distanceKm: number
 	goCount: number
 	gtfsCount: number
@@ -47,7 +48,7 @@ interface MissingSlot {
 }
 
 interface DateSummary {
-	date: OperationalDate
+	date: OperationalDateInt
 	extraInGo: number
 	goTimepoints: number
 	gtfsOnlyTimepoints: string[]
@@ -97,20 +98,20 @@ function parseArgs(argv: string[]) {
 function findTripMeta(
 	trips: GtfsTripEntry[],
 	serviceDates: Map<string, Set<string>>,
-	date: string,
+	date: OperationalDateInt,
 	timepoint: string,
 	off: boolean,
 ) {
 	return trips.find(trip =>
 		trip.isOff === off
 		&& trip.timepoint === timepoint
-		&& serviceDates.get(trip.serviceId)?.has(date),
+		&& serviceDates.get(trip.serviceId)?.has(String(date)),
 	);
 }
 
 function analyzePattern(
 	pattern: Pattern,
-	operationalDates: OperationalDate[],
+	operationalDates: OperationalDateInt[],
 	gtfsTrips: GtfsTripEntry[],
 	serviceDates: Map<string, Set<string>>,
 	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
@@ -138,8 +139,8 @@ function analyzePattern(
 				? computeActiveRules(date, mergedRules, periods, holidaysList, { events: eventsList }).timepoints
 				: [],
 		);
-		const gtfsSet = gtfsOperating.get(date) ?? new Set<string>();
-		const offSet = gtfsOff.get(date) ?? new Set<string>();
+		const gtfsSet = gtfsOperating.get(String(date)) ?? new Set<string>();
+		const offSet = gtfsOff.get(String(date)) ?? new Set<string>();
 
 		goDays += goSet.size;
 		gtfsDays += gtfsSet.size;
@@ -213,7 +214,7 @@ function analyzePattern(
 
 function printSingleDateReport(
 	patternCode: string,
-	date: OperationalDate,
+	date: OperationalDateInt,
 	goSet: Set<string>,
 	gtfsSet: Set<string>,
 	gtfsTrips: GtfsTripEntry[],
@@ -306,7 +307,7 @@ function writeCsv(path: string, rows: MissingSlot[]) {
 }
 
 function printAggregateMissingDays(allMissing: MissingSlot[]) {
-	const byDate = new Map<string, { patterns: Set<string>, slots: number }>();
+	const byDate = new Map<OperationalDateInt, { patterns: Set<string>, slots: number }>();
 
 	for (const row of allMissing) {
 		const patternCode = row.tripId.split('|')[0] ?? '';
@@ -333,7 +334,7 @@ async function resolvePatternsToAnalyze(
 	top: number,
 	allWithDelta: boolean,
 	gtfsIndex: ReturnType<typeof loadGtfsExportIndex>,
-	operationalDates: OperationalDate[],
+	operationalDates: OperationalDateInt[],
 	periods: Awaited<ReturnType<typeof goDb.offer.yearPeriods.findMany>>,
 	holidaysList: Awaited<ReturnType<typeof goDb.dates.holidays.findMany>>,
 	eventsList: Awaited<ReturnType<typeof goDb.offer.events.findMany>>,
@@ -381,14 +382,14 @@ async function main() {
 	const { agency, allWithDelta, csvPath, gtfsDir, jsonPath, maxDetail, onlyDate, patternsList, start, top } = parseArgs(process.argv.slice(2));
 	if (!gtfsDir) throw new Error('Missing --gtfs path to export folder');
 
-	const startDate = Dates.fromOperationalDate(start, 'Europe/Lisbon');
-	const endOp = startDate.plus({ years: 1 }).operational_date;
-	const fullRange = buildOperationalDateRange(startDate.js_date, Dates.fromOperationalDate(endOp, 'Europe/Lisbon').js_date);
+	const startDate = Dates.fromOperationalDateInt(start, 'Europe/Lisbon');
+	const endOp = startDate.plus({ years: 1 }).operational_date_int;
+	const fullRange = buildOperationalDateRange(startDate.js_date, Dates.fromOperationalDateInt(endOp, 'Europe/Lisbon').js_date);
 	const operationalDates = onlyDate
-		? [onlyDate as OperationalDate]
+		? [OperationalDateIntSchema.parse(onlyDate)]
 		: fullRange;
 
-	const gtfsIndex = loadGtfsExportIndex(gtfsDir, start, endOp);
+	const gtfsIndex = loadGtfsExportIndex(gtfsDir, start, String(endOp));
 	const [periods, holidaysList, eventsList] = await Promise.all([
 		goDb.offer.yearPeriods.findMany({ agency_ids: { $in: [agency] } }),
 		goDb.dates.holidays.findMany({ agency_ids: { $in: [agency] } }),
@@ -421,13 +422,13 @@ async function main() {
 		const gtfsOperating = buildGtfsOperatingSlots(trips, gtfsIndex.serviceDates);
 
 		if (onlyDate) {
-			const date = onlyDate as OperationalDate;
+			const date = OperationalDateIntSchema.parse(onlyDate);
 			const goSet = new Set<string>(
 				mergedRules.length
 					? computeActiveRules(date, mergedRules, periods, holidaysList, { events: eventsList }).timepoints
 					: [],
 			);
-			const gtfsSet = gtfsOperating.get(date) ?? new Set<string>();
+			const gtfsSet = gtfsOperating.get(String(date)) ?? new Set<string>();
 			printSingleDateReport(pattern.code, date, goSet, gtfsSet, trips, gtfsIndex.serviceDates);
 		}
 

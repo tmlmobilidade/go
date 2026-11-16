@@ -2,7 +2,7 @@
 
 /* * */
 
-import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconFlag2, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNote, IconRocket, IconRoute, IconSitemap, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
+import { IconAlertTriangle, IconBeach, IconBook, IconBuildings, IconBus, IconCalendarEvent, IconCalendarStar, IconClock, IconDeviceSim, IconFileCertificate, IconFileCheck, IconFlag2, IconHome, IconKey, IconLayoutCollage, IconListCheck, IconNews, IconNote, IconRocket, IconRoute, IconSitemap, IconSpeakerphone, IconTicket, IconTopologyStar3, IconUser } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
 import { type JSX } from 'react';
@@ -141,10 +141,7 @@ export const sidebarNavigationGroups = [
 				_id: 'calendar',
 				href: PAGE_ROUTES.dates.CALENDAR_LIST,
 				icon: <IconCalendarEvent />,
-				permissions: [
-					{ action: 'read', resources: { agency_ids: [] }, scope: 'year_periods' },
-					{ action: 'read', resources: { agency_ids: [] }, scope: 'annotations' },
-				],
+				permissions: [],
 			},
 
 			{
@@ -158,7 +155,7 @@ export const sidebarNavigationGroups = [
 				_id: 'annotations',
 				href: PAGE_ROUTES.dates.ANNOTATIONS_LIST,
 				icon: <IconNote />,
-				permissions: [{ action: 'read', resources: { agency_ids: [] }, scope: 'annotations' }],
+				permissions: [],
 			},
 		],
 	},
@@ -199,6 +196,23 @@ export const sidebarNavigationGroups = [
 				href: PAGE_ROUTES.core.USERS_LIST,
 				icon: <IconUser />,
 				permissions: [{ action: 'read', scope: 'users' }],
+			},
+		],
+	},
+	{
+		_id: 'dev',
+		items: [
+			{
+				_id: 'banners',
+				href: PAGE_ROUTES.core.DEV_BANNERS_LIST,
+				icon: <IconSpeakerphone />,
+				permissions: [{ action: 'read', scope: 'banners' }],
+			},
+			{
+				_id: 'changelog',
+				href: PAGE_ROUTES.core.DEV_CHANGELOGS_LIST,
+				icon: <IconNews />,
+				permissions: [{ action: 'read', scope: 'changelogs' }],
 			},
 		],
 	},

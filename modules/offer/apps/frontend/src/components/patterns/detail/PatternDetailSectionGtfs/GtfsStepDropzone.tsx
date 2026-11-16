@@ -4,8 +4,9 @@
 
 import { IconFileZip, IconUpload, IconX } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Dropzone, Text } from '@tmlmobilidade/ui';
+import { Dropzone, Text, useToast } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { GtfsRoute, GtfsTrip } from './GtfsImport.modal';
 
@@ -22,6 +23,8 @@ interface GtfsStepDropzoneProps {
 /* * */
 
 export function GtfsStepDropzone({ onNext }: GtfsStepDropzoneProps) {
+	const { t } = useTranslation();
+
 	//
 
 	const [isUploading, setIsUploading] = useState(false);
@@ -41,8 +44,8 @@ export function GtfsStepDropzone({ onNext }: GtfsStepDropzoneProps) {
 			}
 			onNext(parsed);
 			setIsUploading(false);
-		} catch (error) {
-			console.log(error);
+		} catch {
+			useToast.error({ message: t('patterns:detail.GtfsStepDropzone.upload_error') });
 			setIsUploading(false);
 		}
 	};
@@ -64,8 +67,8 @@ export function GtfsStepDropzone({ onNext }: GtfsStepDropzoneProps) {
 				<div style={{ alignItems: 'center', display: 'flex', gap: 'var(--mantine-spacing-xl)', minHeight: 100, pointerEvents: 'none' }}>
 					<IconUpload size={50} stroke={1.5} />
 					<div>
-						<Text size="xl">Arraste o ficheiro GTFS para aqui</Text>
-						<Text size="sm">O ficheiro será processado automaticamente</Text>
+						<Text size="xl">{t('patterns:detail.GtfsStepDropzone.drop_gtfs')}</Text>
+						<Text size="sm">{t('patterns:detail.GtfsStepDropzone.process_automatically')}</Text>
 					</div>
 				</div>
 			</Dropzone.Accept>
@@ -73,8 +76,8 @@ export function GtfsStepDropzone({ onNext }: GtfsStepDropzoneProps) {
 				<div style={{ alignItems: 'center', display: 'flex', gap: 'var(--mantine-spacing-xl)', minHeight: 100, pointerEvents: 'none' }}>
 					<IconX size={50} stroke={1.5} />
 					<div>
-						<Text size="xl">Ficheiro rejeitado</Text>
-						<Text size="sm">Apenas ficheiros ZIP são aceites (máximo 100MB)</Text>
+						<Text size="xl">{t('patterns:detail.GtfsStepDropzone.file_rejected')}</Text>
+						<Text size="sm">{t('patterns:detail.GtfsStepDropzone.zip_only')}</Text>
 					</div>
 				</div>
 			</Dropzone.Reject>
@@ -82,8 +85,8 @@ export function GtfsStepDropzone({ onNext }: GtfsStepDropzoneProps) {
 				<div style={{ alignItems: 'center', display: 'flex', gap: 'var(--mantine-spacing-xl)', minHeight: 100, pointerEvents: 'none' }}>
 					<IconFileZip size={50} stroke={1.5} />
 					<div>
-						<Text size="xl">Importar ficheiro GTFS</Text>
-						<Text size="sm">Arraste um ficheiro ZIP ou clique para selecionar (máximo 100MB)</Text>
+						<Text size="xl">{t('patterns:detail.GtfsStepDropzone.import_gtfs')}</Text>
+						<Text size="sm">{t('patterns:detail.GtfsStepDropzone.choose_zip')}</Text>
 					</div>
 				</div>
 			</Dropzone.Idle>
