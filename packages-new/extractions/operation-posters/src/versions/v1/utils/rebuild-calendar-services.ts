@@ -60,8 +60,10 @@ export async function rebuildCalendarServices(tables: OperationPostersV1Tables, 
 	for (const shapeId of shapeIds) {
 		const trips = selectTrips.all(shapeId) as GtfsStrictV30Trips[];
 		if (!trips.length) continue;
+
 		const calendar = calendarsByService.get(trips[0].service_id);
 		if (!calendar) throw new Error(`No plan calendar found for shape ${shapeId}.`);
+
 		let datesByService = datesByCalendar.get(calendar);
 		if (!datesByService) {
 			datesByService = new Map();
@@ -76,8 +78,10 @@ export async function rebuildCalendarServices(tables: OperationPostersV1Tables, 
 			logProgress();
 			await yieldToEventLoop(processedGroups);
 		}
+
 		processedShapes++;
 		logProgress();
+
 		await yieldToEventLoop();
 	}
 	return [...services.values()];
