@@ -37,7 +37,7 @@ export async function extractDatesAnnotationsV1(context: ExtractionTaskContext, 
 	const writer = new BatchWriter<DatesAnnotationsV1OutputRow>({
 		batch_size: 1000,
 		insertFn: async (rows) => {
-			const csv = stringify(rows, { columns: DatesAnnotationsV1CsvColumns, escape_formulas: true, header: false, record_delimiter: 'windows' });
+			const csv = stringify(rows, { columns: DatesAnnotationsV1CsvColumns, escape_formulas: true, header: false, quote_record_delimiter: true, record_delimiter: 'windows' });
 			fs.appendFileSync(outputPath, csv, { encoding: 'utf-8', flush: true });
 		},
 		max_retries: 0,
