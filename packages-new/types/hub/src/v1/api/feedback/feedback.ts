@@ -1,6 +1,7 @@
 /* * */
 
 import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 import { type PublicFeedbackEntityType, PublicFeedbackEntityTypeSchema } from './entity-type.js';
@@ -45,16 +46,16 @@ function validateReasonsForEntity(feedback: PublicFeedbackReasonSelection, conte
 	feedback.reasons.forEach((reason, index) => {
 		if (!allowedReasons.has(reason)) {
 			context.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: `Reason '${reason}' is not valid for ${feedback.entity_type} feedback.`,
+				code: 'custom',
+				...validationParams('custom.feedback.reason', { entity: feedback.entity_type, reason }),
 				path: ['reasons', index],
 			});
 		}
 
 		if (selectedReasons.has(reason)) {
 			context.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: `Reason '${reason}' cannot be selected more than once.`,
+				code: 'custom',
+				...validationParams('custom.feedback.duplicate_reason', { reason }),
 				path: ['reasons', index],
 			});
 		}

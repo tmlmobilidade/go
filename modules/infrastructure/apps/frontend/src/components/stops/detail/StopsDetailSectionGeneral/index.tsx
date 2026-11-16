@@ -54,8 +54,8 @@ export function StopsDetailSectionGeneral() {
 
 	return (
 		<Collapsible
-			description={t('default:stops.detail.SectionGeneral.description')}
-			title={t('default:stops.detail.SectionGeneral.title')}
+			description={t('stops:detail.StopsDetailSectionGeneral.description')}
+			title={t('stops:detail.StopsDetailSectionGeneral.title')}
 			defaultOpen
 		>
 

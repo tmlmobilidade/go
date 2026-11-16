@@ -1,12 +1,7 @@
-import { PeriodsCalendar } from '@/components/year-periods/calendar/PeriodsCalendar';
-import { EventsCalendarProvider } from '@tmlmobilidade/ui';
+import { PeriodsOverview } from '@/components/year-periods/calendar/PeriodsOverview';
 
 /* * */
 
-export default function Page() {
-	return (
-		<EventsCalendarProvider>
-			<PeriodsCalendar />
-		</EventsCalendarProvider>
-	);
+export default async function Page() {
+	return <PeriodsOverview />;
 }

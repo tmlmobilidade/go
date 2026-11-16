@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type EventsDetail } from '@tmlmobilidade/go-offer-pckg-types';
+import { type Event, EventSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -10,7 +10,7 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
  * @param request Fastify request containing event ID in params
  * @param reply Fastify reply
  */
-export async function getEventHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<EventsDetail>) {
+export async function getEventHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<Event>) {
 	//
 
 	//
@@ -58,39 +58,5 @@ export async function getEventHandler(request: FastifyRequest<{ Params: { id: st
 		});
 	}
 
-	//
-	// Get pattern ids that reference this event in manual pattern rules
-
-	const associatedPatterns: EventsDetail['associated_patterns'] = await goDb.offer.patterns.aggregate([
-		{
-			$match: {
-				rules: {
-					$elemMatch: {
-						event_id: request.params.id,
-						kind: 'manual',
-					},
-				},
-			},
-		},
-		{
-			$project: {
-				_id: 1,
-				code: 1,
-				headsign: 1,
-				line_id: 1,
-				route_id: 1,
-			},
-		},
-		{ $sort: { code: 1 } },
-	]);
-
-	//
-	// Fetch the event data
-
-	return sendSuccessApiResponse(reply, {
-		...eventData,
-		associated_patterns: associatedPatterns,
-	});
-
-	//
+	return sendSuccessApiResponse(reply, EventSchema.parse(eventData));
 }

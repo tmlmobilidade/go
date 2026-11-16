@@ -24,7 +24,7 @@ export async function updateAgencyHandler(request: FastifyRequest<{ Body: Update
 	if (!validatedAgency.success) {
 		Logger.warning({ error: validatedAgency.error, message: 'Invalid agency data' });
 		return sendErrorApiResponse(reply, {
-			error: validatedAgency.error.message,
+			error: validatedAgency.error,
 			status_code: '400',
 		});
 	}

@@ -1,0 +1,37 @@
+{
+	"create": {
+		"RouteCreateBasicInfo": {
+			"code": "Código",
+			"code_example": "Ex: 1234_0",
+			"line_example": "Ex: Alfragide (Estr Seminario) - Reboleira (Estação)",
+			"name": "Nome"
+		},
+		"RouteCreateHeader": {
+			"new_route": "Nova Rota"
+		}
+	},
+	"detail": {
+		"RouteDetailHeader": {
+			"delete_route": "Apagar Rota",
+			"delete_route_message": "Tem a certeza que deseja apagar esta rota? Esta ação não pode ser revertida."
+		},
+		"RouteDetailSectionConfig": {
+			"code": "Código",
+			"code_example": "Ex: 1234_0",
+			"line_example": "Ex: Alfragide (Estr Seminario) - Reboleira (Estação)",
+			"name": "Nome",
+			"path_options": {
+				"base": "Rota Base (Principal)",
+				"partial": "Parcelar",
+				"variant": "Variante"
+			},
+			"path_type": "Tipo de Trajeto",
+			"route_config": "Configuração da Rota"
+		},
+		"RouteDetailSectionPatterns": {
+			"add_pattern": "Adicionar Pattern",
+			"patterns": "Patterns",
+			"patterns_hint": "Todos os percursos desta rota. No máximo, uma rota pode ter dois percursos: o de ida e o de volta."
+		}
+	}
+}

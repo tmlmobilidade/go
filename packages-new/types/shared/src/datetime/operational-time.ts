@@ -1,5 +1,6 @@
 /* * */
 
+import { validationTransform } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -22,7 +23,7 @@ export type OperationalTime = string & {
  */
 export const OperationalTimeSchema = z
 	.string()
-	.transform(validateOperationalTime);
+	.transform(validationTransform(validateOperationalTime, 'custom.formats.operational_time', { format: OPERATIONAL_TIME_FORMAT }));
 
 /**
  * This function validates if a string is a valid

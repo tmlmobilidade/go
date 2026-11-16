@@ -1,0 +1,6 @@
+.summary {
+	display: flex;
+	flex-shrink: 0;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+}

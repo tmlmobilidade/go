@@ -4,6 +4,9 @@ import { IconPlus } from '@tabler/icons-react';
 import { HHMM, HHMMSchema, normalizeOperationalHhmmInput, timeToMinutes } from '@tmlmobilidade/go-types-offer';
 import { Button, DayPeriodsTimepoints, Section, TextInput } from '@tmlmobilidade/ui';
 import { KeyboardEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -16,6 +19,8 @@ interface ScheduleGridInputProps {
 /* * */
 
 export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGridInputProps) {
+	const { t } = useTranslation();
+
 	const [inputValue, setInputValue] = useState('');
 	const [inputError, setInputError] = useState('');
 
@@ -27,7 +32,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		const normalizedTime = normalizeOperationalHhmmInput(inputValue);
 
 		if (!normalizedTime) {
-			setInputError('Formato inválido');
+			setInputError(t('default:scheduling.copy.invalidFormat'));
 			return;
 		}
 
@@ -35,7 +40,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		const result = HHMMSchema.safeParse(normalizedTime);
 
 		if (!result.success) {
-			setInputError(result.error.issues[0]?.message ?? 'Formato inválido');
+			setInputError(t('default:scheduling.copy.invalidFormat'));
 			return;
 		}
 
@@ -43,7 +48,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 
 		// 3. Duplicate check
 		if (value.includes(parsedTime)) {
-			setInputError('Este horário já existe');
+			setInputError(t('default:scheduling.copy.existingTimepoint'));
 			return;
 		}
 
@@ -71,11 +76,11 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 			{/* Input Area */}
 			<Section flexDirection="row" gap="sm" padding="none">
 				<TextInput
+					className={styles.input}
 					error={inputError || error}
 					onKeyDown={handleKeyDown}
-					placeholder="Ex: 08:30 ou 0830 + Enter"
+					placeholder={t('patterns:shape.RuleCreateSchedule.timepoint_example')}
 					rightSectionWidth={80}
-					style={{ flex: 1 }}
 					value={inputValue}
 					onChange={(e) => {
 						setInputValue(e.currentTarget.value);
@@ -84,7 +89,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 				/>
 				<Button
 					disabled={!inputValue}
-					label="Adicionar"
+					label={t('default:scheduling.copy.add')}
 					leftSection={<IconPlus size={16} />}
 					onClick={handleAdd}
 				/>

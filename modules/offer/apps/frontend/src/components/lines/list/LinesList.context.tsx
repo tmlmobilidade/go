@@ -1,14 +1,13 @@
 'use client';
 
 import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeContext, useSearch } from '@tmlmobilidade/ui';
+import { type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeData, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+
+import { useLinesListData } from './use-lines-list-data';
 
 /* * */
 
@@ -27,7 +26,7 @@ interface LinesListContextState {
 	flags: {
 		agenciesLoading: boolean
 		canCreate: boolean
-		error: Error | undefined
+		error: null | string
 		loading: boolean
 	}
 }
@@ -52,7 +51,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: me } = useMeData();
 	const { data: agenciesData, ids: agenciesIds, isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData();
 
 	//
@@ -62,19 +61,16 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	const filterAgencies = useFilterStateList('agency', agenciesIds, agenciesOptions);
 
 	//
-	// B. Fetch data
+	// C. Fetch data
 
-	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useSWR<ApiResponse<PopulatedLine[]>>(API_ROUTES.offer.LINES_LIST, {
-		fetcher: async url => await fetchApiData<PopulatedLine[]>({ url }),
-		refreshInterval: 5000,
-	});
+	const { data: allLinesData, error: allLinesError, isLoading: allLinesLoading } = useLinesListData();
 
 	//
-	// C. Transform data
+	// D. Transform data
 
 	const searchResultsData = useSearch<PopulatedLine>({
 		accessors: ['_id', 'name', 'code', 'agency_id'],
-		data: allLinesData?.data ?? [],
+		data: allLinesData,
 		query: filterSearch.value,
 	});
 
@@ -97,16 +93,18 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			});
 	}, [searchResultsData, filterAgencies]);
 
-	const canCreatePermission = meContext.actions.hasPermission(PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.create);
+	const canCreatePermission = PermissionCatalog.hasPermission(me?.permissions ?? [], PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.create);
 
-	// D. Define context value
+	//
+	// E. Define context value
+
 	const contextValue: LinesListContextState = useMemo(() => ({
 		data: {
 			agencies: agenciesData ?? [],
 			agencyIds: agenciesIds,
 			agencyOptions: agenciesOptions,
 			filtered: filterResultsData,
-			raw: allLinesData?.data ?? [],
+			raw: allLinesData,
 		},
 		filters: {
 			agencies: filterAgencies,
@@ -120,7 +118,9 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		},
 	}), [agenciesData, agenciesIds, agenciesLoading, agenciesOptions, filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading]);
 
-	// E. Render components
+	//
+	// F. Render components
+
 	return (
 		<LinesListContext.Provider value={contextValue}>
 			{children}

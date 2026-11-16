@@ -43,10 +43,33 @@
 /* * */
 /* ROOT / DISABLED */
 
-.root[data-disabled='true'] {
+.root[data-disabled='true'],
+.root[data-disabled='true']:hover,
+.root[data-disabled='true']:active {
 	color: var(--color-system-border-100);
-	pointer-events: none;
-	background: var(--color-system-background-100);
 	border-color: var(--color-system-border-100);
 	box-shadow: none;
+}
+
+/* * */
+/* ROOT / LOADING */
+
+.root[data-loading='true'],
+.root[data-loading='true']:hover,
+.root[data-loading='true']:active {
+	color: var(--color-system-text-300);
+	cursor: progress;
+	border-color: var(--color-system-text-300);
+	box-shadow: none;
+	transform: none;
+	animation: pulse 1000ms ease-in-out alternate infinite;
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 0.2;
+	}
+	100% {
+		opacity: 0.4;
+	}
 }

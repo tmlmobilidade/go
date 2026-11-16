@@ -109,6 +109,13 @@
 			"title": "Rides"
 		}
 	},
+	"plans": {
+		"list": {
+			"PlansListCellFeedDates": {
+				"has_overlap": "The validity dates of this plan are overlapping with other plans. Only one plan should be active for a given period."
+			}
+		}
+	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {

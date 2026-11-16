@@ -11,9 +11,9 @@ import { z } from 'zod';
 export const GtfsValidationRuleSchema = z.record(
 	z.string(),
 	z.object({
-		compare: z.array(GtfsValidationRuleCompareSchema).default([]).optional(),
-		depends_on: z.array(z.string()).default([]).optional(),
-		options: z.array(z.string()).default([]).optional(),
+		compare: z.array(GtfsValidationRuleCompareSchema).optional(),
+		depends_on: z.array(z.string()).optional(),
+		options: z.array(z.string()).optional(),
 		severity: SeverityStatusSchema,
 	}),
 );

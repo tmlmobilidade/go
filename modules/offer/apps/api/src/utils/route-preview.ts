@@ -1,10 +1,13 @@
 /* * */
 
-import { type RoutePreviewDto, type RoutePreviewLeg, type RoutePreviewPoint, type RoutePreviewResponse, type ValhallaLocation, type ValhallaRouteRequest, type ValhallaRouteResponse } from '@/types/shapes.js';
+import { type ValhallaLocation, type ValhallaRouteRequest, type ValhallaRouteResponse } from '@/types/shapes.js';
 import { decodeValhallaShape } from '@/utils/shapes.js';
 import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
+import { type RoutePreviewLeg, type RoutePreviewResponse, type ShapesRoutePreviewRequest } from '@tmlmobilidade/go-offer-pckg-types';
 
 /* * */
+
+type RoutePreviewPoint = Omit<ShapesRoutePreviewRequest['points'][number], 'type'> & { type?: 'break' | 'through' | 'via' };
 
 export const DEFAULT_VALHALLA_MAX_LOCATIONS = 50;
 
@@ -14,8 +17,8 @@ interface RoutePreviewChunk {
 }
 
 interface RouteWithValhallaOptions {
-	costing: NonNullable<RoutePreviewDto['costing']>
-	costing_options?: RoutePreviewDto['costing_options']
+	costing: NonNullable<ShapesRoutePreviewRequest['costing']>
+	costing_options?: ShapesRoutePreviewRequest['costing_options']
 	max_locations?: number
 	signal?: AbortSignal
 	url: string
@@ -37,8 +40,8 @@ function getValhallaLocationType(point: RoutePreviewPoint, index: number, length
 
 function createValhallaPayload(
 	points: RoutePreviewPoint[],
-	costing: NonNullable<RoutePreviewDto['costing']>,
-	costingOptions?: RoutePreviewDto['costing_options'],
+	costing: NonNullable<ShapesRoutePreviewRequest['costing']>,
+	costingOptions?: ShapesRoutePreviewRequest['costing_options'],
 ): ValhallaRouteRequest {
 	return {
 		costing,

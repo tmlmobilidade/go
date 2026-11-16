@@ -29,6 +29,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
+		"@tmlmobilidade/go-utils-zip": "*",
 		"csv-stringify": "6.9.0",
 		"yazl": "3.3.1"
 	},

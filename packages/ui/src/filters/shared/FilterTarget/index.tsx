@@ -10,12 +10,20 @@ interface FilterTargetProps extends React.ComponentPropsWithoutRef<'div'> {
 	active?: boolean
 	disabled?: boolean
 	label: string
+	loading?: boolean
 }
 
 /* * */
 
-export const FilterTarget = forwardRef<HTMLDivElement, FilterTargetProps>(({ active, disabled, label, ...props }: FilterTargetProps, ref) => (
-	<div {...props} ref={ref} className={styles.root} data-active={active} data-disabled={disabled}>
+export const FilterTarget = forwardRef<HTMLDivElement, FilterTargetProps>(({ active, disabled, label, loading, ...props }: FilterTargetProps, ref) => (
+	<div
+		{...props}
+		ref={ref}
+		className={styles.root}
+		data-active={active}
+		data-disabled={disabled}
+		data-loading={loading}
+	>
 		{label ?? 'Missing Label!'}
 	</div>
 ));

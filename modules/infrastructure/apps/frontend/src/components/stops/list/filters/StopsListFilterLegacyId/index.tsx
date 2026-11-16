@@ -23,7 +23,7 @@ export function StopsListFilterLegacyId() {
 	return (
 		<TagFilter
 			active={filterLegacyId.isActive}
-			label={t('default:stops.list.FilterLegacyId.label')}
+			label={t('stops:list.StopsListFilterLegacyId.label')}
 			onChange={filterLegacyId.set}
 			value={filterLegacyId.value}
 		/>

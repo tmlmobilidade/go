@@ -15,7 +15,7 @@ export function useStopsListFilterFacilities(): UseFilterStateListReturnType<Sto
 	const { t } = useTranslation();
 
 	const selectOptions = useMemo(() => StopFacilityValues.map(item => ({
-		label: t(`default:stops.shared.stop_facility.${item}`),
+		label: t(`stops:list.StopsListFilterFacilities.options.${item}`),
 		value: item,
 	})), [t]);
 

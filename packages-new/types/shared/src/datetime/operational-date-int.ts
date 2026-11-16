@@ -1,5 +1,6 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
 
@@ -32,5 +33,5 @@ export type OperationalDateInt = number & {
 export const OperationalDateIntSchema = z
 	.union([z.string(), z.number()])
 	.transform(value => String(value).replaceAll('-', ''))
-	.refine(value => DateTime.fromFormat(value, OPERATIONAL_DATE_FORMAT).isValid, { message: `Expected a date in the format ${OPERATIONAL_DATE_FORMAT} or ${CALENDAR_DATE_FORMAT}` })
+	.refine(value => DateTime.fromFormat(value, OPERATIONAL_DATE_FORMAT).isValid, validationParams('custom.formats.operational_date', { alternative: CALENDAR_DATE_FORMAT, format: OPERATIONAL_DATE_FORMAT }))
 	.transform(value => Number(value) as OperationalDateInt);

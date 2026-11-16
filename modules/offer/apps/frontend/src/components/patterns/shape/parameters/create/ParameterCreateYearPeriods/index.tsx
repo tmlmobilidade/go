@@ -5,6 +5,7 @@
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -29,6 +30,7 @@ export function ParameterCreateYearPeriods() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createParameterContext = useParameterCreateContext();
 	const { data: yearPeriodsData } = usePeriodsContext();
 
@@ -42,20 +44,20 @@ export function ParameterCreateYearPeriods() {
 	//
 	// B. Handle actions
 
-	if (createParameterContext.data.form.values.kind === 'default') return null;
+	if (createParameterContext.data.values.kind === 'default') return null;
 
-	const currentPeriodIds = createParameterContext.data.form.values.year_period_ids || [];
+	const currentPeriodIds = createParameterContext.data.values.year_period_ids || [];
 	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
 
 	const applyPreset = (key: null | PeriodPresetKey) => {
 		if (!key) {
-			// same convention as weekdays: empty => undefined
-			createParameterContext.data.form.setFieldValue('year_period_ids', undefined);
+			// The contract represents an unrestricted selection with an empty array.
+			createParameterContext.form.setValue('year_period_ids', [], { shouldDirty: true, shouldValidate: true });
 			return;
 		}
 
 		// select all
-		createParameterContext.data.form.setFieldValue('year_period_ids', [...allPeriodIds]);
+		createParameterContext.form.setValue('year_period_ids', [...allPeriodIds], { shouldDirty: true, shouldValidate: true });
 	};
 
 	//
@@ -64,7 +66,7 @@ export function ParameterCreateYearPeriods() {
 	return (
 		<Section gap="md">
 			<Section gap="xs" padding="none">
-				<Text>Períodos</Text>
+				<Text>{t('default:scheduling.copy.periods')}</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -72,14 +74,14 @@ export function ParameterCreateYearPeriods() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
+					{ label: t('default:scheduling.copy.all'), value: 'all' },
 				]}
 			/>
 
 			<SegmentedMultiSelect
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
-					createParameterContext.data.form.setFieldValue('year_period_ids', selectedPeriods.length > 0 ? selectedPeriods : undefined);
+					createParameterContext.form.setValue('year_period_ids', selectedPeriods, { shouldDirty: true, shouldValidate: true });
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,

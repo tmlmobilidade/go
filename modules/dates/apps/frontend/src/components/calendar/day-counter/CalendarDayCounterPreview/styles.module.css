@@ -1,0 +1,20 @@
+.root {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+	padding: var(--size-spacing-sm);
+	overflow: hidden;
+}
+
+.calendar {
+	flex: 1;
+	min-height: 0;
+}
+
+@media (width <= 1000px) {
+	.root {
+		min-height: 720px;
+		overflow: visible;
+	}
+}

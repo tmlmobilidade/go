@@ -23,7 +23,7 @@ export function StopsTableRow({ pathItem, rowIndex }: { pathItem: PatternsDetail
 
 			<PathTableColumnStop pathItem={pathItem} />
 
-			<StopsTableTableColumnZones pathItem={pathItem} rowIndex={rowIndex} />
+			<StopsTableTableColumnZones rowIndex={rowIndex} />
 		</div>
 	);
 }

@@ -22,7 +22,7 @@ export async function updateStopHandler(request: FastifyRequest<{ Body: StopsUpd
 
 	if (!validatedRequest.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedRequest.error.message,
+			error: validatedRequest.error,
 			status_code: '400',
 		});
 	}

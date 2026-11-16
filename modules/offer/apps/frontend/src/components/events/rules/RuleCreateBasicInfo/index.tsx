@@ -39,6 +39,21 @@ export function RuleCreateBasicInfo() {
 		return `${digits.slice(0, 2)}:${digits.slice(2)}` as HHMM;
 	};
 
+	const handleRuleKindChange = (kind: string) => {
+		if (kind !== 'event_replacement' && kind !== 'event_restriction') return;
+
+		// Reset the target fields for the selected rule kind; dates and line scope stay intact.
+		if (kind === 'event_replacement') {
+			createRuleContext.form.setValue('weekdays', []);
+			createRuleContext.form.setValue('year_period_ids', []);
+		} else {
+			createRuleContext.form.setValue('all_day', false);
+			createRuleContext.form.setValue('start_time', '');
+			createRuleContext.form.setValue('end_time', '');
+		}
+		createRuleContext.form.setValue('kind', kind);
+	};
+
 	const handleToggleAllDay = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const enabled = e.currentTarget.checked;
 
@@ -58,22 +73,12 @@ export function RuleCreateBasicInfo() {
 				<Text size="lg">{t('default:events.ruleEditor.ruleType')}</Text>
 				<Section gap="sm">
 					<SegmentedControl
+						onChange={handleRuleKindChange}
 						value={createRuleContext.values.kind}
 						data={[
 							{ label: t('default:events.ruleEditor.restriction'), value: 'event_restriction' },
 							{ label: t('default:events.ruleEditor.replacement'), value: 'event_replacement' },
 						]}
-						onChange={(value) => {
-							if (value === 'event_replacement') {
-								createRuleContext.form.setValue('weekdays', []);
-								createRuleContext.form.setValue('year_period_ids', []);
-							} else {
-								createRuleContext.form.setValue('all_day', false);
-								createRuleContext.form.setValue('start_time', '' as HHMM);
-								createRuleContext.form.setValue('end_time', '' as HHMM);
-							}
-							createRuleContext.form.setValue('kind', value as 'event_replacement' | 'event_restriction');
-						}}
 					/>
 					{/* <Spacer orientation="vertical" size="md" /> */}
 					<Text c="dimmed">{isReplacementRule ? t('default:events.ruleEditor.replacementDescription') : t('default:events.ruleEditor.restrictionDescription')}</Text>

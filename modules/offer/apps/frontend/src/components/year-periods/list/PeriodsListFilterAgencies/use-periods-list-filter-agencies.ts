@@ -7,7 +7,7 @@ import { usePeriodsAgenciesData } from '../../shared/use-periods-agencies-data';
 
 /* * */
 
-/** Periods agencies URL filter. */
+/** Filter the period list by any of the operators the user can read. */
 export function usePeriodsListFilterAgencies(): UseFilterStateListReturnType {
 	const { ids, options } = usePeriodsAgenciesData({
 		permissions: {
@@ -15,6 +15,5 @@ export function usePeriodsListFilterAgencies(): UseFilterStateListReturnType {
 			scope: PermissionCatalog.all.year_periods.scope,
 		},
 	});
-	const filter = useFilterStateList('agency', ids, options);
-	return filter;
+	return useFilterStateList('agency', ids, options);
 }

@@ -3,6 +3,8 @@
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
+import { readApiResponse } from './read-api-response';
+
 /* * */
 
 interface FetchApiDataParams<K = unknown> {
@@ -29,6 +31,9 @@ interface FetchApiDataParams<K = unknown> {
 	 * The method of the request.
 	 * @default 'GET'
 	 */
+	/** Language for validation messages; explicit Accept-Language headers take precedence. */
+	locale?: string
+
 	method?: 'DELETE' | 'GET' | 'POST' | 'PUT'
 
 	/**
@@ -84,10 +89,12 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 		...params,
 	};
 
-	const validatedHeaders: HeadersInit = {
+	const validatedHeaders = new Headers({
 		...(validatedParams.body ? { 'Content-Type': 'application/json' } : {}),
 		...validatedParams.headers,
-	};
+	});
+	const locale = validatedParams.locale ?? (typeof document !== 'undefined' ? document.documentElement.lang : undefined);
+	if (locale && !validatedHeaders.has('Accept-Language')) validatedHeaders.set('Accept-Language', locale);
 
 	//
 	// Attempt to fetch the data
@@ -100,14 +107,7 @@ export async function fetchApiData<T, K = unknown>(params: FetchApiDataParams<K>
 			method: validatedParams.method,
 			...validatedParams.options,
 		});
-		// If the response is not ok, throw an error
-		if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-		// Decode the response body
-		const responseData: ApiResponse<T> = await response.json();
-		// If the response has an error, throw an error
-		if (responseData.error) throw new Error(responseData.error);
-		// Return the response data
-		return responseData;
+		return await readApiResponse<T>(response);
 	} catch (error) {
 		return {
 			data: null,

@@ -34,7 +34,7 @@ export async function listLocationsHandler(request: FastifyRequest<{ Body: Stops
 
 	if (!validatedFilters.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedFilters.error.message,
+			error: validatedFilters.error,
 			status_code: '400',
 		});
 	}

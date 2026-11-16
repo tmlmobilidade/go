@@ -2,7 +2,7 @@
 
 import { SamAnalysisSchema } from '@/sams/sam-analysis.js';
 import { SamTimelineSummarySchema } from '@/sams/sam-timeline-summary.js';
-import { BaseDocumentSchema, SystemStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults, SystemStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -18,14 +18,14 @@ export const SamSchema = BaseDocumentSchema
 		seen_first_at: UnixMillisecondsSchema.nullable(),
 		seen_last_at: UnixMillisecondsSchema.nullable(),
 		system_status: SystemStatusSchema.default('waiting'),
-		timeline_summary: SamTimelineSummarySchema.default({ months: [] }).optional().nullable(),
+		timeline_summary: SamTimelineSummarySchema.nullish(),
 		transactions_expected: z.number().nullable(),
 		transactions_found: z.number().nullable(),
 		transactions_missing: z.number().nullable(),
 	});
 
 export const CreateSamSchema = SamSchema.omit({ created_at: true, updated_at: true });
-export const UpdateSamSchema = CreateSamSchema.partial();
+export const UpdateSamSchema = partialWithoutDefaults(CreateSamSchema);
 
 /**
  * SAMs are the chips that contain the keys used to sign APEX transactions.

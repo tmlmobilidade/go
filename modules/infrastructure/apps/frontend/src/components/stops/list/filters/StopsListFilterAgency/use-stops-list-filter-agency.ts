@@ -12,9 +12,9 @@ import { useStopsAgenciesData } from '../../../shared/use-stops-agencies-data';
 export function useStopsListFilterAgency(): UseFilterStateListReturnType {
 	//
 
-	const { ids, options } = useStopsAgenciesData({
+	const { ids, isLoading, options } = useStopsAgenciesData({
 		permissions: { actions: [PermissionCatalog.all.stops.actions.read], scope: PermissionCatalog.all.stops.scope },
 	});
 
-	return useFilterStateList('agency', ids, options);
+	return useFilterStateList('agency', ids, options, isLoading);
 }

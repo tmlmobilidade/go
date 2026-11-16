@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RideAcceptance, type UpdateRideAcceptanceDto } from '@tmlmobilidade/go-types-operation';
 
@@ -20,11 +19,7 @@ export async function lockRideAcceptance(request: FastifyRequest<{ Body: { is_lo
 	}
 
 	if (oldJustificationData.is_locked === request.body.is_locked) {
-		return reply.send({
-			data: oldJustificationData,
-			error: null,
-			statusCode: HTTP_STATUS.OK,
-		});
+		return sendSuccessApiResponse(reply, oldJustificationData);
 	}
 
 	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
@@ -33,9 +28,5 @@ export async function lockRideAcceptance(request: FastifyRequest<{ Body: { is_lo
 		updated_by: request.me._id,
 	});
 
-	return reply.send({
-		data: updateResult,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, updateResult);
 }

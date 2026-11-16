@@ -1,17 +1,15 @@
 'use client';
 
-import { usePatternDetailContext } from '@/components/patterns/detail//PatternDetail.context';
+import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
+import { useZonesData } from '@/components/zones/shared/use-zones-data';
 import { IconRotate2, IconTicket } from '@tabler/icons-react';
-import { API_ROUTES } from '@tmlmobilidade/consts';
-import { Path, Zone } from '@tmlmobilidade/go-types-offer';
-import { fetchApiData, IconButton, MultiSelect } from '@tmlmobilidade/ui';
-import useSWR from 'swr';
+import { IconButton, MultiSelect, StandardFormController } from '@tmlmobilidade/ui';
 
 import styles from '../styles.module.css';
 
 /* * */
 
-export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: Path, rowIndex: number }) {
+export function StopsTableTableColumnZones({ rowIndex }: { rowIndex: number }) {
 	//
 
 	// A. Setup variables
@@ -21,21 +19,18 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 	//
 	// B. Fetch data
 
-	const { data: zonesData } = useSWR(API_ROUTES.offer.ZONES_LIST, {
-		fetcher: async url => await fetchApiData<Zone[]>({ url }),
-	});
-
-	const zonesOptions = zonesData?.data?.map(zone => ({
-		label: zone.name,
-		value: zone._id,
-	})) || [];
+	const { data: zones } = useZonesData();
+	const zonesOptions = zones.map(zone => ({ label: zone.name, value: zone._id }));
 
 	//
 	// C. Handle actions
 
 	const handleResetZones = () => {
+		if (!patternsDetailContext.capabilities.editEnabled) return;
 		if (patternsDetailContext.data.pattern.path) {
-			patternsDetailContext.data.form.setFieldValue(`path.${rowIndex}.zones`, pathItem.zones);
+			const path = [...(patternsDetailContext.form.getValues().path ?? [])];
+			path[rowIndex] = { ...path[rowIndex], zones: patternsDetailContext.data.pattern.path[rowIndex]?.zones ?? [] };
+			patternsDetailContext.actions.applyChanges({ path });
 		}
 	};
 
@@ -44,23 +39,30 @@ export function StopsTableTableColumnZones({ pathItem, rowIndex }: { pathItem: P
 
 	return (
 		<div className={styles.column}>
-			<MultiSelect
-				key={patternsDetailContext.data.form.key(`path.${rowIndex}.zones`)}
-				data={zonesOptions}
-				readOnly={patternsDetailContext.flags.isReadOnly}
-				rightSection={<IconTicket size={20} />}
-				w="100%"
-				leftSection={(
-					<IconButton
-						color="gray"
-						icon={<IconRotate2 size={20} />}
-						isDisabled={patternsDetailContext.flags.isReadOnly}
-						onClick={handleResetZones}
-						variant="subtle"
+			<StandardFormController
+				control={patternsDetailContext.form.control}
+				name={`path.${rowIndex}.zones`}
+				render={({ field, fieldState }) => (
+					<MultiSelect
+						{...field}
+						data={zonesOptions}
+						error={fieldState.error?.message}
+						readOnly={!patternsDetailContext.capabilities.editEnabled}
+						rightSection={<IconTicket size={20} />}
+						value={field.value ?? []}
+						w="100%"
+						leftSection={(
+							<IconButton
+								color="gray"
+								icon={<IconRotate2 size={20} />}
+								isDisabled={!patternsDetailContext.capabilities.editEnabled}
+								onClick={handleResetZones}
+								variant="subtle"
+							/>
+						)}
+						searchable
 					/>
 				)}
-				searchable
-				{...patternsDetailContext.data.form.getInputProps(`path.${rowIndex}.zones`)}
 			/>
 		</div>
 	);

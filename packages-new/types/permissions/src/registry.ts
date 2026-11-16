@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { AgenciesPermissionRegistrySchema } from './scopes/agencies/registry.js';
 import { AlertsPermissionRegistrySchema } from './scopes/alerts/registry.js';
 import { AnnotationsPermissionRegistrySchema } from './scopes/annotations/registry.js';
+import { BannersPermissionRegistrySchema } from './scopes/banners/registry.js';
+import { ChangelogsPermissionRegistrySchema } from './scopes/changelogs/registry.js';
 import { EventsPermissionRegistrySchema } from './scopes/events/registry.js';
 import { FaresPermissionRegistrySchema } from './scopes/fares/registry.js';
 import { GtfsValidationsPermissionRegistrySchema } from './scopes/gtfs-validations/registry.js';
@@ -31,6 +33,8 @@ export const PermissionsRegistrySchema = z.discriminatedUnion('scope', [
 	AgenciesPermissionRegistrySchema,
 	AlertsPermissionRegistrySchema,
 	AnnotationsPermissionRegistrySchema,
+	BannersPermissionRegistrySchema,
+	ChangelogsPermissionRegistrySchema,
 	EventsPermissionRegistrySchema,
 	FaresPermissionRegistrySchema,
 	GtfsValidationsPermissionRegistrySchema,

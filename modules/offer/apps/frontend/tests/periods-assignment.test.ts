@@ -22,7 +22,7 @@ test('create assignment requires a name but keeps colour optional like the domai
 });
 
 test('the picker offers only unlocked, fully authorized periods for the complete operator set', () => {
-	const period = YearPeriodSchema.parse({ _id: 'a', agency_ids: ['A'], created_at: 1792368000000, created_by: 'actor', name: 'A', updated_at: 1792368000000, updated_by: 'actor' });
+	const period = YearPeriodSchema.parse({ _id: 'a', agency_ids: ['A'], code: 'A', created_at: 1792368000000, created_by: 'actor', name: 'A', short_name: 'A', updated_at: 1792368000000, updated_by: 'actor' });
 	const periods = [period, { ...period, _id: 'ab', agency_ids: ['A', 'B'] }, { ...period, _id: 'locked', is_locked: true }];
 	const userPermissions: Permission[] = [{ action: 'update', resources: { agency_ids: ['A'] }, scope: 'year_periods' }];
 	assert.deepEqual(getAssignablePeriods({ agencyIds: ['A'], periods, userPermissions }).map(item => item._id), ['a']);

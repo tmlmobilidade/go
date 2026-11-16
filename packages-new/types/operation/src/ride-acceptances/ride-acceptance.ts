@@ -3,7 +3,7 @@
 import { RideAcceptanceStatusSchema } from '@/ride-acceptances/acceptance-status.js';
 import { RideJustificationSchema } from '@/ride-acceptances/ride-justification.js';
 import { RideOverridesSchema } from '@/ride-acceptances/ride-overrides.js';
-import { BaseDocumentSchema, CommentSchema, GradeStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, GradeStatusSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -20,7 +20,7 @@ export const RideAcceptanceSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateRideAcceptanceSchema = RideAcceptanceSchema.partial({ _id: true }).omit({ created_at: true, updated_at: true });
-export const UpdateRideAcceptanceSchema = RideAcceptanceSchema.omit({ created_at: true, created_by: true }).partial();
+export const UpdateRideAcceptanceSchema = partialWithoutDefaults(RideAcceptanceSchema.omit({ created_at: true, created_by: true }));
 
 export type RideAcceptance = z.infer<typeof RideAcceptanceSchema>;
 export type CreateRideAcceptanceDto = z.infer<typeof CreateRideAcceptanceSchema>;

@@ -1,0 +1,51 @@
+{
+	"name": "@tmlmobilidade/go-utils-import-gtfs",
+	"version": "1.0.0",
+	"author": {
+		"email": "iso@tmlmobilidade.pt",
+		"name": "TML-ISO"
+	},
+	"license": "AGPL-3.0-or-later",
+	"homepage": "https://go.tmlmobilidade.pt",
+	"bugs": {
+		"url": "https://github.com/tmlmobilidade/go/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tmlmobilidade/go.git"
+	},
+	"keywords": [
+		"public transit",
+		"tml",
+		"transportes metropolitanos de lisboa",
+		"go"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc && mkdir -p dist/bin && cp ../../../packages-golang/import-gtfs/dist/import-gtfs dist/bin/import-gtfs",
+		"lint": "eslint ./src/ && tsc --noEmit",
+		"lint:fix": "eslint ./src/ --fix",
+		"test": "node --test tests/*.test.mjs"
+	},
+	"dependencies": {
+		"@tmlmobilidade/go-clients-sqlite": "*",
+		"@tmlmobilidade/go-types-gtfs": "*",
+		"@tmlmobilidade/go-types-gtfs-strict": "*",
+		"@tmlmobilidade/go-types-hub": "*",
+		"@tmlmobilidade/go-types-shared": "*"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-golang-import-gtfs": "*",
+		"@tmlmobilidade/go-utils-tsconfig": "*",
+		"@types/node": "26.6.5",
+		"typescript": "6.0.3"
+	}
+}

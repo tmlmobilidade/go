@@ -28,7 +28,7 @@ export function StopsListHeader() {
 			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
 			count={data?.length}
 			search={<StopsListFilterSearch />}
-			title={t('default:stops.list.Header.title')}
+			title={t('stops:list.StopsListHeader.title')}
 		/>
 	);
 }
