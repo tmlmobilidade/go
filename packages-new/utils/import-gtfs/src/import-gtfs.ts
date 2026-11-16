@@ -16,8 +16,14 @@ import { type GtfsSQLTables, type ImportGtfsConfig } from './types/index.js';
  * Custom bundles must account for missing tables in the source archive.
  */
 export async function importGtfsToDatabase<T extends GtfsSQLTables>(config: ImportGtfsConfig): Promise<T> {
+	//
+	// 1. Get the executable path
 	const executablePath = fileURLToPath(new URL('./bin/import-gtfs', import.meta.url));
+
+	// 2. Import the GTFS with GO Executable
 	const stdout = await importGtfs(executablePath, config);
+
+	// 3. Initialize the SQL tables
 	return initGtfsSqlTables<T>(config.sqlite_config?.memory ? stdout : stdout.toString('utf8').trim());
 }
 
