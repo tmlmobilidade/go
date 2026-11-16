@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-core-pckg-types": "*",
 		"@tmlmobilidade/go-core-pckg-utils": "*",
+		"@tmlmobilidade/go-extractions-dates-annotations": "*",
 		"@tmlmobilidade/go-extractions-infrastructure-stops": "*",
 		"@tmlmobilidade/go-extractions-offer-gtfs": "*",
 		"@tmlmobilidade/go-extractions-operation-alerts": "*",

@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 
+import { DatesAnnotationsV1ExtractionSchema } from './modules/dates/annotations/v1/extraction.js';
 import { InfrastructureNodesV1ExtractionSchema } from './modules/infrastructure/nodes/v1/extraction.js';
 import { InfrastructureStopsV1ExtractionSchema } from './modules/infrastructure/stops/v1/extraction.js';
 import { OfferGtfsV29ExtractionSchema } from './modules/offer/gtfs/v29/extraction.js';
@@ -13,6 +14,7 @@ import { OperationRidesV3ExtractionSchema } from './modules/operation/rides/v3/e
 /* * */
 
 export const ExtractionSchema = z.discriminatedUnion('version', [
+	DatesAnnotationsV1ExtractionSchema,
 	InfrastructureNodesV1ExtractionSchema,
 	InfrastructureStopsV1ExtractionSchema,
 	OfferGtfsV29ExtractionSchema,
