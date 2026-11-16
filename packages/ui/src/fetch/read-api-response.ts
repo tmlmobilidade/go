@@ -7,7 +7,9 @@ export async function readApiResponse<T>(response: Response): Promise<ApiRespons
 	const body: unknown = await response.json().catch(() => undefined);
 	const apiError = ApiResponseErrorSchema.safeParse(body);
 	if (apiError.success) return apiError.data;
-	const parsed = ApiResponseSchema.safeParse(body);
+	// JSON omits undefined data in successful responses for actions such as deletes.
+	const normalizedBody = body && typeof body === 'object' ? { data: undefined, ...body } : body;
+	const parsed = ApiResponseSchema.safeParse(normalizedBody);
 	if (response.ok && parsed.success) return parsed.data as ApiResponse<T>;
 	const status = HttpStatusSchema.safeParse(String(response.status));
 	const fallback = ApiResponseErrorSchema.safeParse({

@@ -271,6 +271,7 @@ export const API_ROUTES = Object.freeze({
 		ANNOTATIONS_DETAIL_LOCK: (id: string) => `${getModuleConfig('dates', 'api_url')}/annotations/${encodeURIComponent(id)}/lock`,
 		ANNOTATIONS_LIST: `${getModuleConfig('dates', 'api_url')}/annotations/list`,
 		ANNOTATIONS_LIST_AGENCIES: `${getModuleConfig('dates', 'api_url')}/annotations/list-agencies`,
+		ANNOTATIONS_LIST_LOCATIONS: `${getModuleConfig('dates', 'api_url')}/annotations/list-locations`,
 
 		// HOLIDAYS
 		HOLIDAYS_CREATE: `${getModuleConfig('dates', 'api_url')}/holidays/create`,

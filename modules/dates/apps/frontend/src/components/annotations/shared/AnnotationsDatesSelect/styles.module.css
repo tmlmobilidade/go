@@ -48,3 +48,7 @@
 	flex-wrap: wrap;
 	gap: 6px;
 }
+
+.error {
+	color: var(--color-status-danger-primary);
+}
