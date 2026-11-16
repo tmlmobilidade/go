@@ -6,6 +6,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { getPosterRouteId } from '../utils/get-poster-route-id.js';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
@@ -31,6 +32,8 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 	//
 	// B. Validate and write routes.txt
 
+	let exportedRows = 0;
+
 	for (const [routeId, route] of posterRoutes) {
 		const data = RoutesSchema.parse({
 			agency_id: route.agency_id,
@@ -42,7 +45,11 @@ export async function exportRoutesFile(context: OperationPostersV1Context, sqlTa
 			route_type: route.route_type,
 		});
 		await context.writers.routes.write(data);
+		await yieldToEventLoop(++exportedRows);
 	}
+
+	//
+	// C. Flush routes.txt
 
 	await context.writers.routes.flush();
 

@@ -6,6 +6,7 @@ import { type OperationPostersV1Context, type OperationPostersV1Tables } from '.
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 import { buildStopCanvasTargets } from '../utils/build-stop-canvas-targets.js';
 import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
@@ -70,9 +71,18 @@ export async function exportStopsToCanvasExtFile(context: OperationPostersV1Cont
 	}
 
 	//
-	// E. Write and flush stopsToCanvasExt.txt
+	// E. Write stop targets
 
-	await context.writers.stops_to_canvas_ext.write(targets);
+	let exportedRows = 0;
+
+	for (const target of targets) {
+		await context.writers.stops_to_canvas_ext.write(target);
+		await yieldToEventLoop(++exportedRows);
+	}
+
+	//
+	// F. Flush stopsToCanvasExt.txt
+
 	await context.writers.stops_to_canvas_ext.flush();
 
 	Logger.info({ message: 'Exported stopsToCanvasExt.txt file.' });

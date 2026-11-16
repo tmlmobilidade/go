@@ -6,7 +6,6 @@ import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context } from '../types/context.js';
-import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
@@ -20,7 +19,7 @@ export async function exportAgencyFile(context: OperationPostersV1Context, planD
 	if (!agency) throw new Error(`Agency ${planData.agency_id} not found for poster export.`);
 
 	//
-	// B. Validate and write the agency file
+	// B. Validate the agency file
 
 	const data = AgencySchema.parse({
 		agency_email: agency.open_data?.details?.email,
@@ -32,13 +31,12 @@ export async function exportAgencyFile(context: OperationPostersV1Context, planD
 		agency_timezone: agency.timezone,
 		agency_url: agency.open_data?.details?.website_url,
 	});
-	await context.writers.agency.write(data);
 
 	//
-	// C. Flush and yield to the event loop
+	// C. Write and flush the agency file
 
+	await context.writers.agency.write(data);
 	await context.writers.agency.flush();
-	await yieldToEventLoop();
 
 	Logger.info({ message: 'Exported agency.txt file.' });
 }

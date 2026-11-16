@@ -51,11 +51,19 @@ export async function exportRoutesToCanvasExtFile(context: OperationPostersV1Con
 	}
 
 	//
-	// C. Write route targets, flush and yield to the event loop
+	// C. Write route targets
 
-	await context.writers.routes_to_canvas_ext.write([...targets.values()]);
+	let exportedRows = 0;
+
+	for (const target of targets.values()) {
+		await context.writers.routes_to_canvas_ext.write(target);
+		await yieldToEventLoop(++exportedRows);
+	}
+
+	//
+	// D. Flush routesToCanvasExt.txt
+
 	await context.writers.routes_to_canvas_ext.flush();
-	await yieldToEventLoop();
 
 	Logger.info({ message: 'Exported routesToCanvasExt.txt file.' });
 }

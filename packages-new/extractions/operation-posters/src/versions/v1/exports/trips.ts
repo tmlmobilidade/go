@@ -43,8 +43,7 @@ export async function exportTripsFile(context: OperationPostersV1Context, sqlTab
 			wheelchair_accessible: tripData.wheelchair_accessible ?? '0',
 		});
 		await context.writers.trips.write(data);
-		exportedRows++;
-		await yieldToEventLoop(exportedRows);
+		await yieldToEventLoop(++exportedRows);
 	}
 
 	//

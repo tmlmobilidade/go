@@ -8,6 +8,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { type OperationPostersV1Context } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 import { type CalendarService } from '../types/interfaces.js';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
@@ -17,6 +18,8 @@ export async function exportCalendarFile(context: OperationPostersV1Context, ser
 	//
 	// A. Write each rebuilt service's date range
 	// Dates are activated explicitly in calendar_dates.txt, so all weekdays stay off.
+
+	let exportedRows = 0;
 
 	if (exportConfig.source_has_calendar) {
 		for (const service of services) {
@@ -33,6 +36,7 @@ export async function exportCalendarFile(context: OperationPostersV1Context, ser
 				sunday: '0',
 			};
 			await context.writers.calendars.write(calendar);
+			await yieldToEventLoop(++exportedRows);
 		}
 	}
 

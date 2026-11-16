@@ -30,8 +30,7 @@ export async function exportStopsFile(context: OperationPostersV1Context, sqlTab
 		});
 
 		await context.writers.stops.write(data);
-		exportedRows++;
-		await yieldToEventLoop(exportedRows);
+		await yieldToEventLoop(++exportedRows);
 	}
 
 	await context.writers.stops.flush();

@@ -42,8 +42,7 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 		});
 
 		await context.writers.stop_times.write(data);
-		exportedRows++;
-		await yieldToEventLoop(exportedRows);
+		await yieldToEventLoop(++exportedRows);
 	}
 
 	//

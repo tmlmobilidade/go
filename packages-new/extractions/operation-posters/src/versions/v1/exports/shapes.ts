@@ -25,8 +25,7 @@ export async function exportShapesFile(context: OperationPostersV1Context, sqlTa
 			shape_pt_lon: Number(shapeData.shape_pt_lon ?? undefined),
 			shape_pt_sequence: Number(shapeData.shape_pt_sequence ?? undefined),
 		}));
-		exportedRows++;
-		await yieldToEventLoop(exportedRows);
+		await yieldToEventLoop(++exportedRows);
 	}
 
 	//

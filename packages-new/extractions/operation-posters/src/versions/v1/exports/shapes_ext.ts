@@ -21,8 +21,7 @@ export async function exportShapesExtFile(context: OperationPostersV1Context, sq
 		const extension = shapeExtensions.get(shapeId);
 		if (!extension) continue;
 		await context.writers.shapes_ext.write(extension);
-		exportedRows++;
-		await yieldToEventLoop(exportedRows);
+		await yieldToEventLoop(++exportedRows);
 	}
 
 	//

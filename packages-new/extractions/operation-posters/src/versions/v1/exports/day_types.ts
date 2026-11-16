@@ -5,6 +5,7 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { DAY_TYPES } from '../day-types.js';
 import { type OperationPostersV1Context } from '../types/context.js';
+import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
@@ -14,8 +15,10 @@ export async function exportDayTypesFile(context: OperationPostersV1Context) {
 	//
 	// A. Export day types file
 
-	const dayTypesExtRows: DayTypesExt[] = DAY_TYPES.map((dayType) => {
-		return {
+	let exportedRows = 0;
+
+	for (const dayType of DAY_TYPES) {
+		const dayTypeExt: DayTypesExt = {
 			day_type_id: dayType._id,
 			friday: '',
 			monday: '',
@@ -27,12 +30,13 @@ export async function exportDayTypesFile(context: OperationPostersV1Context) {
 			tuesday: '',
 			wednesday: '',
 		};
-	});
+		await context.writers.day_types_ext.write(dayTypeExt);
+		await yieldToEventLoop(++exportedRows);
+	}
 
 	//
-	// B. Write and flush the day types file
+	// B. Flush the day types file
 
-	await context.writers.day_types_ext.write(dayTypesExtRows);
 	await context.writers.day_types_ext.flush();
 
 	Logger.info({ message: 'Exported day_typesExt.txt file.' });
