@@ -5,6 +5,8 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Annotation, type UpdateAnnotationDto, UpdateAnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
+import { resolveAnnotationLocations } from '../utils/resolve-annotation-locations.js';
+
 /**
  * Updates an existing annotation by ID
  * @param request Fastify request containing annotation ID in params and update data in body
@@ -84,6 +86,20 @@ export async function updateAnnotationHandler(request: FastifyRequest<{ Body: Up
 			error: 'You are not authorized to update annotations for these agencies.',
 			status_code: '403',
 		});
+	}
+
+	//
+	// Resolve submitted location IDs against the authoritative hierarchy.
+
+	if (validatedAnnotation.data.locations) {
+		const locations = await resolveAnnotationLocations(validatedAnnotation.data.locations);
+		if (!locations) {
+			return sendErrorApiResponse(reply, {
+				error: 'One or more selected locations are not available',
+				status_code: '400',
+			});
+		}
+		validatedAnnotation.data.locations = locations;
 	}
 
 	//
