@@ -49,7 +49,7 @@ export function PlanPostersExtractBody() {
 	})), [context.data.agencyIds, context.data.agencyOptions, context.data.planIds, context.data.plans]);
 
 	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<>

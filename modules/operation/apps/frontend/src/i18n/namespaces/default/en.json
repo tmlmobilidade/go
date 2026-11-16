@@ -138,6 +138,10 @@
 			"filterModeInclude": "Only selected",
 			"stop_filter_label": "Stops filter"
 		},
+		"PlanPostersExtractHeader": {
+			"exportButtonLabel": "Generate PDFs",
+			"title": "Generate PDFs"
+		},
 		"agenciesDescription": "Select operators and select a plan for each operator.",
 		"agenciesLabel": "Select operators",
 		"planDescription": "Select a single plan for this operator.",

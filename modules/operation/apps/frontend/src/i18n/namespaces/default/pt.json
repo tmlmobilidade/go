@@ -138,6 +138,10 @@
 			"filterModeInclude": "Apenas selecionadas",
 			"stop_filter_label": "Filtro de paragens"
 		},
+		"PlanPostersExtractHeader": {
+			"exportButtonLabel": "Gerar PDFs",
+			"title": "Gerar PDFs"
+		},
 		"agenciesDescription": "Selecione os operadores e escolha um plano por operador.",
 		"agenciesLabel": "Selecionar operadores",
 		"planDescription": "Selecione um único plano para este operador.",

@@ -141,6 +141,10 @@
 			"filterModeInclude": "Solo seleccionadas",
 			"stop_filter_label": "Filtro de paradas"
 		},
+		"PlanPostersExtractHeader": {
+			"exportButtonLabel": "Generar PDFs",
+			"title": "Generar PDFs"
+		},
 		"agenciesDescription": "Seleccione los operadores y elija un plan por operador.",
 		"agenciesLabel": "Seleccionar operadores",
 		"planDescription": "Seleccione un único plan para este operador.",
