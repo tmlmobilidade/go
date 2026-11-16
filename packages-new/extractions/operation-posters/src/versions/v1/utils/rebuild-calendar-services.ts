@@ -73,9 +73,11 @@ export async function rebuildCalendarServices(tables: OperationPostersV1Tables, 
 		for (const group of await groupTripsByStopTimes(trips, getStopTimes, onTripRead)) {
 			const dateGroups = groupServiceDates(tables, group.serviceIds, calendar, datesByService);
 			if (!dateGroups.length) continue;
+
 			replaceTrips(group, calendar, dateGroups);
 			processedGroups++;
 			logProgress();
+
 			await yieldToEventLoop(processedGroups);
 		}
 
