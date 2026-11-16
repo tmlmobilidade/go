@@ -8,8 +8,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 )
 
-const emailColumn = "agency_email"
-
 /*
 # Attributes
 
@@ -29,5 +27,5 @@ Presence and type follow [GTFS Standard].
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func AgencyEmailField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
-	return fields.CheckPresence(ctx, db, config, agencyTable, emailColumn, false)
+	return fields.CheckPresence(ctx, db, config, "agency", "agency_email", false)
 }
