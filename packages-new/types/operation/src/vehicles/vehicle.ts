@@ -4,22 +4,22 @@ import { BaseDocumentSchema, OperationalDateSchema, partialWithoutDefaults } fro
 import { z } from 'zod';
 
 import { VehicleEmissionSchema } from './emission.js';
+import { VehicleFlagSchema } from './flag.js';
 import { VehiclePropulsionSchema } from './propulsion.js';
 import { VehicleTypeSchema } from './vehicle_type.js';
 
 /* * */
 
 export const vehicleSchema = BaseDocumentSchema.extend({
-	agency_ids: z.array(z.string()).nullable().optional(),
 	bicycles_capacity: z.number(),
 	car_capacity: z.number().nullable().optional(),
 	emission: VehicleEmissionSchema,
+	flags: z.array(VehicleFlagSchema).default([]),
 	make: z.string(),
 	model: z.string(),
 	propulsion: VehiclePropulsionSchema,
 	registration_date: OperationalDateSchema,
 	total_capacity: z.number(),
-	vehicle_id: z.string(),
 	vehicle_type: VehicleTypeSchema,
 	wheelchair_accessible: z.number(),
 });
