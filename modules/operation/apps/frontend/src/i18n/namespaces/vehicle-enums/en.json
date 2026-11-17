@@ -1,0 +1,33 @@
+{
+	"propulsion": {
+		"0": "N/A",
+		"1": "Petrol",
+		"10": "Biofuel / Biodiesel",
+		"101": "Natural gas",
+		"102": "Natural gas - CNG",
+		"103": "Natural gas - LNG",
+		"104": "Aviation fuel",
+		"105": "Marine fuel",
+		"106": "Other",
+		"2": "Diesel",
+		"3": "Automotive LPG",
+		"4": "Mixture",
+		"5": "Electricity",
+		"6": "Battery electric",
+		"7": "Hybrid",
+		"8": "Hydrogen",
+		"9": "Biofuel"
+	},
+	"vehicle_type": {
+		"0": "Tram",
+		"1": "Subway",
+		"11": "Trolleybus",
+		"12": "Monorail",
+		"2": "Rail",
+		"3": "Bus",
+		"4": "Ferry",
+		"5": "Cable tram",
+		"6": "Aerial lift",
+		"7": "Funicular"
+	}
+}

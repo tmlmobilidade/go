@@ -43,7 +43,7 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'vehicle_type',
-			render: item => <Label>{item.vehicle_type}</Label>,
+			render: item => <Label>{t(`vehicle-enums:vehicle_type.${item.vehicle_type}`)}</Label>,
 			title: t('default:vehicles.list.VehiclesList.columns.vehicle_type.label'),
 			width: 150,
 		},
@@ -55,9 +55,9 @@ export function VehiclesList() {
 		},
 		{
 			accessor: 'propulsion',
-			render: item => <Label>{item.propulsion}</Label>,
+			render: item => <Label>{t(`vehicle-enums:propulsion.${item.propulsion}`)}</Label>,
 			title: t('default:vehicles.list.VehiclesList.columns.propulsion.label'),
-			width: 150,
+			width: 200,
 		},
 	];
 
