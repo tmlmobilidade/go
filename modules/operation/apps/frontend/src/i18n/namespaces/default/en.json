@@ -1021,7 +1021,7 @@
 			},
 			"VehiclesDetailIdentification": {
 				"add_flag_button": {
-					"label": "Add vehicle code"
+					"label": "Add another operator code"
 				},
 				"description": "Vehicle, owner and operator identifiers.",
 				"fields": {

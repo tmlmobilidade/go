@@ -1,6 +1,6 @@
 import { IconEqual, IconEqualNot } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { MultiSelect, Section, StandardFormController, Surface, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Section, Select, StandardFormController, Surface, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -39,7 +39,7 @@ export function VehiclesDetailFlags({ index }) {
 					control={form.control}
 					name={`flags.${index}.agency_ids`}
 					render={({ field, fieldState }) => (
-						<MultiSelect
+						<Select
 							data={agenciesOptions}
 							disabled={field.disabled}
 							error={fieldState.error?.message}

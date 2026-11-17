@@ -935,9 +935,9 @@
 			},
 			"VehiclesDetailIdentification": {
 				"add_flag_button": {
-					"label": "Añadir código del vehículo"
+					"label": "Añadir otro código de operador"
 				},
-				"description": "Identificadores del vehículo, propietario y operador.",
+				"description": "Identificadores del vehículo, propietario y operadores.",
 				"fields": {
 					"_id": {
 						"label": "ID del vehículo"
