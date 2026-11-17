@@ -1128,6 +1128,9 @@
 			"VehiclesListFilterAgency": {
 				"label": "Agencies"
 			},
+			"VehiclesListFilterEmission": {
+				"label": "Emission Class"
+			},
 			"VehiclesListFilterType": {
 				"label": "Vehicle Type"
 			},
