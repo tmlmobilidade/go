@@ -1045,6 +1045,9 @@
 			"VehiclesListFilterEmission": {
 				"label": "Clase de emisión"
 			},
+			"VehiclesListFilterPropulsion": {
+				"label": "Propulsión"
+			},
 			"VehiclesListFilterType": {
 				"label": "Tipo de vehículo"
 			},

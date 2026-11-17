@@ -10,6 +10,7 @@ import useSWR from 'swr';
 
 import { useVehiclesListFilterAgency } from './filters/VehiclesListFilterAgency/use-vehicles-list-filter-agency';
 import { useVehiclesListFilterEmission } from './filters/VehiclesListFilterEmission/use-vehicles-list-filters-emission';
+import { useVehiclesListFilterPropulsion } from './filters/VehiclesListFilterPropulsion/use-vehicles-list-filters-propulsion';
 import { useVehiclesListFilterSearch } from './filters/VehiclesListFilterSearch/use-vehicles-list-filter-search';
 import { useVehiclesListFilterType } from './filters/VehiclesListFilterType/use-vehicles-list-filters-type';
 
@@ -36,6 +37,7 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	const filterSearch = useVehiclesListFilterSearch();
 	const filterType = useVehiclesListFilterType();
 	const filterEmission = useVehiclesListFilterEmission();
+	const filterPropulsion = useVehiclesListFilterPropulsion();
 
 	//
 	// B. Transform data
@@ -58,8 +60,9 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	const filteredVehiclesData = useMemo(() => {
 		return data?.data?.filter(vehicle =>
 			filterType.value.includes(vehicle.vehicle_type) &&
-			filterEmission.value.includes(vehicle.emission));
-	}, [data?.data, filterType.value, filterEmission.value]);
+			filterEmission.value.includes(vehicle.emission) &&
+			filterPropulsion.value.includes(vehicle.propulsion));
+	}, [data?.data, filterType.value, filterEmission.value, filterPropulsion.value]);
 
 	const searchResultsData = useSearch<VehiclesListItem>({
 		accessors: ['_id'],
