@@ -9,7 +9,9 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useVehiclesListFilterAgency } from './filters/VehiclesListFilterAgency/use-vehicles-list-filter-agency';
+import { useVehiclesListFilterEmission } from './filters/VehiclesListFilterEmission/use-vehicles-list-filters-emission';
 import { useVehiclesListFilterSearch } from './filters/VehiclesListFilterSearch/use-vehicles-list-filter-search';
+import { useVehiclesListFilterType } from './filters/VehiclesListFilterType/use-vehicles-list-filters-type';
 
 /* * */
 
@@ -32,6 +34,8 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 
 	const filterAgency = useVehiclesListFilterAgency();
 	const filterSearch = useVehiclesListFilterSearch();
+	const filterType = useVehiclesListFilterType();
+	const filterEmission = useVehiclesListFilterEmission();
 
 	//
 	// B. Transform data
@@ -51,10 +55,16 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	//
 	// D. Transform data
 
+	const filteredVehiclesData = useMemo(() => {
+		return data?.data?.filter(vehicle =>
+			filterType.value.includes(vehicle.vehicle_type) &&
+			filterEmission.value.includes(vehicle.emission));
+	}, [data?.data, filterType.value, filterEmission.value]);
+
 	const searchResultsData = useSearch<VehiclesListItem>({
 		accessors: ['_id'],
 		customSearch: (vehicle, query) => vehicle.flags.some(flag => normalizeString(flag.vehicle_id).includes(query)),
-		data: data?.data,
+		data: filteredVehiclesData,
 		query: filterSearch.value,
 	});
 
