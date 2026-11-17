@@ -1,11 +1,12 @@
 'use client';
 
+import { IconSend } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Button, fetchApiData, Textarea, useHandleAction } from '@tmlmobilidade/ui';
-import { type FormEvent, useState } from 'react';
+import { fetchApiData, IconButton, Section, Textarea, useHandleAction } from '@tmlmobilidade/ui';
+import { type SubmitEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -41,8 +42,7 @@ export function RideAcceptanceCommentForm({ isLocked }: { isLocked: boolean }) {
 		},
 	});
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const handleSubmit = () => {
 		const message = comment.trim();
 		if (isLocked || isLoading || !message) return;
 
@@ -62,7 +62,7 @@ export function RideAcceptanceCommentForm({ isLocked }: { isLocked: boolean }) {
 	const placeholder = t('default:rides.acceptance.RideAcceptanceCommentForm.placeholder');
 
 	return (
-		<form className={styles.form} onSubmit={handleSubmit}>
+		<Section flexDirection="row" gap="md" justifyContent="flex-start" padding="none">
 			<Textarea
 				aria-label={placeholder}
 				disabled={isLocked || isLoading}
@@ -72,6 +72,7 @@ export function RideAcceptanceCommentForm({ isLocked }: { isLocked: boolean }) {
 				onChange={event => setComment(event.currentTarget.value)}
 				placeholder={placeholder}
 				value={comment}
+				w="100%"
 				onKeyDown={(event) => {
 					if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
 						event.preventDefault();
@@ -80,13 +81,8 @@ export function RideAcceptanceCommentForm({ isLocked }: { isLocked: boolean }) {
 				}}
 				autosize
 			/>
-			<Button
-				disabled={isLocked || isLoading || !comment.trim()}
-				label={t('default:rides.acceptance.RideAcceptanceCommentForm.submit')}
-				loading={isLoading}
-				type="submit"
-			/>
-		</form>
+			<IconButton icon={<IconSend aria-hidden />} isDisabled={isLocked || isLoading || !comment.trim()} isLoading={isLoading} onClick={handleSubmit} />
+		</Section>
 	);
 
 	//
