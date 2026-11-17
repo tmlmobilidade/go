@@ -7,6 +7,7 @@ import { createVehicleHandler } from './handlers/create-vehicle.js';
 import { deleteVehicleHandler } from './handlers/delete-vehicle.js';
 import { getLastVehicleEventHandler } from './handlers/get-last-vehicle-event.js';
 import { getVehicleHandler } from './handlers/get-vehicle.js';
+import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listVehiclesHandler } from './handlers/list-vehicles.js';
 import { lockVehicleHandler } from './handlers/lock-vehicle.js';
 import { updateVehicleHandler } from './handlers/update-vehicle.js';
@@ -27,6 +28,12 @@ server.register(
 			'/list',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
 			listVehiclesHandler,
+		);
+
+		instance.post(
+			'/list-agencies',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.vehicles.scope, [PermissionCatalog.all.vehicles.actions.read]) },
+			listAgenciesHandler,
 		);
 
 		instance.get(

@@ -853,6 +853,18 @@
 			}
 		},
 		"detail": {
+			"VehiclesDetailFlags": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"vehicle_id": {
+						"label": "Código del vehículo",
+						"placeholder": "Introduzca el código del vehículo"
+					}
+				},
+				"title": "Flags"
+			},
 			"VehiclesDetailFunctionalities": {
 				"description": "Funcionalidades del vehículo, como aceptación de bicicletas, pago contactless, conteo de pasajeros, etc...",
 				"fields": {
@@ -922,6 +934,9 @@
 				}
 			},
 			"VehiclesDetailIdentification": {
+				"add_flag_button": {
+					"label": "Añadir código del vehículo"
+				},
 				"description": "Identificadores del vehículo, propietario y operador.",
 				"fields": {
 					"_id": {

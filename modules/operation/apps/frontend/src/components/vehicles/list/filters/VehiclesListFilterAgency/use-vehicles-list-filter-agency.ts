@@ -10,6 +10,9 @@ import { useMemo } from 'react';
 export function useVehiclesListFilterAgency(): UseFilterStateListReturnType {
 	//
 
+	//
+	// A. Setup variables
+
 	const { ids, options } = useAgenciesData();
 	const { data: meData } = useMeData();
 
@@ -25,6 +28,9 @@ export function useVehiclesListFilterAgency(): UseFilterStateListReturnType {
 		const permittedIdSet = new Set(permittedIds);
 		return options.filter(option => permittedIdSet.has(option.value));
 	}, [options, permittedIds]);
+
+	//
+	// B. Return data
 
 	return useFilterStateList('agency', permittedIds, permittedOptions);
 }

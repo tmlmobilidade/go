@@ -1,10 +1,11 @@
 'use client';
 
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, DateInput, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Button, Collapsible, DateInput, Grid, Section, StandardFormController, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useVehiclesDetailFormContext } from '../VehiclesDetailForm.context';
+import { VehiclesDetailFlags } from '../vehiclesDetailsFlags';
 
 /* * */
 
@@ -17,6 +18,17 @@ export function VehiclesDetailIdentification() {
 	const { t } = useTranslation();
 
 	const { capabilities, form } = useVehiclesDetailFormContext();
+
+	const flagsValues = useStandardFormWatch({ control: form.control, name: 'flags' });
+
+	const handleAddFlag = () => {
+		const latestValues = form.getValues('flags');
+		const newValues = [...(latestValues ?? []), {
+			agency_ids: [],
+			vehicle_id: '',
+		}];
+		form.setValue('flags', newValues, { shouldDirty: true });
+	};
 
 	//
 	// B. Render components
@@ -56,6 +68,16 @@ export function VehiclesDetailIdentification() {
 					/>
 				</Grid>
 			</Section>
+
+			<Section gap="md">
+				{flagsValues?.map((_, index) => (
+					<VehiclesDetailFlags key={`flag-${index}`} index={index} />
+				))}
+
+				<Button label={t('default:vehicles.detail.VehiclesDetailIdentification.add_flag_button.label')} onClick={handleAddFlag} />
+
+			</Section>
+
 		</Collapsible>
 	);
 }
