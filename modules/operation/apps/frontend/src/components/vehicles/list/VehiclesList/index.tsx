@@ -4,7 +4,7 @@ import { useVehiclesDetailVehicleId } from '@/components/vehicles/detail/use-veh
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, OperationalDateDisplay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Label, OperationalDateDisplay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -33,13 +33,31 @@ export function VehiclesList() {
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
 			title: t('default:vehicles.list.VehiclesList.columns.id.label'),
-			width: 100,
+			width: 150,
 		},
 		{
 			accessor: 'registration_date',
 			render: item => <OperationalDateDisplay value={Number(item.registration_date) as OperationalDateInt} />,
 			title: t('default:vehicles.list.VehiclesList.columns.registration_date.label'),
 			width: 300,
+		},
+		{
+			accessor: 'vehicle_type',
+			render: item => <Label>{item.vehicle_type}</Label>,
+			title: t('default:vehicles.list.VehiclesList.columns.vehicle_type.label'),
+			width: 150,
+		},
+		{
+			accessor: 'emission',
+			render: item => <Label>{item.emission}</Label>,
+			title: t('default:vehicles.list.VehiclesList.columns.emission.label'),
+			width: 150,
+		},
+		{
+			accessor: 'propulsion',
+			render: item => <Label>{item.propulsion}</Label>,
+			title: t('default:vehicles.list.VehiclesList.columns.propulsion.label'),
+			width: 150,
 		},
 	];
 

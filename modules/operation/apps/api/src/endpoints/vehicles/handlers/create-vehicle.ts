@@ -6,46 +6,50 @@ import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmo
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
- * Creates a new Vehicle in the database.
- * @param request The request object containing the vehicle data in the body.
+ * Creates or replaces one or more Vehicles in the database.
+ * @param request The request object containing a vehicle or an array of vehicles in the body.
  * @param reply The reply object.
  */
-export async function createVehicleHandler(request: FastifyRequest<{ Body: CreateVehicleDto }>, reply: FastifyReply<Vehicle>) {
+export async function createVehicleHandler(request: FastifyRequest<{ Body: CreateVehicleDto | CreateVehicleDto[] }>, reply: FastifyReply<Vehicle | Vehicle[]>) {
 	//
 
 	//
 	// Validate the request body
 
-	const validatedVehicle = CreateVehicleSchema.safeParse({
-		...request.body,
+	const vehicles = Array.isArray(request.body) ? request.body : [request.body];
+
+	const validatedVehicles = CreateVehicleSchema.array().min(1).safeParse(vehicles.map(vehicle => ({
+		...vehicle,
 		created_by: request.me._id,
 		updated_by: request.me._id,
-	});
+	})));
 
-	if (!validatedVehicle.success) {
+	if (!validatedVehicles.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedVehicle.error,
+			error: validatedVehicles.error,
 			status_code: '400',
 		});
 	}
 
 	//
-	// Create the vehicle with the supplied _id from vehicle_code
+	// Create or replace the vehicles with their supplied _ids
 
 	const nowMs = Dates.now('utc').unix_milliseconds;
 
-	const insertResult = await goDb.operation.vehicles.insertOneUnsafe({
-		...validatedVehicle.data,
+	const vehicleData: Vehicle[] = validatedVehicles.data.map(vehicle => ({
+		...vehicle,
 		created_at: nowMs,
 		updated_at: nowMs,
-	});
+	}));
 
-	if (!insertResult) {
+	const upsertResult = await goDb.operation.vehicles.upsertManyUnsafe(vehicleData);
+
+	if (!upsertResult.isOk()) {
 		return sendErrorApiResponse(reply, {
-			error: 'Failed to create vehicle',
+			error: 'Failed to save vehicles',
 			status_code: '500',
 		});
 	}
 
-	return sendSuccessApiResponse(reply, insertResult, { status_code: '201' });
+	return sendSuccessApiResponse(reply, Array.isArray(request.body) ? vehicleData : vehicleData[0], { status_code: '201' });
 }

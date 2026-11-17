@@ -8,7 +8,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, useAgenciesData, useHandleAction, useMeData, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, useAgenciesData, useHandleAction, useMeData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 import { useVehiclesListData } from '../list/use-vehicles-list-data';
@@ -17,7 +17,7 @@ import { useVehiclesListData } from '../list/use-vehicles-list-data';
 
 interface VehiclesImportContextState {
 	actions: {
-		createVehicle: () => Promise<void>
+		saveVehicles: () => Promise<void>
 		setImportFile: (file: File | null) => Promise<void>
 	}
 	data: {
@@ -56,7 +56,7 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 	const [importPreview, setImportPreview] = useState<VehicleImportPreview[]>([]);
 
 	const { data: meData } = useMeData();
-	const { data: agenciesData } = useAgenciesData();
+	const { data: agenciesData, error: agenciesError, isLoading: agenciesLoading } = useAgenciesData();
 	const { mutate: vehiclesListMutate } = useVehiclesListData();
 
 	//
@@ -78,15 +78,18 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 		setError(null);
 
 		if (!file) {
-			setError(new Error('Invalid file'));
+			setError(new Error('Invalid or empty file'));
 			return;
 		}
 
 		setIsLoading(true);
 
 		try {
+			if (agenciesLoading) throw new Error('Agencies are still loading. Try again shortly.');
+			if (agenciesError) throw new Error(agenciesError);
+
 			const vehiclesFromFile = await parseTxtFile(file);
-			if (vehiclesFromFile.length === 0) throw new Error('Invalid file');
+			if (vehiclesFromFile.length === 0) throw new Error('Invalid or empty file');
 
 			const existingResponse = await fetchApiData<VehiclesListItem[]>({
 				body: { agency_ids: agenciesData?.map(agency => agency._id) ?? [] },
@@ -95,68 +98,45 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 			});
 
 			if (existingResponse.error) throw new Error(existingResponse.error);
-			if (!existingResponse.data) throw new Error('Lookup failed');
+			if (!existingResponse.data) throw new Error('Unable to check existing vehicles');
 
 			const preview = getVehicleImportPreview(vehiclesFromFile, existingResponse.data);
+			const vehiclesToCreate = preview.filter(item => item.mode === 'CREATE');
 
-			for (const { vehicle } of preview) {
+			for (const { vehicle } of vehiclesToCreate) {
 				for (const flag of vehicle.flags) {
 					flag.agency_ids = flag.agency_ids.map((agencyCode) => {
-						const agency = agenciesData?.find(agency => agency.code === agencyCode);
-						if (!agency) {
-							throw new Error(`Invalid agency ${agencyCode} for vehicle ${vehicle._id}`);
-						}
-
-						if (!canCreateAgency(agency._id)) {
-							throw new Error(`No permission to create vehicle for agency ${agencyCode}`);
-						}
-
+						const agency = agenciesData.find(agency => agency.code === agencyCode);
+						if (!agency) throw new Error(`Invalid agency ${agencyCode} for vehicle ${vehicle._id}`);
+						if (!canCreateAgency(agency._id)) throw new Error(`No permission to create vehicles for agency ${agencyCode}`);
 						return agency._id;
 					});
 				}
 			}
 
 			setImportPreview(preview);
-
-			if (preview.length === 0) {
-				setError(new Error('No new vehicles to create'));
-				return;
-			}
-
-			useToast.success({
-				message: `Creating ${preview.length} vehicles`,
-				title: 'File imported',
-			});
 		} catch (err) {
 			setError(err as Error);
 		} finally {
 			setIsLoading(false);
 		}
-	}, [agenciesData, canCreateAgency]);
+	}, [agenciesData, agenciesError, agenciesLoading, canCreateAgency]);
 
-	const { action: handleCreateAll, isLoading: isSaving } = useHandleAction<Vehicle>({
+	const { action: handleSaveAll, isLoading: isSaving } = useHandleAction<Vehicle[]>({
 		fetchFn: async () => {
 			setError(null);
 
-			const [first, ...remaining] = importPreview;
-			if (!first) throw new Error('No new vehicles to create');
+			const vehicles = importPreview.filter(item => item.mode === 'CREATE').map(item => item.vehicle);
+			if (vehicles.length === 0) throw new Error('No new vehicles to create in this file');
 
-			const createVehicle = (item: VehicleImportPreview) => fetchApiData<Vehicle>({
-				body: item.vehicle,
+			return fetchApiData<Vehicle[]>({
+				body: vehicles,
 				method: 'POST',
 				url: API_ROUTES.operation.VEHICLES_CREATE,
 			});
-
-			let response = await createVehicle(first);
-			for (const item of remaining) {
-				if (response.error) return response;
-				response = await createVehicle(item);
-			}
-
-			return response;
 		},
 		labels: {
-			success_message: `Created ${importPreview.length} vehicles`,
+			success_message: `${importPreview.filter(item => item.mode === 'CREATE').length} vehicles created`,
 		},
 		onError: setError,
 		onSuccess: () => {
@@ -170,12 +150,12 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 
 	const contextValue = useMemo((): VehiclesImportContextState => ({
 		actions: {
-			createVehicle: handleCreateAll,
+			saveVehicles: handleSaveAll,
 			setImportFile: handleSetImportFile,
 		},
 		data: {
 			counters: {
-				created: importPreview.length,
+				created: importPreview.filter(item => item.mode === 'CREATE').length,
 			},
 			importPreview,
 		},
@@ -184,7 +164,7 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 			isLoading,
 			isSaving,
 		},
-	}), [error, handleCreateAll, handleSetImportFile, importPreview, isLoading, isSaving]);
+	}), [error, handleSaveAll, handleSetImportFile, importPreview, isLoading, isSaving]);
 
 	//
 	// D. Render components

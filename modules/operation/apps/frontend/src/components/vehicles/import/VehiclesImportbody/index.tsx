@@ -21,27 +21,19 @@ export function VehiclesImportBody() {
 	// B. Render components
 
 	return (
-		<Section gap="sm">
+		<Section gap="md" padding="lg">
 			{vehiclesImportContext.flags.error != null && (
-				<>
-					<AlertMessage title={vehiclesImportContext.flags.error?.message ?? t('default:vehicles.import.VehiclesImportFile.unknownError')} variant="danger" />
-				</>
+				<AlertMessage title={vehiclesImportContext.flags.error?.message ?? t('default:vehicles.import.VehiclesImportFile.unknownError')} variant="danger" />
 			)}
 
-			{vehiclesImportContext.data.importPreview && vehiclesImportContext.actions.setImportFile && (
-				<>
-					<ImportPreview />
-				</>
-			)}
+			<FileUpload
+				accept=".txt"
+				label={t('default:vehicles.import.VehiclesImportFile.uploadLabel')}
+				maxFileSize={5 * 1024 * 1024 * 1024}
+				onFileChange={vehiclesImportContext.actions.setImportFile}
+			/>
 
-			<Section gap="sm">
-				<FileUpload
-					accept=".txt"
-					label={t('default:vehicles.import.VehiclesImportFile.uploadLabel')}
-					maxFileSize={5 * 1024 * 1024 * 1024}
-					onFileChange={vehiclesImportContext.actions.setImportFile}
-				/>
-			</Section>
+			<ImportPreview />
 		</Section>
 	);
 }

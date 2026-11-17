@@ -978,6 +978,13 @@
 			}
 		},
 		"import": {
+			"ImportPreview": {
+				"description": "Solo se añadirán vehículos nuevos.",
+				"duplicate_rows": "Los vehículos repetidos en este archivo se omitirán.",
+				"nothing_description": "No hay vehículos nuevos para añadir desde este archivo.",
+				"nothing_to_create": "No se creará ningún vehículo",
+				"will_create": "{count, plural, =1 {Se creará # vehículo} other {Se crearán # vehículos}}"
+			},
 			"VehiclesImportFile": {
 				"cancel": "Cancelar",
 				"fileLabel": "Seleccione un archivo válido para crear nuevos vehículos",
@@ -986,23 +993,28 @@
 				"uploadLabel": "Archivo de importación de vehículos"
 			},
 			"VehiclesImportHeader": {
-				"title": "Importar Vehículo"
+				"create": "Crear {count, plural, =1 {# vehículo} other {# vehículos}}",
+				"create_empty": "Crear vehículos",
+				"title": "Importar vehículos"
 			}
 		},
 		"list": {
 			"VehiclesList": {
 				"columns": {
-					"agency_id": {
-						"label": "Operador"
+					"emission": {
+						"label": "Clase de emisión"
 					},
 					"id": {
 						"label": "#ID"
 					},
-					"license_plate": {
-						"label": "Matrícula"
+					"propulsion": {
+						"label": "Propulsión"
 					},
 					"registration_date": {
 						"label": "Fecha de registro"
+					},
+					"vehicle_type": {
+						"label": "Tipo de vehículo"
 					}
 				}
 			},

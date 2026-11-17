@@ -8,35 +8,35 @@ export function getVehicleImportPreview(incoming: CreateVehicleDto[], existing: 
 	//
 
 	//
-	// A. Setup variables
+	// A. Index existing vehicle identifiers
 
-	const vehicleCodes = new Set(existing.map(vehicle => vehicle._id));
-	const vehicleIds = new Set(existing.flatMap(vehicle => vehicle.flags?.map(flag => flag.vehicle_id) ?? []));
-
-	//
-	// B. Process the existing vehicles to get the vehicle codes and ids
+	const existingCodes = new Set(existing.map(vehicle => vehicle._id));
+	const existingIds = new Set(existing.flatMap(vehicle => vehicle.flags?.map(flag => flag.vehicle_id) ?? []));
 
 	for (const vehicle of existing) {
 		if ('vehicle_code' in vehicle && typeof vehicle.vehicle_code === 'string') {
-			vehicleCodes.add(vehicle.vehicle_code);
+			existingCodes.add(vehicle.vehicle_code);
 		}
 	}
 
 	//
-	// C. Process the incoming vehicles
+	// B. Classify new, existing and repeated rows
 
-	const preview: VehicleImportPreview[] = [];
+	const importedCodes = new Set<string>();
+	const importedIds = new Set<string>();
 
-	for (const vehicle of incoming) {
-		if (vehicleCodes.has(vehicle._id) || vehicle.flags.some(flag => vehicleIds.has(flag.vehicle_id))) continue;
+	return incoming.map((vehicle) => {
+		let mode: VehicleImportPreview['mode'] = 'CREATE';
 
-		preview.push({ mode: 'CREATE', vehicle });
-		vehicleCodes.add(vehicle._id);
-		for (const flag of vehicle.flags) vehicleIds.add(flag.vehicle_id);
-	}
+		if (existingCodes.has(vehicle._id) || vehicle.flags.some(flag => existingIds.has(flag.vehicle_id))) {
+			mode = 'EXISTS';
+		} else if (importedCodes.has(vehicle._id) || vehicle.flags.some(flag => importedIds.has(flag.vehicle_id))) {
+			mode = 'DUPLICATE';
+		}
 
-	//
-	// D. Return the preview
+		importedCodes.add(vehicle._id);
+		for (const flag of vehicle.flags) importedIds.add(flag.vehicle_id);
 
-	return preview;
+		return { mode, vehicle };
+	});
 }
