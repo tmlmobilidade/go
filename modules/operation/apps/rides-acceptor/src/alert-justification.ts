@@ -30,6 +30,7 @@ export async function alertJustification(ride: RideWithAnalyses, acceptance: Rid
 		// Justify the acceptance with the alert.
 		const now = Dates.now('utc').unix_milliseconds;
 		const justification = RideJustificationSchema.parse({
+			alert_id: foundAlert._id,
 			created_at: now,
 			created_by: foundAlert.created_by,
 			justification_cause: foundAlert.cause,

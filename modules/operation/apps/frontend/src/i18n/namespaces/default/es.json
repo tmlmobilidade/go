@@ -183,7 +183,8 @@
 				"updated": "Aceptación actualizada"
 			},
 			"RideAcceptanceJustification": {
-				"title": "Justificación"
+				"title": "Justificación",
+				"view_alert": "Ver alerta"
 			},
 			"RideAcceptanceJustificationEditable": {
 				"fields": {

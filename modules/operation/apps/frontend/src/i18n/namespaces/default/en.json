@@ -180,7 +180,8 @@
 				"updated": "Acceptance updated"
 			},
 			"RideAcceptanceJustification": {
-				"title": "Justification"
+				"title": "Justification",
+				"view_alert": "View alert"
 			},
 			"RideAcceptanceJustificationEditable": {
 				"fields": {

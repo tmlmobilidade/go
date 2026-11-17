@@ -1,8 +1,10 @@
 'use client';
 
+import { IconArrowUpRight } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { HasPermission, Section, Surface } from '@tmlmobilidade/ui';
+import { Button, HasPermission, Section, Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import acceptanceStyles from '../RideAcceptance/styles.module.css';
@@ -24,6 +26,7 @@ export function RideAcceptanceJustification({ acceptance }: { acceptance: RideAc
 	// B. Transform data
 
 	const readOnly = <RideAcceptanceJustificationReadOnly justification={acceptance.justification} />;
+	const alertId = acceptance.justification?.justification_source === 'alert' ? acceptance.justification.alert_id : undefined;
 
 	//
 	// C. Render components
@@ -37,6 +40,16 @@ export function RideAcceptanceJustification({ acceptance }: { acceptance: RideAc
 						<RideAcceptanceJustificationEditable />
 					</HasPermission>
 				) : readOnly}
+				{alertId && (
+					<HasPermission action={PermissionCatalog.all.alerts.actions.read} scope={PermissionCatalog.all.alerts.scope}>
+						<Button
+							href={PAGE_ROUTES.operation.ALERTS_DETAIL(alertId)}
+							label={t('default:rides.acceptance.RideAcceptanceJustification.view_alert')}
+							rightSection={<IconArrowUpRight size={16} aria-hidden />}
+							variant="transparent"
+						/>
+					</HasPermission>
+				)}
 			</Section>
 		</Surface>
 	);
