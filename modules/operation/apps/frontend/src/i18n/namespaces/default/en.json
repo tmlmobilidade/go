@@ -1116,6 +1116,11 @@
 			"VehiclesListFilterPropulsion": {
 				"label": "Propulsion"
 			},
+			"VehiclesListFilterRegistrationDate": {
+				"end_date": "End date",
+				"label": "Registration date",
+				"start_date": "Start date"
+			},
 			"VehiclesListFilterType": {
 				"label": "Vehicle Type"
 			},
