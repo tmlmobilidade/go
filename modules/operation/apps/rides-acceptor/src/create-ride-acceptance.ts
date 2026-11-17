@@ -24,20 +24,24 @@ export async function createRideAcceptance(ride: RideWithAnalyses) {
 
 		//
 		// Create the acceptance.
+		const now = Dates.now('utc').unix_milliseconds;
+		const acceptanceStatus = pass ? 'accepted' : 'justification_required';
+		const audit = { created_at: now, created_by: 'system', updated_at: now, updated_by: 'system' };
 		const acceptance: RideAcceptance = {
 			_id: ride._id,
-			acceptance_status: pass ? 'accepted' : 'justification_required',
+			acceptance_status: acceptanceStatus,
 			analysis_summary: analysisSummary,
-			comments: [],
-			created_at: Dates.now('utc').unix_milliseconds,
-			created_by: 'system',
+			comments: [
+				{ ...audit, action: 'create', type: 'crud' },
+				{ ...audit, curr_value: analysisSummary, field: 'analysis_summary', prev_value: null, type: 'field_changed' },
+				{ ...audit, curr_value: acceptanceStatus, field: 'acceptance_status', prev_value: null, type: 'field_changed' },
+			],
 			is_locked: false,
 			justification: null,
 			overrides: {
 				trip_id: null,
 			},
-			updated_at: Dates.now('utc').unix_milliseconds,
-			updated_by: 'system',
+			...audit,
 		};
 
 		const parsedAcceptance = RideAcceptanceSchema.parse(acceptance);
@@ -45,6 +49,6 @@ export async function createRideAcceptance(ride: RideWithAnalyses) {
 
 		Logger.info({ message: `Created acceptance for ride ${ride._id} with status ${pass ? 'accepted' : 'justification_required'}.` });
 	} catch (err) {
-		Logger.critical({ error: err, message: 'An error occurred. Halting execution.' });
+		Logger.critical({ error: err, message: `Failed to create acceptance for ride ${ride._id}.` });
 	}
 }

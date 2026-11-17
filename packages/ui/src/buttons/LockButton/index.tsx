@@ -43,6 +43,7 @@ export function LockButton({ isDisabled, isLoading, isLocked, onClick, tooltip }
 			>
 				<span>
 					<ActionIcon
+						aria-label={tooltip ?? 'Desbloquear'}
 						color="var(--color-status-success-primary)"
 						disabled={isDisabled}
 						loading={isLoading}
@@ -63,6 +64,7 @@ export function LockButton({ isDisabled, isLoading, isLocked, onClick, tooltip }
 			withArrow
 		>
 			<ActionIcon
+				aria-label={tooltip ?? 'Bloquear'}
 				disabled={isDisabled}
 				loading={isLoading}
 				onClick={handleClick}
