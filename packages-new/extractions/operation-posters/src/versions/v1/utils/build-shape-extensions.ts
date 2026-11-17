@@ -3,8 +3,8 @@
 import { type ShapesExt } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 
-import { isBaseShape } from './is-base-shape.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
+import { isBaseShape } from './is-base-shape.js';
 
 /* * */
 

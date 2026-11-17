@@ -1,8 +1,8 @@
 /* * */
 
-import { quoteIdentifier } from './quote-identifier.js';
 import { type OperationPostersV1Tables } from '../types/context.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
+import { quoteIdentifier } from './quote-identifier.js';
 
 /* * */
 
