@@ -927,20 +927,8 @@
 					"_id": {
 						"label": "ID del vehículo"
 					},
-					"agency_id": {
-						"label": "Operador del vehículo"
-					},
-					"license_plate": {
-						"label": "Matrícula del vehículo"
-					},
-					"owner": {
-						"label": "Propietario del vehículo"
-					},
 					"registration_date": {
 						"label": "Fecha de registro del vehículo"
-					},
-					"start_date": {
-						"label": "Fecha de inicio de operación"
 					}
 				},
 				"title": "Identificación"
@@ -952,12 +940,6 @@
 			"VehiclesDetailSpecifications": {
 				"description": "Especificaciones del vehículo, como marca, modelo, capacidad de asientos, etc...",
 				"fields": {
-					"available_seats": {
-						"label": "Capacidad de asientos"
-					},
-					"available_standing": {
-						"label": "Capacidad de pie"
-					},
 					"emission": {
 						"label": "Clase de emisión"
 					},
@@ -970,8 +952,8 @@
 					"propulsion": {
 						"label": "Propulsión"
 					},
-					"typology": {
-						"label": "Tipología"
+					"vehicle_type": {
+						"label": "Tipo de vehículo"
 					}
 				},
 				"title": "Especificaciones"

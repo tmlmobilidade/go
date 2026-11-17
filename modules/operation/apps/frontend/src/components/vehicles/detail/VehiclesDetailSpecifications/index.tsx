@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateVehicleSchema, VehicleEmissionValues, VehiclePropulsionValues, VehicleTypeValues } from '@tmlmobilidade/go-types-operation';
-import { Collapsible, Grid, NumberInput, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useVehiclesDetailFormContext } from '../VehiclesDetailForm.context';
@@ -58,42 +58,16 @@ export function VehiclesDetailSpecifications() {
 					/>
 					<StandardFormController
 						control={form.control}
-						name="available_seats"
-						render={({ field, fieldState }) => (
-							<NumberInput
-								error={fieldState.error?.message}
-								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.available_seats.label')}
-								onChange={field.onChange}
-								readOnly={!capabilities.editEnabled}
-								value={field.value ?? undefined}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="available_standing"
-						render={({ field, fieldState }) => (
-							<NumberInput
-								error={fieldState.error?.message}
-								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.available_standing.label')}
-								onChange={field.onChange}
-								readOnly={!capabilities.editEnabled}
-								value={field.value ?? undefined}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="typology"
+						name="vehicle_type"
 						render={({ field, fieldState }) => (
 							<Select
 								error={fieldState.error?.message}
-								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.typology.label')}
+								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.vehicle_type.label')}
 								onChange={field.onChange}
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
 								data={VehicleTypeValues.map(value => ({
-									label: t(`default:vehicles.shared.typology.${value}`),
+									label: t(`vehicle-enums:vehicle_type.${value}`),
 									value,
 								}))}
 							/>
@@ -110,7 +84,7 @@ export function VehiclesDetailSpecifications() {
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
 								data={VehiclePropulsionValues.map(value => ({
-									label: t(`default:vehicles.shared.propulsion.${value}`),
+									label: t(`vehicle-enums:propulsion.${value}`),
 									value,
 								}))}
 							/>
@@ -127,7 +101,7 @@ export function VehiclesDetailSpecifications() {
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
 								data={VehicleEmissionValues.map(value => ({
-									label: t(`default:vehicles.shared.emission.${value}`),
+									label: t(`vehicle-enums:emission.${value}`),
 									value,
 								}))}
 							/>

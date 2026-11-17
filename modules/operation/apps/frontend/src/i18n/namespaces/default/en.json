@@ -1013,20 +1013,8 @@
 					"_id": {
 						"label": "Vehicle ID"
 					},
-					"agency_id": {
-						"label": "Vehicle operator"
-					},
-					"license_plate": {
-						"label": "Vehicle registration plate"
-					},
-					"owner": {
-						"label": "Vehicle owner"
-					},
 					"registration_date": {
 						"label": "Vehicle registration date"
-					},
-					"start_date": {
-						"label": "Operation start date"
 					}
 				},
 				"title": "Identification"
@@ -1038,12 +1026,6 @@
 			"VehiclesDetailSpecifications": {
 				"description": "Vehicle specifications, such as make, model, seating capacity, etc.",
 				"fields": {
-					"available_seats": {
-						"label": "Seating capacity"
-					},
-					"available_standing": {
-						"label": "Standing capacity"
-					},
 					"emission": {
 						"label": "Emission class"
 					},
@@ -1056,7 +1038,7 @@
 					"propulsion": {
 						"label": "Propulsion"
 					},
-					"typology": {
+					"vehicle_type": {
 						"label": "Vehicle type"
 					}
 				},
