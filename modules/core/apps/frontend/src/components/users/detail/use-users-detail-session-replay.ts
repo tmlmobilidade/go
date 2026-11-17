@@ -45,8 +45,8 @@ export function useUsersDetailSessionReplay({ authorization, isLoading, onChange
 
 	const { t } = useTranslation();
 	const data = getUsersDetailSessionReplayState(authorization, Date.now());
-	const hasManagePermission = hasPermission(permissions, {
-		action: PermissionCatalog.all.users.actions.manage_session_replay,
+	const hasUpdatePermission = hasPermission(permissions, {
+		action: PermissionCatalog.all.users.actions.update,
 		scope: PermissionCatalog.all.users.scope,
 	});
 
@@ -79,8 +79,8 @@ export function useUsersDetailSessionReplay({ authorization, isLoading, onChange
 	// Setup capabilities
 
 	const { createEnabled: authorizeEnabled, deleteEnabled: cancelEnabled } = useStandardFormCapabilities({
-		create: { hasPermission: hasManagePermission },
-		delete: { hasPermission: hasManagePermission },
+		create: { hasPermission: hasUpdatePermission },
+		delete: { hasPermission: hasUpdatePermission },
 		// Replay controls do not depend on unsaved user form values.
 		form: { isDirty: false, isValid: true },
 		loading: { isLoading: isLoading || isAuthorizing || isCancelling },
@@ -101,12 +101,12 @@ export function useUsersDetailSessionReplay({ authorization, isLoading, onChange
 
 	// Refresh at the deadline even if polling returns the same user document.
 	useEffect(() => {
-		if (!hasManagePermission || data.deadline === null) return;
+		if (!hasUpdatePermission || data.deadline === null) return;
 
 		const timeout = setTimeout(onChange, Math.max(0, data.deadline - Date.now()) + 1);
 
 		return () => clearTimeout(timeout);
-	}, [data.deadline, hasManagePermission, onChange]);
+	}, [data.deadline, hasUpdatePermission, onChange]);
 
 	//
 	// Return state

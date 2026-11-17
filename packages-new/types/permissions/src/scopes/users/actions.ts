@@ -9,7 +9,6 @@ const UsersPermissionActionsValues = [
 	'delete',
 	'read',
 	'lock',
-	'manage_session_replay',
 	'update',
 ] as const;
 

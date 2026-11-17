@@ -78,7 +78,7 @@ export function UsersDetail() {
 			<UsersDetailBasicInfo />
 			<UsersDetailOrganizationAndRoles />
 			<HasPermission
-				action={PermissionCatalog.all.users.actions.manage_session_replay}
+				action={PermissionCatalog.all.users.actions.update}
 				scope={PermissionCatalog.all.users.scope}
 			>
 				<UsersDetailAmplitude />
