@@ -2,7 +2,7 @@
 
 import { IconChevronDown } from '@tabler/icons-react';
 import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
-import { Tag, Text } from '@tmlmobilidade/ui';
+import { GradeStatusDisplay, Tag, Text } from '@tmlmobilidade/ui';
 import { type PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,8 +15,6 @@ interface RideAcceptanceCheckProps {
 	open?: boolean
 	title: string
 }
-
-const gradeVariants = { error: 'danger', fail: 'danger', pass: 'success', skip: 'muted' } as const;
 
 /* * */
 
@@ -31,7 +29,7 @@ export function RideAcceptanceCheck({ check, children, open, title }: PropsWithC
 					{title}
 				</span>
 				<Tag label={t('default:rides.acceptance.RideAcceptanceCheck.required')} variant="primary" />
-				<Tag label={t(`default:rides.acceptance.RideAcceptanceCheck.grades.${check.grade}`)} variant={gradeVariants[check.grade]} />
+				<GradeStatusDisplay value={check.grade} />
 			</summary>
 			<div className={styles.details}>
 				{children}
