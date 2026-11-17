@@ -27,7 +27,7 @@ export function VehiclesDetailFlags({ index }) {
 		const flagVehicleId = flagsValues?.[index]?.vehicle_id;
 		const vehicleId = form.getValues('_id');
 		return flagVehicleId === String(vehicleId);
-	}, [flagsValues, index]);
+	}, [flagsValues, index, form]);
 
 	//
 	// B. Render components
