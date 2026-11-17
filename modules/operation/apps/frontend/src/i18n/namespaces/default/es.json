@@ -980,7 +980,7 @@
 		"import": {
 			"VehiclesImportFile": {
 				"cancel": "Cancelar",
-				"fileLabel": "Seleccione un archivo válido para crear o actualizar un vehículo",
+				"fileLabel": "Seleccione un archivo válido para crear nuevos vehículos",
 				"submit": "Crear vehículos",
 				"unknownError": "Error desconocido.",
 				"uploadLabel": "Archivo de importación de vehículos"

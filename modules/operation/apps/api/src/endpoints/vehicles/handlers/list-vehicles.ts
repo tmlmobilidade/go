@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type VehiclesListFilters, VehiclesListFiltersSchema, type VehiclesListItem, VehiclesListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
+import { type VehiclesListFilters, VehiclesListFiltersSchema, type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -35,10 +35,8 @@ export async function listVehiclesHandler(request: FastifyRequest<{ Body: Vehicl
 	// Fetch vehicles matching the filters
 
 	const foundVehicles = await goDb.operation.vehicles.findMany({
-		agency_id: { $in: validatedFilters.agency_ids },
+		'flags.agency_ids': { $in: validatedFilters.agency_ids },
 	});
-
-	// const validatedVehicles = VehiclesListItemSchema.array().parse(foundVehicles);
 
 	return sendSuccessApiResponse(reply, foundVehicles);
 }
