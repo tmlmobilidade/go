@@ -10,9 +10,9 @@ import { generatePDF } from './controller/generate-pdf.js';
 import { generateToken } from './controller/generate-token.js';
 import { getPDFStatus } from './controller/get-pdf-status.js';
 import { importPlans } from './import-plans.js';
-import { waitCheckStatus } from './utils/wait-check-status.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 import { type PDFStatus } from './types/interfaces.js';
+import { waitCheckStatus } from './utils/wait-check-status.js';
 
 /* * */
 

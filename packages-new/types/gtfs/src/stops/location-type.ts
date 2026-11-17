@@ -14,8 +14,7 @@ export const GtfsLocationTypeValues = [
 
 export const GtfsLocationTypeSchema = z
 	.union([z.string(), z.number()])
-	.default('0')
-	.transform(value => value === '' ? '0' : String(value))
+	.transform(value => String(value))
 	.pipe(z.enum(GtfsLocationTypeValues));
 
 /**

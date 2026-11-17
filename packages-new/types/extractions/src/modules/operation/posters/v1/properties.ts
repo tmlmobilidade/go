@@ -6,8 +6,7 @@ import { z } from 'zod';
 
 export const OperationPostersV1ExtractionPropertiesSchema = z.object({
 
-	agency_ids: z
-		.array(z.string()),
+	agency_ids: z.array(z.string()),
 
 	canvas_profile: z.string().optional().nullable(),
 
@@ -17,8 +16,7 @@ export const OperationPostersV1ExtractionPropertiesSchema = z.object({
 
 	lines_mode: z.enum(['include', 'exclude']).optional(),
 
-	plan_ids: z
-		.array(z.string()),
+	plan_ids: z.array(z.string()),
 
 	stop_ids: z.array(z.string()).optional(),
 
