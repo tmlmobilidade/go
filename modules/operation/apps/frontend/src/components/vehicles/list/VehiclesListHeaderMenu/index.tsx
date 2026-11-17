@@ -2,8 +2,7 @@
 
 import { openVehiclesCreateModal } from '@/components/vehicles/create/VehiclesCreate.modal';
 import { openVehiclesImportModal } from '@/components/vehicles/import/VehiclesImport.modal';
-import { openVehiclesListExportModal } from '@/components/vehicles/list/VehiclesListExport/VehiclesListExport.modal';
-import { IconFileDownload, IconPlus, IconUpload } from '@tabler/icons-react';
+import { IconPlus, IconUpload } from '@tabler/icons-react';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { ToolbarActions, useMeData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -43,11 +42,11 @@ export function VehiclesListHeaderMenu() {
 			});
 		}
 
-		actions.push({
-			icon: <IconFileDownload />,
-			label: t('default:vehicles.list.VehiclesListHeaderMenu.export'),
-			onClick: openVehiclesListExportModal,
-		});
+		// actions.push({
+		// 	icon: <IconFileDownload />,
+		// 	label: t('default:vehicles.list.VehiclesListHeaderMenu.export'),
+		// 	onClick: openVehiclesListExportModal,
+		// });
 
 		return actions;
 	}, [meData?.permissions, t]);

@@ -3,12 +3,17 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListFilters, type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { normalizeString } from '@tmlmobilidade/strings';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useVehiclesListFilterAgency } from './filters/VehiclesListFilterAgency/use-vehicles-list-filter-agency';
+import { useVehiclesListFilterEmission } from './filters/VehiclesListFilterEmission/use-vehicles-list-filters-emission';
+import { useVehiclesListFilterPropulsion } from './filters/VehiclesListFilterPropulsion/use-vehicles-list-filters-propulsion';
+import { useVehiclesListFilterRegistrationDate } from './filters/VehiclesListFilterRegistrationDate/use-vehicles-list-filter-registration-date';
 import { useVehiclesListFilterSearch } from './filters/VehiclesListFilterSearch/use-vehicles-list-filter-search';
+import { useVehiclesListFilterType } from './filters/VehiclesListFilterType/use-vehicles-list-filters-type';
 
 /* * */
 
@@ -31,6 +36,10 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 
 	const filterAgency = useVehiclesListFilterAgency();
 	const filterSearch = useVehiclesListFilterSearch();
+	const filterType = useVehiclesListFilterType();
+	const filterEmission = useVehiclesListFilterEmission();
+	const filterPropulsion = useVehiclesListFilterPropulsion();
+	const filterRegistrationDate = useVehiclesListFilterRegistrationDate();
 
 	//
 	// B. Transform data
@@ -50,9 +59,19 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	//
 	// D. Transform data
 
+	const filteredVehiclesData = useMemo(() => {
+		return data?.data?.filter(vehicle =>
+			(filterRegistrationDate.value_start === null || Number(vehicle.registration_date) >= filterRegistrationDate.value_start) &&
+			(filterRegistrationDate.value_end === null || Number(vehicle.registration_date) <= filterRegistrationDate.value_end) &&
+			filterType.value.includes(vehicle.vehicle_type) &&
+			filterEmission.value.includes(vehicle.emission) &&
+			filterPropulsion.value.includes(vehicle.propulsion));
+	}, [data?.data, filterType.value, filterEmission.value, filterPropulsion.value, filterRegistrationDate.value_start, filterRegistrationDate.value_end]);
+
 	const searchResultsData = useSearch<VehiclesListItem>({
-		accessors: ['_id', 'agency_id', 'license_plate'],
-		data: data?.data,
+		accessors: ['_id'],
+		customSearch: (vehicle, query) => vehicle.flags.some(flag => normalizeString(flag.vehicle_id).includes(query)),
+		data: filteredVehiclesData,
 		query: filterSearch.value,
 	});
 

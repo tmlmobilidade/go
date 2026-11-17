@@ -1,0 +1,43 @@
+{
+	"emission": {
+		"EURO_I": "Euro I",
+		"EURO_II": "Euro II",
+		"EURO_III": "Euro III",
+		"EURO_IV": "Euro IV",
+		"EURO_V": "Euro V",
+		"EURO_VI": "Euro VI",
+		"EURO_VII": "Euro VII",
+		"N/A": "Not applicable"
+	},
+	"propulsion": {
+		"0": "Not applicable",
+		"1": "Petrol",
+		"10": "Biofuel / Biodiesel",
+		"101": "Natural gas",
+		"102": "Natural gas - CNG",
+		"103": "Natural gas - LNG",
+		"104": "Aviation fuel",
+		"105": "Marine fuel",
+		"106": "Other",
+		"2": "Diesel",
+		"3": "Automotive LPG",
+		"4": "Mixture",
+		"5": "Electricity",
+		"6": "Battery electric",
+		"7": "Hybrid",
+		"8": "Hydrogen",
+		"9": "Biofuel"
+	},
+	"vehicle_type": {
+		"0": "Tram",
+		"1": "Subway",
+		"11": "Trolleybus",
+		"12": "Monorail",
+		"2": "Rail",
+		"3": "Bus",
+		"4": "Ferry",
+		"5": "Cable tram",
+		"6": "Aerial lift",
+		"7": "Funicular"
+	}
+}

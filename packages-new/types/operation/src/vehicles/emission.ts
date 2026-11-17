@@ -11,11 +11,13 @@ export const VehicleEmissionValues = [
 	'EURO_IV',
 	'EURO_V',
 	'EURO_VI',
+	'EURO_VII',
+	'N/A',
 ] as const;
 
 export const VehicleEmissionSchema = z
 	.string()
-	.transform(value => String(value).toLowerCase())
+	.transform(value => String(value).trim().toUpperCase().replace(/\s+/g, '_'))
 	.pipe(z.enum(VehicleEmissionValues));
 
 export type VehicleEmission = z.infer<typeof VehicleEmissionSchema>;

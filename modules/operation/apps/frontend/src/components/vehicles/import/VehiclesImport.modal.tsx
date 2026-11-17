@@ -1,7 +1,7 @@
 'use client';
 
+import { VehicleImport } from '@/components/vehicles/import/vehicleImport';
 import { VehiclesImportContextProvider } from '@/components/vehicles/import/VehiclesImport.context';
-import { VehiclesImportFile } from '@/components/vehicles/import/VehiclesImportFile';
 import { closeModal, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,7 +14,7 @@ export const openVehiclesImportModal = () => {
 	openModal({
 		children: (
 			<VehiclesImportContextProvider>
-				<VehiclesImportFile />
+				<VehicleImport />
 			</VehiclesImportContextProvider>
 		),
 		closeOnClickOutside: false,

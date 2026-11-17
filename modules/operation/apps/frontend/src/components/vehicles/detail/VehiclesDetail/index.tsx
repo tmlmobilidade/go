@@ -3,7 +3,7 @@
 import { Pane } from '@tmlmobilidade/ui';
 
 import { useVehiclesDetailFormContext } from '../VehiclesDetailForm.context';
-import { VehiclesDetailFunctionalities } from '../VehiclesDetailFunctionalities';
+// import { VehiclesDetailFunctionalities } from '../VehiclesDetailFunctionalities';
 import { VehiclesDetailHeader } from '../VehiclesDetailHeader';
 import { VehiclesDetailIdentification } from '../VehiclesDetailIdentification';
 import { VehiclesDetailMap } from '../VehiclesDetailMap';
@@ -27,7 +27,7 @@ export function VehiclesDetail() {
 			<VehiclesDetailMap />
 			<VehiclesDetailIdentification />
 			<VehiclesDetailSpecifications />
-			<VehiclesDetailFunctionalities />
+			{/* <VehiclesDetailFunctionalities /> */}
 		</Pane>
 	);
 }

@@ -21,6 +21,9 @@ import namespaceAnalysisPt from '@/i18n/namespaces/ride-analysis/pt.json' with {
 import namespaceStatusEn from '@/i18n/namespaces/ride-status/en.json' with { type: 'json' };
 import namespaceStatusEs from '@/i18n/namespaces/ride-status/es.json' with { type: 'json' };
 import namespaceStatusPt from '@/i18n/namespaces/ride-status/pt.json' with { type: 'json' };
+import namespaceVehicleEnumsEn from '@/i18n/namespaces/vehicle-enums/en.json' with { type: 'json' };
+import namespaceVehicleEnumsEs from '@/i18n/namespaces/vehicle-enums/es.json' with { type: 'json' };
+import namespaceVehicleEnumsPt from '@/i18n/namespaces/vehicle-enums/pt.json' with { type: 'json' };
 import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
@@ -32,13 +35,14 @@ import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtS
  */
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
-	alerts: namespaceAlertsPt,
-	causes: namespaceCausesPt,
-	default: namespaceDefaultPt,
-	effects: namespaceEffectsPt,
-	reference_types: namespaceReferenceTypesPt,
-	ride_analysis: namespaceAnalysisPt,
-	ride_status: namespaceStatusPt,
+	'alerts': namespaceAlertsPt,
+	'causes': namespaceCausesPt,
+	'default': namespaceDefaultPt,
+	'effects': namespaceEffectsPt,
+	'reference_types': namespaceReferenceTypesPt,
+	'ride_analysis': namespaceAnalysisPt,
+	'ride_status': namespaceStatusPt,
+	'vehicle-enums': namespaceVehicleEnumsPt,
 } as const;
 
 /**
@@ -46,13 +50,14 @@ export const i18nResourceKeysPt = {
  */
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
-	alerts: namespaceAlertsEs,
-	causes: namespaceCausesEs,
-	default: namespaceDefaultEs,
-	effects: namespaceEffectsEs,
-	reference_types: namespaceReferenceTypesEs,
-	ride_analysis: namespaceAnalysisEs,
-	ride_status: namespaceStatusEs,
+	'alerts': namespaceAlertsEs,
+	'causes': namespaceCausesEs,
+	'default': namespaceDefaultEs,
+	'effects': namespaceEffectsEs,
+	'reference_types': namespaceReferenceTypesEs,
+	'ride_analysis': namespaceAnalysisEs,
+	'ride_status': namespaceStatusEs,
+	'vehicle-enums': namespaceVehicleEnumsEs,
 } as const;
 
 /**
@@ -60,11 +65,12 @@ export const i18nResourceKeysEs = {
  */
 export const i18nResourceKeysEn = {
 	...i18nResourceKeysEnShared,
-	alerts: namespaceAlertsEn,
-	causes: namespaceCausesEn,
-	default: namespaceDefaultEn,
-	effects: namespaceEffectsEn,
-	reference_types: namespaceReferenceTypesEn,
-	ride_analysis: namespaceAnalysisEn,
-	ride_status: namespaceStatusEn,
+	'alerts': namespaceAlertsEn,
+	'causes': namespaceCausesEn,
+	'default': namespaceDefaultEn,
+	'effects': namespaceEffectsEn,
+	'reference_types': namespaceReferenceTypesEn,
+	'ride_analysis': namespaceAnalysisEn,
+	'ride_status': namespaceStatusEn,
+	'vehicle-enums': namespaceVehicleEnumsEn,
 } as const;

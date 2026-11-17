@@ -1,86 +1,44 @@
 import { useVehiclesImportContext } from '@/components/vehicles/import/VehiclesImport.context';
-import { translateFormValue } from '@/utils/translateFormValue';
-import { Divider, Grid, Label, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { IconBus } from '@tabler/icons-react';
+import { AlertMessage, Label } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
 export function ImportPreview() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { data } = useVehiclesImportContext();
+	const { t } = useTranslation('default', { keyPrefix: 'vehicles.import.ImportPreview' });
+	const createCount = data.counters.created;
 
-	if (!data.importPreview || data.importPreview.length === 0) {
-		return null;
-	}
+	const duplicateCodes = [...new Set(data.importPreview.filter(item => item.mode === 'DUPLICATE').map(item => item.vehicle._id))];
 
-	// Number of vehicles to be created (provided by backend counters)
-	const createdCount = data.counters.created;
-	const updatedCount = data.counters.updated;
+	if (data.importPreview.length === 0) return null;
 
-	// Show only UPDATE entries in the preview
-	const updatesPreview = data.importPreview.filter(
-		item => item.mode === 'UPDATE',
-	);
+	//
+	// B. Render components
 
 	return (
-		<Section gap="md">
-			{/* Initial summary information */}
+		<>
+			<div aria-live="polite" className={styles.summary} data-empty={createCount === 0}>
+				<div aria-hidden="true" className={styles.icon}>
+					<IconBus size={28} />
+				</div>
+				<div className={styles.content}>
+					<Label size="lg">{createCount === 0 ? t('nothing_to_create') : t('will_create', { count: createCount })}</Label>
+					<Label size="sm">{createCount === 0 ? t('nothing_description') : t('description')}</Label>
+				</div>
+			</div>
 
-			<Label>Será criado {createdCount} veículo(s)</Label>
-			<Label>Será atualizado {updatedCount} veículo(s)</Label>
-
-			{updatesPreview.map((item, index) => {
-				const vehicleId = item.vehicle._id ?? 'Unknown ID';
-				const licensePlate = item.vehicle.license_plate ?? 'Unknown Plate';
-
-				const changesEntries = item.changes
-					? Object.entries(item.changes).filter(
-						([key]) => key !== 'is_locked',
-					)
-					: [];
-
-				return (
-					<Section key={index}>
-						<Grid columns="abc" gap="lg">
-							<ValueDisplay
-								label="Modo"
-								value="Atualizar"
-							/>
-
-							<ValueDisplay
-								label="Veículo"
-								value={`#ID ${vehicleId} (${licensePlate})`}
-							/>
-
-							{changesEntries.length > 0 ? (changesEntries.map(([key, value]) => (
-								<ValueDisplay
-									key={key}
-									label={key}
-									value={(
-										<>
-											<span style={{ color: 'red' }}>
-												Atual: {translateFormValue(key, value.oldValue)}
-											</span>
-											{' '} → {' '}
-											<span style={{ color: 'green' }}>
-												Novo: {translateFormValue(key, value.newValue)}
-											</span>
-										</>
-									)}
-								/>
-
-							))
-							) : (
-								<ValueDisplay
-									label="Alterações"
-									value="Sem alterações"
-								/>
-							)}
-						</Grid>
-					</Section>
-
-				);
-			})}
-			<Divider />
-		</Section>
-
+			{duplicateCodes.length > 0 && (
+				<AlertMessage title={t('duplicate_rows', { vehicle_codes: duplicateCodes.join(', ') })} variant="muted" />
+			)}
+		</>
 	);
 }

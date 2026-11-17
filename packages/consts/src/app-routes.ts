@@ -522,6 +522,7 @@ export const API_ROUTES = Object.freeze({
 		VEHICLES_DETAIL_LAST_EVENT: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}/last-event`,
 		VEHICLES_DETAIL_LOCK: (id: string) => `${getModuleConfig('operation', 'api_url')}/vehicles/${encodeURIComponent(id)}/lock`,
 		VEHICLES_LIST: `${getModuleConfig('operation', 'api_url')}/vehicles/list`,
+		VEHICLES_LIST_AGENCIES: `${getModuleConfig('operation', 'api_url')}/vehicles/list-agencies`,
 	},
 
 	performance: {

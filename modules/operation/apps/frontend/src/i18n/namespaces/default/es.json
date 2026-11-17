@@ -899,6 +899,18 @@
 			}
 		},
 		"detail": {
+			"VehiclesDetailFlags": {
+				"fields": {
+					"agency_ids": {
+						"label": "Operadores"
+					},
+					"vehicle_id": {
+						"label": "Código del vehículo",
+						"placeholder": "Introduzca el código del vehículo"
+					}
+				},
+				"title": "Flags"
+			},
 			"VehiclesDetailFunctionalities": {
 				"description": "Funcionalidades del vehículo, como aceptación de bicicletas, pago contactless, conteo de pasajeros, etc...",
 				"fields": {
@@ -968,25 +980,16 @@
 				}
 			},
 			"VehiclesDetailIdentification": {
-				"description": "Identificadores del vehículo, propietario y operador.",
+				"add_flag_button": {
+					"label": "Añadir otro código de operador"
+				},
+				"description": "Identificadores del vehículo, propietario y operadores.",
 				"fields": {
 					"_id": {
 						"label": "ID del vehículo"
 					},
-					"agency_id": {
-						"label": "Operador del vehículo"
-					},
-					"license_plate": {
-						"label": "Matrícula del vehículo"
-					},
-					"owner": {
-						"label": "Propietario del vehículo"
-					},
 					"registration_date": {
 						"label": "Fecha de registro del vehículo"
-					},
-					"start_date": {
-						"label": "Fecha de inicio de operación"
 					}
 				},
 				"title": "Identificación"
@@ -998,12 +1001,6 @@
 			"VehiclesDetailSpecifications": {
 				"description": "Especificaciones del vehículo, como marca, modelo, capacidad de asientos, etc...",
 				"fields": {
-					"available_seats": {
-						"label": "Capacidad de asientos"
-					},
-					"available_standing": {
-						"label": "Capacidad de pie"
-					},
 					"emission": {
 						"label": "Clase de emisión"
 					},
@@ -1016,39 +1013,51 @@
 					"propulsion": {
 						"label": "Propulsión"
 					},
-					"typology": {
-						"label": "Tipología"
+					"vehicle_type": {
+						"label": "Tipo de vehículo"
 					}
 				},
 				"title": "Especificaciones"
 			}
 		},
 		"import": {
+			"ImportPreview": {
+				"description": "Solo se añadirán vehículos nuevos.",
+				"duplicate_rows": "Los vehículos repetidos en este archivo se omitirán.",
+				"nothing_description": "No hay vehículos nuevos para añadir desde este archivo.",
+				"nothing_to_create": "No se creará ningún vehículo",
+				"will_create": "{count, plural, =1 {Se creará # vehículo} other {Se crearán # vehículos}}"
+			},
 			"VehiclesImportFile": {
 				"cancel": "Cancelar",
-				"fileLabel": "Seleccione un archivo válido para crear o actualizar un vehículo",
+				"fileLabel": "Seleccione un archivo válido para crear nuevos vehículos",
 				"submit": "Crear vehículos",
 				"unknownError": "Error desconocido.",
 				"uploadLabel": "Archivo de importación de vehículos"
 			},
 			"VehiclesImportHeader": {
-				"title": "Importar Vehículo"
+				"create": "Crear {count, plural, =1 {# vehículo} other {# vehículos}}",
+				"create_empty": "Crear vehículos",
+				"title": "Importar vehículos"
 			}
 		},
 		"list": {
 			"VehiclesList": {
 				"columns": {
-					"agency_id": {
-						"label": "Operador"
+					"emission": {
+						"label": "Clase de emisión"
 					},
 					"id": {
 						"label": "#ID"
 					},
-					"license_plate": {
-						"label": "Matrícula"
+					"propulsion": {
+						"label": "Propulsión"
 					},
 					"registration_date": {
 						"label": "Fecha de registro"
+					},
+					"vehicle_type": {
+						"label": "Tipo de vehículo"
 					}
 				}
 			},
@@ -1075,6 +1084,20 @@
 			},
 			"VehiclesListFilterAgency": {
 				"label": "Operadores"
+			},
+			"VehiclesListFilterEmission": {
+				"label": "Clase de emisión"
+			},
+			"VehiclesListFilterPropulsion": {
+				"label": "Propulsión"
+			},
+			"VehiclesListFilterRegistrationDate": {
+				"end_date": "Fecha de fin",
+				"label": "Fecha de registro",
+				"start_date": "Fecha de inicio"
+			},
+			"VehiclesListFilterType": {
+				"label": "Tipo de vehículo"
 			},
 			"VehiclesListHeader": {
 				"title": "Vehículos"
