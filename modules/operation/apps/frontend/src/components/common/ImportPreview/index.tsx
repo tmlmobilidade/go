@@ -1,19 +1,26 @@
 import { useVehiclesImportContext } from '@/components/vehicles/import/VehiclesImport.context';
-import { Divider, Label, Section } from '@tmlmobilidade/ui';
+import { Label } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 /* * */
 
 export function ImportPreview() {
+	//
+
+	//
+	// A. Setup variables
+
 	const { data } = useVehiclesImportContext();
 	const { t } = useTranslation();
 
 	if (data.importPreview.length === 0) return null;
 
+	//
+	// B. Render components
+
 	return (
-		<Section gap="md">
-			<Label>{t('default:vehicles.import.VehiclesImportFile.submit')}: {data.counters.created}</Label>
-			<Divider />
-		</Section>
+		<>
+			<Label size="lg">{t('default:vehicles.import.VehiclesImportFile.submit')}: {data.counters.created}</Label>
+		</>
 	);
 }
