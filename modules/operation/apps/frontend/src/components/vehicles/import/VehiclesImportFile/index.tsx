@@ -51,7 +51,7 @@ export function VehiclesImportFile() {
 						variant="secondary"
 					/>
 					<Button
-						disabled={vehiclesImportContext.flags.error != null}
+						disabled={vehiclesImportContext.flags.error != null || vehiclesImportContext.data.importPreview.length === 0}
 						label={t('default:vehicles.import.VehiclesImportFile.submit')}
 						loading={vehiclesImportContext.flags.isLoading || vehiclesImportContext.flags.isSaving}
 						onClick={vehiclesImportContext.actions.createVehicle}

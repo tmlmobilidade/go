@@ -3,6 +3,7 @@
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type CreateVehicleDto, CreateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
  * Creates a new Vehicle in the database.
@@ -29,9 +30,15 @@ export async function createVehicleHandler(request: FastifyRequest<{ Body: Creat
 	}
 
 	//
-	// Create the vehicle in the database
+	// Create the vehicle with the supplied _id from vehicle_code
 
-	const insertResult = await goDb.operation.vehicles.insertOne(validatedVehicle.data);
+	const nowMs = Dates.now('utc').unix_milliseconds;
+
+	const insertResult = await goDb.operation.vehicles.insertOneUnsafe({
+		...validatedVehicle.data,
+		created_at: nowMs,
+		updated_at: nowMs,
+	});
 
 	if (!insertResult) {
 		return sendErrorApiResponse(reply, {
