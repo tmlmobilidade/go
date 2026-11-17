@@ -58,7 +58,7 @@ export function RideAcceptance() {
 
 	return (
 		<Section gap="md">
-			<Section flexDirection="row" padding="none">
+			<Section alignItems="flex-end" flexDirection="row" padding="none">
 				<Section flexDirection="column" padding="none">
 					<h1 className={styles.title}>{t('default:rides.acceptance.RideAcceptance.title')}</h1>
 					<Text c="var(--color-system-text-200)">
@@ -67,22 +67,19 @@ export function RideAcceptance() {
 						{' · '}{timeFormat.format(ride.start_time_scheduled)}–{timeFormat.format(ride.end_time_scheduled)}
 					</Text>
 				</Section>
-				<Section alignItems="center" flexDirection="row" flexWrap="wrap" gap="sm" padding="none" width="auto">
-					<div className={styles.lock}>
-						<HasPermission
-							action={PermissionCatalog.all.rides.actions.acceptance_lock}
-							fallback={acceptance.is_locked ? <IconLock size={21} aria-hidden /> : <IconLockOpen size={21} aria-hidden />}
-							scope={PermissionCatalog.all.rides.scope}
-						>
-							<LockButton
-								isLoading={isLocking}
-								isLocked={acceptance.is_locked}
-								onClick={() => void setLock(!acceptance.is_locked)}
-								tooltip={t(`default:rides.acceptance.RideAcceptance.${acceptance.is_locked ? 'unlock' : 'lock'}`)}
-							/>
-						</HasPermission>
-						{t(`default:rides.acceptance.RideAcceptance.${acceptance.is_locked ? 'locked' : 'unlocked'}`)}
-					</div>
+				<Section alignItems="center" flexDirection="row" gap="sm" padding="none" width="auto">
+					<HasPermission
+						action={PermissionCatalog.all.rides.actions.acceptance_lock}
+						fallback={acceptance.is_locked ? <IconLock size={21} aria-hidden /> : <IconLockOpen size={21} aria-hidden />}
+						scope={PermissionCatalog.all.rides.scope}
+					>
+						<LockButton
+							isLoading={isLocking}
+							isLocked={acceptance.is_locked}
+							onClick={() => void setLock(!acceptance.is_locked)}
+							tooltip={t(`default:rides.acceptance.RideAcceptance.${acceptance.is_locked ? 'unlock' : 'lock'}`)}
+						/>
+					</HasPermission>
 					<RideAcceptanceStatus key={acceptance._id} grade={acceptance.acceptance_status} />
 				</Section>
 			</Section>
