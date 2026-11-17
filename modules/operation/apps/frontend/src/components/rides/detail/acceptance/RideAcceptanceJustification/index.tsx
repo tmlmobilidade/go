@@ -29,22 +29,24 @@ export function RideAcceptanceJustification({ acceptance }: { acceptance: RideAc
 	// C. Render components
 
 	return (
-		<Surface className={acceptanceStyles.card}>
-			<Section gap="md" padding="lg">
-				<h2 className={acceptanceStyles.cardTitle}>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</h2>
-				{acceptance.acceptance_status === RideAcceptanceStatusSchema.enum.justification_required ? (
-					<HasPermission action={PermissionCatalog.all.rides.actions.acceptance_justify} fallback={readOnly} scope={PermissionCatalog.all.rides.scope}>
-						{acceptance.justification && (
-							<Section gap="sm" padding="none">
-								<Label>{t('default:rides.acceptance.RideAcceptanceJustification.saved')}</Label>
-								{readOnly}
-							</Section>
-						)}
-						<RideAcceptanceJustificationEditable />
-					</HasPermission>
-				) : readOnly}
-			</Section>
-		</Surface>
+		<Section gap="md" padding="none">
+			<Surface className={acceptanceStyles.card}>
+				<Section gap="md" padding="lg">
+					<h2 className={acceptanceStyles.cardTitle}>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</h2>
+					{acceptance.acceptance_status === RideAcceptanceStatusSchema.enum.justification_required ? (
+						<HasPermission action={PermissionCatalog.all.rides.actions.acceptance_justify} fallback={readOnly} scope={PermissionCatalog.all.rides.scope}>
+							{acceptance.justification && (
+								<Section gap="sm" padding="none">
+									<Label>{t('default:rides.acceptance.RideAcceptanceJustification.saved')}</Label>
+									{readOnly}
+								</Section>
+							)}
+							<RideAcceptanceJustificationEditable />
+						</HasPermission>
+					) : readOnly}
+				</Section>
+			</Surface>
+		</Section>
 	);
 
 	//
