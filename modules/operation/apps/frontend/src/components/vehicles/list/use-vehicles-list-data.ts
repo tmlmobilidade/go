@@ -3,6 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListFilters, type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { normalizeString } from '@tmlmobilidade/strings';
 import { fetchApiData, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -51,7 +52,8 @@ export function useVehiclesListData(): UseVehiclesListDataReturnType {
 	// D. Transform data
 
 	const searchResultsData = useSearch<VehiclesListItem>({
-		accessors: ['_id', 'flags'],
+		accessors: ['_id'],
+		customSearch: (vehicle, query) => vehicle.flags.some(flag => normalizeString(flag.vehicle_id).includes(query)),
 		data: data?.data,
 		query: filterSearch.value,
 	});
