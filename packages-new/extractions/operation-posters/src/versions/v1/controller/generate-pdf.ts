@@ -2,10 +2,10 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'fs';
 import path from 'path';
 
-import { getRequiredEnv } from '../lib/get-required-env.js';
 import parametersConfig from '../parameters.json' with { type: 'json' };
 import { GENERATE_TIMEOUT_MS } from '../types/consts.js';
 import { ExportHitouchConfig } from '../types/export-hitouch-config.js';
+import { getRequiredEnv } from '../utils/get-required-env.js';
 import { generateToken } from './generate-token.js';
 
 /**

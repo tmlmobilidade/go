@@ -2,7 +2,7 @@
 
 import { type StopToCanvasExt } from '@tmlmobilidade/go-types-gtfs-hitouch';
 
-import { getAutomaticCanvasProfile } from '../lib/get-canvas-profile.js';
+import { getAutomaticCanvasProfile } from './get-canvas-profile.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
 import { type StopRouteDirection, StopRouteDirectionGroup } from '../types/interfaces.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
