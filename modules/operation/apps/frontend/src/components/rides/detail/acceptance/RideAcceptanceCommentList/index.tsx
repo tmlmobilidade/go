@@ -5,7 +5,8 @@ import { type ControllerRidesDetailRideItem } from '@tmlmobilidade/go-operation-
 import { type UserDisplay } from '@tmlmobilidade/go-types-core';
 import { type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { HasPermission, Label, Section, Surface, Text } from '@tmlmobilidade/ui';
+import { HasPermission, Label, Section, Surface, Text, UserTag } from '@tmlmobilidade/ui';
+import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import acceptanceStyles from '../RideAcceptance/styles.module.css';
@@ -17,7 +18,7 @@ import { RideAcceptanceCommentForm } from '../RideAcceptanceCommentForm';
 /* * */
 
 interface HistoryEvent {
-	author?: string
+	author?: ReactNode
 	kind?: 'alert' | 'current' | 'note'
 	status?: RideAcceptance['acceptance_status']
 	time?: number
@@ -45,7 +46,7 @@ export function RideAcceptanceCommentList({ acceptance, ride }: { acceptance: Ri
 	const loggedEvents = acceptance.comments.flatMap<HistoryEvent>((comment) => {
 		const createdBy = comment.created_by as string | UserDisplay;
 		const author = typeof createdBy === 'string'
-			? (createdBy === 'system' ? system : createdBy)
+			? (createdBy === 'system' ? system : <UserTag userId={createdBy} variant="inline" />)
 			: [createdBy?.first_name, createdBy?.last_name].filter(Boolean).join(' ');
 		const event = { author, time: comment.created_at };
 
@@ -92,13 +93,12 @@ export function RideAcceptanceCommentList({ acceptance, ride }: { acceptance: Ri
 
 	const lastStatusEvent = events.findLast(event => event.status !== undefined);
 	const currentStatus = acceptance.acceptance_status;
+	const currentStatusEvent = lastStatusEvent?.status === currentStatus ? lastStatusEvent : undefined;
 	const justificationTime = currentStatus === 'under_review' ? justification?.created_at : undefined;
-	const currentStatusTime = lastStatusEvent?.status === currentStatus
-		? lastStatusEvent.time
-		: (justificationTime ?? 0) >= (lastStatusEvent?.time ?? 0) ? justificationTime : undefined;
-	const history = events.filter(event => event !== lastStatusEvent || event.status !== currentStatus);
+	const currentStatusTime = currentStatusEvent?.time ?? ((justificationTime ?? 0) >= (lastStatusEvent?.time ?? 0) ? justificationTime : undefined);
+	const history = events.filter(event => event !== currentStatusEvent);
 	history.push({
-		author: t('default:rides.acceptance.RideAcceptanceCommentList.current_status'),
+		author: currentStatusEvent?.author,
 		kind: 'current',
 		time: currentStatusTime,
 		title: t(`ride_status:acceptance_status.${currentStatus}`),
@@ -109,29 +109,37 @@ export function RideAcceptanceCommentList({ acceptance, ride }: { acceptance: Ri
 
 	return (
 		<Surface className={acceptanceStyles.card}>
-			<Section className={styles.history} gap="lg" padding="lg">
-				<Label size="lg">{t('default:rides.acceptance.RideAcceptanceCommentList.title')}</Label>
-				<ol className={styles.timeline}>
-					{history.map(({ author, kind, time, title }, index) => (
-						<li key={`${time}-${index}`} className={styles.event} data-kind={kind}>
-							<span className={styles.marker} aria-hidden>
-								{kind === 'alert' && <IconAlertCircle size={19} />}
-								{kind === 'note' && <IconMessageCircle size={17} />}
-							</span>
-							<div className={styles.eventContent}>
-								{time == null ? <span /> : (
-									<time className={styles.time} dateTime={new Date(time).toISOString()} title={dateFormat.format(time)}>
-										{timeFormat.format(time)}
-									</time>
-								)}
-								<div className={styles.eventText}>
-									<Text weight={kind === 'note' ? 'medium' : 'bold'}>{title}</Text>
-									{author && <Text c="var(--color-system-text-200)" size="sm">{author}</Text>}
+			<Section className={styles.history} gap="lg" justifyContent="space-between" padding="lg">
+				<div>
+					<Label size="lg">{t('default:rides.acceptance.RideAcceptanceCommentList.title')}</Label>
+					<ol className={styles.timeline}>
+						{history.map(({ author, kind, time, title }, index) => (
+							<li key={`${time}-${index}`} className={styles.event} data-kind={kind}>
+								<span className={styles.marker} aria-hidden>
+									{kind === 'alert' && <IconAlertCircle size={19} />}
+									{kind === 'note' && <IconMessageCircle size={17} />}
+								</span>
+								<div className={styles.eventContent}>
+									{time == null ? <span /> : (
+										<time className={styles.time} dateTime={new Date(time).toISOString()} title={dateFormat.format(time)}>
+											{timeFormat.format(time)}
+										</time>
+									)}
+									<div className={styles.eventText}>
+										<Text weight={kind === 'note' ? 'medium' : 'bold'}>{title}</Text>
+										{(kind === 'current' || author) && (
+											<Label size="sm">
+												{kind === 'current' && t('default:rides.acceptance.RideAcceptanceCommentList.current_status')}
+												{kind === 'current' && author && ' · '}
+												{author}
+											</Label>
+										)}
+									</div>
 								</div>
-							</div>
-						</li>
-					))}
-				</ol>
+							</li>
+						))}
+					</ol>
+				</div>
 				<HasPermission action={PermissionCatalog.all.rides.actions.acceptance_comment_activity} scope={PermissionCatalog.all.rides.scope}>
 					<RideAcceptanceCommentForm isLocked={acceptance.is_locked} />
 				</HasPermission>
