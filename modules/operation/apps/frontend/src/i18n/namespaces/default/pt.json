@@ -1128,6 +1128,9 @@
 			"VehiclesListFilterAgency": {
 				"label": "Operadores"
 			},
+			"VehiclesListFilterType": {
+				"label": "Tipo de veículo"
+			},
 			"VehiclesListHeader": {
 				"title": "Veículos"
 			},

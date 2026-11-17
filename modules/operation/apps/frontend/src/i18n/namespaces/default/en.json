@@ -1128,6 +1128,9 @@
 			"VehiclesListFilterAgency": {
 				"label": "Agencies"
 			},
+			"VehiclesListFilterType": {
+				"label": "Vehicle Type"
+			},
 			"VehiclesListHeader": {
 				"title": "Vehicles"
 			},
