@@ -31,7 +31,7 @@ export function VehiclesList() {
 	const columns: DataTableColumn<VehiclesListItem>[] = [
 		{
 			accessor: '_id',
-			render: item => <IdTag id={item._id} />,
+			render: item => <IdTag id={item._id} copyOnClick />,
 			title: t('default:vehicles.list.VehiclesList.columns.id.label'),
 			width: 150,
 		},
