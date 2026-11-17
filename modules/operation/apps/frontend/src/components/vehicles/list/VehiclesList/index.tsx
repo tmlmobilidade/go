@@ -39,25 +39,25 @@ export function VehiclesList() {
 			accessor: 'registration_date',
 			render: item => <OperationalDateDisplay value={Number(item.registration_date) as OperationalDateInt} />,
 			title: t('default:vehicles.list.VehiclesList.columns.registration_date.label'),
-			width: 300,
+			width: 200,
 		},
 		{
 			accessor: 'vehicle_type',
 			render: item => <Label>{t(`vehicle-enums:vehicle_type.${item.vehicle_type}`)}</Label>,
 			title: t('default:vehicles.list.VehiclesList.columns.vehicle_type.label'),
-			width: 150,
+			width: 200,
 		},
 		{
 			accessor: 'emission',
-			render: item => <Label>{item.emission}</Label>,
+			render: item => <Label>{t(`vehicle-enums:emission.${item.emission}`)}</Label>,
 			title: t('default:vehicles.list.VehiclesList.columns.emission.label'),
-			width: 150,
+			width: 200,
 		},
 		{
 			accessor: 'propulsion',
 			render: item => <Label>{t(`vehicle-enums:propulsion.${item.propulsion}`)}</Label>,
 			title: t('default:vehicles.list.VehiclesList.columns.propulsion.label'),
-			width: 200,
+			width: 250,
 		},
 	];
 

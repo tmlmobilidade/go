@@ -1,6 +1,16 @@
 {
+	"emission": {
+		"EURO_I": "Euro I",
+		"EURO_II": "Euro II",
+		"EURO_III": "Euro III",
+		"EURO_IV": "Euro IV",
+		"EURO_V": "Euro V",
+		"EURO_VI": "Euro VI",
+		"EURO_VII": "Euro VII",
+		"N/A": "Not applicable"
+	},
 	"propulsion": {
-		"0": "N/A",
+		"0": "Not applicable",
 		"1": "Petrol",
 		"10": "Biofuel / Biodiesel",
 		"101": "Natural gas",
