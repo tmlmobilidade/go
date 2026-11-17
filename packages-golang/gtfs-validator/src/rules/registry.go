@@ -6,23 +6,18 @@ import (
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 
-	agency "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/agency"
-	calendar "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/calendar"
-	calendardates "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/calendar-dates"
-	fareattributes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/fare-attributes"
-	farerules "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/fare-rules"
-	feedinfo "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/feed-info"
-	frequencies "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/frequencies"
-	levels "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/levels"
-	pathways "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/pathways"
-	ridercategories "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/rider-categories"
-	routes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/routes"
-	shapes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/shapes"
-	stoptimes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/stop-times"
-	stops "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/stops"
-	transfers "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/transfers"
-	trips "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/trips"
-	vehicles "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/vehicles"
+	agency "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/agency"
+	calendar "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/calendar"
+	calendardates "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/calendar-dates"
+	fareattributes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/fare-attributes"
+	farerules "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/fare-rules"
+	feedinfo "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/feed-info"
+	routes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/routes"
+	shapes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/shapes"
+	stoptimes "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/stop-times"
+	stops "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/stops"
+	trips "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/trips"
+	vehicles "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/vehicles"
 )
 
 type check func(context.Context, *sql.DB, types.Rule) (passed bool, findings []Finding, err error)
@@ -119,53 +114,6 @@ var registry = map[string]check{
 	"feed_info_feed_version_field":                               feedinfo.FeedInfoFeedVersionField,
 	"feed_info_file_missing":                                     feedinfo.FeedInfoFileMissing,
 	"feed_info_start_end_dates_valid":                            feedinfo.FeedInfoStartEndDatesValid,
-	"frequencies_end_time_field":                                 frequencies.FrequenciesEndTimeField,
-	"frequencies_end_time_valid":                                 frequencies.FrequenciesEndTimeValid,
-	"frequencies_exact_times_field":                              frequencies.FrequenciesExactTimesField,
-	"frequencies_exact_times_valid":                              frequencies.FrequenciesExactTimesValid,
-	"frequencies_file_missing":                                   frequencies.FrequenciesFileMissing,
-	"frequencies_headway_secs_field":                             frequencies.FrequenciesHeadwaySecsField,
-	"frequencies_headway_secs_valid":                             frequencies.FrequenciesHeadwaySecsValid,
-	"frequencies_start_time_field":                               frequencies.FrequenciesStartTimeField,
-	"frequencies_start_time_valid":                               frequencies.FrequenciesStartTimeValid,
-	"frequencies_trip_id_field":                                  frequencies.FrequenciesTripIDField,
-	"frequencies_trip_id_foreign":                                frequencies.FrequenciesTripIDForeign,
-	"levels_file_missing":                                        levels.LevelsFileMissing,
-	"levels_level_id_field":                                      levels.LevelsLevelIDField,
-	"levels_level_id_unique":                                     levels.LevelsLevelIDUnique,
-	"levels_level_index_field":                                   levels.LevelsLevelIndexField,
-	"levels_level_index_valid":                                   levels.LevelsLevelIndexValid,
-	"levels_level_name_field":                                    levels.LevelsLevelNameField,
-	"pathways_file_missing":                                      pathways.PathwaysFileMissing,
-	"pathways_from_stop_id_field":                                pathways.PathwaysFromStopIDField,
-	"pathways_from_stop_id_foreign":                              pathways.PathwaysFromStopIDForeign,
-	"pathways_is_bidirectional_field":                            pathways.PathwaysIsBidirectionalField,
-	"pathways_is_bidirectional_valid":                            pathways.PathwaysIsBidirectionalValid,
-	"pathways_length_field":                                      pathways.PathwaysLengthField,
-	"pathways_length_valid":                                      pathways.PathwaysLengthValid,
-	"pathways_max_slope_field":                                   pathways.PathwaysMaxSlopeField,
-	"pathways_max_slope_valid":                                   pathways.PathwaysMaxSlopeValid,
-	"pathways_min_width_field":                                   pathways.PathwaysMinWidthField,
-	"pathways_min_width_valid":                                   pathways.PathwaysMinWidthValid,
-	"pathways_pathway_id_field":                                  pathways.PathwaysPathwayIDField,
-	"pathways_pathway_id_unique":                                 pathways.PathwaysPathwayIDUnique,
-	"pathways_pathway_mode_field":                                pathways.PathwaysPathwayModeField,
-	"pathways_pathway_mode_valid":                                pathways.PathwaysPathwayModeValid,
-	"pathways_reversed_signposted_as_field":                      pathways.PathwaysReversedSignpostedAsField,
-	"pathways_signposted_as_field":                               pathways.PathwaysSignpostedAsField,
-	"pathways_stair_count_field":                                 pathways.PathwaysStairCountField,
-	"pathways_stair_count_valid":                                 pathways.PathwaysStairCountValid,
-	"pathways_to_stop_id_field":                                  pathways.PathwaysToStopIDField,
-	"pathways_to_stop_id_foreign":                                pathways.PathwaysToStopIDForeign,
-	"pathways_traversal_time_field":                              pathways.PathwaysTraversalTimeField,
-	"pathways_traversal_time_valid":                              pathways.PathwaysTraversalTimeValid,
-	"rider_categories_eligibility_url_field":                     ridercategories.RiderCategoriesEligibilityURLField,
-	"rider_categories_eligibility_url_valid":                     ridercategories.RiderCategoriesEligibilityURLValid,
-	"rider_categories_is_default_fare_category_field":            ridercategories.RiderCategoriesIsDefaultFareCategoryField,
-	"rider_categories_is_default_fare_category_valid":            ridercategories.RiderCategoriesIsDefaultFareCategoryValid,
-	"rider_categories_rider_category_id_field":                   ridercategories.RiderCategoriesRiderCategoryIDField,
-	"rider_categories_rider_category_id_unique":                  ridercategories.RiderCategoriesRiderCategoryIDUnique,
-	"rider_categories_rider_category_name_field":                 ridercategories.RiderCategoriesRiderCategoryNameField,
 	"routes_agency_id_field":                                     routes.RoutesAgencyIDField,
 	"routes_agency_id_foreign":                                   routes.RoutesAgencyIDForeign,
 	"routes_continuous_drop_off_field":                           routes.RoutesContinuousDropOffField,
@@ -316,23 +264,6 @@ var registry = map[string]check{
 	"stops_wheelchair_boarding_field":                            stops.StopsWheelchairBoardingField,
 	"stops_wheelchair_boarding_valid":                            stops.StopsWheelchairBoardingValid,
 	"stops_zone_id_field":                                        stops.StopsZoneIDField,
-	"transfers_file_missing":                                     transfers.TransfersFileMissing,
-	"transfers_from_route_id_field":                              transfers.TransfersFromRouteIDField,
-	"transfers_from_route_id_foreign":                            transfers.TransfersFromRouteIDForeign,
-	"transfers_from_stop_id_field":                               transfers.TransfersFromStopIDField,
-	"transfers_from_stop_id_foreign":                             transfers.TransfersFromStopIDForeign,
-	"transfers_from_trip_id_field":                               transfers.TransfersFromTripIDField,
-	"transfers_from_trip_id_foreign":                             transfers.TransfersFromTripIDForeign,
-	"transfers_min_transfer_time_field":                          transfers.TransfersMinTransferTimeField,
-	"transfers_min_transfer_time_valid":                          transfers.TransfersMinTransferTimeValid,
-	"transfers_to_route_id_field":                                transfers.TransfersToRouteIDField,
-	"transfers_to_route_id_foreign":                              transfers.TransfersToRouteIDForeign,
-	"transfers_to_stop_id_field":                                 transfers.TransfersToStopIDField,
-	"transfers_to_stop_id_foreign":                               transfers.TransfersToStopIDForeign,
-	"transfers_to_trip_id_field":                                 transfers.TransfersToTripIDField,
-	"transfers_to_trip_id_foreign":                               transfers.TransfersToTripIDForeign,
-	"transfers_transfer_type_field":                              transfers.TransfersTransferTypeField,
-	"transfers_transfer_type_valid":                              transfers.TransfersTransferTypeValid,
 	"trips_bikes_allowed_field":                                  trips.TripsBikesAllowedField,
 	"trips_bikes_allowed_valid":                                  trips.TripsBikesAllowedValid,
 	"trips_block_id_field":                                       trips.TripsBlockIDField,
