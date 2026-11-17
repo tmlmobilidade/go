@@ -24,28 +24,41 @@ export async function changeStatus(request: FastifyRequest<{ Body: { acceptance_
 
 	const { actions, scope } = PermissionCatalog.all.rides;
 	const canChangeStatus = PermissionCatalog.hasPermission(request.permissions, scope, actions.acceptance_change_status);
-	if (!canChangeStatus) {
-		const canJustify = PermissionCatalog.hasPermission(request.permissions, scope, actions.acceptance_justify);
-		if (!canJustify || oldRideAcceptanceData.acceptance_status !== 'under_review' || status.data !== 'justification_required') {
-			return sendErrorApiResponse(reply, { error: 'This ride acceptance status change is forbidden.', status_code: '403' });
-		}
-
-		const rideAcceptances = await goDb.operation.rideAcceptances.getCollection();
-		const reopenedAcceptance = await rideAcceptances.findOneAndUpdate(
-			{ _id: request.params.id, acceptance_status: 'under_review' },
-			{ $set: { acceptance_status: status.data, updated_at: Dates.now('utc').unix_milliseconds, updated_by: request.me._id } },
-			{ returnDocument: 'after' },
-		);
-		if (!reopenedAcceptance) {
-			return sendErrorApiResponse(reply, { error: 'The ride acceptance status changed. Refresh and try again.', status_code: '409' });
-		}
-		return sendSuccessApiResponse(reply, reopenedAcceptance);
+	const isReopening = oldRideAcceptanceData.acceptance_status === 'under_review' && status.data === 'justification_required';
+	const canReopen = isReopening && PermissionCatalog.hasPermission(request.permissions, scope, actions.acceptance_justify);
+	if (!canChangeStatus && !canReopen) {
+		return sendErrorApiResponse(reply, { error: 'This ride acceptance status change is forbidden.', status_code: '403' });
 	}
 
-	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
-		acceptance_status: status.data,
-		updated_by: request.me._id,
-	});
+	const previousStatus = oldRideAcceptanceData.acceptance_status;
+	if (previousStatus === status.data) {
+		return sendSuccessApiResponse(reply, oldRideAcceptanceData);
+	}
+
+	const now = Dates.now('utc').unix_milliseconds;
+	const userId = request.me._id;
+	const rideAcceptances = await goDb.operation.rideAcceptances.getCollection();
+	const updateResult = await rideAcceptances.findOneAndUpdate(
+		{ _id: request.params.id, acceptance_status: previousStatus },
+		{
+			$push: { comments: {
+				created_at: now,
+				created_by: userId,
+				curr_value: status.data,
+				field: 'acceptance_status',
+				prev_value: previousStatus,
+				type: 'field_changed',
+				updated_at: now,
+				updated_by: userId,
+			} },
+			$set: { acceptance_status: status.data, updated_at: now, updated_by: userId },
+		},
+		{ returnDocument: 'after' },
+	);
+
+	if (!updateResult) {
+		return sendErrorApiResponse(reply, { error: 'The ride acceptance status changed. Refresh and try again.', status_code: '409' });
+	}
 
 	return sendSuccessApiResponse(reply, updateResult);
 }

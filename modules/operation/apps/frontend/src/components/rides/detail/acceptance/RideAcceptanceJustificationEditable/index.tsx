@@ -17,7 +17,7 @@ type JustifyRideAcceptanceBody = Pick<RideJustification, 'justification_cause' |
 
 /* * */
 
-export function RideAcceptanceJustificationEditable({ justification }: { justification: RideAcceptance['justification'] }) {
+export function RideAcceptanceJustificationEditable() {
 	//
 
 	//
@@ -60,7 +60,6 @@ export function RideAcceptanceJustificationEditable({ justification }: { justifi
 		<form className={styles.form} onSubmit={handleSubmit}>
 			<Section gap="sm" padding="none">
 				<Select
-					defaultValue={justification?.justification_cause}
 					disabled={isLoading}
 					label={t('default:rides.acceptance.RideAcceptanceJustificationEditable.fields.cause.label')}
 					name="justification_cause"
@@ -73,7 +72,6 @@ export function RideAcceptanceJustificationEditable({ justification }: { justifi
 					required
 				/>
 				<Textarea
-					defaultValue={justification?.pto_message}
 					disabled={isLoading}
 					label={t('default:rides.acceptance.RideAcceptanceJustificationEditable.fields.message.label')}
 					maxLength={5000}
@@ -85,7 +83,6 @@ export function RideAcceptanceJustificationEditable({ justification }: { justifi
 					required
 				/>
 				<TextInput
-					defaultValue={justification?.manual_trip_id ?? ''}
 					disabled={isLoading}
 					label={t('default:rides.acceptance.RideAcceptanceJustificationEditable.fields.manual_trip_id.label')}
 					name="manual_trip_id"

@@ -98,9 +98,11 @@ For rides still `'scheduled'` or `'running'`, the query forces analysis grades t
 
 There is no partial acceptance. One failing required analysis is enough for `justification_required`.
 
+For an acceptance awaiting manual justification, a changed analysis refreshes the summary and keeps `justification_required`.
+
 ### Rule 4 — Alert auto-justification
 
-Runs **after** update, only when the **cached** acceptance (loaded at chunk start) has `acceptance_status === 'justification_required'`.
+Runs after the analysis update for an acceptance fetched in `justification_required`. A saved justification, a justification change in the comments, or a user status change to `justification_required` requires manual entry. The alert write rechecks the status and comments and records the justification in the same update.
 
 An alert must match **all** of:
 
@@ -139,7 +141,8 @@ Updates skip step 1 entirely. Create path does not attempt alert justification i
 | Existing acceptance, summary unchanged | — | unchanged (no DB write) |
 | Existing acceptance, summary changed, analysis passes | — | `accepted` |
 | Existing acceptance, summary changed, analysis fails | — | `justification_required` |
-| Cached status `justification_required`, matching alert | — | `under_review` |
+| First eligible justification, matching alert | — | `under_review` |
+| User requests justification again | — | `justification_required` until a manual submission or another user status change |
 
 ---
 
@@ -271,7 +274,7 @@ Examples reflect `testRide()` logic. Analysis objects are simplified to the fiel
 
 ### Alert auto-justification
 
-Precondition: acceptance already exists with `acceptance_status: 'justification_required'` **in the chunk's cached map** (see [Known discrepancies](#known-discrepancies)).
+Precondition: the acceptance is eligible under [Rule 4](#rule-4--alert-auto-justification).
 
 Alert:
 
@@ -316,7 +319,7 @@ Newly created acceptances in `justification_required` also skip alert justificat
 | `src/queries/build-rides-with-analyses-query.ts` | Builds ClickHouse SQL joining rides + analysis tables |
 | `src/queries/rides-with-analyses-query.ts` | Compiled query for the current `REQUIRED_ANALYSES` |
 
-There are **no tests** in this package.
+Run the grade validation regression test with `node --import tsx --test tests/test-ride.test.mts` from this package.
 
 ### Input / output types
 

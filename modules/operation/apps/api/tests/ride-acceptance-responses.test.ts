@@ -1,5 +1,6 @@
 import { type RideAcceptanceStatus } from '@tmlmobilidade/go-types-operation';
 import { type Permission } from '@tmlmobilidade/go-types-permissions';
+import { type Comment } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { after, mock, test } from 'node:test';
 
@@ -11,7 +12,7 @@ let REOPEN_CONFLICT = false;
 let PERMISSIONS: Permission[] = [];
 const CHANGE_STATUS_PERMISSION: Permission = { action: 'acceptance_change_status', resources: { agency_ids: [] }, scope: 'rides' };
 const JUSTIFY_PERMISSION: Permission = { action: 'acceptance_justify', resources: { agency_ids: [] }, scope: 'rides' };
-const ACCEPTANCE = { _id: 'ride', acceptance_status: 'under_review' as RideAcceptanceStatus, comments: [], is_locked: false };
+const ACCEPTANCE = { _id: 'ride', acceptance_status: 'under_review' as RideAcceptanceStatus, comments: [] as Comment[], is_locked: false };
 
 mock.module('@tmlmobilidade/go-providers-auth', {
 	namedExports: {
@@ -31,14 +32,18 @@ mock.module('@tmlmobilidade/go-interfaces-godb', {
 					findById: async () => FOUND ? ACCEPTANCE : null,
 					findOne: async () => FOUND ? ACCEPTANCE : null,
 					getCollection: async () => ({
-						findOneAndUpdate: async (filter: { _id: string, acceptance_status: RideAcceptanceStatus }, update: { $set: { acceptance_status: RideAcceptanceStatus, updated_at: number, updated_by: string } }, options: { returnDocument: string }) => {
-							assert.deepEqual(filter, { _id: 'ride', acceptance_status: 'under_review' });
+						findOneAndUpdate: async (filter: { _id: string, acceptance_status?: RideAcceptanceStatus }, update: { $push: { comments: Comment }, $set: Record<string, unknown> }, options: { returnDocument: string }) => {
+							assert.equal(filter._id, 'ride');
 							assert.deepEqual(options, { returnDocument: 'after' });
 							assert.equal(update.$set.updated_by, 'actor');
 							assert.equal(typeof update.$set.updated_at, 'number');
-							if (REOPEN_CONFLICT || ACCEPTANCE.acceptance_status !== filter.acceptance_status) return null;
+							if (update.$push.comments.type === 'field_changed' && update.$push.comments.field === 'acceptance_status') {
+								assert.equal(filter.acceptance_status, update.$push.comments.prev_value);
+							}
+							if (!FOUND || REOPEN_CONFLICT || (filter.acceptance_status && ACCEPTANCE.acceptance_status !== filter.acceptance_status)) return null;
 							UPDATES++;
 							Object.assign(ACCEPTANCE, update.$set);
+							ACCEPTANCE.comments.push(update.$push.comments);
 							return ACCEPTANCE;
 						},
 					}),
@@ -73,10 +78,10 @@ await server.ready();
 after(async () => { await server.close(); });
 
 const requests = [
-	{ method: 'POST', payload: { message: 'Comment' }, url: '/comments/ride' },
+	{ method: 'POST', payload: { field: 'justification', message: 'Comment', type: 'field_changed' }, url: '/comments/ride' },
 	{ method: 'POST', payload: { acceptance_status: 'under_review' }, url: '/status/ride' },
 	{ method: 'GET', url: '/acceptances/ride' },
-	{ method: 'POST', payload: { justification_cause: 'other', pto_message: 'Justification' }, url: '/justifications/ride' },
+	{ method: 'POST', payload: { justification_cause: 'WEATHER', pto_message: 'Justification' }, url: '/justifications/ride' },
 	{ method: 'POST', payload: { is_locked: true }, url: '/locks/ride' },
 	{ method: 'POST', payload: { is_locked: false }, url: '/locks/ride' },
 ] as const;
@@ -91,6 +96,14 @@ test('ride acceptance handlers return standard success and error envelopes', asy
 		assert.equal(typeof success.json().timestamp, 'number');
 		assert.equal(success.headers['go-upstream-timestamp'], String(success.json().timestamp));
 		assert.equal(success.json().statusCode, undefined);
+		if (request.url === '/comments/ride') {
+			assert.equal(success.json().data.comments.at(-1).type, 'note');
+		}
+		if (request.url === '/justifications/ride') {
+			const event = success.json().data.comments.at(-1);
+			assert.equal(event.field, 'justification');
+			assert.equal(event.curr_value.justification_source, 'manual');
+		}
 
 		const updateCount = UPDATES;
 		FOUND = false;
@@ -118,6 +131,11 @@ test('change status limits users with justification permission to reopening pend
 	const reopened = await changeRideStatus('justification_required');
 	assert.equal(reopened.statusCode, 200);
 	assert.equal(reopened.json().data.acceptance_status, 'justification_required');
+	const reopenedEvent = reopened.json().data.comments.at(-1);
+	assert.equal(reopenedEvent.field, 'acceptance_status');
+	assert.equal(reopenedEvent.prev_value, 'under_review');
+	assert.equal(reopenedEvent.curr_value, 'justification_required');
+	assert.equal(reopenedEvent.created_by, 'actor');
 
 	const updateCount = UPDATES;
 	ACCEPTANCE.acceptance_status = 'under_review';
@@ -133,6 +151,11 @@ test('change status limits users with justification permission to reopening pend
 	assert.equal(UPDATES, updateCount);
 
 	PERMISSIONS = [CHANGE_STATUS_PERMISSION];
+	ACCEPTANCE.acceptance_status = 'accepted';
+	const requested = await changeRideStatus('justification_required');
+	assert.equal(requested.statusCode, 200);
+	assert.equal(requested.json().data.comments.at(-1).prev_value, 'accepted');
+
 	const reviewed = await changeRideStatus('rejected');
 	assert.equal(reviewed.statusCode, 200);
 	assert.equal(reviewed.json().data.acceptance_status, 'rejected');

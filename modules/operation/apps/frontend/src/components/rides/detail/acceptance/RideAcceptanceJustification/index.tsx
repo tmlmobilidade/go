@@ -34,7 +34,7 @@ export function RideAcceptanceJustification({ acceptance }: { acceptance: RideAc
 				<h2 className={acceptanceStyles.cardTitle}>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</h2>
 				{acceptance.acceptance_status === RideAcceptanceStatusSchema.enum.justification_required ? (
 					<HasPermission action={PermissionCatalog.all.rides.actions.acceptance_justify} fallback={readOnly} scope={PermissionCatalog.all.rides.scope}>
-						<RideAcceptanceJustificationEditable justification={acceptance.justification} />
+						<RideAcceptanceJustificationEditable />
 					</HasPermission>
 				) : readOnly}
 			</Section>

@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type AlertCause, type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
+import { type AlertCause, type RideAcceptance, RideJustificationSchema } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
@@ -17,21 +17,43 @@ export async function justifyRide(request: FastifyRequest<{ Body: { justificatio
 		return sendErrorApiResponse(reply, { error: 'Ride acceptance not found.', status_code: '404' });
 	}
 
-	const updateResult = await goDb.operation.rideAcceptances.updateById(request.params.id, {
-		...oldJustificationData,
-		acceptance_status: RideAcceptanceStatusSchema.enum.under_review,
-		justification: {
-			created_at: Dates.now('utc').unix_milliseconds,
-			created_by: request.me._id,
-			justification_cause: request.body.justification_cause,
-			justification_source: 'manual',
-			manual_trip_id: request.body.manual_trip_id,
-			pto_message: request.body.pto_message,
-			updated_at: Dates.now('utc').unix_milliseconds,
-			updated_by: request.me._id,
-		},
-		updated_by: request.me._id,
+	const now = Dates.now('utc').unix_milliseconds;
+	const userId = request.me._id;
+	const justification = RideJustificationSchema.safeParse({
+		created_at: now,
+		created_by: userId,
+		justification_cause: request.body?.justification_cause,
+		justification_source: 'manual',
+		manual_trip_id: request.body?.manual_trip_id,
+		pto_message: request.body?.pto_message,
+		updated_at: now,
+		updated_by: userId,
 	});
+	if (!justification.success) {
+		return sendErrorApiResponse(reply, { error: justification.error.message, status_code: '400' });
+	}
+
+	const rideAcceptances = await goDb.operation.rideAcceptances.getCollection();
+	const updateResult = await rideAcceptances.findOneAndUpdate(
+		{ _id: request.params.id },
+		{
+			$push: { comments: {
+				created_at: now,
+				created_by: userId,
+				curr_value: justification.data,
+				field: 'justification',
+				prev_value: oldJustificationData.justification ?? null,
+				type: 'field_changed',
+				updated_at: now,
+				updated_by: userId,
+			} },
+			$set: { acceptance_status: 'under_review', justification: justification.data, updated_at: now, updated_by: userId },
+		},
+		{ returnDocument: 'after' },
+	);
+	if (!updateResult) {
+		return sendErrorApiResponse(reply, { error: 'Ride acceptance not found.', status_code: '404' });
+	}
 
 	return sendSuccessApiResponse(reply, updateResult);
 }
