@@ -164,6 +164,7 @@
 				},
 				"current_status": "Current status",
 				"justification": {
+					"details": "View justification details",
 					"updated": "Justification was updated"
 				},
 				"lock": {
@@ -180,8 +181,8 @@
 				"updated": "Acceptance updated"
 			},
 			"RideAcceptanceJustification": {
-				"title": "Justification",
-				"view_alert": "View alert"
+				"saved": "Saved justification",
+				"title": "Justification"
 			},
 			"RideAcceptanceJustificationEditable": {
 				"fields": {
@@ -206,7 +207,8 @@
 				"source": {
 					"alert": "Automatic · Alert",
 					"manual": "Manual"
-				}
+				},
+				"view_alert": "View alert"
 			},
 			"RideAcceptanceSimpleThreeVehicleEvents": {
 				"criterion": "At least one stop detected in each segment.",
@@ -221,7 +223,7 @@
 					"last": "End",
 					"middle": "Middle"
 				},
-				"title": "Vehicle events in 3 segments"
+				"title": "Vehicle events in 3 moments"
 			},
 			"RideAcceptanceStatus": {
 				"confirm": {

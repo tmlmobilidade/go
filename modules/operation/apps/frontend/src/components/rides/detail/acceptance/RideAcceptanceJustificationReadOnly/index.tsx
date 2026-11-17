@@ -1,7 +1,10 @@
 'use client';
 
+import { IconArrowUpRight } from '@tabler/icons-react';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type RideJustification } from '@tmlmobilidade/go-types-operation';
-import { Section, Tag, Text } from '@tmlmobilidade/ui';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
+import { Button, HasPermission, Section, Tag, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -42,6 +45,16 @@ export function RideAcceptanceJustificationReadOnly({ justification }: { justifi
 					<Text c="var(--color-system-text-200)" size="sm">{t('default:rides.acceptance.RideAcceptanceJustificationReadOnly.manual_trip_id')}</Text>
 					<Text className={styles.message}>{justification.manual_trip_id}</Text>
 				</div>
+			)}
+			{justification.justification_source === 'alert' && justification.alert_id && (
+				<HasPermission action={PermissionCatalog.all.alerts.actions.read} scope={PermissionCatalog.all.alerts.scope}>
+					<Button
+						href={PAGE_ROUTES.operation.ALERTS_DETAIL(justification.alert_id)}
+						label={t('default:rides.acceptance.RideAcceptanceJustificationReadOnly.view_alert')}
+						rightSection={<IconArrowUpRight size={16} aria-hidden />}
+						variant="transparent"
+					/>
+				</HasPermission>
 			)}
 		</Section>
 	);

@@ -1,10 +1,8 @@
 'use client';
 
-import { IconArrowUpRight } from '@tabler/icons-react';
-import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Button, HasPermission, Section, Surface } from '@tmlmobilidade/ui';
+import { HasPermission, Label, Section, Surface } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import acceptanceStyles from '../RideAcceptance/styles.module.css';
@@ -26,7 +24,6 @@ export function RideAcceptanceJustification({ acceptance }: { acceptance: RideAc
 	// B. Transform data
 
 	const readOnly = <RideAcceptanceJustificationReadOnly justification={acceptance.justification} />;
-	const alertId = acceptance.justification?.justification_source === 'alert' ? acceptance.justification.alert_id : undefined;
 
 	//
 	// C. Render components
@@ -37,19 +34,15 @@ export function RideAcceptanceJustification({ acceptance }: { acceptance: RideAc
 				<h2 className={acceptanceStyles.cardTitle}>{t('default:rides.acceptance.RideAcceptanceJustification.title')}</h2>
 				{acceptance.acceptance_status === RideAcceptanceStatusSchema.enum.justification_required ? (
 					<HasPermission action={PermissionCatalog.all.rides.actions.acceptance_justify} fallback={readOnly} scope={PermissionCatalog.all.rides.scope}>
+						{acceptance.justification && (
+							<Section gap="sm" padding="none">
+								<Label>{t('default:rides.acceptance.RideAcceptanceJustification.saved')}</Label>
+								{readOnly}
+							</Section>
+						)}
 						<RideAcceptanceJustificationEditable />
 					</HasPermission>
 				) : readOnly}
-				{alertId && (
-					<HasPermission action={PermissionCatalog.all.alerts.actions.read} scope={PermissionCatalog.all.alerts.scope}>
-						<Button
-							href={PAGE_ROUTES.operation.ALERTS_DETAIL(alertId)}
-							label={t('default:rides.acceptance.RideAcceptanceJustification.view_alert')}
-							rightSection={<IconArrowUpRight size={16} aria-hidden />}
-							variant="transparent"
-						/>
-					</HasPermission>
-				)}
 			</Section>
 		</Surface>
 	);

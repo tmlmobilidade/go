@@ -164,6 +164,7 @@
 				},
 				"current_status": "Estado atual",
 				"justification": {
+					"details": "Ver detalhes da justificação",
 					"updated": "A justificação foi atualizada"
 				},
 				"lock": {
@@ -180,8 +181,8 @@
 				"updated": "Aceitação atualizada"
 			},
 			"RideAcceptanceJustification": {
-				"title": "Justificação",
-				"view_alert": "Ver alerta"
+				"saved": "Justificação guardada",
+				"title": "Justificação"
 			},
 			"RideAcceptanceJustificationEditable": {
 				"fields": {
@@ -206,10 +207,11 @@
 				"source": {
 					"alert": "Automática · Alerta",
 					"manual": "Manual"
-				}
+				},
+				"view_alert": "Ver alerta"
 			},
 			"RideAcceptanceSimpleThreeVehicleEvents": {
-				"criterion": "Pelo menos uma paragem detetada em cada troço.",
+				"criterion": "Pelo menos uma paragem detetada em cada momento.",
 				"criterion_title": "Critério",
 				"segment_results": {
 					"detected": "Detetada",
@@ -221,7 +223,7 @@
 					"last": "Fim",
 					"middle": "Meio"
 				},
-				"title": "Eventos do veículo em 3 troços"
+				"title": "Eventos do veículo em 3 momentos"
 			},
 			"RideAcceptanceStatus": {
 				"confirm": {

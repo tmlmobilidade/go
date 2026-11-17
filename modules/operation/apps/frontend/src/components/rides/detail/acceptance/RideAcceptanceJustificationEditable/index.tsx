@@ -36,7 +36,7 @@ export function RideAcceptanceJustificationEditable() {
 			method: 'PUT',
 			url: API_ROUTES.operation.RIDE_ACCEPTANCES_JUSTIFY(rideId),
 		}),
-		onSuccess: () => mutate(),
+		onSuccess: response => mutate(response),
 	});
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

@@ -6,10 +6,8 @@ import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 import { type NoteComment } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fetchApiData, IconButton, Section, Textarea, useHandleAction } from '@tmlmobilidade/ui';
-import { type SubmitEvent, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import styles from './styles.module.css';
 
 import { useRidesDetailRideId } from '../../shared/use-rides-detail-ride-id';
 import { useRideAcceptanceData } from '../use-ride-acceptance-data';
@@ -36,9 +34,9 @@ export function RideAcceptanceCommentForm({ isLocked }: { isLocked: boolean }) {
 			method: 'POST',
 			url: API_ROUTES.operation.RIDE_ACCEPTANCES_COMMENT(rideId),
 		}),
-		onSuccess: () => {
+		onSuccess: (response) => {
 			setComment('');
-			mutate();
+			mutate(response);
 		},
 	});
 

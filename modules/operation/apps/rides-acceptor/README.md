@@ -102,7 +102,7 @@ For an acceptance awaiting manual justification, a changed analysis refreshes th
 
 ### Rule 4 — Alert auto-justification
 
-Runs after the analysis update for an acceptance fetched in `justification_required`. A saved justification, a justification change in the comments, or a user status change to `justification_required` requires manual entry. The alert write rechecks the status and comments and records the justification in the same update.
+Runs after the analysis update for an existing acceptance in `justification_required`. A saved justification, a justification change in the comments, or a user status change to `justification_required` requires manual entry. The alert write rechecks the status and comments and records the justification and status change in the same update.
 
 An alert must match **all** of:
 
@@ -125,7 +125,7 @@ If no alert matches → no change.
 ```text
 1. [create only] operational_status gate
 2. testRide() → accepted | justification_required
-3. [existing acceptance only, if cached status was justification_required] alert lookup
+3. [existing acceptance only, if the current status is justification_required] alert lookup
 ```
 
 Updates skip step 1 entirely. Create path does not attempt alert justification in the same iteration (no acceptance existed in the cache).
@@ -172,7 +172,7 @@ flowchart TD
     SummarySame -->|No| Update[Update acceptance status + summary]
     Update --> CheckAlert
 
-    CheckAlert{Cached status<br/>justification_required?}
+    CheckAlert{Current status<br/>justification_required?}
     CheckAlert -->|No| Loop
     CheckAlert -->|Yes| AlertLookup{Matching alert<br/>last 2 days?}
     AlertLookup -->|No| Loop
@@ -204,8 +204,8 @@ flowchart LR
         U4 -->|no| UJ[justification_required]
     end
 
-    subgraph alertPath [Alert path — uses cached status]
-        A1[cached justification_required] --> A2{alert found?}
+    subgraph alertPath [Alert path]
+        A1[current justification_required] --> A2{alert found?}
         A2 -->|yes| AR[under_review]
         A2 -->|no| AN[unchanged]
     end
@@ -295,11 +295,9 @@ Alert:
 
 If `analysis_summary` serializes identically to the stored summary (`JSON.stringify` comparison), no DB update occurs even if `acceptance_status` on the stored document differs from what `testRide()` would compute.
 
-### Edge case — alert one cycle late
+### Edge case — new acceptance
 
-If a ride **newly** fails on this run (update sets `justification_required`), alert justification does **not** run in the same iteration because the cached map still holds the previous status. It runs on the **next** 10-minute cycle if status remains `justification_required`.
-
-Newly created acceptances in `justification_required` also skip alert justification in the create iteration (create path `continue`s before the alert check).
+Newly created acceptances in `justification_required` become eligible for alert justification on the next cycle.
 
 ---
 
@@ -319,7 +317,7 @@ Newly created acceptances in `justification_required` also skip alert justificat
 | `src/queries/build-rides-with-analyses-query.ts` | Builds ClickHouse SQL joining rides + analysis tables |
 | `src/queries/rides-with-analyses-query.ts` | Compiled query for the current `REQUIRED_ANALYSES` |
 
-Run the grade validation regression test with `node --import tsx --test tests/test-ride.test.mts` from this package.
+Run the regression tests with `node --experimental-test-module-mocks --import tsx --test tests/*.test.mts` from this package.
 
 ### Input / output types
 
@@ -343,7 +341,7 @@ Run the grade validation regression test with `node --import tsx --test tests/te
   analysis_summary: Record<string, { grade: GradeStatus; reason: string | null }>
   justification: RideJustification | null
   overrides: { trip_id: string | null }
-  comments: []
+  comments: Comment[] // creation, analysis changes, and acceptance decisions
   is_locked: false          // on create
   created_by: 'system'       // on create
 }
@@ -409,11 +407,9 @@ These are present in the current implementation. Documented as-is, not as intend
 
 1. **`performInTimeChunks` is not awaited** in `main()` — the "Finished running" success log can fire before chunks complete, and chunk failures are not caught by the top-level `try/catch`.
 
-2. **Alert path uses stale cached status** — after `updateRideAcceptance()` may set `justification_required`, alert lookup still reads the pre-update status from `acceptanceMap`. New failures get alert justification one cycle later. Newly created acceptances also skip alert justification until the next cycle.
+2. **No `'rejected'` path** — failed analyses produce `justification_required`, not `rejected`. Rejection is only via manual API action.
 
-3. **No `'rejected'` path** — failed analyses produce `justification_required`, not `rejected`. Rejection is only via manual API action.
-
-4. **Error log message says "Halting execution"** in create/update/alert handlers, but execution continues with the next ride.
+3. **Error log message says "Halting execution"** in the update and alert handlers, but execution continues with the next ride.
 
 ---
 

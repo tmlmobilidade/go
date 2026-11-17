@@ -39,20 +39,15 @@ export async function alertJustification(ride: RideWithAnalyses, acceptance: Rid
 			updated_at: now,
 			updated_by: foundAlert.created_by,
 		});
+		const audit = { created_at: now, created_by: 'system', type: 'field_changed' as const, updated_at: now, updated_by: 'system' };
 		const rideAcceptances = await goDb.operation.rideAcceptances.getCollection();
 		const result = await rideAcceptances.updateOne(
 			{ _id: acceptance._id, acceptance_status: 'justification_required', comments: acceptance.comments ?? null, justification: null },
 			{
-				$push: { comments: {
-					created_at: now,
-					created_by: 'system',
-					curr_value: justification,
-					field: 'justification',
-					prev_value: null,
-					type: 'field_changed',
-					updated_at: now,
-					updated_by: 'system',
-				} },
+				$push: { comments: { $each: [
+					{ ...audit, curr_value: justification, field: 'justification', prev_value: null },
+					{ ...audit, curr_value: 'under_review', field: 'acceptance_status', prev_value: 'justification_required' },
+				] } },
 				$set: { acceptance_status: 'under_review', justification, updated_at: now, updated_by: 'system' },
 			},
 		);
