@@ -31,7 +31,7 @@
 	},
 	"dependencies": {
 		"@amplitude/analytics-browser": "2.45.8",
-		"@amplitude/plugin-session-replay-browser": "1.36.2",
+		"@amplitude/session-replay-browser": "1.51.3",
 		"@tmlmobilidade/go-types-core": "*",
 		"zod": "3.25.76"
 	},

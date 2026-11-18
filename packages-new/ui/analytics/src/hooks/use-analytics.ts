@@ -39,7 +39,7 @@ export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...con
 
 	const stopReplay = useSessionReplay({
 		authorization: replayAuthorization,
-		client: ready ? initialization?.client : undefined,
+		initialization: ready ? initialization : undefined,
 		onError: handleError,
 		startUrl: replayStartUrl,
 		userId: user?._id,

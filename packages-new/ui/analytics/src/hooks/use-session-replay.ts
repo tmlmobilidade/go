@@ -1,17 +1,16 @@
 'use client';
 
-import { type Types } from '@amplitude/analytics-browser';
-import { type SessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
 import { type UserSessionReplayAuthorization } from '@tmlmobilidade/go-types-core';
 import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 
+import { type AnalyticsInitialization } from '../types/analytics.js';
 import { getReplayTimeRemaining, startSessionReplay } from '../utils/session-replay.js';
 
 /* * */
 
 interface UseSessionReplayProps {
 	authorization: null | undefined | UserSessionReplayAuthorization
-	client: Types.BrowserClient | undefined
+	initialization: AnalyticsInitialization | undefined
 	onError: (cause: unknown) => void
 	startUrl: string | undefined
 	userId: string | undefined
@@ -19,7 +18,7 @@ interface UseSessionReplayProps {
 
 /* * */
 
-export function useSessionReplay({ authorization, client, onError, startUrl, userId }: UseSessionReplayProps): () => void {
+export function useSessionReplay({ authorization, initialization, onError, startUrl, userId }: UseSessionReplayProps): () => void {
 	const activationId = authorization?.cancelled_at === null ? authorization.activation_id : undefined;
 	const expiredActivation = useRef<string>(undefined);
 	const stopCapture = useRef<() => void>(undefined);
@@ -28,13 +27,15 @@ export function useSessionReplay({ authorization, client, onError, startUrl, use
 	const stopReplay = useCallback(() => stopCapture.current?.(), []);
 
 	const startReplay = useEffectEvent(async () => {
-		if (!activationId || !client || !startUrl || !userId || stopCapture.current || expiredActivation.current === activationId) return;
-		if (client.getOptOut() || client.getUserId() !== userId) return;
+		if (!activationId || !initialization || !startUrl || !userId || stopCapture.current || expiredActivation.current === activationId) return;
+		const { apiKey, client, options } = initialization;
+		const deviceId = client.getDeviceId();
+		if (!deviceId || client.getOptOut() || client.getUserId() !== userId) return;
 
 		const controller = new AbortController();
 		const requestTimeout = setTimeout(() => controller.abort(), 10_000);
 		let expiryTimeout: ReturnType<typeof setTimeout> | undefined;
-		let plugin: SessionReplayPlugin | undefined;
+		let shutdown: (() => void) | undefined;
 
 		const isCurrent = () => stopCapture.current === stop && !client.getOptOut() && client.getUserId() === userId;
 		const stop = () => {
@@ -44,13 +45,7 @@ export function useSessionReplay({ authorization, client, onError, startUrl, use
 			clearTimeout(requestTimeout);
 			clearTimeout(expiryTimeout);
 
-			if (!plugin) return;
-			plugin.stop();
-			const pluginName = plugin.name;
-			// Wait for setup to finish before removing the plugin.
-			sdkOperations.current = sdkOperations.current.then(async () => {
-				await client.remove(pluginName).promise;
-			}).catch(onError);
+			shutdown?.();
 		};
 		stopCapture.current = stop;
 
@@ -74,15 +69,19 @@ export function useSessionReplay({ authorization, client, onError, startUrl, use
 			document.addEventListener('visibilitychange', canRecord, { signal: controller.signal });
 
 			const setup = sdkOperations.current.then(async () => {
-				const { sessionReplayPlugin } = await import('@amplitude/plugin-session-replay-browser');
+				const replay = await import('@amplitude/session-replay-browser');
 				if (!canRecord()) return stop();
-				plugin = sessionReplayPlugin({
+				shutdown = replay.shutdown;
+				await replay.init(apiKey, {
+					deviceId,
 					privacyConfig: { defaultMaskLevel: 'light' },
 					sampleRate: 1,
-				});
-				await client.add(plugin).promise;
+					serverZone: options?.serverZone ?? 'EU',
+					// A new GO authorization must create a distinct replay.
+					sessionId: activationId,
+				}).promise;
 				if (!canRecord()) {
-					plugin.stop();
+					replay.shutdown();
 					stop();
 				}
 			});
@@ -95,7 +94,7 @@ export function useSessionReplay({ authorization, client, onError, startUrl, use
 	});
 
 	useEffect(() => {
-		if (!activationId || !client || !startUrl || !userId) return;
+		if (!activationId || !initialization || !startUrl || !userId) return;
 		const restore = (event: PageTransitionEvent) => {
 			if (event.persisted) void startReplay();
 		};
@@ -106,12 +105,12 @@ export function useSessionReplay({ authorization, client, onError, startUrl, use
 			window.removeEventListener('pagehide', stopReplay);
 			window.removeEventListener('pageshow', restore);
 		};
-	}, [activationId, client, onError, startUrl, stopReplay, userId]);
+	}, [activationId, initialization, onError, startUrl, stopReplay, userId]);
 
 	// A fresh /me response can retry a failed start without restarting an active capture.
 	useEffect(() => {
 		void startReplay();
-	}, [activationId, authorization, client, onError, startUrl, userId]);
+	}, [activationId, authorization, initialization, onError, startUrl, userId]);
 
 	return stopReplay;
 }
