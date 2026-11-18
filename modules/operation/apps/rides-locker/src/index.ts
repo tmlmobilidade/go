@@ -37,6 +37,7 @@ async function main() {
 				// Fetch the ride acceptances.
 
 				const foundRides = await goDb.operation.rideAcceptances.findMany({ created_at: { $gte: chunk.start, $lte: chunk.end } });
+				const rideAcceptances = await goDb.operation.rideAcceptances.getCollection();
 
 				//
 				// Loop through the found rides and process
@@ -46,7 +47,24 @@ async function main() {
 				for (const rideAcceptance of foundRides) {
 					totalRides++;
 					if (rideAcceptance.is_locked) continue;
-					await goDb.operation.rideAcceptances.updateOne({ _id: rideAcceptance._id }, { is_locked: true, updated_by: 'system' });
+					const now = Dates.now('utc').unix_milliseconds;
+					const result = await rideAcceptances.updateOne(
+						{ _id: rideAcceptance._id, is_locked: { $ne: true } },
+						{
+							$push: { comments: {
+								created_at: now,
+								created_by: 'system',
+								curr_value: true,
+								field: 'is_locked',
+								prev_value: false,
+								type: 'field_changed',
+								updated_at: now,
+								updated_by: 'system',
+							} },
+							$set: { is_locked: true, updated_at: now, updated_by: 'system' },
+						},
+					);
+					if (!result.modifiedCount) continue;
 					Logger.info({ message: `Locked ride acceptance for ride ${rideAcceptance._id}.` });
 				}
 
