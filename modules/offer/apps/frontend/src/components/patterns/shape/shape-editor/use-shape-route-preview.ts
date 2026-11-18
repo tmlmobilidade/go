@@ -4,8 +4,8 @@ import { buildRoutePreviewModel, buildRoutePreviewRecalculationPlan, composeRout
 import { applyRouteToPath, type ShapeEditorDraft } from '@/utils/shape-editor-draft';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PatternsDetailPathItem, PatternsResolveZonesResponseSchema, RoutePreviewResponseSchema, ShapesRoutePreviewRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
+import { populateEmptyPathZones } from '@tmlmobilidade/go-offer-pckg-utils';
 import { type ShapeAnchor } from '@tmlmobilidade/go-types-offer';
-import { populateEmptyPathZones } from '@tmlmobilidade/go-utils-offer';
 import { fetchApiData, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

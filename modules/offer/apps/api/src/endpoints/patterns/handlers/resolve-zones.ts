@@ -4,7 +4,7 @@ import { authorizePatternAccess } from '@/utils/pattern-access.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PatternsResolveZonesRequest, PatternsResolveZonesRequestSchema, type PatternsResolveZonesResponse } from '@tmlmobilidade/go-offer-pckg-types';
-import { findStopZones } from '@tmlmobilidade/go-utils-offer';
+import { findStopZones } from '@tmlmobilidade/go-offer-pckg-utils';
 
 /**
  * Resolves the default zones for stops in a Pattern's draft path.

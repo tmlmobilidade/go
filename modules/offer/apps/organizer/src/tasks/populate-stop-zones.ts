@@ -1,10 +1,10 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { findStopZones, populateEmptyPathZones } from '@tmlmobilidade/go-offer-pckg-utils';
 import { PathSchema, type Pattern } from '@tmlmobilidade/go-types-offer';
 import { CommentSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { findStopZones, populateEmptyPathZones } from '@tmlmobilidade/go-utils-offer';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
