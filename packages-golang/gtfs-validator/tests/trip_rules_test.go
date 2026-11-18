@@ -76,6 +76,27 @@ func TestTripRouteLimits(t *testing.T) {
 	}
 }
 
+func TestTripShapeIDUsesDirectionID(t *testing.T) {
+	config := types.Rule{RuleID: "trip_shape_id_uses_direction_id", Severity: types.SEVERITY_WARNING}
+	setup := `CREATE TABLE trips (shape_id TEXT, direction_id TEXT);
+	INSERT INTO trips VALUES ('route_0', '0'), ('route_1', '1'),
+	('route_0', '1'), ('route_1', '0'), ('route', '0'), ('route_10', '0'),
+	('route_01', '1'), ('route_0_extra', '0'), ('route_0', '00'), ('route_1', ' 1 '),
+	(NULL, '0'), (' ', '1'), ('route_0', NULL), ('route_0', ' '),
+	('route_0', '2'), ('route_0', '-1'), ('route_0', 'bad'), ('route_0', '0.0');`
+	checkTripRule(t, setup, config, "shape_id", [][]int{{2}, {3}, {4}, {5}, {6}, {7}})
+	config.Severity = types.SEVERITY_ERROR
+	checkTripRule(t, setup, config, "shape_id", [][]int{{2}, {3}, {4}, {5}, {6}, {7}})
+	for _, setup := range []string{
+		"CREATE TABLE trips (shape_id TEXT, direction_id TEXT); INSERT INTO trips VALUES ('route_0', '0'), ('route_1', '1');",
+		"CREATE TABLE trips (shape_id TEXT); INSERT INTO trips VALUES ('route_0');",
+		"CREATE TABLE trips (direction_id TEXT); INSERT INTO trips VALUES ('0');",
+		"CREATE TABLE routes (route_id TEXT);",
+	} {
+		checkTripRule(t, setup, config, "shape_id", nil)
+	}
+}
+
 func TestTripShapeReuse(t *testing.T) {
 	setup := `CREATE TABLE trips (shape_id TEXT, route_id TEXT, direction_id TEXT);
  INSERT INTO trips VALUES ('ok','r1','0'), ('ok','r1','00'), ('both','r1','0'), ('both','r1','1'),
