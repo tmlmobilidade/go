@@ -1,18 +1,10 @@
 /* * */
 
 import { GtfsShapesSchema } from '@tmlmobilidade/go-types-gtfs';
-import { getDistanceBetweenPositions } from '@tmlmobilidade/go-utils-geo';
 import { type GtfsSQLTables } from '@tmlmobilidade/go-utils-import-gtfs';
+import { distance } from '@turf/distance';
 
 /* * */
-
-export interface TripVkms {
-	distance_km: number
-	n_days: number
-	service_id: string
-	trip_id: string
-	vkm: number
-}
 
 interface TripShape {
 	service_id: string
@@ -29,8 +21,8 @@ const ShapeCoordinatesSchema = GtfsShapesSchema.pick({ shape_pt_lat: true, shape
 
 /* * */
 
-/** Calculates VKM from shape geometry and calendar_dates within the inclusive YYYYMMDD range. */
-export function calculateTripVkms(gtfs: GtfsSQLTables, startDate: number, endDate: number): TripVkms[] {
+/** Calculates total VKM from shape geometry and service dates within the inclusive YYYYMMDD range. */
+export function calculateTotalVkms(gtfs: GtfsSQLTables, startDate: number, endDate: number): number {
 	if (!gtfs.trips || !gtfs.shapes || !gtfs.calendar_dates) {
 		throw new Error('Cannot calculate VKMs: trips, shapes or calendar dates are missing.');
 	}
@@ -49,11 +41,11 @@ export function calculateTripVkms(gtfs: GtfsSQLTables, startDate: number, endDat
 
 	const trips = gtfs.trips.query<TripShape>('SELECT trip_id, service_id, shape_id FROM trips');
 	const shapeDistances = new Map<string, number>();
+	let totalVkms = 0;
 
-	// Inner join: only retain trips with service dates in the requested range.
-	return trips.flatMap((trip) => {
+	for (const trip of trips) {
 		const nDays = serviceDays.get(trip.service_id);
-		if (!nDays) return [];
+		if (!nDays) continue;
 
 		if (!trip.shape_id) {
 			throw new Error(`Cannot calculate VKMs: missing shape for trip "${trip.trip_id}".`);
@@ -81,27 +73,22 @@ export function calculateTripVkms(gtfs: GtfsSQLTables, startDate: number, endDat
 				return parsed.data;
 			});
 
-			// Measure each shape once in meters, then cache its length in kilometers.
-			let distanceMeters = 0;
+			distanceKm = 0;
 			for (let index = 1; index < coordinates.length; index++) {
 				const previous = coordinates[index - 1];
 				const current = coordinates[index];
-				distanceMeters += getDistanceBetweenPositions(
+				distanceKm += distance(
 					[previous.shape_pt_lon, previous.shape_pt_lat],
 					[current.shape_pt_lon, current.shape_pt_lat],
+					{ units: 'kilometers' },
 				);
 			}
 
-			distanceKm = distanceMeters / 1000;
 			shapeDistances.set(trip.shape_id, distanceKm);
 		}
 
-		return [{
-			distance_km: distanceKm,
-			n_days: nDays,
-			service_id: trip.service_id,
-			trip_id: trip.trip_id,
-			vkm: distanceKm * nDays,
-		}];
-	});
+		totalVkms += distanceKm * nDays;
+	}
+
+	return totalVkms;
 }

@@ -28,10 +28,10 @@
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-geo": "*",
 		"@tmlmobilidade/go-utils-import-gtfs": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/go-utils-zip": "*",
+		"@turf/distance": "7.4.0",
 		"csv-stringify": "6.9.0",
 		"yazl": "3.3.1"
 	},
