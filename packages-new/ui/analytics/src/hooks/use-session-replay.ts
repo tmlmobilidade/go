@@ -3,7 +3,7 @@
 import { type Types } from '@amplitude/analytics-browser';
 import { type SessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
 import { type UserSessionReplayAuthorization } from '@tmlmobilidade/go-types-core';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 
 import { getReplayTimeRemaining, startSessionReplay } from '../utils/session-replay';
 
@@ -19,128 +19,99 @@ interface UseSessionReplayProps {
 
 /* * */
 
-/** Applies the authorization from /me and lets the SDK upload the capture. */
 export function useSessionReplay({ authorization, client, onError, startUrl, userId }: UseSessionReplayProps): () => void {
-	const authorizationRef = useRef(authorization);
-	const synchronizeRef = useRef<(value: UseSessionReplayProps['authorization']) => void>(() => {});
-	const stopRef = useRef<() => void>(() => {});
-	const sdkOperationsRef = useRef(Promise.resolve());
+	const activationId = authorization?.cancelled_at === null ? authorization.activation_id : undefined;
+	const expiredActivation = useRef<string>(undefined);
+	const stopCapture = useRef<() => void>(undefined);
+	const sdkOperations = useRef(Promise.resolve());
 
-	const stopReplay = useCallback(() => stopRef.current(), []);
+	const stopReplay = useCallback(() => stopCapture.current?.(), []);
 
-	useEffect(() => {
-		if (!client || !startUrl || !userId) return;
+	const startReplay = useEffectEvent(async () => {
+		if (!activationId || !client || !startUrl || !userId || stopCapture.current || expiredActivation.current === activationId) return;
+		if (client.getOptOut() || client.getUserId() !== userId) return;
 
-		let capture: undefined | { activationId: string, stop: () => void };
-		let expiredActivationId: string | undefined;
+		const controller = new AbortController();
+		const requestTimeout = setTimeout(() => controller.abort(), 10_000);
+		let expiryTimeout: ReturnType<typeof setTimeout> | undefined;
+		let plugin: SessionReplayPlugin | undefined;
 
-		const synchronize = (value: UseSessionReplayProps['authorization']) => {
-			if (value?.cancelled_at === null && capture?.activationId === value.activation_id) return;
-			capture?.stop();
-			if (value?.cancelled_at !== null) return;
-			if (value.activation_id === expiredActivationId) return;
+		const isCurrent = () => stopCapture.current === stop && !client.getOptOut() && client.getUserId() === userId;
+		const stop = () => {
+			if (stopCapture.current !== stop) return;
+			stopCapture.current = undefined;
+			controller.abort();
+			clearTimeout(requestTimeout);
+			clearTimeout(expiryTimeout);
 
-			let stopped = false;
-			let attached = false;
-			let plugin: SessionReplayPlugin | undefined;
-			let deadline: Awaited<ReturnType<typeof startSessionReplay>> | undefined;
-			let expiryTimeout: ReturnType<typeof setTimeout> | undefined;
-			const controller = new AbortController();
-			const requestTimeout = setTimeout(() => controller.abort(), 10_000);
+			if (!plugin) return;
+			plugin.stop();
+			const pluginName = plugin.name;
+			// Wait for setup to finish before removing the plugin.
+			sdkOperations.current = sdkOperations.current.then(async () => {
+				await client.remove(pluginName).promise;
+			}).catch(onError);
+		};
+		stopCapture.current = stop;
 
-			const isCurrent = () => !stopped && !client.getOptOut() && client.getUserId() === userId;
+		try {
+			const deadline = await startSessionReplay(startUrl, userId, activationId, controller.signal);
+			clearTimeout(requestTimeout);
+			if (!isCurrent()) return stop();
+
 			const expire = () => {
-				expiredActivationId = value.activation_id;
+				expiredActivation.current = activationId;
 				stop();
 			};
-			const checkDeadline = () => {
-				if (deadline && getReplayTimeRemaining(deadline) <= 0) expire();
+			const canRecord = () => {
+				if (!isCurrent()) return false;
+				if (getReplayTimeRemaining(deadline) > 0) return true;
+				expire();
+				return false;
 			};
 
-			const stop = () => {
-				if (stopped) return;
-				stopped = true;
-				controller.abort();
-				clearTimeout(requestTimeout);
-				clearTimeout(expiryTimeout);
-				document.removeEventListener('visibilitychange', checkDeadline);
-				plugin?.stop();
-				if (capture?.stop === stop) capture = undefined;
+			expiryTimeout = setTimeout(expire, getReplayTimeRemaining(deadline));
+			document.addEventListener('visibilitychange', canRecord, { signal: controller.signal });
 
-				// Finish SDK setup before removing the plugin or attaching another one.
-				sdkOperationsRef.current = sdkOperationsRef.current.then(async () => {
-					if (attached && plugin) await client.remove(plugin.name).promise;
-				}).catch(onError);
-			};
-
-			capture = { activationId: value.activation_id, stop };
-
-			const start = async () => {
-				try {
-					// The idempotent start also checks active authorizations on reload or restore.
-					const currentDeadline = await startSessionReplay(startUrl, userId, value.activation_id, controller.signal);
-					deadline = currentDeadline;
-					clearTimeout(requestTimeout);
-					checkDeadline();
-					if (!isCurrent()) return stop();
-
-					expiryTimeout = setTimeout(expire, getReplayTimeRemaining(currentDeadline));
-					document.addEventListener('visibilitychange', checkDeadline);
-
-					const { sessionReplayPlugin } = await import('@amplitude/plugin-session-replay-browser');
-					if (!isCurrent()) return stop();
-
-					const currentPlugin = sessionReplayPlugin({
-						privacyConfig: { defaultMaskLevel: 'light' },
-						sampleRate: 1,
-					});
-					plugin = currentPlugin;
-					const setup = sdkOperationsRef.current.then(async () => {
-						checkDeadline();
-						if (!isCurrent()) return;
-						attached = true;
-						await client.add(currentPlugin).promise;
-						checkDeadline();
-						if (!isCurrent()) {
-							currentPlugin.stop();
-							stop();
-						}
-					});
-					sdkOperationsRef.current = setup.catch(() => {});
-					await setup;
-				} catch (cause: unknown) {
-					const reportError = isCurrent();
+			const setup = sdkOperations.current.then(async () => {
+				const { sessionReplayPlugin } = await import('@amplitude/plugin-session-replay-browser');
+				if (!canRecord()) return stop();
+				plugin = sessionReplayPlugin({
+					privacyConfig: { defaultMaskLevel: 'light' },
+					sampleRate: 1,
+				});
+				await client.add(plugin).promise;
+				if (!canRecord()) {
+					plugin.stop();
 					stop();
-					if (reportError) onError(cause);
 				}
-			};
-
-			void start();
-		};
-
-		const stopCapture = () => capture?.stop();
-		const handlePageShow = (event: PageTransitionEvent) => {
-			if (event.persisted) synchronize(authorizationRef.current);
-		};
-
-		synchronizeRef.current = synchronize;
-		stopRef.current = stopCapture;
-		window.addEventListener('pagehide', stopCapture);
-		window.addEventListener('pageshow', handlePageShow);
-
-		return () => {
-			stopCapture();
-			synchronizeRef.current = () => {};
-			stopRef.current = () => {};
-			window.removeEventListener('pagehide', stopCapture);
-			window.removeEventListener('pageshow', handlePageShow);
-		};
-	}, [client, onError, startUrl, userId]);
+			});
+			sdkOperations.current = setup.catch(() => {});
+			await setup;
+		} catch (cause: unknown) {
+			if (isCurrent()) onError(cause);
+			stop();
+		}
+	});
 
 	useEffect(() => {
-		authorizationRef.current = authorization;
-		synchronizeRef.current(authorization);
-	}, [authorization, client, onError, startUrl, userId]);
+		if (!activationId || !client || !startUrl || !userId) return;
+		const restore = (event: PageTransitionEvent) => {
+			if (event.persisted) void startReplay();
+		};
+		window.addEventListener('pagehide', stopReplay);
+		window.addEventListener('pageshow', restore);
+		return () => {
+			stopReplay();
+			window.removeEventListener('pagehide', stopReplay);
+			window.removeEventListener('pageshow', restore);
+		};
+	}, [activationId, client, onError, startUrl, stopReplay, userId]);
+
+	// A fresh /me response can retry a failed start without restarting an active capture.
+	useEffect(() => {
+		void startReplay();
+	}, [activationId, authorization, client, onError, startUrl, userId]);
 
 	return stopReplay;
 }
