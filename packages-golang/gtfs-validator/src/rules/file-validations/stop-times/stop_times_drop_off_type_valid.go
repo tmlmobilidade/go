@@ -3,7 +3,6 @@ package stoptimes
 import (
 	"context"
 	"database/sql"
-
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
