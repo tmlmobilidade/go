@@ -71,14 +71,14 @@ function indexPatterns(patternGroups: HubV1ApiPattern[]): TripScheduleIndex {
 /**
  * Loads a {@link TripScheduleIndex} for one agency from the hub network cache.
  *
- * Reads `hub:v1:network:lines`, filters by `agencyId`, then loads each
- * pattern's `hub:v1:network:patterns:{patternId}` blob. Returns an empty
+ * Reads `hub:v1:{agencyId}:network:lines`, then loads each
+ * pattern's `hub:v1:{agencyId}:network:patterns:{patternId}` blob. Returns an empty
  * map if the lines cache is missing.
  *
  * @param agencyId - Agency whose patterns to index
  */
 export async function loadTripScheduleIndex(agencyId: string): Promise<TripScheduleIndex> {
-	const linesRaw = await cacheDb.get('hub:v1:network:lines');
+	const linesRaw = await cacheDb.get(`hub:v1:${agencyId}:network:lines`);
 	if (!linesRaw) return new Map();
 
 	const patternIds = [...new Set(
@@ -88,7 +88,7 @@ export async function loadTripScheduleIndex(agencyId: string): Promise<TripSched
 	)];
 
 	const patternGroups = (await Promise.all(patternIds.map(async (patternId) => {
-		const cached = await cacheDb.getNew<HubV1ApiPattern[]>(`hub:v1:network:patterns:${patternId}`);
+		const cached = await cacheDb.getNew<HubV1ApiPattern[]>(`hub:v1:${agencyId}:network:patterns:${patternId}`);
 		return cached?.data ?? [];
 	}))).flat();
 

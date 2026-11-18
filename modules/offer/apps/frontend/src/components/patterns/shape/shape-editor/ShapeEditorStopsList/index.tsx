@@ -7,10 +7,11 @@ import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { DraggableList, Section, Text } from '@tmlmobilidade/ui';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 import { StopsListRow } from '../ShapeEditorStopsListRow';
 
 /* * */
@@ -21,12 +22,13 @@ export function StopsList() {
 	//
 	// A. Setup variables
 
-	const stopsEditorContext = useStopsEditorContext();
+	const { t } = useTranslation();
+	const shapeEditorContext = useShapeEditorContext();
 
 	const [addStopIndex, setAddStopIndex] = useState<null | number>(null);
 	const [highlightedStopId, setHighlightedStopId] = useState<null | string>(null);
 
-	const path = stopsEditorContext.data.path as PatternsDetailPathItem[];
+	const path = shapeEditorContext.data.path as PatternsDetailPathItem[];
 
 	//
 	// B. Handle actions
@@ -37,7 +39,7 @@ export function StopsList() {
 			setHighlightedStopId(moved._id);
 			setTimeout(() => setHighlightedStopId(null), 900);
 		}
-		void stopsEditorContext.actions.reorderStops(newPath);
+		void shapeEditorContext.actions.reorderStops(newPath);
 	};
 
 	const handleStartAddStop = (index: number) => {
@@ -50,7 +52,7 @@ export function StopsList() {
 
 	const handleSelectStop = (stop: null | Stop) => {
 		if (!stop || addStopIndex === null) return;
-		void stopsEditorContext.actions.addStop(stop, addStopIndex + 1);
+		void shapeEditorContext.actions.addStop(stop, addStopIndex + 1);
 		handleCancelAddStop();
 	};
 
@@ -59,7 +61,7 @@ export function StopsList() {
 
 	return (
 		<div className={styles.container}>
-			<Text size="xl" weight="semibold">Sequência de paragens</Text>
+			<Text size="xl" weight="semibold">{t('patterns:shape.StopsList.stop_sequence')}</Text>
 
 			<Section padding="none">
 				<DraggableList

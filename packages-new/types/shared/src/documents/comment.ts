@@ -1,6 +1,7 @@
 /* * */
 
 import { BaseDocumentSchema } from '@/documents/document.js';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -16,9 +17,9 @@ export type CrudCommentSchemaAction = z.infer<typeof CrudCommentSchemaActionSche
 /* * */
 
 export const FieldChangeSchema = z.object({
-	curr_value: z.any(),
+	curr_value: z.any().optional(),
 	field: z.string(),
-	prev_value: z.any(),
+	prev_value: z.any().optional(),
 });
 
 /* * */
@@ -34,12 +35,12 @@ export const NoteCommentSchema = BaseDocumentSchema
 export const FieldChangedCommentSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
-		curr_value: z.any(),
+		curr_value: z.any().optional(),
 		field: z.string(),
 		metadata: z.object({
 			changes: z.array(FieldChangeSchema).optional(),
 		}).nullish(),
-		prev_value: z.any(),
+		prev_value: z.any().optional(),
 		type: z.literal(CommentTypeSchema.enum.field_changed),
 	})
 	.partial({ _id: true });
@@ -67,23 +68,23 @@ export const CommentSchema = z
 			if (data.field === 'multiple_fields') {
 				if (!data.metadata?.changes || data.metadata.changes.length === 0) {
 					ctx.addIssue({
-						code: z.ZodIssueCode.custom,
-						message: 'multiple_fields requires metadata.changes array',
+						code: 'custom',
+						...validationParams('custom.documents.changes_required'),
 						path: ['metadata', 'changes'],
 					});
 				}
 				if (data.curr_value !== null || data.prev_value !== null) {
 					ctx.addIssue({
-						code: z.ZodIssueCode.custom,
-						message: 'multiple_fields must have null curr_value and prev_value',
+						code: 'custom',
+						...validationParams('custom.documents.null_values'),
 						path: ['curr_value'],
 					});
 				}
 			} else if (data.curr_value === data.prev_value) {
 				// If field is NOT 'multiple_fields', curr_value and prev_value must differ
 				ctx.addIssue({
-					code: z.ZodIssueCode.custom,
-					message: 'curr_value and prev_value must differ',
+					code: 'custom',
+					...validationParams('custom.documents.different_values'),
 					path: ['curr_value'],
 				});
 			}

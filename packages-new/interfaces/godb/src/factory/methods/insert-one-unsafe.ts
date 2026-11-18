@@ -26,7 +26,7 @@ export async function insertOneUnsafe<T extends Document>(context: GoDbCollectio
 	// Validate the document against the create schema if unsafe is false
 	try {
 		if (!context.schema) throw new Error('No schema defined for insert operation. This is either an internal interface error or you should pass unsafe=true to the insert operation.');
-		parsedDocument = context.schema.parse(parsedDocument);
+		parsedDocument = context.schema.parse(parsedDocument) as OptionalUnlessRequiredId<T>;
 	} catch (error) {
 		throw new HttpException(HTTP_STATUS.BAD_REQUEST, error.message, { cause: error });
 	}

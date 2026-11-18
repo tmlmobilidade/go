@@ -10,10 +10,11 @@ import { z } from 'zod';
 export const RideJustificationSchema = BaseDocumentSchema
 	.omit({ _id: true, is_locked: true })
 	.extend({
+		alert_id: z.string().min(1).optional(),
 		justification_cause: AlertCauseSchema,
 		justification_source: RideJustificationSourceSchema,
 		manual_trip_id: z.string().nullish().nullable(),
-		pto_message: z.string().min(2).max(5000).default(''),
+		pto_message: z.string().min(2).max(5000).prefault(''),
 	});
 
 export type RideJustification = z.infer<typeof RideJustificationSchema>;

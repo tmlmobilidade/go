@@ -1,43 +1,16 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
+import { readOrganizationGtfs } from '@/utils/organization-gtfs.js';
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 import { encodeGtfsRtFeed } from '@tmlmobilidade/gtfs-rt';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-/**
- * Retrieves the trip updates GTFS RT Protobuf data from the cache.
- * @param request The request object.
- * @param reply The reply object.
- */
-export async function getEtaGtfsRtProtobufHandler(request: FastifyRequest, reply: FastifyReply<unknown>) {
+/** Return the merged organization GTFS-RT feed. */
+export async function getEtaGtfsRtProtobufHandler(request: FastifyRequest, reply: FastifyReply<Buffer>) {
 	//
 
 	//
-	// Get the published feed from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get('hub:v1:realtime:eta:all:gtfs');
-
-	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/realtime:getTripUpdatesGtfsRtProtobufHandler()] No data in cache.' });
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
-			.code(HTTP_STATUS.NO_CONTENT)
-			.send();
-	}
-
-	//
-	// Encode the feed into Protobuf and return it
-
-	const buffer = await encodeGtfsRtFeed(JSON.parse(cachedData) as GtfsRtFeedMessage);
-
-	return reply
-		.header('access-control-allow-origin', '*')
-		.header('cache-control', 'public, max-age=5')
-		.type('application/octet-stream')
-		.code(HTTP_STATUS.OK)
-		.send(Buffer.from(buffer));
+	const feed = await readOrganizationGtfs(request, 'realtime:eta:all:gtfs');
+	return reply.header('cache-control', 'public, max-age=3').type('application/octet-stream').send(Buffer.from(await encodeGtfsRtFeed(feed)));
 }

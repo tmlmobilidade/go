@@ -4,8 +4,10 @@
 
 import { MapContextProvider, Modal } from '@tmlmobilidade/ui';
 
+import styles from './styles.module.css';
+
 import { ShapeEditor } from './ShapeEditor';
-import { StopsEditorContextProvider } from './ShapeEditor.context';
+import { ShapeEditorContextProvider } from './ShapeEditor.context';
 
 /* * */
 
@@ -17,6 +19,7 @@ interface ShapeEditorModalProps {
 export function ShapeEditorModal({ onClose, opened }: ShapeEditorModalProps) {
 	return (
 		<Modal
+			classNames={{ body: styles.modalBody, content: styles.modalContent }}
 			closeOnClickOutside={false}
 			closeOnEscape={false}
 			onClose={onClose}
@@ -24,16 +27,14 @@ export function ShapeEditorModal({ onClose, opened }: ShapeEditorModalProps) {
 			padding={0}
 			size="100%"
 			withCloseButton={false}
-			styles={{
-				body: { height: '100%' },
-				content: { height: '90vh' },
-			}}
 		>
-			<MapContextProvider>
-				<StopsEditorContextProvider onClose={onClose}>
-					<ShapeEditor />
-				</StopsEditorContextProvider>
-			</MapContextProvider>
+			{opened && (
+				<MapContextProvider>
+					<ShapeEditorContextProvider onClose={onClose}>
+						<ShapeEditor />
+					</ShapeEditorContextProvider>
+				</MapContextProvider>
+			)}
 		</Modal>
 	);
 }

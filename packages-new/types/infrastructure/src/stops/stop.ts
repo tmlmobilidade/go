@@ -8,7 +8,7 @@ import { StopShelterSchema } from '@/stops/shelter.js';
 import { StopIdSchema } from '@/stops/stop-id.js';
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { LocationSchema } from '@tmlmobilidade/go-types-locations';
-import { BaseDocumentSchema, CommentSchema, LifecycleStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, CommentSchema, LifecycleStatusSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -59,21 +59,10 @@ export const StopSchema = BaseDocumentSchema.extend({
 	image_ids: z.array(z.string()).default([]),
 	observations: z.string().nullable().default(null),
 
-	//
-	// This field is not sent by the backend, but is useful to have in the frontend for easier access to the associated patterns of an event
-
-	associated_patterns: z.array(z.object({
-		_id: z.string(),
-		code: z.string(),
-		headsign: z.string(),
-		line_id: z.string(),
-		route_id: z.string(),
-	})).default([]),
-
 });
 
-export const CreateStopSchema = StopSchema.omit({ _id: true, associated_patterns: true, created_at: true, updated_at: true });
-export const UpdateStopSchema = CreateStopSchema.omit({ created_by: true }).partial();
+export const CreateStopSchema = StopSchema.omit({ _id: true, created_at: true, updated_at: true });
+export const UpdateStopSchema = partialWithoutDefaults(CreateStopSchema.omit({ created_by: true }));
 
 export type Stop = z.infer<typeof StopSchema>;
 export type CreateStopDto = z.infer<typeof CreateStopSchema>;

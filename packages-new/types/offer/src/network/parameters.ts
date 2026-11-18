@@ -1,6 +1,7 @@
 import { DayPeriodSchema } from '@/dates/day-period.js';
-import { WEEKDAYS } from '@/dates/weekdays.js';
 import { StopIdSchema } from '@tmlmobilidade/go-types-infrastructure';
+import { WEEKDAYS } from '@tmlmobilidade/go-types-shared';
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -11,8 +12,8 @@ const StopsParameterCommonSchema = z.object({
 
 	name: z.string().optional(),
 	path: z.array(z.object({
-		avg_speed: z.number(),
-		dwell_time: z.number(),
+		avg_speed: z.number().finite().nonnegative(),
+		dwell_time: z.number().finite().nonnegative(),
 		stop_id: StopIdSchema,
 	})),
 	vehicle_type: z.string().optional(),
@@ -25,7 +26,7 @@ export const StopsParameterDefaultSchema = StopsParameterCommonSchema.extend({
 export const StopsParameterOverrideSchema = StopsParameterCommonSchema.extend({
 	day_periods: z.array(DayPeriodSchema).optional(),
 	kind: z.literal('override'),
-	weekdays: z.array(z.nativeEnum(WEEKDAYS)),
+	weekdays: z.array(z.enum(WEEKDAYS)),
 	year_period_ids: z.array(z.string()),
 
 });
@@ -49,14 +50,14 @@ export const StopsParametersListSchema = z
 		const defaults = items.filter(i => i.kind === 'default');
 		if (defaults.length === 0) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: 'É obrigatório existir um parâmetro "default".',
+				code: 'custom',
+				...validationParams('custom.network.default_required'),
 			});
 		}
 		if (defaults.length > 1) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: 'Só pode existir um parâmetro "default".',
+				code: 'custom',
+				...validationParams('custom.network.default_unique'),
 			});
 		}
 	});

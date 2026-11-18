@@ -1,35 +1,23 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type HubV1ApiLine } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-/**
- * Retrieves all lines from cache.
- * @param request The request object.
- * @param reply The reply object.
- */
+/** Return organization-scoped published data. */
 export async function getLinesHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiLine[]>) {
 	//
 
 	//
-	// Get the published lines from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get('hub:v1:network:lines');
-
-	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/network:getLinesHandler()] No cached data found for lines' });
-		return sendErrorApiResponse(reply, {
-			error: '[hub/v1/network:getLinesHandler()] No cached data found for lines',
-			status_code: '404',
-		});
-	}
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiLine[]>(agencyIds, `network:lines`);
+	const data = entries.flatMap(entry => entry.data);
 
 	//
-	// Return the parsed lines
+	// Return the merged data
 
-	return sendSuccessApiResponse(reply, JSON.parse(cachedData), {
-		max_age: '1h',
-	});
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '1h' });
 }

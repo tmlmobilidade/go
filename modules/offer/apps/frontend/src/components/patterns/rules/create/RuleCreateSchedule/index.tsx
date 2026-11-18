@@ -4,6 +4,9 @@ import { IconPlus } from '@tabler/icons-react';
 import { HHMM, HHMMSchema, normalizeOperationalHhmmInput, timeToMinutes } from '@tmlmobilidade/go-types-offer';
 import { Button, DayPeriodsTimepoints, Section, TextInput } from '@tmlmobilidade/ui';
 import { DragEvent, KeyboardEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
 
 /* * */
 
@@ -25,6 +28,8 @@ const splitTimepointInput = (input: string) => {
 /* * */
 
 export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGridInputProps) {
+	const { t } = useTranslation();
+
 	const [inputValue, setInputValue] = useState('');
 	const [inputError, setInputError] = useState('');
 
@@ -36,7 +41,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		const inputTokens = splitTimepointInput(inputValue);
 
 		if (!inputTokens.length) {
-			setInputError('Formato inválido');
+			setInputError(t('default:scheduling.copy.invalidFormat'));
 			return;
 		}
 
@@ -63,7 +68,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		}
 
 		if (invalidTokens.length) {
-			setInputError(`Formato inválido: ${invalidTokens.join(', ')}`);
+			setInputError(t('default:scheduling.copy.invalidTokens', '', { tokens: invalidTokens.join(', ') }));
 			return;
 		}
 
@@ -73,7 +78,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 		});
 
 		if (!uniqueNewTimes.length) {
-			setInputError(parsedTimes.length === 1 ? 'Este horário já existe' : 'Estes horários já existem');
+			setInputError(parsedTimes.length === 1 ? t('default:scheduling.copy.existingTimepoint') : t('default:scheduling.copy.existingTimepoints'));
 			return;
 		}
 
@@ -113,13 +118,13 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 			{/* Input Area */}
 			<Section flexDirection="row" gap="sm" padding="none">
 				<TextInput
+					className={styles.input}
 					error={inputError || error}
 					onDragOver={e => e.preventDefault()}
 					onDrop={handleDrop}
 					onKeyDown={handleKeyDown}
-					placeholder="Ex: 08:30 ou 0830 ou 830 + Enter"
+					placeholder={t('default:scheduling.copy.timepointPlaceholder')}
 					rightSectionWidth={80}
-					style={{ flex: 1 }}
 					value={inputValue}
 					onChange={(e) => {
 						setInputValue(e.currentTarget.value);
@@ -128,7 +133,7 @@ export function RuleCreateSchedule({ error, onChange, value = [] }: ScheduleGrid
 				/>
 				<Button
 					disabled={!inputValue}
-					label="Adicionar"
+					label={t('default:scheduling.copy.add')}
 					leftSection={<IconPlus size={16} />}
 					onClick={handleAdd}
 				/>

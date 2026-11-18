@@ -1,19 +1,20 @@
 'use client';
 
 import { usePatternDetailContext } from '@/components/patterns/detail/PatternDetail.context';
-import { Path } from '@tmlmobilidade/go-types-offer';
-import { NumberInput } from '@tmlmobilidade/ui';
+import { NumberInput, StandardFormController } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from '../styles.module.css';
 
 /* * */
 
-export function StopsTableTableColumnDistance({ pathItem, rowIndex }: { pathItem: Path, rowIndex: number }) {
+export function StopsTableTableColumnDistance({ rowIndex }: { rowIndex: number }) {
 	//
 
 	//
 	// A. Transform data
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	//
@@ -21,20 +22,24 @@ export function StopsTableTableColumnDistance({ pathItem, rowIndex }: { pathItem
 
 	return (
 		<div className={styles.column}>
-			<NumberInput
-				key={patternDetailContext.data.form.key(`path.${rowIndex}.distance_delta`)}
-				aria-label={`Distância do segmento para a sequência ${rowIndex + 1}`}
-				defaultValue={pathItem.distance_delta ?? 0}
-				min={0}
-				placeholder="Distância (metros)"
-				step={1}
-				suffix=" m"
-				styles={{
-					wrapper: { minWidth: 0, width: '100%' },
-				}}
-				{...patternDetailContext.data.form.getInputProps(`path.${rowIndex}.distance_delta`)}
-				disabled={patternDetailContext.flags.isReadOnly || rowIndex === 0}
+			<StandardFormController
+				control={patternDetailContext.form.control}
+				name={`path.${rowIndex}.distance_delta`}
+				render={({ field, fieldState }) => (
+					<NumberInput
+						{...field}
+						aria-label={t('patterns:shape.StopsTableTableColumnDistance.segment_sequence', { sequence: rowIndex + 1 })}
+						disabled={!patternDetailContext.capabilities.editEnabled || rowIndex === 0}
+						error={fieldState.error?.message}
+						min={0}
+						placeholder={t('patterns:shape.StopsTableTableColumnDistance.distance_meters')}
+						step={1}
+						suffix=" m"
+						value={field.value ?? 0}
+					/>
+				)}
 			/>
+
 		</div>
 	);
 

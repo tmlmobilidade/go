@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Organization, type UpdateOrganizationDto } from '@tmlmobilidade/go-types-core';
 
@@ -18,5 +17,5 @@ export async function updateOrganizationHandler(request: FastifyRequest<{ Body: 
 		updated_by: request.me._id,
 	});
 
-	reply.send({ data: updatedOrganizationData, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, updatedOrganizationData);
 }

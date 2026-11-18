@@ -92,6 +92,7 @@ export async function buildNodesExtractionQuery(extraction: InfrastructureNodesV
 	}
 
 	return {
+		coordinates: validatedProperties.coordinates,
 		filter,
 		selectedAgencyIds,
 		...infrastructureNodesV1ExtractionQuery,

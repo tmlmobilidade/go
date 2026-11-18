@@ -1,25 +1,27 @@
 'use client';
 
+import { useLinesListData } from '@/components/lines/list/use-lines-list-data';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { DetailContextStateTemplate, fetchApiData, keepUrlParams, useDetailState, type UseFormReturnType, useHandleAction, useMeContext, useTypicalForm } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
-import useSWR from 'swr';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+
+import { useLinesDetailData } from './use-lines-detail-data';
 
 /* * */
 
-interface LineDetailContextState {
-	actions: DetailContextStateTemplate['actions']
-	data: {
-		form: UseFormReturnType<UpdateLineDto>
-		id: string
-		line: null | PopulatedLine
+interface LineDetailContextState extends StandardFormContextValue<UpdateLineDto> {
+	actions: StandardFormContextValue<UpdateLineDto>['actions'] & {
+		applyChanges: (changes: Partial<UpdateLineDto>) => void
 	}
-	flags: DetailContextStateTemplate['flags']
+	data: {
+		id: string
+		line: PopulatedLine | undefined
+	}
+	error: null | string
 }
 
 /* * */
@@ -28,132 +30,152 @@ const LineDetailContext = createContext<LineDetailContextState | undefined>(unde
 
 export function useLineDetailContext() {
 	const context = useContext(LineDetailContext);
-	if (!context) {
-		throw new Error('useLineDetailContext must be used within a LineDetailContextProvider');
-	}
+	if (!context) throw new Error('useLineDetailContext must be used within a LineDetailContextProvider');
 	return context;
 }
 
 /* * */
 
-export const LineDetailContextProvider = ({ children, lineId }: PropsWithChildren<{ lineId: string }>) => {
+export function LineDetailContextProvider({ children, lineId }: PropsWithChildren<{ lineId: string }>) {
 	//
 
 	//
 	// A. Setup variables
 
 	const router = useRouter();
-	const meContext = useMeContext();
+	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { mutate: listMutate } = useLinesListData();
+	const { data: line, error, isLoading: dataLoading, mutate } = useLinesDetailData(lineId);
+	const accessRef = useRef({ deleteEnabled: false, editEnabled: false, lockEnabled: false, updateEnabled: false });
 
 	//
-	// B. Fetch data
+	// B. Setup form
 
-	const { mutate: linesListMutate } = useSWR<PopulatedLine[]>(API_ROUTES.offer.LINES_LIST);
-	const { data: lineData, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useSWR<ApiResponse<PopulatedLine>>(API_ROUTES.offer.LINES_DETAIL(lineId), {
-		fetcher: async url => await fetchApiData<PopulatedLine>({ url }),
+	const apiData = useMemo(() => line ? UpdateLineSchema.parse(line) : undefined, [line]);
+	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateLineDto, typeof UpdateLineSchema>({
+		apiData,
+		schema: UpdateLineSchema,
 	});
+	const values = useStandardFormWatch({ control: form.control });
 
 	//
-	// C. Setup form
+	// C. Handle requests
 
-	const { form } = useTypicalForm<UpdateLineDto>(UpdateLineSchema, lineData?.data);
-
-	//
-	// D. Handle actions
-
-	const { action: handleSave, isLoading: isSaving } = useHandleAction({
-		fetchFn: async () => await fetchApiData<PopulatedLine>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.offer.LINES_DETAIL(lineId) }),
-		onSuccess: (data) => {
-			form.resetDirty();
-			lineMutate(data);
-			linesListMutate();
+	const { action: updateRequest, isLoading: isUpdating } = useHandleAction({
+		fetchFn: async () => await fetchApiData<PopulatedLine>({ body: UpdateLineSchema.parse(form.getValues()), method: 'PUT', url: API_ROUTES.offer.LINES_DETAIL(lineId) }),
+		onSuccess: (response) => {
+			form.reset(UpdateLineSchema.parse(response.data));
+			mutate(response);
+			listMutate();
 		},
 	});
 
-	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
-		fetchFn: async () => await fetchApiData<undefined>({ body: lineData, method: 'DELETE', url: API_ROUTES.offer.LINES_DETAIL(lineId) }),
+	const { action: deleteRequest, isLoading: isDeleting } = useHandleAction({
+		fetchFn: async () => await fetchApiData<undefined>({ method: 'DELETE', url: API_ROUTES.offer.LINES_DETAIL(lineId) }),
 		onSuccess: () => {
-			form.resetDirty();
-			linesListMutate();
+			form.reset();
+			unblock();
+			listMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.offer.LINES_LIST));
 		},
 	});
 
-	const { action: handleLock, isLoading: isLocking } = useHandleAction({
+	const { action: lockRequest, isLoading: isLocking } = useHandleAction({
 		fetchFn: async () => await fetchApiData<PopulatedLine>({ url: API_ROUTES.offer.LINES_DETAIL_LOCK(lineId) }),
-		onSuccess: (data) => {
-			form.resetDirty();
-			lineMutate(data);
-			linesListMutate();
+		onSuccess: (response) => {
+			mutate(response);
+			listMutate();
 		},
 	});
 
 	//
-	// E. Setup permissions
+	// D. Setup capabilities
 
-	const permissions = meContext.actions.getScopePermissions({
+	const permissions = PermissionCatalog.getScopePermissions({
 		actions: PermissionCatalog.all.lines.actions,
-		resource: {
-			key: 'agency_ids',
-			requireAll: false,
-			value: lineData?.data?.agency_id ? [lineData.data.agency_id] : [],
-		},
+		permissions: me?.permissions ?? [],
+		resource: { key: 'agency_ids', requireAll: true, value: line?.agency_id ? [line.agency_id] : [] },
 		scope: PermissionCatalog.all.lines.scope,
 	});
-
-	const { canDelete, canLock, canSave, isReadOnly } = useDetailState({
-		hasError: !!lineError,
-		isDeleted: null,
-		isDeleting,
-		isDirty: form.isDirty(),
-		isLoading: lineLoading,
-		isLocked: lineData?.data?.is_locked,
-		isLocking,
-		isSaving: isSaving,
-		isValid: form.isValid(),
-		permissions: {
-			delete: permissions.delete,
-			lock: permissions.lock,
-			read: permissions.read,
-			update: permissions.update,
-		},
+	const hasData = !!line;
+	const isLoading = dataLoading || meLoading;
+	const hasError = !!(error || meError);
+	const canUpdateAgency = !!values.agency_id && PermissionCatalog.hasPermissionResourceAll({ action: PermissionCatalog.all.lines.actions.update, permissions: me?.permissions ?? [], resource_key: 'agency_ids', scope: PermissionCatalog.all.lines.scope, value: [values.agency_id] });
+	const standardCapabilities = useStandardFormCapabilities({
+		delete: { hasPermission: permissions.delete, isDeleting },
+		form: { isDirty, isValid },
+		loading: { isLoading: isLoading || hasError || !hasData || isUpdating || isDeleting || isLocking },
+		locked: { hasPermission: permissions.lock, isLocked: !!line?.is_locked, isLocking },
+		update: { hasPermission: permissions.update && permissions.read && canUpdateAgency, isUpdating },
 	});
+	const capabilities = useMemo(() => ({
+		...standardCapabilities,
+		editEnabled: standardCapabilities.editEnabled && permissions.update && permissions.read,
+	}), [standardCapabilities, permissions.update, permissions.read]);
+	accessRef.current = capabilities;
 
 	//
-	// F. Define context value
+	// E. Guard actions against current access
 
-	const contextValue: LineDetailContextState = useMemo(() => ({
+	const handleUpdate = useCallback(async () => {
+		if (!accessRef.current.updateEnabled) return;
+		await form.handleSubmit(async () => {
+			if (accessRef.current.updateEnabled) await updateRequest();
+		})();
+	}, [form, updateRequest]);
+
+	const handleDelete = useCallback(async () => {
+		if (accessRef.current.deleteEnabled) await deleteRequest();
+	}, [deleteRequest]);
+
+	const handleLock = useCallback(async () => {
+		if (accessRef.current.lockEnabled) await lockRequest();
+	}, [lockRequest]);
+
+	const applyChanges = useCallback((changes: Partial<UpdateLineDto>) => {
+		if (!accessRef.current.editEnabled) return;
+		form.reset({ ...form.getValues(), ...changes }, { keepDefaultValues: true });
+	}, [form]);
+
+	useEffect(() => {
+		accessRef.current = capabilities;
+		return () => {
+			accessRef.current = { deleteEnabled: false, editEnabled: false, lockEnabled: false, updateEnabled: false };
+		};
+	}, [capabilities]);
+
+	//
+	// F. Return context value
+
+	const stateValue: LineDetailContextState = useMemo(() => ({
 		actions: {
+			applyChanges,
 			delete: handleDelete,
 			lock: handleLock,
-			save: handleSave,
+			update: handleUpdate,
 		},
+		capabilities,
 		data: {
-			form,
 			id: lineId,
-			line: lineData?.data,
+			line,
 		},
-		flags: {
-			canDelete,
-			canLock,
-			canSave,
-			error: lineError,
+		error: error || meError,
+		form,
+		isDirty,
+		isValid,
+		status: {
 			isDeleting,
-			isLoading: lineLoading,
+			isLoading,
+			isLocked: !!line?.is_locked,
 			isLocking,
-			isReadOnly,
-			isSaving: isSaving,
+			isUpdating,
 		},
-	}), [handleDelete, handleLock, handleSave, form, lineId, lineData, canDelete, canLock, canSave, lineError, isDeleting, lineLoading, isLocking, isReadOnly, isSaving]);
-
-	//
-	// G. Render components
+		unblock,
+	}), [applyChanges, capabilities, handleDelete, handleLock, handleUpdate, line, lineId, error, meError, form, isDirty, isValid, isDeleting, isLoading, isLocking, isUpdating, unblock]);
 
 	return (
-		<LineDetailContext.Provider value={contextValue}>
+		<LineDetailContext.Provider value={stateValue}>
 			{children}
 		</LineDetailContext.Provider>
 	);
-
-	//
-};
+}

@@ -12,7 +12,7 @@ import { type DefaultGeoJsonFeatureProperties, DefaultGeoJsonFeaturePropertiesSc
 
 /* * */
 
-export const GeoJsonFeatureSchema = <T extends z.ZodTypeAny = typeof DefaultGeoJsonFeaturePropertiesSchema>(propertiesSchema: T = DefaultGeoJsonFeaturePropertiesSchema as unknown as T) => {
+export const GeoJsonFeatureSchema = <T extends z.ZodType = typeof DefaultGeoJsonFeaturePropertiesSchema>(propertiesSchema: T = DefaultGeoJsonFeaturePropertiesSchema as unknown as T) => {
 	return z.object({
 		geometry: z.union([
 			GeoJsonPointGeometrySchema,

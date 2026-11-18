@@ -3,13 +3,11 @@
 import { useLinesListContext } from '@/components/lines/list/LinesList.context';
 import { PatternShapeMapInteractionState } from '@/types/lines-overview';
 import { getPatternFeaturesAtEvent } from '@/utils/lines-overview';
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PatternsShapeMapItem } from '@tmlmobilidade/go-offer-pckg-types';
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData } from '@tmlmobilidade/ui';
 import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
-import useSWR from 'swr';
+
+import { useLinesOverviewPatternsData } from './use-lines-overview-patterns-data';
 
 /* * */
 
@@ -61,60 +59,11 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	const [highlightedPatternIds, setHighlightedPatternIds] = useState<string[]>([]);
 	const [popupInfo, setPopupInfo] = useState<null | PatternShapeMapInteractionState>(null);
 
-	/**
-	 * Cache patterns by agency.
-	 * This allows us to avoid refetching agencies that were already loaded before.
-	 */
-	const [patternsByAgencyId, setPatternsByAgencyId] = useState<Record<string, PatternsShapeMapItem[]>>({});
-
-	/**
-	 * Important: this is separate from patternsByAgencyId because an agency may have zero patterns.
-	 * Without this, agencies with empty results would be fetched again and again.
-	 */
-	const [loadedAgencyIds, setLoadedAgencyIds] = useState<string[]>([]);
+	const { data: patternsData, error: patternsError, isLoading } = useLinesOverviewPatternsData(agencyIds);
+	const patternsLoading = linesListContext.flags.agenciesLoading || isLoading;
 
 	//
-	// B. Compute which agencies still need to be fetched
-
-	const missingAgencyIds = useMemo(() => {
-		return agencyIds.filter(agencyId => !loadedAgencyIds.includes(agencyId));
-	}, [agencyIds, loadedAgencyIds]);
-
-	const patternsRequestKey = useMemo(() => {
-		if (missingAgencyIds.length === 0) return null;
-
-		return `${API_ROUTES.offer.PATTERNS_SHAPES}?${new URLSearchParams({ agency_ids: missingAgencyIds.join(',') }).toString()}`;
-	}, [missingAgencyIds]);
-
-	//
-	// C. Fetch data
-
-	const { data: fetchedPatternsData, error: patternsError, isLoading: patternsRequestLoading } = useSWR<ApiResponse<PatternsShapeMapItem[]>>(patternsRequestKey, {
-		fetcher: async url => await fetchApiData<PatternsShapeMapItem[]>({ url }),
-	});
-
-	//
-	// D. Handle side effects and actions
-
-	useEffect(() => {
-		if (!fetchedPatternsData || missingAgencyIds.length === 0) return;
-
-		setPatternsByAgencyId((previousPatternsByAgencyId) => {
-			const nextPatternsByAgencyId = { ...previousPatternsByAgencyId };
-
-			for (const agencyId of missingAgencyIds) {
-				nextPatternsByAgencyId[agencyId] = fetchedPatternsData?.data?.filter((pattern) => {
-					return pattern.agency_id === agencyId;
-				});
-			}
-
-			return nextPatternsByAgencyId;
-		});
-
-		setLoadedAgencyIds((previousLoadedAgencyIds) => {
-			return Array.from(new Set([...previousLoadedAgencyIds, ...missingAgencyIds]));
-		});
-	}, [fetchedPatternsData, missingAgencyIds]);
+	// B. Handle effects and actions
 
 	useEffect(() => {
 		setHighlightedPatternIds([]);
@@ -139,15 +88,7 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	};
 
 	//
-	// E. Transform data
-
-	const patternsData = useMemo(() => {
-		return agencyIds.flatMap(agencyId => patternsByAgencyId[agencyId] ?? []);
-	}, [agencyIds, patternsByAgencyId]);
-
-	// Keep loading until agency defaults are ready and every selected agency's
-	// response has been applied to the cache, including successful empty results.
-	const patternsLoading = linesListContext.flags.agenciesLoading || patternsRequestLoading || (!patternsError && missingAgencyIds.length > 0);
+	// C. Return context value
 
 	const contextValue: LinesOverviewContextState = useMemo(() => ({
 		actions: {
@@ -169,7 +110,7 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	}), [highlightedPatternIds, hoverInfo, popupInfo, patternsData, patternsError, patternsLoading, linesListContext.filters.agencies.set, setHighlightedPatternIds, setHoverInfo, setPopupInfo]);
 
 	//
-	// F. Render components
+	// D. Render components
 
 	return (
 		<LinesOverviewContext.Provider value={contextValue}>

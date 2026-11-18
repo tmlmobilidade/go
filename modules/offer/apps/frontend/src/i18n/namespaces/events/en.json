@@ -1,0 +1,11 @@
+{
+	"detail": {
+		"EventsDetailPatternsMenu": {
+			"error": "Could not load associated patterns.",
+			"loading": "Loading associated patterns…",
+			"no_patterns": "No associated patterns",
+			"patterns": "Associated patterns",
+			"view_patterns": "View associated patterns"
+		}
+	}
+}

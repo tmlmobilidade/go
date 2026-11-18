@@ -6,24 +6,21 @@ import { IconCirclePlus, IconX } from '@tabler/icons-react';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { IconButton, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 import { ShapeEditorStopSelect } from '../ShapeEditorStopSelect';
 
 /* * */
 
-function SegmentInfo({ afterStopId, beforeStopId, distance }: {
-	afterStopId: string
-	beforeStopId: string
-	distance: number
-}) {
-	const stopsEditorContext = useStopsEditorContext();
-	const isLoading = stopsEditorContext.flags.isLoadingRoute;
+function SegmentInfo({ afterPathItemId, beforePathItemId, distance }: { afterPathItemId: string, beforePathItemId: string,	distance: number }) {
+	const shapeEditorContext = useShapeEditorContext();
+	const isLoading = shapeEditorContext.flags.isLoadingRoute;
 
-	const anchorCount = stopsEditorContext.data.anchors?.filter(
-		a => a.after_stop_id === afterStopId && a.before_stop_id === beforeStopId,
+	const anchorCount = shapeEditorContext.data.anchors?.filter(
+		a => a.after_path_item_id === afterPathItemId && a.before_path_item_id === beforePathItemId,
 	).length ?? 0;
 
 	return (
@@ -49,6 +46,7 @@ export function StopsListRow({ index, isAdding, nextPathItem, onAdd, onCancel, o
 	//
 	// A. Render components
 
+	const { t } = useTranslation();
 	return (
 		<div className={styles.connectionInfo}>
 			{isAdding ? (
@@ -65,7 +63,7 @@ export function StopsListRow({ index, isAdding, nextPathItem, onAdd, onCancel, o
 						color="var(--color-system-text-200)"
 						icon={<IconX size={16} />}
 						onClick={onCancel}
-						tooltip="Cancelar"
+						tooltip={t('patterns:shape.StopsListRow.cancel')}
 					/>
 				</>
 			) : (
@@ -74,13 +72,13 @@ export function StopsListRow({ index, isAdding, nextPathItem, onAdd, onCancel, o
 						color="var(--color-system-text-200)"
 						icon={<IconCirclePlus size={16} />}
 						onClick={() => onAdd(index)}
-						tooltip="Adicionar paragem"
+						tooltip={t('patterns:shape.StopsListRow.add_stop')}
 					/>
 
 					{nextPathItem && (
 						<SegmentInfo
-							afterStopId={pathItem.stop_id}
-							beforeStopId={nextPathItem.stop_id}
+							afterPathItemId={pathItem._id}
+							beforePathItemId={nextPathItem._id}
 							distance={nextPathItem.distance_delta ?? 0}
 						/>
 					)}

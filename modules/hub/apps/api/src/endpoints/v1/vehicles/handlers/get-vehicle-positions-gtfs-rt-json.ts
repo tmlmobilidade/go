@@ -1,46 +1,16 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { readOrganizationGtfs } from '@/utils/organization-gtfs.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type GtfsRtFeedMessage } from '@tmlmobilidade/go-types-gtfs-rt';
 
-/**
- * Retrieves the vehicle positions GTFS RT JSON data from the cache.
- * @param request The request object.
- * @param reply The reply object.
- */
-export async function getVehiclePositionsGtfsRtJsonHandler(request: FastifyRequest, reply: FastifyReply<unknown>) {
+/** Return the merged organization GTFS-RT feed. */
+export async function getVehiclePositionsGtfsRtJsonHandler(request: FastifyRequest, reply: FastifyReply<GtfsRtFeedMessage>) {
 	//
 
 	//
-	// Get the published data from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get('hub:v1:realtime:vehicles:positions:gtfs');
-
-	if (!cachedData) {
-		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsGtfsRtJsonHandler()] No cached data found for vehicles positions' });
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
-			.code(HTTP_STATUS.NO_CONTENT)
-			.send({
-				data: [],
-				error: null,
-				status_code: HTTP_STATUS.NO_CONTENT,
-			});
-	}
-
-	//
-	// Return the parsed data
-
-	return reply
-		.header('access-control-allow-origin', '*')
-		.header('cache-control', 'public, max-age=3')
-		.code(HTTP_STATUS.OK)
-		.send({
-			data: JSON.parse(cachedData),
-			error: null,
-			status_code: HTTP_STATUS.OK,
-		});
+	const feed = await readOrganizationGtfs(request, 'realtime:vehicles:positions:gtfs');
+	return sendSuccessApiResponse(reply, feed, { max_age: '3s' });
 }

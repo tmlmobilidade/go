@@ -3,6 +3,9 @@
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
 import { Section, SegmentedMultiSelect, SelectChipGroup, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { RuleAsteriskField } from '../../shared/RuleAsteriskField';
 
 /* * */
 
@@ -27,6 +30,7 @@ export function RuleCreatePeriods() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
 	const { data: periodsData } = usePeriodsContext();
 
@@ -40,17 +44,17 @@ export function RuleCreatePeriods() {
 	//
 	// B. Handle actions
 
-	const currentPeriodIds = createRuleContext.data.form.values.year_period_ids || [];
+	const currentPeriodIds = createRuleContext.data.values.year_period_ids || [];
 	const selectedPresetKey = getSelectedPresetKey(currentPeriodIds, allPeriodIds);
 
 	const applyPreset = (key: null | PeriodPresetKey) => {
 		if (!key) {
-			createRuleContext.data.form.setFieldValue('year_period_ids', []);
+			createRuleContext.form.setValue('year_period_ids', [], { shouldDirty: true, shouldValidate: true });
 			return;
 		}
 
 		// select all
-		createRuleContext.data.form.setFieldValue('year_period_ids', [...allPeriodIds]);
+		createRuleContext.form.setValue('year_period_ids', [...allPeriodIds], { shouldDirty: true, shouldValidate: true });
 	};
 
 	//
@@ -59,8 +63,12 @@ export function RuleCreatePeriods() {
 	return (
 		<Section gap="md">
 			<Section gap="xs" padding="none">
-				<Text>Períodos</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">Se não selecionar, aplica-se a todos os períodos do evento</Text>}
+				<RuleAsteriskField withAsterisk={!createRuleContext.flags.isEventExceptionEnabled}>
+					{t('default:scheduling.copy.periods')}
+				</RuleAsteriskField>
+				<Text c="dimmed" size="sm">
+					{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:patterns.create.RuleCreatePeriods.optional_hint' : 'default:patterns.create.RuleCreatePeriods.required_hint')}
+				</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -68,14 +76,14 @@ export function RuleCreatePeriods() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
+					{ label: t('default:scheduling.copy.all'), value: 'all' },
 				]}
 			/>
 
 			<SegmentedMultiSelect
 				value={currentPeriodIds}
 				onChange={(selectedPeriods) => {
-					createRuleContext.data.form.setFieldValue('year_period_ids', selectedPeriods);
+					createRuleContext.form.setValue('year_period_ids', selectedPeriods, { shouldDirty: true, shouldValidate: true });
 				}}
 				options={PERIOD_OPTIONS.map(o => ({
 					ariaLabel: o.label,
@@ -83,6 +91,12 @@ export function RuleCreatePeriods() {
 					value: o.value,
 				}))}
 			/>
+			{createRuleContext.form.formState.errors.year_period_ids?.message && (
+				<Text c="var(--color-status-danger-primary)">
+					{t('default:scheduling.copy.selectPeriod')}
+				</Text>
+			)}
+
 		</Section>
 	);
 }

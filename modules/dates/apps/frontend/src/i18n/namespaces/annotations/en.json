@@ -1,0 +1,104 @@
+{
+	"AnnotationsCategorySelect": {
+		"label": "Category",
+		"description": "Classify the event by what happened. This does not identify who caused it or change who can view it.",
+		"no_results": "No categories found"
+	},
+	"AnnotationsImpactInput": {
+		"label": "Operational or data impact",
+		"description": "Describe the observed effects on services or data, separately from what happened.",
+		"placeholder": "E.g. Delays on affected lines and missing real-time messages"
+	},
+	"AnnotationsLocationsSelect": {
+		"label": "Geographic scope",
+		"description": "Select one or more countries, districts or regions, municipalities, or parishes from the available hierarchy. Each checked place is saved as selected; selecting a country does not select every locality. Locations describe where the event occurred and do not change affected operators or visibility.",
+		"load_error": "Locations could not be loaded. Saved selections have been kept.",
+		"retry": "Retry loading locations"
+	},
+	"categories": {
+		"uncategorized": "Uncategorized",
+		"values": {
+			"weather": "Weather",
+			"accident": "Accident",
+			"roadworks_restrictions": "Roadworks and restrictions",
+			"strike_worker_meeting": "Strikes and worker meetings",
+			"public_event_protest": "Public events and protests",
+			"technology_data_failure": "Technology and data failures",
+			"transport_disruption": "Transport disruptions",
+			"school_calendar_change": "School and calendar changes",
+			"fare_policy_change": "Fare and policy changes",
+			"other": "Other"
+		}
+	},
+	"list": {
+		"AnnotationsList": {
+			"category": "Category",
+			"locations": "Location"
+		},
+		"AnnotationsListFilterCategories": {
+			"label": "Category"
+		},
+		"AnnotationsListCellLocations": {
+			"empty": "No location"
+		},
+		"AnnotationsListFilterLocations": {
+			"label": "Location",
+			"empty": "No location",
+			"description": "Includes contained places and broader geographic scopes.",
+			"clear": "Clear selection"
+		},
+		"AnnotationsListFilterDates": {
+			"label": "Dates",
+			"start": "From",
+			"end": "To",
+			"placeholder": "Select a date"
+		},
+		"AnnotationsEmptyState": {
+			"title": "Annotations",
+			"description": "Annotations record events that help explain changes in transport operations and data, such as weather conditions, strikes, accidents or technology failures.",
+			"context": "Each event brings together dates, locations, operators, sources and observed impacts, preserving context for analysis and follow-up."
+		},
+		"AnnotationsListExport": {
+			"title": "Export annotations",
+			"version": "Version"
+		},
+		"AnnotationsListHeaderMenu": {
+			"export": "Export CSV"
+		},
+		"AnnotationsListExportProperties": {
+			"operators": "Operators",
+			"all_operators": "All operators",
+			"categories": "Categories",
+			"all_categories": "All categories",
+			"locations": "Location",
+			"all_locations": "All locations"
+		},
+		"AnnotationsListExportDates": {
+			"start": "Start date",
+			"end": "End date",
+			"placeholder": "No limit"
+		},
+		"AnnotationsListExportFooter": {
+			"submit": "Export"
+		}
+	},
+	"AnnotationsDatesSelect": {
+		"prompt": "Select occurrence dates",
+		"remove_month": "Remove month",
+		"select_month": "Select month"
+	},
+	"AnnotationsSourcesInput": {
+		"label": "Sources",
+		"description": "Add news articles, emails or other references. Each source needs a name or a URL.",
+		"empty": "No sources added",
+		"add": "Add source"
+	},
+	"AnnotationsSourceRow": {
+		"name": "Name or reference",
+		"name_placeholder": "E.g. Strike news article or email subject",
+		"url": "URL (optional)",
+		"open": "Open source",
+		"remove": "Remove source",
+		"url_placeholder": "https://…"
+	}
+}

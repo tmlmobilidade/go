@@ -3,6 +3,7 @@
 import { type UnixMilliseconds } from '@/datetime/unix-millis.js';
 import { BaseDocumentSchema } from '@/documents/document.js';
 import { type ApprovalStatus, ApprovalStatusSchema } from '@/status/approval.js';
+import { partialWithoutDefaults } from '@/utils/partial-without-defaults.js';
 import { z } from 'zod';
 
 /* * */
@@ -16,7 +17,7 @@ export type Scope = z.infer<typeof ScopeSchema>;
 // Define schemas using constants
 
 export const ProposedChangeSchema = BaseDocumentSchema.extend({
-	curr_value: z.any(),
+	curr_value: z.any().optional(),
 	field: z.string(),
 	related_id: z.string(),
 	scope: ScopeSchema,
@@ -42,7 +43,7 @@ export type ProposedChange<T> = {
 }[keyof T];
 
 export const CreateProposedChangeSchema = ProposedChangeSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateProposedChangeSchema = CreateProposedChangeSchema.omit({ created_by: true }).partial();
+export const UpdateProposedChangeSchema = partialWithoutDefaults(CreateProposedChangeSchema.omit({ created_by: true }));
 
 export type CreateProposedChangeDto<T> = Omit<ProposedChange<T>, '_id' | 'created_at' | 'updated_at'>;
 export type UpdateProposedChangeDto<T> = Omit<CreateProposedChangeDto<T>, 'created_by'>;

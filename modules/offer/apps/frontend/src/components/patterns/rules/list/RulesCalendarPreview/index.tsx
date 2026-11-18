@@ -1,14 +1,19 @@
 'use client';
 
+import { RulesDrawerLayout } from '@/components/patterns/rules/shared/RulesDrawerLayout';
+import { useAnnotationsContext } from '@/contexts/Annotations.context';
 import { useEventsContext } from '@/contexts/Events.context';
 import { useHolidaysContext } from '@/contexts/Holidays.context';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { IconArrowBarToLeft, IconArrowBarToRight } from '@tabler/icons-react';
-import { buildAffectedDaysDetails, calendarKey, CalendarKey, Dates, datesFromCalendarKey, FORMATS } from '@tmlmobilidade/dates';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type HHMM, type ScheduleRule } from '@tmlmobilidade/go-types-offer';
-import { type CalendarEvent } from '@tmlmobilidade/types';
-import { CloseButton, DayPeriodsTimepoints, Divider, EventsCalendar, Pane, Section, Surface, Text } from '@tmlmobilidade/ui';
+import { CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { Dates, datesFromCalendarKey } from '@tmlmobilidade/go-utils-dates';
+import { buildAffectedDaysDetails } from '@tmlmobilidade/go-utils-offer';
+import { buildCalendarScheduleRuleImpactEvents, CalendarSchedule, CalendarScheduleSources, DayPeriodsTimepoints, Divider, isCalendarSchedulePayload, Pane, ScheduleEventData, Section, Surface, Text } from '@tmlmobilidade/ui';
+import { useLocaleContext } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -18,30 +23,33 @@ import { RulesGroup } from '../RulesCalendarPreviewRulesGroup';
 /* * */
 
 interface RulesCalendarPreviewProps {
-	patternCode: string
 	rules: ScheduleRule[]
 }
 
 /* * */
 
-export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPreviewProps) {
+export function RulesCalendarPreview({ rules }: RulesCalendarPreviewProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-	const [selectedDate, setSelectedDate] = useState<CalendarKey | null>(null);
-
-	const [previewYear, setPreviewYear] = useState(Dates.now('Europe/Lisbon').js_date.getFullYear());
-
-	const periodsContext = usePeriodsContext();
+	const { t } = useTranslation();
+	const localeContext = useLocaleContext();
+	const annotationsContext = useAnnotationsContext();
 	const eventsContext = useEventsContext();
 	const holidaysContext = useHolidaysContext();
+	const periodsContext = usePeriodsContext();
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(null);
+	const [visibleDate, setVisibleDate] = useState<CalendarDate>(() => Dates.now('local').calendar_date);
+	const previewYear = Number(visibleDate.slice(0, 4));
 	const periods = periodsContext.data.raw;
 	const holidays = holidaysContext.data.raw;
 
-	// Compute which dates are affected by rules with their details
+	//
+	// B. Transform data
+
 	const affectedDaysMap = useMemo(() => {
 		const startOfYear = Dates.fromISO(`${previewYear}-01-01`);
 		const endOfYear = Dates.fromISO(`${previewYear}-12-31`);
@@ -50,22 +58,18 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 		});
 	}, [eventsContext.data.raw, rules, periods, holidays, previewYear]);
 
-	// Convert affected dates to calendar events for visualization
-	const calendarEvents = useMemo(() => {
-		const events: CalendarEvent[] = Array.from(affectedDaysMap.keys()).map(key => ({
-			color: 'var(--color-background)',
-			display: 'cell' as const,
-			endDate: key,
-			id: `rule-impact:${key}`,
-			startDate: key,
-			title: 'Dia afetado por regras',
-			type: 'rule-impact' as const,
-		}));
+	const ruleImpactEvents = useMemo(
+		() => buildCalendarScheduleRuleImpactEvents(Array.from(affectedDaysMap.keys())),
+		[affectedDaysMap],
+	);
 
-		return events;
-	}, [affectedDaysMap]);
+	const sources = useMemo<CalendarScheduleSources>(() => ({
+		annotations: annotationsContext.data.raw,
+		events: eventsContext.data.raw,
+		holidays: holidaysContext.data.raw,
+		yearPeriods: periodsContext.data.raw,
+	}), [annotationsContext.data.raw, eventsContext.data.raw, holidaysContext.data.raw, periodsContext.data.raw]);
 
-	// Get detailed explanation for selected date
 	const selectedDayDetails = useMemo(() => {
 		if (!selectedDate) return null;
 		return affectedDaysMap.get(selectedDate) || null;
@@ -74,113 +78,128 @@ export function RulesCalendarPreview({ patternCode, rules }: RulesCalendarPrevie
 	const formattedSelectedDate = useMemo(() => {
 		if (!selectedDate) return '';
 		const date = datesFromCalendarKey(selectedDate);
-		return date.toLocaleString(FORMATS.DATE_HUGE, 'pt-PT');
-	}, [selectedDate]);
+		const locale = localeContext.data.locale;
+		const label = date.toLocaleString({ day: 'numeric', month: 'long', weekday: 'long', year: 'numeric' }, locale);
+		return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1);
+	}, [localeContext.data.locale, selectedDate]);
 
 	//
-	// B. Handle interactions
+	// C. Handle actions
 
-	const handleDayClick = (date: Dates) => {
-		const key = calendarKey(date);
-		const isAffectedDay = affectedDaysMap.has(key);
+	const handleVisibleDateChange = (value: string) => {
+		const date = toCalendarDate(value.slice(0, 10));
+		if (date.slice(0, 4) !== visibleDate.slice(0, 4)) {
+			setSelectedDate(null);
+			setIsDrawerOpen(false);
+		}
+		setVisibleDate(date);
+	};
+
+	const handleDayClick = (value: string) => {
+		const date = toCalendarDate(value.slice(0, 10));
+		const isAffectedDay = affectedDaysMap.has(date);
 
 		if (isAffectedDay) {
-			setSelectedDate(key);
+			setSelectedDate(date);
 			setIsDrawerOpen(true);
 		}
 	};
 
+	const handleEventClick = (event: ScheduleEventData) => {
+		if (!isCalendarSchedulePayload(event.payload)) return;
+
+		let route: string | undefined;
+
+		if (event.payload.type === 'annotation') route = PAGE_ROUTES.dates.ANNOTATIONS_DETAIL(event.payload.sourceId);
+		if (event.payload.type === 'holiday') route = PAGE_ROUTES.dates.HOLIDAYS_DETAIL(event.payload.sourceId);
+		if (event.payload.type === 'event') route = PAGE_ROUTES.offer.EVENTS_DETAIL(event.payload.sourceId);
+		if (event.payload.type === 'period') route = PAGE_ROUTES.offer.YEAR_PERIODS_DETAIL(event.payload.sourceId);
+
+		if (route) window.open(route, '_blank', 'noopener,noreferrer');
+	};
+
 	const handleCloseDrawer = () => {
 		setIsDrawerOpen(false);
+		setSelectedDate(null);
 	};
 
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
-		<div className={styles.container}>
-			{/* Sidebar Toggle */}
-			<div className={styles.sidebar} onClick={() => isDrawerOpen ? handleCloseDrawer() : setIsDrawerOpen(true)}>
-				<div className={styles.sidebarContent}>
-					{isDrawerOpen ? <IconArrowBarToRight /> : <IconArrowBarToLeft />}
-				</div>
-			</div>
+		<RulesDrawerLayout
+			drawerHeader={<Text weight="semibold">{formattedSelectedDate}</Text>}
+			drawerSize="compact"
+			isAvailable={Boolean(selectedDayDetails)}
+			isOpen={isDrawerOpen}
+			onClose={handleCloseDrawer}
+			onOpen={() => setIsDrawerOpen(true)}
+			toggleLabel={formattedSelectedDate}
+			drawerContent={selectedDayDetails && (
+				<>
+					{/* Time Points Summary */}
+					<Surface className={styles.daySummary}>
+						<Section gap="sm">
+							<Text size="lg" weight="semibold">
+								{t('default:scheduling.copy.activeTimepointCount', '', { count: selectedDayDetails.finalTimePoints.length })}
+							</Text>
+							<Divider />
+							<DayPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints as HHMM[]} />
+						</Section>
+					</Surface>
 
-			{/* Main Content */}
-			<div className={styles.mainContent}>
-				<Pane header={[<RulesCalendarPreviewHeader key="header" patternCode={patternCode} />]}>
-					<EventsCalendar
-						additionalEvents={calendarEvents}
-						initialView="year"
-						onDayClick={handleDayClick}
-						onYearChange={year => setPreviewYear(year)}
-						showSidebar={false}
-					/>
-				</Pane>
-			</div>
+					{/* Applied Rules Details */}
+					<Surface overflow="visible">
+						<Section gap="sm">
+							<Text size="lg" weight="semibold">{t('default:scheduling.copy.appliedRules')}</Text>
+							<Divider />
 
-			{/* Backdrop Overlay */}
-			{isDrawerOpen && <div className={styles.backdrop} onClick={handleCloseDrawer} />}
+							{selectedDayDetails.replacementRules.length > 0 && (
+								<RulesGroup
+									excludedTimePoints={selectedDayDetails.excludedTimePoints}
+									includeRules={selectedDayDetails.includeRules}
+									kind="replacement"
+									rules={selectedDayDetails.replacementRules}
+								/>
+							)}
 
-			{/* Drawer - shows details for selected date */}
-			<div className={`${styles.drawer} ${isDrawerOpen ? styles.drawerOpen : ''}`}>
-				<div className={styles.drawerHeader}>
-					<CloseButton onClick={handleCloseDrawer} type="close" />
-					<Text weight="semibold">{formattedSelectedDate}</Text>
-				</div>
+							<RulesGroup
+								excludedTimePoints={selectedDayDetails.excludedTimePoints}
+								includeRules={selectedDayDetails.includeRules}
+								kind="include"
+								rules={selectedDayDetails.includeRules}
+							/>
 
-				<div className={styles.drawerContent}>
-					{selectedDayDetails ? (
-						<>
-							{/* Time Points Summary */}
-							<Surface style={{ flexShrink: 0 }}>
-								<Section gap="sm">
-									<Text size="lg" weight="semibold">
-										{selectedDayDetails.finalTimePoints.length} horários ativos
-									</Text>
-									<Divider />
-									<DayPeriodsTimepoints timepoints={selectedDayDetails.finalTimePoints as HHMM[]} />
-								</Section>
-							</Surface>
-
-							{/* Applied Rules Details */}
-							<Surface overflow="auto">
-								<Section gap="sm">
-									<Text size="lg" weight="semibold">Regras Aplicadas</Text>
-									<Divider />
-
-									{selectedDayDetails.replacementRules.length > 0 && (
-										<RulesGroup
-											excludedTimePoints={selectedDayDetails.excludedTimePoints}
-											includeRules={selectedDayDetails.includeRules}
-											kind="replacement"
-											rules={selectedDayDetails.replacementRules}
-										/>
-									)}
-
-									<RulesGroup
-										excludedTimePoints={selectedDayDetails.excludedTimePoints}
-										includeRules={selectedDayDetails.includeRules}
-										kind="include"
-										rules={selectedDayDetails.includeRules}
-									/>
-
-									<RulesGroup
-										excludedTimePoints={selectedDayDetails.excludedTimePoints}
-										includeRules={selectedDayDetails.includeRules}
-										kind="exclude"
-										rules={selectedDayDetails.excludeRules}
-									/>
-								</Section>
-							</Surface>
-						</>
-					) : (
-						<div className={styles.emptyState}>
-							<Text c="muted">Selecione um dia no calendário</Text>
-						</div>
-					)}
-				</div>
-			</div>
-		</div>
+							<RulesGroup
+								excludedTimePoints={selectedDayDetails.excludedTimePoints}
+								includeRules={selectedDayDetails.includeRules}
+								kind="exclude"
+								rules={selectedDayDetails.excludeRules}
+							/>
+						</Section>
+					</Surface>
+				</>
+			)}
+			overlaySidebar
+		>
+			<Pane
+				header={[
+					<RulesCalendarPreviewHeader key="header" affectedDayCount={affectedDaysMap.size} />,
+				]}
+			>
+				<CalendarSchedule
+					date={visibleDate}
+					events={ruleImpactEvents}
+					locale={localeContext.data.locale}
+					onDateChange={handleVisibleDateChange}
+					onDayClick={handleDayClick}
+					onEventClick={handleEventClick}
+					sources={sources}
+					view="year"
+					yearPeriodDisplay="muted"
+					yearViewProps={{ viewSelectProps: { views: ['year'] } }}
+				/>
+			</Pane>
+		</RulesDrawerLayout>
 	);
 }

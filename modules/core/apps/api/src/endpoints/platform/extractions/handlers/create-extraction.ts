@@ -31,7 +31,9 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 	//
 	// Validate the request body
 
-	const validatedRequestBody = ExtractionCreateSchema.parse(request.body);
+	const validatedRequestBodyResult = ExtractionCreateSchema.safeParse(request.body);
+	if (!validatedRequestBodyResult.success) return sendErrorApiResponse(reply, { error: validatedRequestBodyResult.error, status_code: '400' });
+	const validatedRequestBody = validatedRequestBodyResult.data;
 
 	//
 	// Insert a new extraction into the database
@@ -53,5 +55,5 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 
 	const foundExtractions = await getUserExtractions(request.me._id);
 
-	sendSuccessApiResponse(reply, foundExtractions ?? []);
+	return sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

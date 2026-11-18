@@ -1,0 +1,34 @@
+.title {
+	margin: 0 0 var(--size-spacing-xs);
+	font-size: clamp(24px, 2.4vw, 34px);
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+}
+.lock {
+	display: flex;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+	padding-inline-end: var(--size-spacing-sm);
+	border-inline-end: 1px solid var(--color-system-border-200);
+}
+
+.main {
+	min-width: 0;
+}
+
+.main > :last-child {
+	flex: 1;
+}
+
+.card[data-variant='default'] {
+	min-width: 0;
+	border-radius: var(--border-radius-md);
+	box-shadow: none;
+}
+
+.cardTitle {
+	margin: 0;
+	font-size: clamp(20px, 1.9vw, 28px);
+	font-weight: var(--font-weight-bold);
+	line-height: 1.2;
+}

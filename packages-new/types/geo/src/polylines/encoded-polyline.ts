@@ -1,5 +1,6 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 import { type Latitude, LatitudeSchema } from '../geojson/base/latitude.js';
@@ -21,7 +22,7 @@ export type EncodedPolyline = string & {
  */
 export const EncodedPolylineSchema = z
 	.string()
-	.refine(isEncodedPolyline, { message: 'Invalid encoded polyline' })
+	.refine(isEncodedPolyline, { ...validationParams('custom.geo.encoded_polyline') })
 	.transform(value => value as EncodedPolyline);
 
 /**

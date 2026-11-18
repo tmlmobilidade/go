@@ -42,9 +42,13 @@ export function AnnotationsCreateFormContextProvider({ children }: PropsWithChil
 	const { form, isDirty, unblock } = useStandardForm<CreateAnnotationDto, typeof CreateAnnotationSchema>({
 		defaultValues: {
 			agency_ids: [],
+			category: null,
 			dates: [],
 			description: '',
+			impact: '',
 			is_locked: false,
+			locations: [],
+			sources: [],
 			title: '',
 		},
 		schema: CreateAnnotationSchema,

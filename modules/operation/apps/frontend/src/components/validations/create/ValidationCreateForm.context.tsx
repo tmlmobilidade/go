@@ -6,7 +6,8 @@ import { type ValidationCreateItem, ValidationCreateItemSchema } from '@tmlmobil
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { fetchApiMultipart, keepUrlParams, type SelectDataItem, type StandardFormContextValue, toAgencySelectItem, useHandleAction, useStandardForm, useStandardFormCapabilities, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useValidationsListData } from '../list/use-validations-list-data';
 import { useGtfsValidationsAgenciesData } from '../shared/use-gtfs-validations-agencies-data';
@@ -52,6 +53,9 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 	// A. Setup variables
 
 	const router = useRouter();
+	const { i18n } = useTranslation();
+	const localeRef = useRef(i18n.resolvedLanguage ?? i18n.language);
+	localeRef.current = i18n.resolvedLanguage ?? i18n.language;
 
 	const { mutate } = useValidationsListData();
 
@@ -95,7 +99,9 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 
 	const handleWorkerMessage = useCallback((event: MessageEvent<WorkerMessage>) => {
 		if (event.data.error) {
-			setValidationError(event.data.error);
+			setGtfsAgencyCode(null);
+			setSelectedAgencyId(null);
+			setValidationError(new Error(event.data.error.message));
 			useToast.error({ message: event.data.error.message, title: 'Erro ao criar Validação' });
 			return;
 		}
@@ -186,7 +192,7 @@ export function ValidationCreateContextProvider({ children }: PropsWithChildren)
 
 		const worker = new Worker(new URL('@/workers/gtfs-info.worker.ts', import.meta.url));
 		worker.onmessage = handleWorkerMessage;
-		worker.postMessage({ file: validationFile });
+		worker.postMessage({ file: validationFile, locale: localeRef.current });
 
 		return () => {
 			worker.terminate();

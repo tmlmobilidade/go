@@ -11,6 +11,8 @@ import { CloseButton, DeleteButton, HasPermission, IdTag, keepUrlParams, Lifecyc
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
+import { StopsDetailPatternsMenu } from '../StopsDetailPatternsMenu';
+
 /* * */
 
 export function StopsDetailHeader() {
@@ -60,6 +62,8 @@ export function StopsDetailHeader() {
 			<Text size="base" weight="semibold">{nameValue}</Text>
 
 			<Spacer />
+
+			<StopsDetailPatternsMenu />
 
 			<HasPermission
 				action={PermissionCatalog.all.stops.actions.update}

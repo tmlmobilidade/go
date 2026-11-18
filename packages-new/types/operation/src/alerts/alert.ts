@@ -4,10 +4,12 @@ import { AlertCauseSchema } from '@/alerts/cause.js';
 import { AlertEffectSchema } from '@/alerts/effect.js';
 import { AlertReferenceTypeSchema } from '@/alerts/reference-type.js';
 import { AlertReferenceSchema } from '@/alerts/reference.js';
-import { BaseDocumentSchema, PublishStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults, PublishStatusSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
+
+const AlertCoordinatesSchema: z.ZodType<[number, number], [number, number]> = z.tuple([z.number(), z.number()]);
 
 export const AlertSchema = BaseDocumentSchema.extend({
 	active_period_end_date: UnixMillisecondsSchema.nullable().default(null),
@@ -15,7 +17,7 @@ export const AlertSchema = BaseDocumentSchema.extend({
 	agency_id: z.string(),
 	auto_texts: z.boolean().default(true),
 	cause: AlertCauseSchema,
-	coordinates: z.tuple([z.number(), z.number()]).nullable().default(null),
+	coordinates: AlertCoordinatesSchema.nullable().default(null),
 	description: z.string(),
 	effect: AlertEffectSchema,
 	external_id: z.string().nullable().default(null),
@@ -32,7 +34,7 @@ export const AlertSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateAlertSchema = AlertSchema.omit({ _id: true, created_at: true, created_by: true, updated_at: true, updated_by: true });
-export const UpdateAlertSchema = CreateAlertSchema.partial();
+export const UpdateAlertSchema = partialWithoutDefaults(CreateAlertSchema);
 
 export type Alert = z.infer<typeof AlertSchema>;
 export type CreateAlertDto = z.infer<typeof CreateAlertSchema>;

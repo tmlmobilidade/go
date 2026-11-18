@@ -26,9 +26,10 @@ export interface ListHeaderProps {
 
 	/**
 	 * The number of rows in the current view.
-	 * Zero until a count is available.
+	 * Zero until a count is available. Pass null to hide the counter.
 	 */
-	count?: number
+	count?: null | number
+	countTooltip?: string
 
 	/**
 	 * The component to render before the title,
@@ -49,7 +50,7 @@ export interface ListHeaderProps {
 
 /* * */
 
-export function ListHeader({ actions, activity, count, leading, search, title }: ListHeaderProps) {
+export function ListHeader({ actions, activity, count, countTooltip, leading, search, title }: ListHeaderProps) {
 	//
 
 	//
@@ -71,9 +72,11 @@ export function ListHeader({ actions, activity, count, leading, search, title }:
 
 			<Label size="lg" caps singleLine>{title}</Label>
 
-			<Tooltip label={t('shared:components.layout.ListHeader.countTooltip')} position="bottom" withArrow>
-				<Label size="md" variant="muted" singleLine>{`(${countLabel})`}</Label>
-			</Tooltip>
+			{count !== null && (
+				<Tooltip label={countTooltip ?? t('shared:components.layout.ListHeader.countTooltip')} position="bottom" withArrow>
+					<Label size="md" variant="muted" singleLine>{`(${countLabel})`}</Label>
+				</Tooltip>
+			)}
 
 			<div className={styles.gap} />
 

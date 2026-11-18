@@ -118,6 +118,13 @@
 			},
 			"not_available": "N/A"
 		},
+		"StopsDetailPatternsMenu": {
+			"error": "Could not load associated patterns.",
+			"loading": "Loading associated patterns…",
+			"no_patterns": "No associated patterns",
+			"patterns": "Associated patterns",
+			"view_patterns": "View associated patterns"
+		},
 		"StopsDetailSectionFlagItem": {
 			"fields": {
 				"agency_ids": {
@@ -257,6 +264,10 @@
 					"label": "Agency",
 					"placeholder": "No filter"
 				},
+				"coordinates": {
+					"description": "Latitude, longitude inherited from the list filter. Fixed radius of 100 m.",
+					"label": "Coordinates"
+				},
 				"location_neighbourhood_ids": {
 					"label": "Locality",
 					"placeholder": "No filter"
@@ -291,6 +302,10 @@
 				"agency_ids": {
 					"label": "Agency",
 					"placeholder": "No filter"
+				},
+				"coordinates": {
+					"description": "Latitude, longitude inherited from the list filter. Fixed radius of 100 m.",
+					"label": "Coordinates (100 m)"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Locality",
@@ -340,6 +355,12 @@
 				"subway": "Metro",
 				"train": "Train"
 			}
+		},
+		"StopsListFilterCoordinates": {
+			"description": "Latitude, longitude in decimal degrees. Fixed radius of 100 m.",
+			"invalid": "Invalid coordinates. Use latitude (-90 to 90), longitude (-180 to 180), separated by a comma.",
+			"label": "Coordinates",
+			"placeholder": "E.g.: 38.7223, -9.1393"
 		},
 		"StopsListFilterFacilities": {
 			"label": "Facilities",

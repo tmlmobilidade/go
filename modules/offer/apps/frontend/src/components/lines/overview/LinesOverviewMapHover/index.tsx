@@ -1,11 +1,11 @@
 'use client';
 
 import { useLinesOverviewContext } from '@/components/lines/overview/LinesOverview.context';
-import { PatternShapeMapFeatureProperties } from '@/types/lines-overview';
 import { areStringArraysEqual, getPatternFeaturesAtEvent } from '@/utils/lines-overview';
 import { useMapViewContext } from '@tmlmobilidade/ui';
 import { type MapMouseEvent, Marker } from '@vis.gl/react-maplibre';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -15,18 +15,13 @@ const HOVER_INTENT_DELAY_MS = 120;
 
 /* * */
 
-function getStackLabel(features: PatternShapeMapFeatureProperties[]) {
-	const lineCount = new Set(features.map(feature => feature.line_id)).size;
-	if (lineCount === features.length) return `${lineCount} ${lineCount === 1 ? 'linha' : 'linhas'}`;
-	return `${features.length} ${features.length === 1 ? 'pattern' : 'patterns'} em ${lineCount} ${lineCount === 1 ? 'linha' : 'linhas'}`;
-}
-
 export function LinesOverviewMapHover() {
 	//
 
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const linesOverviewContext = useLinesOverviewContext();
 	const mapViewContext = useMapViewContext();
 
@@ -38,6 +33,12 @@ export function LinesOverviewMapHover() {
 	const lastHoverPatternIdsRef = useRef<string[]>([]);
 	const pendingHoverPatternIdsRef = useRef<string[]>([]);
 	const hoverIntentTimeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
+
+	const features = hoverInfo?.features ?? [];
+	const lineCount = new Set(features.map(feature => feature.line_id)).size;
+	const stackLabel = lineCount === features.length
+		? t('lines:overview.LinesOverviewMapHover.line_count', { count: lineCount })
+		: t('lines:overview.LinesOverviewMapHover.pattern_line_count', { count: features.length, line_count: lineCount });
 
 	const shouldRenderHover = hoverInfo && !popupInfo;
 
@@ -133,7 +134,7 @@ export function LinesOverviewMapHover() {
 			offset={[0, -12]}
 		>
 			<div className={styles.tooltip}>
-				{getStackLabel(hoverInfo.features)}
+				{stackLabel}
 				<div className={styles.tip} />
 			</div>
 		</Marker>

@@ -5,6 +5,7 @@
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { closeCreateParameterModal } from '@/components/patterns/shape/parameters/create/ParameterCreate.modal';
 import { Button, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function ParameterCreateFooter() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const parameterCreateContext = useParameterCreateContext();
 
 	//
@@ -24,10 +26,10 @@ export function ParameterCreateFooter() {
 
 			<Spacer />
 
-			<Button label="Cancelar" onClick={closeCreateParameterModal} variant="danger" />
+			<Button label={t('default:scheduling.copy.cancel')} onClick={closeCreateParameterModal} variant="danger" />
 			<Button
-				disabled={!parameterCreateContext.data.form.isValid()}
-				label={parameterCreateContext.flags.isEditing ? 'Editar' : 'Criar'}
+				disabled={!parameterCreateContext.capabilities.createEnabled}
+				label={parameterCreateContext.flags.isEditing ? t('default:scheduling.copy.edit') : t('default:scheduling.copy.create')}
 				onClick={parameterCreateContext.actions.submitParameter}
 			/>
 

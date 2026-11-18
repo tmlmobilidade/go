@@ -8,6 +8,7 @@ import { deleteAnnotationHandler } from './handlers/delete-annotation.js';
 import { getAnnotationHandler } from './handlers/get-annotation.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listAnnotationsHandler } from './handlers/list-annotations.js';
+import { listLocationsHandler } from './handlers/list-locations.js';
 import { lockAnnotationHandler } from './handlers/lock-annotation.js';
 import { updateAnnotationHandler } from './handlers/update-annotation.js';
 
@@ -25,19 +26,25 @@ server.register(
 
 		instance.get(
 			'/list',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read]) },
+			{ preHandler: authorizationMiddleware() },
 			listAnnotationsHandler,
 		);
 
 		instance.get(
 			'/list-agencies',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read, PermissionCatalog.all.annotations.actions.create]) },
+			{ preHandler: authorizationMiddleware() },
 			listAgenciesHandler,
 		);
 
 		instance.get(
+			'/list-locations',
+			{ preHandler: authorizationMiddleware() },
+			listLocationsHandler,
+		);
+
+		instance.get(
 			'/:id',
-			{ preHandler: authorizationMiddleware(PermissionCatalog.all.annotations.scope, [PermissionCatalog.all.annotations.actions.read]) },
+			{ preHandler: authorizationMiddleware() },
 			getAnnotationHandler,
 		);
 

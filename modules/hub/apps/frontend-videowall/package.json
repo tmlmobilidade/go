@@ -21,7 +21,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/ui": "*",
 		"@tmlmobilidade/utils": "*",
-		"next": "16.4.3",
+		"next": "16.4.6",
 		"nuqs": "2.10.2",
 		"react": "19.3.1",
 		"react-dom": "19.3.1",

@@ -1,0 +1,37 @@
+{
+	"create": {
+		"RouteCreateBasicInfo": {
+			"code": "Código",
+			"code_example": "Ej.: 1234_0",
+			"line_example": "Ej.: Alfragide - Reboleira",
+			"name": "Nombre"
+		},
+		"RouteCreateHeader": {
+			"new_route": "Nueva ruta"
+		}
+	},
+	"detail": {
+		"RouteDetailHeader": {
+			"delete_route": "Eliminar ruta",
+			"delete_route_message": "¿Seguro que desea eliminar esta ruta? Esta acción no se puede deshacer."
+		},
+		"RouteDetailSectionConfig": {
+			"code": "Código",
+			"code_example": "Ej.: 1234_0",
+			"line_example": "Ej.: Alfragide - Reboleira",
+			"name": "Nombre",
+			"path_options": {
+				"base": "Ruta principal",
+				"partial": "Parcial",
+				"variant": "Variante"
+			},
+			"path_type": "Tipo de trayecto",
+			"route_config": "Configuración de la ruta"
+		},
+		"RouteDetailSectionPatterns": {
+			"add_pattern": "Añadir recorrido",
+			"patterns": "Recorridos",
+			"patterns_hint": "Todos los recorridos de esta ruta. Una ruta puede tener como máximo dos: ida y vuelta."
+		}
+	}
+}

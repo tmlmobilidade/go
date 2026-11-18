@@ -7,6 +7,7 @@ import { useForm } from '@tmlmobilidade/ui';
 import { type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { fetchData } from '@tmlmobilidade/utils';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -53,6 +54,7 @@ export const VkmModalContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const form = useForm<VkmModalFormValues>({
 		initialValues: {
 			agency_id: null,
@@ -86,9 +88,9 @@ export const VkmModalContextProvider = ({ children }: PropsWithChildren) => {
 		const payload: CalculateVkmDto = {
 			agency_id: values.agency_id,
 			calculation_method: values.calculation_method,
-			end_date: values.calculation_method === 'fixed_range' && values.end_date ? String(values.end_date) as CalculateVkmDto['start_date'] : null,
+			end_date: values.calculation_method === 'fixed_range' && values.end_date ? values.end_date : null,
 			extension_source: values.extension_source,
-			start_date: String(values.start_date) as CalculateVkmDto['start_date'],
+			start_date: values.start_date,
 		};
 
 		try {
@@ -98,16 +100,16 @@ export const VkmModalContextProvider = ({ children }: PropsWithChildren) => {
 			const response = await fetchData<VkmCalculationResult>(API_ROUTES.offer.VKM_CALCULATE, 'POST', payload);
 
 			if (response.error || !response.data) {
-				throw new HttpException(response.statusCode, response.error ?? 'Erro ao calcular VKM');
+				throw new HttpException(response.statusCode, response.error ?? t('lines:vkms.VkmModalContextProvider.calculation_error'));
 			}
 
 			setResult(response.data);
 		} catch (error) {
-			useToast.error({ message: error instanceof Error ? error.message : 'Erro ao calcular VKM', title: 'Erro' });
+			useToast.error({ message: error instanceof Error ? error.message : t('lines:vkms.VkmModalContextProvider.calculation_error'), title: t('lines:vkms.VkmModalContextProvider.error') });
 		} finally {
 			setLoading(false);
 		}
-	}, [form]);
+	}, [form, t]);
 
 	//
 	// C. Setup flags
