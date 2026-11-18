@@ -11,6 +11,6 @@ import (
 const langColumn = "agency_lang"
 
 // AgencyLangField checks agency_lang when the rule is configured at error severity.
-func AgencyLangField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyLangField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	return fields.CheckPresence(ctx, db, config, agencyTable, langColumn, false)
 }

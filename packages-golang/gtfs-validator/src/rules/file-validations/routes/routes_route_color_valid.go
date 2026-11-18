@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func RoutesRouteColorValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
+func (RoutesChecks) RoutesRouteColorValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }

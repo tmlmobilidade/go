@@ -11,6 +11,6 @@ import (
 const urlColumn = "agency_url"
 
 // AgencyURLField checks the required url field.
-func AgencyURLField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyURLField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	return fields.CheckPresence(ctx, db, config, agencyTable, urlColumn, true)
 }

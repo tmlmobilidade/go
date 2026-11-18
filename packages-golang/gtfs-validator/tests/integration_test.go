@@ -95,10 +95,10 @@ func TestIntegrationMockGTFS(t *testing.T) {
 	}
 }
 
-// Build the config from agency rule files so an unregistered rule fails the integration test.
+// Build the config from agency rule files so new rules run in the integration test.
 func integrationRules(t *testing.T) []types.Rule {
 	t.Helper()
-	entries, err := os.ReadDir(filepath.Join("..", "src", "rules", "agency"))
+	entries, err := os.ReadDir(filepath.Join("..", "src", "rules", "file-validations", "agency"))
 	if err != nil {
 		t.Fatal(err)
 	}

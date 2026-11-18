@@ -12,7 +12,7 @@ import (
 )
 
 // AgencyTimezoneValid checks IANA timezone names and requires a common timezone across agencies.
-func AgencyTimezoneValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyTimezoneValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	const description = "Agency timezones must be valid and consistent across the feed."
 	var findings []types.Finding
 	var validRows []int

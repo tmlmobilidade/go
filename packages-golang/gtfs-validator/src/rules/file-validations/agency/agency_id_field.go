@@ -12,7 +12,7 @@ import (
 const idColumn = "agency_id"
 
 // AgencyIDField requires an ID for each row of a feed with multiple agencies.
-func AgencyIDField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyIDField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	if config.Severity == types.SEVERITY_ERROR {
 		return fields.CheckPresence(ctx, db, config, agencyTable, idColumn, true)
 	}

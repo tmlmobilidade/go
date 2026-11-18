@@ -1,6 +1,6 @@
 package types
 
-// Rule configures one registered validation. DependsOn lists other rule IDs
+// Rule configures one validation method. DependsOn lists other rule IDs
 // from the same run that must pass before this rule can execute.
 type Rule struct {
 	RuleID    string           `json:"rule_id"`

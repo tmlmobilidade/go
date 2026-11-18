@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func StopsStopTimezoneValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
+func (StopsChecks) StopsStopTimezoneValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }

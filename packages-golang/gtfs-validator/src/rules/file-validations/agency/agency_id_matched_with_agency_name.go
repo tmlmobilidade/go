@@ -11,7 +11,7 @@ import (
 )
 
 // AgencyIDMatchedWithAgencyName checks each ID and name against the configured pairs.
-func AgencyIDMatchedWithAgencyName(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyIDMatchedWithAgencyName(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	if config.Compare == nil {
 		return true, nil, nil
 	}

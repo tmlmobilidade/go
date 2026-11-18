@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func FareAttributesTransfersField(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
+func (FareAttributesChecks) FareAttributesTransfersField(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }

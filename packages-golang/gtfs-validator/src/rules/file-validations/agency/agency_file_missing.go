@@ -14,7 +14,7 @@ const (
 )
 
 // AgencyFileMissing gates the agency checks on the imported agency.txt table.
-func AgencyFileMissing(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyFileMissing(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	exists, err := sqlutils.TableExists(ctx, db, agencyTable)
 	if err != nil {
 		return false, nil, err

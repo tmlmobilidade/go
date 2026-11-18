@@ -1,12 +1,34 @@
 package gtfsvalidator_test
 
 import (
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
+
+func TestRuleFilesAreExecutable(t *testing.T) {
+	paths, err := filepath.Glob(filepath.Join("..", "src", "rules", "file-validations", "*", "*.go"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var configs []types.Rule
+	for _, path := range paths {
+		name := filepath.Base(path)
+		if name == "checks.go" || strings.HasSuffix(name, "_test.go") {
+			continue
+		}
+		configs = append(configs, types.Rule{
+			RuleID: strings.TrimSuffix(name, ".go"), Severity: types.SEVERITY_IGNORE,
+		})
+	}
+	if _, err := rules.NewValidationGraph(configs); err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestConfiguredRulesAndDependencies(t *testing.T) {
 	graph, err := rules.NewValidationGraph([]types.Rule{

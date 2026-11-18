@@ -12,7 +12,7 @@ import (
 )
 
 // AgencyIDUnique reports repeated IDs with all of their source rows.
-func AgencyIDUnique(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyIDUnique(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	rowsByID := make(map[string][]int)
 	err := fields.ForEachValue(ctx, db, agencyTable, idColumn, func(row int, value string) {
 		rowsByID[value] = append(rowsByID[value], row)

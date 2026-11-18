@@ -37,11 +37,11 @@ func NewValidationGraph(configs []types.Rule) (*services.DAG[*sql.DB, []Finding]
 	// Pre-size the slice so append does not reallocate as we grow.
 	tasks := make([]types.Task[*sql.DB, []Finding], 0, len(configs))
 	for _, config := range configs {
-		// Rule IDs are case-insensitive in config; normalize so registry lookup works.
+		// Rule IDs are case-insensitive in config and graph dependencies.
 		config.RuleID = strings.ToLower(config.RuleID)
-		validate, exists := registry[config.RuleID]
-		if !exists {
-			return nil, fmt.Errorf("%w: unknown executable rule %q", ErrInvalidConfiguration, config.RuleID)
+		validate, err := findCheck(config.RuleID)
+		if err != nil {
+			return nil, err
 		}
 
 		config.Severity = types.Severities(strings.ToLower(string(config.Severity)))
@@ -87,7 +87,7 @@ func NewValidationGraph(configs []types.Rule) (*services.DAG[*sql.DB, []Finding]
 	return graph, nil
 }
 
-// runCheck executes one registered validation and adapts its result for the DAG.
+// runCheck executes one validation method and adapts its result for the DAG.
 //
 // Outcome.Failed is true when the check did not pass OR returned any findings.
 // That includes info/warning findings: dependents still wait for a clean result.

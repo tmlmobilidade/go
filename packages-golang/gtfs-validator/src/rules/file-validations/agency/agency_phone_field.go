@@ -11,6 +11,6 @@ import (
 const phoneColumn = "agency_phone"
 
 // AgencyPhoneField checks agency_phone when the rule is configured at error severity.
-func AgencyPhoneField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyPhoneField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	return fields.CheckPresence(ctx, db, config, agencyTable, phoneColumn, false)
 }

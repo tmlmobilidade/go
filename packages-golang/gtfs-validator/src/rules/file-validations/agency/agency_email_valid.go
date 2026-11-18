@@ -11,6 +11,8 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/validators"
 )
 
+const emailColumn = "agency_email"
+
 /*
 # Attributes
 
@@ -35,7 +37,7 @@ Field definitions: [GTFS Standard].
 [agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
-func AgencyEmailValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyEmailValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	var findings []types.Finding
 	err := fields.ForEachValue(ctx, db, agencyTable, emailColumn, func(row int, value string) {
 		if !validators.ValidateEmail(value) {

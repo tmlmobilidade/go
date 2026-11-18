@@ -5,7 +5,7 @@ temporary SQLite database, then executes the configured rules. The database and 
 sidecar files are removed after success, validation failure, or operational failure.
 Requires Go 1.26 and a C compiler for the SQLite driver.
 
-The agency rules are implemented. The other registered checks currently
+The agency rules are implemented. The other table checks currently
 return success as placeholders.
 
 ## CLI
@@ -94,8 +94,27 @@ import and passes the context to rule callbacks during execution.
 
 ## Rules and dependencies
 
-The registry in `src/rules/registry.go` maps executable rule IDs to functions.
-Each rule has its own `src/rules/<table>/<rule_id>.go` file.
+Each rule has its own `src/rules/file-validations/<table>/<rule_id>.go` file
+and is an exported method on that table's checks type. For example,
+`file-validations/agency/agency_name_valid.go` defines this method.
+
+```go
+func (AgencyChecks) AgencyNameValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+    return fields.CheckOptions(ctx, db, config, agencyTable, nameColumn)
+}
+```
+
+The validator finds methods by matching rule IDs to method names while ignoring
+underscores and letter case, so `agency_name_valid` selects `AgencyNameValid`.
+Adding a rule to an existing table package requires adding its file and rebuilding
+with the normal build command. The lookup uses the compiled methods through
+reflection during graph construction, and execution calls the resolved functions
+directly. Each method must use a value receiver and the signature shown above.
+Keep helper functions private to avoid exposing them as rule methods.
+
+Each table declares its checks type in `checks.go`. When adding an entirely new
+table package, import it and embed its checks type in `src/rules/checks.go`.
+The rule-file test verifies that every rule file can be selected by its filename.
 `file_validation` and `file_not_found_in_rules` are reserved notice IDs.
 
 Every prerequisite must appear as a rule in the same array. Omit `depends_on`

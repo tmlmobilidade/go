@@ -7,6 +7,6 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func RoutesRouteSortOrderField(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
+func (RoutesChecks) RoutesRouteSortOrderField(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
 	return true, nil, nil
 }
