@@ -3,7 +3,7 @@
 import { IconPlayerRecord, IconPlayerStop } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type UserSessionReplayAuthorization, type UserSessionReplayResponse } from '@tmlmobilidade/go-types-core';
-import { Button, Collapsible, fetchApiData, Grid, Section, Tag, useHandleAction } from '@tmlmobilidade/ui';
+import { Button, Collapsible, fetchApiData, Grid, Section, Tag, useHandleAction, useMeContext } from '@tmlmobilidade/ui';
 import { type TOptions } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,7 @@ interface UsersDetailAmplitudeProps {
 export function UsersDetailAmplitude({ authorization, isLoading, onChange }: UsersDetailAmplitudeProps) {
 	const { i18n, t } = useTranslation();
 	const { userId } = useUsersDetailUserId();
+	const { data: { user }, mutate: { me: refreshMe } } = useMeContext();
 
 	const isPending = authorization?.started_at === null;
 	const expiresAt = isPending ? authorization.pending_expires_at : authorization?.expires_at;
@@ -52,7 +53,10 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 		fetchFn: (id: string) => fetchApiData<UserSessionReplayResponse>({ method: 'DELETE', url: API_ROUTES.core.USERS_DETAIL_SESSION_REPLAY_VAR(userId, id) }),
 		labels: { ...labels, success_message: t('default:users.detail.SessionReplay.cancel.success') },
 		onError: () => onChange(),
-		onSuccess: () => onChange(),
+		onSuccess: () => {
+			if (user?._id === userId) refreshMe();
+			onChange();
+		},
 	});
 
 	const isPendingAction = isAuthorizing || isCancelling;

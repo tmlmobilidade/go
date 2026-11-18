@@ -6,6 +6,8 @@ import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-provid
 import { type User } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
+import { isSessionReplayAuthorized } from '../../../users/utils/session-replay-state.js';
+
 /**
  * Get the current user from the session token.
  * @param request The request object
@@ -56,6 +58,11 @@ export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<
 	await goDb.core.users.updateById(userData._id, { seen_last_at: Dates.now('utc').unix_milliseconds });
 	//
 	// Send the user data back in the response.
+
+	const authorization = userData.session_replay;
+	if (authorization && !isSessionReplayAuthorized(authorization, Dates.now('utc').unix_milliseconds)) {
+		return sendSuccessApiResponse(reply, { ...userData, session_replay: null });
+	}
 
 	return sendSuccessApiResponse(reply, userData);
 
