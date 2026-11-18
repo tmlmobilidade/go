@@ -10,16 +10,11 @@ import { createContext, type PropsWithChildren, useContext, useMemo } from 'reac
 
 import { useUsersListData } from '../list/use-users-list-data';
 import { useUsersDetailData } from './use-users-detail-data';
-import { useUsersDetailSessionReplay, type UseUsersDetailSessionReplayReturnType } from './use-users-detail-session-replay';
 import { useUsersDetailUserId } from './use-users-detail-user-id';
 
 /* * */
 
-interface UsersDetailFormContextValue extends StandardFormContextValue<UpdateUserDto> {
-	sessionReplay: UseUsersDetailSessionReplayReturnType
-}
-
-const UsersDetailFormContext = createContext<undefined | UsersDetailFormContextValue>(undefined);
+const UsersDetailFormContext = createContext<StandardFormContextValue<UpdateUserDto> | undefined>(undefined);
 
 export function useUsersDetailFormContext() {
 	const context = useContext(UsersDetailFormContext);
@@ -43,7 +38,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { mutate: usersListMutate } = useUsersListData();
 
-	const { data: userData, isLoading: userDataLoading, isValidating: userDataValidating, mutate: usersDetailMutate } = useUsersDetailData();
+	const { data: userData, isLoading: userDataLoading, mutate: usersDetailMutate } = useUsersDetailData();
 
 	//
 	// B. Setup form
@@ -54,7 +49,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// C. Handle actions
+	// D. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.USERS_UPDATE(userId) }),
@@ -83,15 +78,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	//
-	// D. Setup flags
-
-	const sessionReplay = useUsersDetailSessionReplay({
-		authorization: userData?.session_replay,
-		isLoading: userDataLoading || userDataValidating || !userData || isUpdating || isDeleting || isLocking,
-		onChange: usersDetailMutate,
-		permissions: meData?.permissions,
-		userId,
-	});
+	// C. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
 		return hasPermission(meData?.permissions, {
@@ -133,7 +120,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// E. Return state
 
-	const stateValue: UsersDetailFormContextValue = useMemo(() => ({
+	const stateValue: StandardFormContextValue<UpdateUserDto> = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
@@ -148,7 +135,6 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 		form,
 		isDirty,
 		isValid,
-		sessionReplay,
 		status: {
 			isDeleting,
 			isLoading: userDataLoading,
@@ -157,7 +143,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 			isUpdating,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, sessionReplay, userData?.is_locked, userDataLoading, unblock, updateEnabled, isDirty, isValid]);
+	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isLocking, isUpdating, lockEnabled, userData?.is_locked, userDataLoading, unblock, updateEnabled, isDirty, isValid]);
 
 	return (
 		<UsersDetailFormContext.Provider value={stateValue}>

@@ -23,9 +23,9 @@ export function UsersDetail() {
 	//
 	// A. Setup variables
 
-	const { data: userData, isLoading } = useUsersDetailData();
+	const { data: userData, isLoading, isValidating, mutate } = useUsersDetailData();
 
-	const { capabilities, form } = useUsersDetailFormContext();
+	const { capabilities, form, status } = useUsersDetailFormContext();
 
 	const { options: usersAgenciesOptions } = useUsersAgenciesData();
 	const { options: usersLocationsOptions } = useUsersLocationsData();
@@ -81,7 +81,11 @@ export function UsersDetail() {
 				action={PermissionCatalog.all.users.actions.update}
 				scope={PermissionCatalog.all.users.scope}
 			>
-				<UsersDetailAmplitude />
+				<UsersDetailAmplitude
+					authorization={userData?.session_replay}
+					isLoading={isLoading || isValidating || !userData || status.isUpdating || status.isDeleting || status.isLocking}
+					onChange={mutate}
+				/>
 			</HasPermission>
 			{permissionsConfig.map(item => (
 				<PermissionSection
