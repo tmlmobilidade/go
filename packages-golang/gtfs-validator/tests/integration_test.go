@@ -29,11 +29,11 @@ func TestIntegrationMockGTFS(t *testing.T) {
 			switch scenario {
 			case "empty agency names":
 				files = loadMockGTFS(t, "mock-gtfs-invalid")
-				wantRule = "agency_name_field"
+				wantRule = "agency_name_exists"
 				wantLines = []int{2, 3}
 			case "missing agency file":
 				delete(files, "agency.txt")
-				wantRule = "agency_file_missing"
+				wantRule = "agency_file_exists"
 			}
 
 			// Package the text fixture as a real ZIP and offer identical bytes over HTTP.
@@ -118,7 +118,7 @@ func integrationRules(t *testing.T) []types.Rule {
 		id := strings.TrimSuffix(name, ".go")
 		if !configured[id] {
 			config = append(config, types.Rule{
-				RuleID: id, Severity: types.SEVERITY_WARNING, DependsOn: []string{"agency_file_missing"},
+				RuleID: id, Severity: types.SEVERITY_WARNING, DependsOn: []string{"agency_file_exists"},
 			})
 		}
 	}

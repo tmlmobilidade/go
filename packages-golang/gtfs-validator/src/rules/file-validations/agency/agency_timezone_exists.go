@@ -10,7 +10,7 @@ import (
 
 const timezoneColumn = "agency_timezone"
 
-// AgencyTimezoneField checks the required timezone field.
-func (AgencyChecks) AgencyTimezoneField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+// AgencyTimezoneExists checks the required timezone field.
+func (AgencyChecks) AgencyTimezoneExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	return fields.CheckPresence(ctx, db, config, agencyTable, timezoneColumn, true)
 }

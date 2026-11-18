@@ -26,9 +26,9 @@ func TestAgencyFieldRequirements(t *testing.T) {
 		})
 	}
 	checkAgencyRule(t, multipleAgencies,
-		types.Rule{RuleID: "agency_id_field", Severity: types.SEVERITY_WARNING}, [][]int{{1, 2}})
+		types.Rule{RuleID: "agency_id_exists", Severity: types.SEVERITY_WARNING}, [][]int{{1, 2}})
 	checkAgencyRule(t, "CREATE TABLE agency (agency_name TEXT); INSERT INTO agency VALUES ('One'), ('Two');",
-		types.Rule{RuleID: "agency_id_field", Severity: types.SEVERITY_WARNING}, [][]int{nil})
+		types.Rule{RuleID: "agency_id_exists", Severity: types.SEVERITY_WARNING}, [][]int{nil})
 }
 
 func TestAgencyFormatRules(t *testing.T) {
@@ -76,7 +76,7 @@ func TestAgencyConfiguredValuesAndDuplicateIDs(t *testing.T) {
 }
 
 func TestAgencyForbiddenFile(t *testing.T) {
-	config := types.Rule{RuleID: "agency_file_missing", Severity: types.SEVERITY_FORBIDDEN}
+	config := types.Rule{RuleID: "agency_file_exists", Severity: types.SEVERITY_FORBIDDEN}
 	checkAgencyRule(t, "CREATE TABLE routes (route_id TEXT);", config, nil)
 	checkAgencyRule(t, "CREATE TABLE agency (agency_name TEXT);", config, [][]int{nil})
 }

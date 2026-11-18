@@ -10,7 +10,7 @@ import (
 
 const fareURLColumn = "agency_fare_url"
 
-// AgencyFareURLField checks agency_fare_url when the rule is configured at error severity.
-func (AgencyChecks) AgencyFareURLField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+// AgencyFareURLExists checks agency_fare_url when the rule is configured at error severity.
+func (AgencyChecks) AgencyFareURLExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	return fields.CheckPresence(ctx, db, config, agencyTable, fareURLColumn, false)
 }

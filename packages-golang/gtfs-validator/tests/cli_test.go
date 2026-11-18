@@ -89,7 +89,7 @@ func TestCLI(t *testing.T) {
 				}
 				if code == 1 {
 					if report.TotalErrors != 1 || report.TotalWarnings != 0 ||
-						len(report.Messages) != 1 || report.Messages[0].RuleID != "agency_file_missing" {
+						len(report.Messages) != 1 || report.Messages[0].RuleID != "agency_file_exists" {
 						t.Fatal("expected a missing agency finding", stdout.String())
 					}
 				} else if report.Messages == nil || len(report.Messages) != 0 || report.TotalErrors != 0 || report.TotalWarnings != 0 {

@@ -12,7 +12,7 @@ import (
 )
 
 func TestAgencyEmailRules(t *testing.T) {
-	const fieldRule = "agency_email_field"
+	const fieldRule = "agency_email_exists"
 	const formatRule = "agency_email_valid"
 
 	type expectedFinding struct {
@@ -62,7 +62,7 @@ func TestAgencyEmailRules(t *testing.T) {
 		{
 			name:     "missing agency file",
 			severity: types.SEVERITY_ERROR,
-			want:     []expectedFinding{{"agency_file_missing", types.SEVERITY_ERROR, nil}},
+			want:     []expectedFinding{{"agency_file_exists", types.SEVERITY_ERROR, nil}},
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
@@ -75,12 +75,12 @@ func TestAgencyEmailRules(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			fileDependency := []string{"agency_file_missing"}
+			fileDependency := []string{"agency_file_exists"}
 			report, err := validator.GtfsValidator(t.Context(), validator.Options{
 				Source:      importgtfs.ImportGtfsConfigSource{Path: path},
 				Concurrency: 2,
 				Rules: []types.Rule{
-					{RuleID: "agency_file_missing", Severity: types.SEVERITY_ERROR},
+					{RuleID: "agency_file_exists", Severity: types.SEVERITY_ERROR},
 					{RuleID: fieldRule, Severity: test.severity, DependsOn: fileDependency},
 					{RuleID: formatRule, Severity: types.SEVERITY_WARNING, DependsOn: fileDependency},
 				},
@@ -94,7 +94,7 @@ func TestAgencyEmailRules(t *testing.T) {
 			for i, want := range test.want {
 				got := report.Messages[i]
 				field := "agency_email"
-				if want.ruleID == "agency_file_missing" {
+				if want.ruleID == "agency_file_exists" {
 					field = ""
 				}
 				if got.RuleID != want.ruleID || got.Severity != want.severity ||

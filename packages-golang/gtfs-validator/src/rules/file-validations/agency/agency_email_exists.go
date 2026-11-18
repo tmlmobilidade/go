@@ -26,6 +26,6 @@ Presence and type follow [GTFS Standard].
 [agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
-func (AgencyChecks) AgencyEmailField(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (AgencyChecks) AgencyEmailExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	return fields.CheckPresence(ctx, db, config, "agency", "agency_email", false)
 }

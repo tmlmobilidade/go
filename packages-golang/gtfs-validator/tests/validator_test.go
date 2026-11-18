@@ -20,9 +20,9 @@ import (
 
 func agencyRules() []types.Rule {
 	return []types.Rule{
-		{RuleID: "agency_name_valid", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_name_field"}},
-		{RuleID: "agency_file_missing", Severity: types.SEVERITY_ERROR},
-		{RuleID: "agency_name_field", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_missing"}},
+		{RuleID: "agency_name_valid", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_name_exists"}},
+		{RuleID: "agency_file_exists", Severity: types.SEVERITY_ERROR},
+		{RuleID: "agency_name_exists", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_exists"}},
 	}
 }
 
@@ -87,8 +87,8 @@ func TestValidateLocalAndCleanup(t *testing.T) {
 		wantRule string
 	}{
 		{"valid", map[string]string{"agency.txt": "agency_name\nExample\n"}, ""},
-		{"missing file", map[string]string{}, "agency_file_missing"},
-		{"missing field", map[string]string{"agency.txt": "agency_id\n1\n"}, "agency_name_field"},
+		{"missing file", map[string]string{}, "agency_file_exists"},
+		{"missing field", map[string]string{"agency.txt": "agency_id\n1\n"}, "agency_name_exists"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			path := filepath.Join(temp, "feed.zip")

@@ -23,16 +23,16 @@ JSON array. Each entry has a `rule_id` and `severity`. It can also supply
 
 ```json
 [
-  {"rule_id": "agency_file_missing", "severity": "error"},
-  {"rule_id": "agency_email_field", "severity": "error", "depends_on": ["agency_file_missing"]},
-  {"rule_id": "agency_email_valid", "severity": "warning", "depends_on": ["agency_file_missing"]}
+  {"rule_id": "agency_file_exists", "severity": "error"},
+  {"rule_id": "agency_email_exists", "severity": "error", "depends_on": ["agency_file_exists"]},
+  {"rule_id": "agency_email_valid", "severity": "warning", "depends_on": ["agency_file_exists"]}
 ]
 ```
 
 Agency field rules enforce GTFS-required fields at every active severity.
 For an optional field, use `error` severity on its `_field` rule to require
 the column and a value on each row. GTFS requires `agency_id` when there are
-multiple agencies. Configure agency field rules with `agency_file_missing` in
+multiple agencies. Configure agency field rules with `agency_file_exists` in
 `depends_on`.
 
 `agency_id_valid` and `agency_name_valid` accept all supplied values by default.
@@ -80,8 +80,8 @@ report, err := validator.GtfsValidator(context.Background(), validator.Options{
     Source: importgtfs.ImportGtfsConfigSource{Path: "./gtfs.zip"},
     Concurrency: 1,
     Rules: []types.Rule{
-        {RuleID: "agency_file_missing", Severity: types.SEVERITY_ERROR},
-        {RuleID: "agency_name_field", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_missing"}},
+        {RuleID: "agency_file_exists", Severity: types.SEVERITY_ERROR},
+        {RuleID: "agency_name_exists", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_exists"}},
     },
 })
 // A non-nil err indicates invalid inputs or an operational failure.
