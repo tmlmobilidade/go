@@ -5,7 +5,7 @@ import { type SessionReplayPlugin } from '@amplitude/plugin-session-replay-brows
 import { type UserSessionReplayAuthorization } from '@tmlmobilidade/go-types-core';
 import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 
-import { getReplayTimeRemaining, startSessionReplay } from '../utils/session-replay';
+import { getReplayTimeRemaining, startSessionReplay } from '../utils/session-replay.js';
 
 /* * */
 

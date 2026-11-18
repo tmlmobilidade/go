@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { type AnalyticsConfiguration, type AnalyticsContextProps } from '../types/analytics';
+import { type AnalyticsConfiguration, type AnalyticsContextProps } from '../types/analytics.js';
 
 /* * */
 

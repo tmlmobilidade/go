@@ -2,7 +2,7 @@
 
 import { createContext } from 'react';
 
-import { type AnalyticsContextState } from '../types/analytics';
+import { type AnalyticsContextState } from '../types/analytics.js';
 
 /* * */
 

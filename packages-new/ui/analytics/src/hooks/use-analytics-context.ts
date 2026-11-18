@@ -2,8 +2,8 @@
 
 import { useContext } from 'react';
 
-import { AnalyticsContext } from '../contexts/Analytics.context';
-import { type AnalyticsContextState } from '../types/analytics';
+import { AnalyticsContext } from '../contexts/Analytics.context.js';
+import { type AnalyticsContextState } from '../types/analytics.js';
 
 /* * */
 

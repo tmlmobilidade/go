@@ -1,21 +1,10 @@
 {
-	"extends": "@tmlmobilidade/go-utils-tsconfig/nextjs.json",
+	"extends": "@tmlmobilidade/go-utils-tsconfig/lib.json",
 	"compilerOptions": {
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"rootDir": ".",
-		"types": ["node"]
+		"lib": ["es2023", "dom", "dom.iterable"],
+		"outDir": "dist",
+		"rootDir": "src"
 	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".next/types/**/*.ts"
-	],
-	"exclude": [
-		"node_modules"
-	]
+	"include": ["src"],
+	"exclude": ["node_modules", "dist"]
 }

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { getReplayTimeRemaining, startSessionReplay } from '../src/utils/session-replay';
+import { getReplayTimeRemaining, startSessionReplay } from '../src/utils/session-replay.js';
 
 const serverNow = 1_700_000_000_000;
 const activation = {

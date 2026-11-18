@@ -1,1 +1,1 @@
-export * from './lines-opened';
+export * from './lines-opened.js';

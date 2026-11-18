@@ -8,17 +8,21 @@
 	},
 	"license": "AGPL-3.0-or-later",
 	"type": "module",
+	"files": ["dist"],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./index.ts",
-			"default": "./index.ts"
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		},
 		"./server": {
-			"types": "./server.ts",
-			"default": "./server.ts"
+			"types": "./dist/server/analytics.d.ts",
+			"default": "./dist/server/analytics.js"
 		}
 	},
 	"scripts": {
+		"build": "tsc",
 		"lint": "eslint ./src && tsc --noEmit",
 		"lint:fix": "eslint ./src --fix"
 	},

@@ -1,3 +1,3 @@
-export * from './login';
-export * from './login-opened';
-export * from './logout';
+export * from './login-opened.js';
+export * from './login.js';
+export * from './logout.js';

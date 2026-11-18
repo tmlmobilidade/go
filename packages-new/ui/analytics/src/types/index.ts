@@ -1,3 +1,3 @@
-export * from './analytics';
-export * from './events/index';
-export * from './user-properties';
+export * from './analytics.js';
+export * from './events/index.js';
+export * from './user-properties.js';

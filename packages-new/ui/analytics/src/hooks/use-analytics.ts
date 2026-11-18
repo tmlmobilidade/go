@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsInitialization } from '../types/analytics';
-import { type AnalyticsEventInput } from '../types/events/shared';
-import { type AnalyticsUserProperties } from '../types/user-properties';
-import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
-import { useAnalyticsConfiguration } from './use-analytics-configuration';
-import { useSessionReplay } from './use-session-replay';
+import { type AnalyticsContextProps, type AnalyticsContextState, type AnalyticsInitialization } from '../types/analytics.js';
+import { type AnalyticsEventInput } from '../types/events/shared.js';
+import { type AnalyticsUserProperties } from '../types/user-properties.js';
+import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client.js';
+import { useAnalyticsConfiguration } from './use-analytics-configuration.js';
+import { useSessionReplay } from './use-session-replay.js';
 
 /* * */
 

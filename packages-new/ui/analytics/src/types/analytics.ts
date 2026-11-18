@@ -1,8 +1,8 @@
 import { type Types } from '@amplitude/analytics-browser';
 import { type UserSessionReplayAuthorization } from '@tmlmobilidade/go-types-core';
 
-import { type AnalyticsEventInput } from './events/shared';
-import { type AnalyticsUserProperties } from './user-properties';
+import { type AnalyticsEventInput } from './events/shared.js';
+import { type AnalyticsUserProperties } from './user-properties.js';
 
 /* * */
 

@@ -1,9 +1,9 @@
 import { createInstance, Identify, type Types } from '@amplitude/analytics-browser';
 
-import { type AnalyticsContextProps, type AnalyticsInitialization } from '../types/analytics';
-import { type AnalyticsEventInput } from '../types/events/shared';
-import { type AnalyticsUserProperties } from '../types/user-properties';
-import { normalizeAnalyticsEvent } from './analytics-event';
+import { type AnalyticsContextProps, type AnalyticsInitialization } from '../types/analytics.js';
+import { type AnalyticsEventInput } from '../types/events/shared.js';
+import { type AnalyticsUserProperties } from '../types/user-properties.js';
+import { normalizeAnalyticsEvent } from './analytics-event.js';
 
 /* * */
 

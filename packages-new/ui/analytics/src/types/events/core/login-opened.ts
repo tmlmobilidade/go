@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 
-import { AnalyticsEvent } from '../shared';
+import { AnalyticsEvent } from '../shared.js';
 
 /* * */
 

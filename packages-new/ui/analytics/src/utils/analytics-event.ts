@@ -1,4 +1,4 @@
-import { type AnalyticsEvent, type AnalyticsEventInput } from '../types/events/shared';
+import { type AnalyticsEvent, type AnalyticsEventInput } from '../types/events/shared.js';
 
 /* * */
 

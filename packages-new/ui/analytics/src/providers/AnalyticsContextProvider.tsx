@@ -2,9 +2,9 @@
 
 import { type PropsWithChildren } from 'react';
 
-import { AnalyticsContext } from '../contexts/Analytics.context';
-import { useAnalytics } from '../hooks/use-analytics';
-import { type AnalyticsContextProps } from '../types/analytics';
+import { AnalyticsContext } from '../contexts/Analytics.context.js';
+import { useAnalytics } from '../hooks/use-analytics.js';
+import { type AnalyticsContextProps } from '../types/analytics.js';
 
 /* * */
 
