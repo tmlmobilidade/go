@@ -1,11 +1,8 @@
 import { type Types } from '@amplitude/analytics-browser';
+import { type UserSessionReplayAuthorization } from '@tmlmobilidade/go-types-core';
 
 import { type AnalyticsEventInput } from './events/shared';
-import { type AnalyticsReplayAuthorization } from './replay/authorization';
-import { type AnalyticsReplayController } from './replay/controller';
 import { type AnalyticsUserProperties } from './user-properties';
-
-export { type AnalyticsReplayController } from './replay/controller';
 
 /* * */
 
@@ -14,7 +11,7 @@ export interface AnalyticsContextProps {
 	configurationUrl?: string
 	options?: Types.BrowserOptions
 	/** Authorization received with the current user's /me response. */
-	replayAuthorization?: AnalyticsReplayAuthorization
+	replayAuthorization?: null | UserSessionReplayAuthorization
 	/** Authenticated GO endpoint that accepts the first capture start. */
 	replayStartUrl?: string
 	/** Undefined leaves identity unchanged; null clears the authenticated user. */
@@ -24,15 +21,11 @@ export interface AnalyticsContextProps {
 export interface AnalyticsContextState {
 	actions: {
 		identify: (user: AnalyticsUserProperties | null) => boolean
-		startReplay: () => Promise<boolean>
-		stopReplay: () => void
 		track: (event: AnalyticsEventInput, properties?: Record<string, unknown>) => Promise<boolean>
 	}
 	flags: {
 		error: Error | undefined
 		ready: boolean
-		/** Latest remote decision for the current user; false until a successful evaluation. */
-		replayEnabled: boolean
 	}
 }
 
@@ -43,5 +36,4 @@ export interface AnalyticsInitialization {
 	client: Types.BrowserClient
 	options: AnalyticsContextProps['options']
 	promise: Promise<void>
-	replay: AnalyticsReplayController
 }

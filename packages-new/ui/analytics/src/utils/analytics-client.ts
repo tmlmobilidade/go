@@ -4,11 +4,10 @@ import { type AnalyticsContextProps, type AnalyticsInitialization } from '../typ
 import { type AnalyticsEventInput } from '../types/events/shared';
 import { type AnalyticsUserProperties } from '../types/user-properties';
 import { normalizeAnalyticsEvent } from './analytics-event';
-import { createSessionReplayController } from './session-replay';
 
 /* * */
 
-export function initializeAnalyticsClient(apiKey: string, options: AnalyticsContextProps['options'], onError: (cause: unknown) => void): AnalyticsInitialization {
+export function initializeAnalyticsClient(apiKey: string, options: AnalyticsContextProps['options']): AnalyticsInitialization {
 	const client = createInstance();
 
 	return {
@@ -16,9 +15,6 @@ export function initializeAnalyticsClient(apiKey: string, options: AnalyticsCont
 		client,
 		options,
 		promise: client.init(apiKey, { autocapture: false, serverZone: 'EU', ...options }).promise,
-		replay: createSessionReplayController(client, (cause) => {
-			if (!client.getOptOut()) onError(cause);
-		}),
 	};
 }
 

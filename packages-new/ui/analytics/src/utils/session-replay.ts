@@ -1,114 +1,47 @@
-import { type Types } from '@amplitude/analytics-browser';
-
-import { type AnalyticsReplayActivation } from '../types/replay/activation';
-import { type AnalyticsReplayController } from '../types/replay/controller';
-import { getReplayTimeRemaining } from './replay-authorization';
-import { createReplayCapture } from './replay-capture';
+import { UserSessionReplayResponseSchema } from '@tmlmobilidade/go-types-core';
 
 /* * */
 
-export function createSessionReplayController(client: Types.BrowserClient, onError: (cause: unknown) => void): AnalyticsReplayController {
-	//
-	// Setup variables
+interface SessionReplayDeadline {
+	deadline: number
+	monotonicDeadline: number
+}
 
-	let capture: ReturnType<typeof createReplayCapture> | undefined;
-	let activeActivation: AnalyticsReplayActivation | undefined;
-	let timeout: ReturnType<typeof setTimeout> | undefined;
-	let transition = Promise.resolve();
-	let starting = Promise.resolve(false);
+/* * */
 
-	//
-	// Handle capture lifecycle
+export async function startSessionReplay(url: string, userId: string, activationId: string, signal: AbortSignal): Promise<SessionReplayDeadline> {
+	const requestedAt = Date.now();
+	const monotonicRequestedAt = performance.now();
+	const response = await fetch(url, {
+		body: JSON.stringify({ activation_id: activationId }),
+		cache: 'no-store',
+		credentials: 'include',
+		headers: { 'Content-Type': 'application/json' },
+		method: 'POST',
+		signal,
+	});
 
-	// Finish SDK setup before removing the plugin or starting another capture.
-	const enqueue = <T>(operation: () => Promise<T>): Promise<T> => {
-		const result = transition.then(operation);
-		transition = result.then(() => undefined, () => undefined);
+	if (!response.ok) throw new Error(`Unable to start session replay (${response.status})`);
+	const result = await response.json() as { data?: unknown, error?: null | string };
+	if (result.error) throw new Error(result.error);
 
-		return result;
-	};
+	const { activation, server_now: serverNow, user_id: responseUserId } = UserSessionReplayResponseSchema.parse(result.data);
+	if (
+		signal.aborted
+		|| responseUserId !== userId
+		|| activation?.activation_id !== activationId
+		|| activation.started_at === null
+		|| activation.expires_at === null
+	) throw new Error('Session replay authorization is no longer valid');
 
-	const stop = () => {
-		const previous = capture;
+	const remaining = activation.expires_at - serverNow;
 
-		capture = undefined;
-		activeActivation = undefined;
-		clearTimeout(timeout);
+	// Request time and either clock advancing can shorten, but never extend, capture.
+	return { deadline: requestedAt + remaining, monotonicDeadline: monotonicRequestedAt + remaining };
+}
 
-		document.removeEventListener('visibilitychange', checkDeadline);
+/* * */
 
-		if (previous) {
-			previous.pause();
-			void enqueue(() => previous.finish()).catch(onError);
-		}
-	};
-
-	const checkDeadline = () => {
-		if (activeActivation && getReplayTimeRemaining(activeActivation) <= 0) stop();
-	};
-
-	//
-	// Return controller
-
-	return {
-		start: (activation) => {
-			const userId = client.getUserId();
-
-			if (client.getOptOut() || !userId) return Promise.resolve(false);
-
-			if (getReplayTimeRemaining(activation) <= 0) {
-				stop();
-				return Promise.resolve(false);
-			}
-
-			if (capture && activeActivation?.activationId === activation.activationId) return starting;
-
-			stop();
-
-			const current = createReplayCapture(client);
-			capture = current;
-			activeActivation = activation;
-
-			starting = enqueue(async () => {
-				if (capture !== current || client.getUserId() !== userId || client.getOptOut()) {
-					if (capture === current) stop();
-					return false;
-				}
-
-				const remaining = getReplayTimeRemaining(activation);
-
-				if (remaining <= 0) {
-					stop();
-					return false;
-				}
-
-				// Enforce the deadline while the SDK loads.
-				timeout = setTimeout(() => {
-					if (capture === current) stop();
-				}, remaining);
-
-				document.addEventListener('visibilitychange', checkDeadline);
-
-				if (
-					!await current.start()
-					|| capture !== current
-					|| client.getOptOut()
-					|| client.getUserId() !== userId
-					|| getReplayTimeRemaining(activation) <= 0
-				) {
-					if (capture === current) stop();
-					return false;
-				}
-
-				return true;
-			}).catch((cause: unknown) => {
-				if (capture === current) stop();
-				onError(cause);
-				return false;
-			});
-
-			return starting;
-		},
-		stop,
-	};
+export function getReplayTimeRemaining({ deadline, monotonicDeadline }: SessionReplayDeadline): number {
+	return Math.max(0, Math.min(deadline - Date.now(), monotonicDeadline - performance.now()));
 }

@@ -7,8 +7,7 @@ import { type AnalyticsEventInput } from '../types/events/shared';
 import { type AnalyticsUserProperties } from '../types/user-properties';
 import { identifyAnalyticsUser, initializeAnalyticsClient, trackAnalyticsEvent } from '../utils/analytics-client';
 import { useAnalyticsConfiguration } from './use-analytics-configuration';
-import { useReplay } from './use-replay';
-import { useReplayAuthorization } from './use-replay-authorization';
+import { useSessionReplay } from './use-session-replay';
 
 /* * */
 
@@ -33,6 +32,19 @@ export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...con
 
 	const ready = Boolean(apiKey) && initialization?.apiKey === apiKey && initialization?.options === options;
 
+	// Synchronize identity before the replay hook applies the user's authorization.
+	useEffect(() => {
+		if (ready && initialization && user !== undefined) identifyAnalyticsUser(initialization.client, user, handleError);
+	}, [handleError, initialization, ready, user]);
+
+	const stopReplay = useSessionReplay({
+		authorization: replayAuthorization,
+		client: ready ? initialization?.client : undefined,
+		onError: handleError,
+		startUrl: replayStartUrl,
+		userId: user?._id,
+	});
+
 	//
 	// Handle actions
 
@@ -46,11 +58,11 @@ export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...con
 
 		// Stop capture before changing the SDK identity.
 		if (userProperties === null || (userProperties._id !== undefined && userProperties._id !== initialization.client.getUserId())) {
-			initialization.replay.stop();
+			stopReplay();
 		}
 
 		return identifyAnalyticsUser(initialization.client, userProperties, handleError);
-	}, [handleError, initialization, ready]);
+	}, [handleError, initialization, ready, stopReplay]);
 
 	const track = useCallback(async (event: AnalyticsEventInput, properties?: Record<string, unknown>) => {
 		if (!ready || !initialization || initializationRef.current !== initialization) return false;
@@ -73,7 +85,7 @@ export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...con
 
 		let pendingInitialization = initializationRef.current;
 		if (pendingInitialization?.apiKey !== apiKey || pendingInitialization.options !== options) {
-			pendingInitialization = initializeAnalyticsClient(apiKey, options, handleError);
+			pendingInitialization = initializeAnalyticsClient(apiKey, options);
 			initializationRef.current = pendingInitialization;
 		}
 
@@ -94,43 +106,16 @@ export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...con
 
 		return () => {
 			isInitializationActive = false;
-			pendingInitialization.replay.stop();
+			stopReplay();
 			client.setOptOut(true);
 		};
-	}, [apiKey, handleError, options]);
-
-	// Undefined preserves identity; null clears it.
-	useEffect(() => {
-		if (user !== undefined) identify(user);
-	}, [identify, user]);
-
-	//
-	// Setup replay
-
-	// Synchronize identity before checking authorization from /me.
-	const replayActivation = useReplayAuthorization({
-		authorization: replayAuthorization,
-		initialization,
-		onError: handleError,
-		ready,
-		startUrl: replayStartUrl,
-		userId: user?._id,
-	});
-
-	const replayEnabled = Boolean(replayActivation);
-	const { startReplay, stopReplay } = useReplay({
-		activation: replayActivation,
-		initialization,
-		initializationRef,
-		onError: handleError,
-		ready,
-	});
+	}, [apiKey, handleError, options, stopReplay]);
 
 	//
 	// Return state
 
 	return useMemo(() => ({
-		actions: { identify, startReplay, stopReplay, track },
-		flags: { error, ready, replayEnabled },
-	}), [error, identify, ready, replayEnabled, startReplay, stopReplay, track]);
+		actions: { identify, track },
+		flags: { error, ready },
+	}), [error, identify, ready, track]);
 }
