@@ -6,6 +6,7 @@ import { type Db, type MongoClient } from '@tmlmobilidade/go-clients-mongo';
 import { type RawVehicleEventEsCrtmAisa, RawVehicleEventEsCrtmAisaSchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { type RawVehicleEventEsCrtmLaVeloz, RawVehicleEventEsCrtmLaVelozSchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { type RawVehicleEventPtCimrcSit, RawVehicleEventPtCimrcSitSchema } from '@tmlmobilidade/go-types-vehicle-events';
+import { type RawVehicleEventPtCimraCiraBusway, RawVehicleEventPtCimraCiraBuswaySchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { type RawVehicleEventPtCimatFlaviamobil, RawVehicleEventPtCimatFlaviamobilSchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { type RawVehicleEventPtTmlCcfl, RawVehicleEventPtTmlCcflSchema } from '@tmlmobilidade/go-types-vehicle-events';
 import { type RawVehicleEventPtTmlCmAlsa, RawVehicleEventPtTmlCmAlsaSchema } from '@tmlmobilidade/go-types-vehicle-events';
@@ -32,8 +33,9 @@ export class VehicleEventsDatabase {
 
 	public readonly esCrtmAisa: MongoInterfaceTemplate<RawVehicleEventEsCrtmAisa, RawVehicleEventEsCrtmAisa>;
 	public readonly esCrtmLaVeloz: MongoInterfaceTemplate<RawVehicleEventEsCrtmLaVeloz, RawVehicleEventEsCrtmLaVeloz>;
-	public readonly ptCimrcSit: MongoInterfaceTemplate<RawVehicleEventPtCimrcSit, RawVehicleEventPtCimrcSit>;
 	public readonly ptCimatFlaviamobil: MongoInterfaceTemplate<RawVehicleEventPtCimatFlaviamobil, RawVehicleEventPtCimatFlaviamobil>;
+	public readonly ptCimraCiraBusway: MongoInterfaceTemplate<RawVehicleEventPtCimraCiraBusway, RawVehicleEventPtCimraCiraBusway>;
+	public readonly ptCimrcSit: MongoInterfaceTemplate<RawVehicleEventPtCimrcSit, RawVehicleEventPtCimrcSit>;
 	public readonly ptTmlCcfl: MongoInterfaceTemplate<RawVehicleEventPtTmlCcfl, RawVehicleEventPtTmlCcfl>;
 	public readonly ptTmlCmAlsa: MongoInterfaceTemplate<RawVehicleEventPtTmlCmAlsa, RawVehicleEventPtTmlCmAlsa>;
 	public readonly ptTmlCmRl: MongoInterfaceTemplate<RawVehicleEventPtTmlCmRl, RawVehicleEventPtTmlCmRl>;
@@ -62,6 +64,7 @@ export class VehicleEventsDatabase {
 		this.esCrtmAisa = new MongoInterfaceTemplate<RawVehicleEventEsCrtmAisa, RawVehicleEventEsCrtmAisa>('es-crtm-aisa', this.database, RawVehicleEventEsCrtmAisaSchema, vehicleEventsIndexes);
 		this.esCrtmLaVeloz = new MongoInterfaceTemplate<RawVehicleEventEsCrtmLaVeloz, RawVehicleEventEsCrtmLaVeloz>('es-crtm-la-veloz', this.database, RawVehicleEventEsCrtmLaVelozSchema, vehicleEventsIndexes);
 		this.ptCimrcSit = new MongoInterfaceTemplate<RawVehicleEventPtCimrcSit, RawVehicleEventPtCimrcSit>('pt-cimrc-sit', this.database, RawVehicleEventPtCimrcSitSchema, vehicleEventsIndexes);
+		this.ptCimraCiraBusway = new MongoInterfaceTemplate<RawVehicleEventPtCimraCiraBusway, RawVehicleEventPtCimraCiraBusway>('pt-cimra-cira-busway', this.database, RawVehicleEventPtCimraCiraBuswaySchema, vehicleEventsIndexes);
 		this.ptCimatFlaviamobil = new MongoInterfaceTemplate<RawVehicleEventPtCimatFlaviamobil, RawVehicleEventPtCimatFlaviamobil>('pt-cimat-flaviamobil', this.database, RawVehicleEventPtCimatFlaviamobilSchema, vehicleEventsIndexes);
 		this.ptTmlCcfl = new MongoInterfaceTemplate<RawVehicleEventPtTmlCcfl, RawVehicleEventPtTmlCcfl>('pt-tml-ccfl', this.database, RawVehicleEventPtTmlCcflSchema, vehicleEventsIndexes);
 		this.ptTmlCmAlsa = new MongoInterfaceTemplate<RawVehicleEventPtTmlCmAlsa, RawVehicleEventPtTmlCmAlsa>('pt-tml-cm-alsa', this.database, RawVehicleEventPtTmlCmAlsaSchema, vehicleEventsIndexes);
