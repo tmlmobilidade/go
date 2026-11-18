@@ -3,6 +3,7 @@
 import { RawVehicleEventEsCrtmAisaV1Schema } from '@/raw/es/crtm/aisa/v1.js';
 import { RawVehicleEventEsCrtmLaVelozV1Schema } from '@/raw/es/crtm/la-veloz/v1.js';
 import { RawVehicleEventPtCimatFlaviamobilV1Schema } from '@/raw/pt/cimat/flaviamobil/v1.js';
+import { RawVehicleEventPtCimraCiraBuswayV1Schema } from '@/raw/pt/cimra/cira/busway/v1.js';
 import { RawVehicleEventPtCimrcSitV1Schema } from '@/raw/pt/cimrc/sit/v1.js';
 import { RawVehicleEventPtTmlCcflV1Schema } from '@/raw/pt/tml/ccfl/v1.js';
 import { RawVehicleEventPtTmlCmAlsaV1Schema } from '@/raw/pt/tml/cm/alsa/v1.js';
@@ -30,6 +31,7 @@ export const RawVehicleEventSchema = z.discriminatedUnion('version', [
 	RawVehicleEventEsCrtmLaVelozV1Schema,
 	RawVehicleEventPtCimatFlaviamobilV1Schema,
 	RawVehicleEventPtCimrcSitV1Schema,
+	RawVehicleEventPtCimraCiraBuswayV1Schema,
 	RawVehicleEventPtTmlCcflV1Schema,
 	RawVehicleEventPtTmlCmAlsaV1Schema,
 	RawVehicleEventPtTmlCmRlV1Schema,
