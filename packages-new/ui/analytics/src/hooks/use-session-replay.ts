@@ -90,7 +90,10 @@ export function useSessionReplay({ authorization, client, onError, startUrl, use
 					const { sessionReplayPlugin } = await import('@amplitude/plugin-session-replay-browser');
 					if (!isCurrent()) return stop();
 
-					const currentPlugin = sessionReplayPlugin({ sampleRate: 1 });
+					const currentPlugin = sessionReplayPlugin({
+						privacyConfig: { defaultMaskLevel: 'light' },
+						sampleRate: 1,
+					});
 					plugin = currentPlugin;
 					const setup = sdkOperationsRef.current.then(async () => {
 						checkDeadline();
