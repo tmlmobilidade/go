@@ -70,7 +70,7 @@ function buildAnalysisMap(analyses: readonly string[]) {
 					'reason', CAST(NULL AS Nullable(String))
 				),
 				map(
-					'grade', _${cteName}_grade,
+					'grade', nullIf(_${cteName}_grade, ''),
 					'reason', _${cteName}_reason
 				)
 			)`;
