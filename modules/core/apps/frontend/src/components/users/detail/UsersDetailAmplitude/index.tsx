@@ -61,6 +61,16 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 
 	const isPendingAction = isAuthorizing || isCancelling;
 
+	useEffect(() => {
+		if (!isPending || deadline === null) return;
+
+		const interval = setInterval(() => {
+			if (document.visibilityState === 'visible') onChange();
+		}, 2_000);
+
+		return () => clearInterval(interval);
+	}, [deadline, isPending, onChange]);
+
 	// Refresh at expiry even when the user document has not changed.
 	useEffect(() => {
 		if (deadline === null) return;
