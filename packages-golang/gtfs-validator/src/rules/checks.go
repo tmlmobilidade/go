@@ -19,6 +19,8 @@ import (
 	stops "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/stops"
 	trips "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/trips"
 	vehicles "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/vehicles"
+	geometry "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/relationship-validations/geometry"
+	pattern "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/relationship-validations/pattern"
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
@@ -27,6 +29,8 @@ type check func(context.Context, *sql.DB, types.Rule) (bool, []Finding, error)
 // checks exposes the rule methods from each table package. New methods in these
 // packages are available automatically after rebuilding the validator.
 type checks struct {
+	
+	// File Validations
 	agency.AgencyChecks
 	calendar.CalendarChecks
 	calendardates.CalendarDatesChecks
@@ -39,6 +43,10 @@ type checks struct {
 	stops.StopsChecks
 	trips.TripsChecks
 	vehicles.VehiclesChecks
+
+	// Relationship Validations
+	geometry.GeometryChecks
+	pattern.PatternChecks
 }
 
 // findCheck matches snake_case IDs to exported methods, including acronyms such
