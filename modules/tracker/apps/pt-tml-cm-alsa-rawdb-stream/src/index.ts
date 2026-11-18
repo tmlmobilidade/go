@@ -6,7 +6,7 @@ import { setRidesAsWaiting } from '@tmlmobilidade/go-tracker-pckg-callback';
 import { handleStreamRawVehicleEventIntoSimplifiedVehicleEvent } from '@tmlmobilidade/go-tracker-pckg-parsers';
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { BatchWriter } from '@tmlmobilidade/go-utils-exec';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { listenPrometheusMetrics, Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -24,6 +24,8 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 
 (async function init() {
 	//
+
+	await listenPrometheusMetrics({ name: 'pt_tml_cm_alsa_rawdb_stream' });
 
 	//
 	// Watch for changes to the rawVehicleEventsNew collection
