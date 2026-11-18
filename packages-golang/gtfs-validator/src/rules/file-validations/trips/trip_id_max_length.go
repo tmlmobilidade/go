@@ -23,5 +23,8 @@ Blank values are handled by trip_id_exists.
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
 func (TripsChecks) TripIDMaxLength(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Validate that each supplied trip ID is at most 36 bytes long
 	return fields.CheckValues(ctx, db, config, tripsTable, "trip_id", "The trip_id must be at most 36 bytes long.", func(value string) bool { return len(value) <= 36 })
 }

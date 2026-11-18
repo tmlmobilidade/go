@@ -27,10 +27,15 @@ Missing shape IDs and missing or invalid direction IDs are handled by their fiel
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func (TripsChecks) TripShapeIDUsesDirectionID(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Check if the trips table exists
 	exists, err := sqlutils.TableExists(ctx, db, tripsTable)
 	if err != nil || !exists {
 		return err == nil, nil, err
 	}
+
+	// 2. For each row in the trips table, check if the shape_id ends in _0 or _1
 	var findings []types.Finding
 	err = sqlutils.ForEachRow(ctx, db, tripsTable, []string{"shape_id", "direction_id"}, func(row int, values map[string]string) error {
 		shape := values["shape_id"]
@@ -51,8 +56,11 @@ func (TripsChecks) TripShapeIDUsesDirectionID(ctx context.Context, db *sql.DB, c
 		}
 		return nil
 	})
+
+	// 3. Return the findings
 	if err != nil {
 		return false, nil, err
 	}
+
 	return len(findings) == 0, findings, nil
 }

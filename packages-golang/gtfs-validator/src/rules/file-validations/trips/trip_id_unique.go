@@ -28,6 +28,9 @@ Validation: Reports duplicate nonblank trip_id values with all of their source r
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
 func (TripsChecks) TripIDUnique(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Collect source rows for each supplied ID
 	rowsByID := make(map[string][]int)
 	err := fields.ForEachValue(ctx, db, tripsTable, "trip_id", func(row int, value string) {
 		rowsByID[value] = append(rowsByID[value], row)
@@ -36,6 +39,7 @@ func (TripsChecks) TripIDUnique(ctx context.Context, db *sql.DB, config types.Ru
 		return false, nil, err
 	}
 
+	// 2. Report IDs used on multiple rows
 	var findings []types.Finding
 	for _, id := range slices.Sorted(maps.Keys(rowsByID)) {
 		rows := rowsByID[id]
@@ -50,5 +54,7 @@ func (TripsChecks) TripIDUnique(ctx context.Context, db *sql.DB, config types.Ru
 			})
 		}
 	}
+
+	// 3. Return the findings
 	return len(findings) == 0, findings, nil
 }

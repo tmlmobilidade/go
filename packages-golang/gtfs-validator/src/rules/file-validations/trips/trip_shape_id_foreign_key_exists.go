@@ -31,10 +31,15 @@ Missing values are handled by trip_shape_id_exists.
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func (TripsChecks) TripShapeIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Check if the trips table exists
 	exists, err := sqlutils.TableExists(ctx, db, "trips")
 	if err != nil || !exists {
 		return err == nil, nil, err
 	}
+
+	// 2. Check each supplied ID against its referenced tables
 	var findings []types.Finding
 	err = sqlutils.ForEachRow(ctx, db, "trips", []string{"shape_id"}, func(row int, values map[string]string) error {
 		value := values["shape_id"]
@@ -60,8 +65,11 @@ func (TripsChecks) TripShapeIDForeignKeyExists(ctx context.Context, db *sql.DB, 
 		findings = append(findings, types.Finding{Description: "The shape_id references a missing shape_id.", Message: fmt.Sprintf("Unknown shape_id %q.", value), Severity: config.Severity, FileName: "trips.txt", Field: "shape_id", Rows: []int{row}})
 		return nil
 	})
+
+	// 3. Return the findings
 	if err != nil {
 		return false, nil, err
 	}
+
 	return len(findings) == 0, findings, nil
 }

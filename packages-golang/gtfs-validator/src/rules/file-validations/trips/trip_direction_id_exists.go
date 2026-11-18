@@ -39,8 +39,13 @@ At forbidden severity, rejects supplied values.
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func (TripsChecks) TripDirectionIDExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
 		return fields.CheckValues(ctx, db, config, tripsTable, "direction_id", "The direction_id field must be empty.", func(string) bool { return false })
 	}
+
+	// 2. Validate the column and required values
 	return fields.CheckPresence(ctx, db, config, tripsTable, "direction_id", false)
 }

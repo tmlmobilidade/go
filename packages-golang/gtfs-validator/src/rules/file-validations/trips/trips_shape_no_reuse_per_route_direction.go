@@ -34,10 +34,15 @@ direction (0 or 1) are skipped; their field checks handle those values.
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func (TripsChecks) TripsShapeNoReusePerRouteDirection(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Check if the trips table exists
 	exists, err := sqlutils.TableExists(ctx, db, tripsTable)
 	if err != nil || !exists {
 		return err == nil, nil, err
 	}
+
+	// 2. Group route and direction pairs by shape ID
 	type pair struct {
 		route     string
 		direction int
@@ -65,6 +70,8 @@ func (TripsChecks) TripsShapeNoReusePerRouteDirection(ctx context.Context, db *s
 	if err != nil {
 		return false, nil, err
 	}
+
+	// 3. Report shapes reused across route and direction pairs
 	var findings []types.Finding
 	for _, shape := range order {
 		g := groups[shape]
@@ -72,5 +79,7 @@ func (TripsChecks) TripsShapeNoReusePerRouteDirection(ctx context.Context, db *s
 			findings = append(findings, types.Finding{Description: "A shape must not be reused across route and direction pairs.", Message: fmt.Sprintf("Shape %q is used by %d route and direction pairs.", shape, len(g.pairs)), Severity: config.Severity, FileName: tripsFile, Field: "shape_id", Rows: g.rows})
 		}
 	}
+
+	// 4. Return the findings
 	return len(findings) == 0, findings, nil
 }

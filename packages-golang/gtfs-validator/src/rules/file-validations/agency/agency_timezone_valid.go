@@ -13,6 +13,9 @@ import (
 
 // AgencyTimezoneValid checks IANA timezone names and requires a common timezone across agencies.
 func (AgencyChecks) AgencyTimezoneValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Validate each supplied timezone and collect valid source rows
 	const description = "Agency timezones must be valid and consistent across the feed."
 	var findings []types.Finding
 	var validRows []int
@@ -37,6 +40,8 @@ func (AgencyChecks) AgencyTimezoneValid(ctx context.Context, db *sql.DB, config 
 	if err != nil {
 		return false, nil, err
 	}
+
+	// 2. Report inconsistent timezones across agencies
 	if len(timezones) > 1 {
 		findings = append(findings, types.Finding{
 			Description: description,
@@ -47,5 +52,7 @@ func (AgencyChecks) AgencyTimezoneValid(ctx context.Context, db *sql.DB, config 
 			Rows:        validRows,
 		})
 	}
+
+	// 3. Return the findings
 	return len(findings) == 0, findings, nil
 }

@@ -33,18 +33,23 @@ At forbidden severity, rejects supplied shape_id values.
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func (TripsChecks) TripShapeIDExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
-	// Required and forbidden configurations apply to every trip.
+
+	//
+	// 1. Apply the configured requirement to every trip
 	if config.Severity == types.SEVERITY_FORBIDDEN {
 		return fields.CheckValues(ctx, db, config, tripsTable, "shape_id", "The shape_id field must be empty.", func(string) bool { return false })
 	}
 	if config.Severity == types.SEVERITY_ERROR {
 		return fields.CheckPresence(ctx, db, config, tripsTable, "shape_id", false)
 	}
+
+	// 2. Check if the trips table exists
 	exists, err := sqlutils.TableExists(ctx, db, tripsTable)
 	if err != nil || !exists {
 		return err == nil, nil, err
 	}
-	// Build the sets once: routes and trips often share many stop_times rows.
+
+	// 3. Collect routes and trips with continuous pickup or drop-off
 	required := make(map[string]map[string]bool)
 	for _, source := range []struct{ table, key string }{{"routes", "route_id"}, {"stop_times", "trip_id"}} {
 		required[source.table] = make(map[string]bool)
@@ -72,6 +77,8 @@ func (TripsChecks) TripShapeIDExists(ctx context.Context, db *sql.DB, config typ
 			return false, nil, err
 		}
 	}
+
+	// 4. Find trips that require a shape but do not supply one
 	finding := types.Finding{Description: "A shape_id is required for trips with continuous pickup or drop-off.", Message: "The shape_id is missing for a trip with continuous service.", Severity: config.Severity, FileName: tripsFile, Field: "shape_id"}
 	err = sqlutils.ForEachRow(ctx, db, tripsTable, []string{"trip_id", "route_id", "shape_id"}, func(row int, values map[string]string) error {
 		if strings.TrimSpace(values["shape_id"]) == "" && (required["routes"][values["route_id"]] || required["stop_times"][values["trip_id"]]) {
@@ -79,11 +86,14 @@ func (TripsChecks) TripShapeIDExists(ctx context.Context, db *sql.DB, config typ
 		}
 		return nil
 	})
+
+	// 5. Return the findings
 	if err != nil {
 		return false, nil, err
 	}
 	if len(finding.Rows) > 0 {
 		return false, []types.Finding{finding}, nil
 	}
+
 	return true, nil, nil
 }

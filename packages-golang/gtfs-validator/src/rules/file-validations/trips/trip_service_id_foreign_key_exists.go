@@ -27,10 +27,15 @@ calendar_dates.service_id. Missing values are handled by trip_service_id_exists.
 [trips.txt]: https://gtfs.org/schedule/reference/#trips
 */
 func (TripsChecks) TripServiceIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Check if the trips table exists
 	exists, err := sqlutils.TableExists(ctx, db, "trips")
 	if err != nil || !exists {
 		return err == nil, nil, err
 	}
+
+	// 2. Check each supplied ID against its referenced tables
 	var findings []types.Finding
 	err = sqlutils.ForEachRow(ctx, db, "trips", []string{"service_id"}, func(row int, values map[string]string) error {
 		value := values["service_id"]
@@ -56,8 +61,11 @@ func (TripsChecks) TripServiceIDForeignKeyExists(ctx context.Context, db *sql.DB
 		findings = append(findings, types.Finding{Description: "The service_id references a missing service_id.", Message: fmt.Sprintf("Unknown service_id %q.", value), Severity: config.Severity, FileName: "trips.txt", Field: "service_id", Rows: []int{row}})
 		return nil
 	})
+
+	// 3. Return the findings
 	if err != nil {
 		return false, nil, err
 	}
+
 	return len(findings) == 0, findings, nil
 }

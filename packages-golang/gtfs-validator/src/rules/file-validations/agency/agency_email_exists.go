@@ -27,5 +27,8 @@ Presence and type follow [GTFS Standard].
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func (AgencyChecks) AgencyEmailExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Validate the column and required values
 	return fields.CheckPresence(ctx, db, config, "agency", "agency_email", false)
 }

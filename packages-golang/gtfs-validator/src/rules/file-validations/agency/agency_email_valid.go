@@ -38,6 +38,9 @@ Field definitions: [GTFS Standard].
 [GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
 */
 func (AgencyChecks) AgencyEmailValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Validate each supplied email address
 	var findings []types.Finding
 	err := fields.ForEachValue(ctx, db, agencyTable, emailColumn, func(row int, value string) {
 		if !validators.ValidateEmail(value) {
@@ -51,8 +54,11 @@ func (AgencyChecks) AgencyEmailValid(ctx context.Context, db *sql.DB, config typ
 			})
 		}
 	})
+
+	// 2. Return the findings
 	if err != nil {
 		return false, nil, err
 	}
+
 	return len(findings) == 0, findings, nil
 }

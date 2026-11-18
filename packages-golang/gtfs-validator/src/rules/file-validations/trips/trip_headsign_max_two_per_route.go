@@ -31,11 +31,16 @@ Findings include the source rows containing those values.
 [trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
 */
 func (TripsChecks) TripHeadsignMaxTwoPerRoute(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Check if the trips table exists
 	const column = "trip_headsign"
 	exists, err := sqlutils.TableExists(ctx, db, tripsTable)
 	if err != nil || !exists {
 		return err == nil, nil, err
 	}
+
+	// 2. Group distinct values and source rows by route
 	type group struct {
 		values map[string]bool
 		rows   []int
@@ -58,6 +63,8 @@ func (TripsChecks) TripHeadsignMaxTwoPerRoute(ctx context.Context, db *sql.DB, c
 	if err != nil {
 		return false, nil, err
 	}
+
+	// 3. Report routes with more than two distinct values
 	var findings []types.Finding
 	for _, route := range order {
 		g := groups[route]
@@ -65,5 +72,7 @@ func (TripsChecks) TripHeadsignMaxTwoPerRoute(ctx context.Context, db *sql.DB, c
 			findings = append(findings, types.Finding{Description: "A route must have at most two distinct " + column + " values.", Message: fmt.Sprintf("Route %q has %d distinct %s values.", route, len(g.values), column), Severity: config.Severity, FileName: tripsFile, Field: column, Rows: g.rows})
 		}
 	}
+
+	// 4. Return the findings
 	return len(findings) == 0, findings, nil
 }

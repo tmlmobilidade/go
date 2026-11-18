@@ -10,5 +10,8 @@ import (
 
 // AgencyIDValid checks supplied values against the configured options.
 func (AgencyChecks) AgencyIDValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Validate supplied values against the configured options
 	return fields.CheckOptions(ctx, db, config, agencyTable, idColumn)
 }
