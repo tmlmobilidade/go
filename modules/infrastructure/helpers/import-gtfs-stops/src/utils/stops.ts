@@ -79,10 +79,10 @@ export function parseStops(text: string): GtfsStopRow[] {
  * @param row The GTFS boarding stop
  * @param id The assigned six-digit GO stop ID
  * @param location The resolved administrative location
- * @param agencyId The agency associated with the stop flag and legacy ID namespace
+ * @param agencyIds The agencies associated with the stop flag and legacy IDs
  * @returns The stop document ready for insertion
  */
-export function toStop(row: GtfsStopRow, id: string, location: Location, agencyId: string): Stop {
+export function toStop(row: GtfsStopRow, id: string, location: Location, agencyIds: string[]): Stop {
 	//
 
 	//
@@ -93,6 +93,7 @@ export function toStop(row: GtfsStopRow, id: string, location: Location, agencyI
 	const name = row.stop_name.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 	const shortName = getStopShortName(name);
 	const ttsName = getStopTtsName(name);
+	const legacyIds = agencyIds.map(agencyId => `${agencyId}:${row.stop_id}`);
 
 	//
 	// Map the GTFS fields and validate the stop document
@@ -101,10 +102,10 @@ export function toStop(row: GtfsStopRow, id: string, location: Location, agencyI
 		_id: id,
 		created_at: now,
 		created_by: 'system',
-		flags: [{ agency_ids: [agencyId], is_harmonized: false, short_name: shortName, stop_id: row.stop_id }],
+		flags: [{ agency_ids: agencyIds, is_harmonized: false, short_name: shortName, stop_id: row.stop_id }],
 		latitude: Number(row.stop_lat),
-		legacy_id: `${agencyId}:${row.stop_id}`,
-		legacy_ids: [`${agencyId}:${row.stop_id}`],
+		legacy_id: legacyIds[0],
+		legacy_ids: legacyIds,
 		location,
 		longitude: Number(row.stop_lon),
 		name,

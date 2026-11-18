@@ -40,7 +40,7 @@ export function AnnotationsContextProvider({ agencyId, children }: PropsWithChil
 	//
 	// B. Transform data
 
-	const annotations = useMemo(() => data?.data?.filter(annotation => !agencyId || annotation.agency_ids.includes(agencyId)) ?? [], [agencyId, data]);
+	const annotations = useMemo(() => data?.data?.filter(annotation => !annotation.agency_ids.length || !agencyId || annotation.agency_ids.includes(agencyId)) ?? [], [agencyId, data]);
 
 	//
 	// C. Render components
