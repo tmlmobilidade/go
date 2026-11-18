@@ -100,4 +100,22 @@ func TestCLI(t *testing.T) {
 			}
 		})
 	}
+	t.Run("unknown rule", func(t *testing.T) {
+		config := write("unknown-rule.json", []byte(`[{"rule_id":"test_rule","severity":"error"}]`))
+		command := exec.Command(binary, "-path", feed, "-rules", config)
+		var stdout, stderr bytes.Buffer
+		command.Stdout = &stdout
+		command.Stderr = &stderr
+		if err := command.Run(); err != nil {
+			t.Fatalf("unknown rule aborted execution: %v: %s", err, stderr.String())
+		}
+		var report types.Summary
+		if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
+			t.Fatal(err)
+		}
+		if report.TotalErrors != 0 || report.TotalWarnings != 1 || len(report.Messages) != 1 ||
+			report.Messages[0].RuleID != "test_rule" || report.Messages[0].Severity != types.SEVERITY_WARNING {
+			t.Fatalf("expected one warning for the missing rule: %+v", report)
+		}
+	})
 }

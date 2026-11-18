@@ -43,6 +43,7 @@ type checks struct {
 
 // findCheck matches snake_case IDs to exported methods, including acronyms such
 // as ID, URL, and GTFS. Reflection is only used while building the graph.
+// A nil check without an error means the rule has no implementation.
 func findCheck(ruleID string) (check, error) {
 	if ruleID == "file_validation" || ruleID == "file_not_found_in_rules" {
 		return nil, fmt.Errorf("%w: reserved notice ID %q", ErrInvalidConfiguration, ruleID)
@@ -61,7 +62,7 @@ func findCheck(ruleID string) (check, error) {
 		match = receiver.Method(i)
 	}
 	if !match.IsValid() {
-		return nil, fmt.Errorf("%w: unknown executable rule %q", ErrInvalidConfiguration, ruleID)
+		return nil, nil
 	}
 	validate, ok := match.Interface().(func(context.Context, *sql.DB, types.Rule) (bool, []Finding, error))
 	if !ok {

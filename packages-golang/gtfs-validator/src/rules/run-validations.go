@@ -22,7 +22,7 @@ var ErrInvalidConfiguration = errors.New("invalid rule configuration")
 //
 // The graph is built before the GTFS feed is imported into the database. At
 // this stage we only resolve rule IDs, check severities, and verify that
-// DependsOn references form a valid dependency tree (no unknown rules, no
+// DependsOn references form a valid dependency tree (no unknown dependencies, no
 // cycles). The *sql.DB is not opened here; it is passed in later when the
 // graph is executed.
 //
@@ -71,9 +71,9 @@ func NewValidationGraph(configs []types.Rule) (*services.DAG[*sql.DB, []Finding]
 				return runCheck(ctx, db, config, validate)
 			},
 		}
-		// "ignore" means skip the check entirely — except *_file_missing rules,
-		// which still run so a missing table can be detected without failing loudly.
-		if config.Severity == SEVERITY_IGNORE && !strings.HasSuffix(config.RuleID, "_file_missing") {
+		// Ignored file-presence checks still enforce prerequisites. Missing
+		// implementations still run so their warning is included in the report.
+		if validate != nil && config.Severity == SEVERITY_IGNORE && !strings.HasSuffix(config.RuleID, "_file_missing") {
 			task.SkipReason = "rule ignored"
 		}
 		tasks = append(tasks, task)
@@ -94,6 +94,17 @@ func NewValidationGraph(configs []types.Rule) (*services.DAG[*sql.DB, []Finding]
 // A check can also "fail" with no findings (e.g. an ignored file-presence rule
 // whose table is missing) — Failed then blocks dependents without a message.
 func runCheck(ctx context.Context, db *sql.DB, config types.Rule, validate check) (types.Outcome[[]Finding], error) {
+	if validate == nil {
+		return types.Outcome[[]Finding]{
+			Failed: true,
+			Value: []Finding{{
+				Description: "The configured rule has no implementation.",
+				Severity:    SEVERITY_WARNING,
+				Field:       "system",
+				Message:     fmt.Sprintf("Rule %q has no implementation and could not be executed.", config.RuleID),
+			}},
+		}, nil
+	}
 	passed, findings, err := validate(ctx, db, config)
 	for i := range findings {
 		findings[i].Severity = config.Severity

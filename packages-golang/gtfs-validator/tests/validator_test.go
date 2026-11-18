@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
@@ -22,6 +23,34 @@ func agencyRules() []types.Rule {
 		{RuleID: "agency_name_valid", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_name_field"}},
 		{RuleID: "agency_file_missing", Severity: types.SEVERITY_ERROR},
 		{RuleID: "agency_name_field", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_missing"}},
+	}
+}
+
+func TestUnknownRulesWarnAndContinue(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "feed.zip")
+	if err := os.WriteFile(path, archive(t, map[string]string{"agency.txt": "agency_name\nCarris\n"}), 0600); err != nil {
+		t.Fatal(err)
+	}
+	for _, severity := range []types.Severities{types.SEVERITY_ERROR, types.SEVERITY_IGNORE} {
+		t.Run(string(severity), func(t *testing.T) {
+			config := append(agencyRules(), types.Rule{RuleID: "TEST_RULE", Severity: severity})
+			report, err := validator.GtfsValidator(t.Context(), validator.Options{
+				Source: importgtfs.ImportGtfsConfigSource{Path: path}, Rules: config,
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if report.TotalErrors != 0 || report.TotalWarnings != 1 || len(report.Messages) != 1 {
+				t.Fatalf("expected one warning for the missing rule: %+v", report)
+			}
+			message := report.Messages[0]
+			if message.Field != "system" || len(message.Messages) != 1 || message.Messages[0].Field != "system" {
+				t.Fatalf("missing-rule warning must use the system field: %+v", message)
+			}
+			if message.RuleID != "test_rule" || message.Severity != types.SEVERITY_WARNING || len(message.Messages) != 1 || !strings.Contains(message.Messages[0].Message, "no implementation") {
+				t.Fatalf("unexpected warning: %+v", message)
+			}
+		})
 	}
 }
 

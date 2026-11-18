@@ -119,9 +119,12 @@ The rule-file test verifies that every rule file can be selected by its filename
 
 Every prerequisite must appear as a rule in the same array. Omit `depends_on`
 for a rule without prerequisites. IDs and severities are normalized to
-lowercase. The validator rejects unknown rules, invalid severities, duplicate
-rules or dependencies, missing prerequisites, and cycles before importing the
-feed. `options` and `compare` are passed through to the rule functions.
+lowercase. A configured rule with no implementation produces a warning when
+scheduled, regardless of its configured severity. Independent checks continue,
+and checks depending on that rule are skipped. The validator rejects invalid
+severities, duplicate rules or dependencies, missing prerequisites, and cycles
+before importing the feed. `options` and `compare` are passed through to the rule
+functions.
 
 A finding at any reported severity fails the rule and skips dependent rules.
 Independent branches continue. Ignored ordinary rules are skipped and block their

@@ -25,8 +25,44 @@ func TestRuleFilesAreExecutable(t *testing.T) {
 			RuleID: strings.TrimSuffix(name, ".go"), Severity: types.SEVERITY_IGNORE,
 		})
 	}
-	if _, err := rules.NewValidationGraph(configs); err != nil {
+	graph, err := rules.NewValidationGraph(configs)
+	if err != nil {
 		t.Fatal(err)
+	}
+	db := openSQLTestDatabase(t, "CREATE TABLE agency (agency_name TEXT);")
+	results, err := graph.Execute(t.Context(), db, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, result := range results {
+		if len(result.Value) != 0 {
+			t.Errorf("rule file %s.go has no executable method: %+v", result.ID, result.Value)
+		}
+	}
+}
+
+func TestMissingRuleDoesNotAbortGraph(t *testing.T) {
+	graph, err := rules.NewValidationGraph([]types.Rule{
+		{RuleID: "test_rule", Severity: types.SEVERITY_ERROR},
+		{RuleID: "agency_name_field", Severity: types.SEVERITY_ERROR},
+		{RuleID: "agency_name_valid", Severity: types.SEVERITY_ERROR, DependsOn: []string{"test_rule"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	db := openSQLTestDatabase(t, "CREATE TABLE agency (agency_name TEXT); INSERT INTO agency VALUES ('');")
+	results, err := graph.Execute(t.Context(), db, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if results[0].ID != "agency_name_field" || results[0].Status != types.Failed || len(results[0].Value) != 1 {
+		t.Fatalf("independent check did not execute: %+v", results[0])
+	}
+	if results[1].Status != types.Skipped || !reflect.DeepEqual(results[1].BlockedBy, []string{"test_rule"}) {
+		t.Fatalf("dependent check ran without its prerequisite: %+v", results[1])
+	}
+	if results[2].ID != "test_rule" || results[2].Status != types.Failed || len(results[2].Value) != 1 || results[2].Value[0].Severity != types.SEVERITY_WARNING {
+		t.Fatalf("missing check did not produce a warning: %+v", results[2])
 	}
 }
 
