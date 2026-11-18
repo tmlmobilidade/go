@@ -9,6 +9,23 @@ import (
 	"strings"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: service_id
+  - Presence: Required
+  - Type: Foreign Key referencing calendar.service_id or calendar_dates.service_id
+
+# Description
+
+Identifies a service.
+
+Validation: Each supplied service_id must exist in calendar.service_id or
+calendar_dates.service_id. Missing values are handled by trip_service_id_exists.
+
+[trips.txt]: https://gtfs.org/schedule/reference/#trips
+*/
 func (TripsChecks) TripServiceIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	exists, err := sqlutils.TableExists(ctx, db, "trips")
 	if err != nil || !exists {

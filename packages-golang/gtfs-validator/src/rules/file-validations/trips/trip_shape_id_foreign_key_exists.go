@@ -9,6 +9,27 @@ import (
 	"strings"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: shape_id
+  - Presence: Conditionally Required
+  - Type: Foreign Key referencing shapes.shape_id
+
+# Description
+
+Identifies a geospatial shape describing the vehicle travel path for a trip.
+
+Conditionally Required:
+  - Required if the trip has a continuous pickup or drop-off behavior defined either in routes.txt or in stop_times.txt.
+  - Optional otherwise.
+
+Validation: Each supplied shape_id must exist in shapes.shape_id.
+Missing values are handled by trip_shape_id_exists.
+
+[trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
+*/
 func (TripsChecks) TripShapeIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	exists, err := sqlutils.TableExists(ctx, db, "trips")
 	if err != nil || !exists {

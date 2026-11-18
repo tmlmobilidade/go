@@ -13,7 +13,24 @@ const (
 	tripsFile  = tripsTable + ".txt"
 )
 
-// TripsFileExists gates the trips checks on the imported trips.txt table.
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Presence: Required
+  - Primary key: trip_id
+  - Type: File
+
+# Description
+
+Trips for each route. A trip is a sequence of two or more stops that occur during a specific time period.
+
+Validation: Checks that the imported trips table exists. At forbidden severity,
+requires its absence. An ignored rule returns a failed result without findings
+when the table is missing.
+
+[trips.txt]: https://gtfs.org/schedule/reference/#tripstxt
+*/
 func (TripsChecks) TripsFileExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	exists, err := sqlutils.TableExists(ctx, db, tripsTable)
 	if err != nil {

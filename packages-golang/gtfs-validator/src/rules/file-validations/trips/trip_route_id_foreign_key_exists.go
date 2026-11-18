@@ -9,6 +9,23 @@ import (
 	"strings"
 )
 
+/*
+# Attributes
+
+  - File: [trips.txt]
+  - Field: route_id
+  - Presence: Required
+  - Type: Foreign Key referencing routes.route_id
+
+# Description
+
+Identifies a route.
+
+Validation: Each supplied route_id must exist in routes.route_id.
+Missing values are handled by trip_route_id_exists.
+
+[trips.txt]: https://gtfs.org/schedule/reference/#trips
+*/
 func (TripsChecks) TripRouteIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 	exists, err := sqlutils.TableExists(ctx, db, "trips")
 	if err != nil || !exists {
