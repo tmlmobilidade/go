@@ -1,4 +1,5 @@
 export * from './cimat/index.js';
+export * from './cimra/index.js';
 export * from './cimrc/index.js';
 export * from './tml/index.js';
 export * from './tmp/index.js';
