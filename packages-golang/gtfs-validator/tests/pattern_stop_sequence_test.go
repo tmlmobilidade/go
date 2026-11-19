@@ -15,60 +15,55 @@ func TestPatternSameStopSequence(t *testing.T) {
 			('a', '2711_0', '0'), ('b', '2711_0', '0'),
 			('c', '2711_0', '1'), ('d', '2711_0', '1'),
 			('e', '2712_0', '0'), ('f', '2711_0', '00');`
-	const stopTimes = "CREATE TABLE stop_times (trip_id TEXT, stop_id TEXT, stop_sequence TEXT, shape_dist_traveled TEXT);"
+	const stopTimes = "CREATE TABLE stop_times (trip_id TEXT, stop_sequence TEXT);"
 	const locations = "CREATE TABLE stop_times (trip_id TEXT, stop_id TEXT, stop_sequence TEXT, location_group_id TEXT, location_id TEXT);"
+	const matching = `
+		INSERT INTO stop_times VALUES
+			('a', '0'), ('a', '1'), ('a', '2'), ('a', '3'), ('a', '4'), ('a', '5'),
+			('b', '0'), ('b', '1'), ('b', '2'), ('b', '3'), ('b', '4'), ('b', '5'),
+			('c', '0'), ('c', '1'), ('c', '2'), ('c', '3'), ('c', '4'), ('c', '5'),
+			('d', '0'), ('d', '1'), ('d', '2'), ('d', '3'), ('d', '4'), ('d', '5');`
 
 	for _, tt := range []struct {
 		name  string
 		setup string
 		rows  [][]int
 	}{
-		{name: "matching stops sorted numerically", setup: trips + stopTimes + `
+		{name: "matching lists in both directions", setup: trips + stopTimes + matching},
+		{name: "conflicting lists in both directions", setup: trips + stopTimes + matching + `
+			UPDATE stop_times SET stop_sequence = '999'
+			WHERE trip_id IN ('b', 'c') AND stop_sequence = '4';`,
+			rows: [][]int{{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}}},
+		{name: "matching lists sorted numerically", setup: trips + stopTimes + `
 			INSERT INTO stop_times VALUES
-				('a', 'start', '010', '300'), ('b', 'middle', '02', '100'),
-				('a', 'start', '0', '0'), ('b', 'start', '10', '9999'),
-				('a', 'middle', '2', '100'), ('b', 'start', '0', '0'),
-				('c', 'inbound', '0', '0'), ('d', 'inbound', '0', '0'),
-				('e', 'other-route', '0', '0'), ('f', 'other-direction', '0', '0');`},
-		{name: "changed stop and shorter trip", setup: trips + stopTimes + `
+				('a', '010'), ('b', '02'), ('a', '0'), ('b', '10'), ('a', '2'), ('b', '0'),
+				('c', '0'), ('d', '0'), ('e', '0'), ('f', '9');`},
+		{name: "shorter trip", setup: trips + stopTimes + `
 			INSERT INTO stop_times VALUES
-				('a', 'start', '0', '0'), ('c', 'inbound', '0', '0'),
-				('b', 'start', '0', '0'), ('d', 'inbound', '0', '0'),
-				('a', 'end', '1', '100'), ('c', 'extra', '1', '100'),
-				('b', 'other-stop', '1', '100');`, rows: [][]int{{0, 2, 4, 6}, {1, 3, 5}}},
+				('a', '0'), ('b', '0'), ('a', '1');`, rows: [][]int{{0, 1, 2}}},
+		{name: "duplicate sequence numbers contribute to the list", setup: trips + stopTimes + `
+			INSERT INTO stop_times VALUES
+				('a', '0'), ('a', '1'), ('b', '0'), ('b', '00');`, rows: [][]int{{0, 1, 2, 3}}},
 		{name: "renumbered stops with nonstandard direction", setup: trips + stopTimes + `
 			UPDATE trips SET direction_id = 'bad' WHERE trip_id IN ('a', 'b');
 			INSERT INTO stop_times VALUES
-				('a', 'start', '0', '0'), ('b', 'start', '0', '0'),
-				('a', 'end', '1', '100'), ('b', 'end', '2', '100');`, rows: [][]int{{0, 1, 2, 3}}},
-		{name: "matching location groups and GeoJSON locations", setup: trips + locations + `
+				('a', '0'), ('b', '0'), ('a', '1'), ('b', '2');`, rows: [][]int{{0, 1, 2, 3}}},
+		{name: "location columns do not affect the hash", setup: trips + locations + `
 			INSERT INTO stop_times VALUES
-				('a', NULL, '1', 'region', NULL), ('b', NULL, '1', 'region', NULL),
-				('a', NULL, '2', NULL, 'area'), ('b', NULL, '2', NULL, 'area');`},
-		{name: "location types distinguish the same ID", setup: trips + locations + `
-			INSERT INTO stop_times VALUES ('a', NULL, '1', 'region', NULL), ('b', NULL, '1', NULL, 'region');`, rows: [][]int{{0, 1}}},
-		{name: "unavailable and ambiguous sequences", setup: trips + locations + `
+				('a', 'start', '1', 'region', NULL), ('b', 'other', '1', NULL, 'area'),
+				('a', NULL, '2', NULL, 'area'), ('b', NULL, '2', NULL, NULL);`},
+		{name: "unavailable and ambiguous sequences", setup: trips + stopTimes + `
 			INSERT INTO trips VALUES
 				('ambiguous', '2711_0', '0'), ('ambiguous', '2711_0', '1'),
 				('no-direction', '2711_0', ' '), ('no-route', NULL, '0'),
-				('no-location', '2711_0', '0'), ('multiple-locations', '2711_0', '0'),
 				('no-sequence', '2711_0', '0');
 			INSERT INTO stop_times VALUES
-				('a', 'start', '0', NULL, NULL), ('a', 'end', '1', NULL, NULL),
-				('b', 'changed', '0', NULL, NULL), ('b', 'changed', '00', NULL, NULL),
-				('ambiguous', 'changed', '0', NULL, NULL),
-				('no-direction', 'changed', '0', NULL, NULL),
-				('no-route', 'changed', '0', NULL, NULL),
-				('no-location', NULL, '0', NULL, NULL),
-				('no-location', 'changed', '1', NULL, NULL),
-				('multiple-locations', 'changed', '0', 'region', NULL),
-				('multiple-locations', 'changed', '1', NULL, NULL),
-				('no-sequence', 'changed', '0', NULL, NULL),
-				('no-sequence', 'end', 'bad', NULL, NULL),
-				('unknown-trip', 'changed', '0', NULL, NULL);`},
+				('a', '0'), ('a', '1'), ('b', '0'), ('b', NULL),
+				('ambiguous', '4'), ('no-direction', '4'), ('no-route', '4'),
+				('no-sequence', '0'), ('no-sequence', 'bad'), ('unknown-trip', '4');`},
 		{name: "missing trips table", setup: stopTimes},
 		{name: "missing stop times table", setup: trips},
-		{name: "missing sequence column", setup: trips + "CREATE TABLE stop_times (trip_id TEXT, stop_id TEXT); INSERT INTO stop_times VALUES ('a', 'start'), ('b', 'end');"},
+		{name: "missing sequence column", setup: trips + "CREATE TABLE stop_times (trip_id TEXT); INSERT INTO stop_times VALUES ('a'), ('b');"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			db := openSQLTestDatabase(t, tt.setup)

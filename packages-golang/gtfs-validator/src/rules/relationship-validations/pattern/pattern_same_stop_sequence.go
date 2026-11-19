@@ -3,7 +3,9 @@ package pattern
 import (
 	"cmp"
 	"context"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/binary"
 	"fmt"
 	"slices"
 	"strconv"
@@ -23,16 +25,14 @@ import (
 
 # Description
 
-Trips with the same route_id and direction_id must have identical sequences of
-locations and numeric stop_sequence values. Locations are identified by stop_id,
-location_group_id, or location_id. Stop times are sorted by stop_sequence before
-comparison. Each finding includes the compared source rows for one group.
+Trips with the same route_id and direction_id must have identical numeric
+stop_sequence lists. For each trip, the rule hashes its route_id, direction_id,
+and numerically sorted stop_sequence values, preserving duplicates. It compares
+the hashes within each group and reports the compared stop_times source rows.
 
 The check skips missing tables, trips without a route or direction, and trip IDs
-assigned to conflicting groups. Trips without stop times or with an ambiguous
-sequence are skipped. A sequence is ambiguous when a row has no integer
-stop_sequence, duplicates another row's sequence number, or has anything other
-than one supplied location.
+assigned to conflicting groups. It also skips trips without stop times or with
+a missing or non-integer stop_sequence.
 
 [stop_times.txt]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
 */
@@ -52,19 +52,15 @@ func (PatternChecks) PatternSameStopSequence(ctx context.Context, db *sql.DB, co
 		route     string
 		direction string
 	}
-	type stop struct {
-		sequence int64
-		field    string
-		location string
-	}
 	type stopTime struct {
-		stop
-		row int
+		sequence int64
+		row      int
 	}
 	type tripStops struct {
 		pattern
 		times     []stopTime
 		ambiguous bool
+		hash      [sha256.Size]byte
 	}
 	trips := make(map[string]*tripStops)
 	var tripIDs []string
@@ -89,10 +85,8 @@ func (PatternChecks) PatternSameStopSequence(ctx context.Context, db *sql.DB, co
 		return true, nil, nil
 	}
 
-	// 3. Read each trip's numbered stop locations
-	locationFields := []string{"stop_id", "location_group_id", "location_id"}
-	columns := append([]string{"trip_id", "stop_sequence"}, locationFields...)
-	err = sqlutils.ForEachRow(ctx, db, "stop_times", columns, func(row int, values map[string]string) error {
+	// 3. Read each trip's sequence numbers and source rows
+	err = sqlutils.ForEachRow(ctx, db, "stop_times", []string{"trip_id", "stop_sequence"}, func(row int, values map[string]string) error {
 		trip := trips[values["trip_id"]]
 		if trip == nil || trip.ambiguous {
 			return nil
@@ -102,31 +96,17 @@ func (PatternChecks) PatternSameStopSequence(ctx context.Context, db *sql.DB, co
 			trip.ambiguous = true
 			return nil
 		}
-		time := stopTime{stop: stop{sequence: sequence}, row: row}
-		for _, field := range locationFields {
-			if strings.TrimSpace(values[field]) == "" {
-				continue
-			}
-			if time.field != "" {
-				trip.ambiguous = true
-				return nil
-			}
-			time.field, time.location = field, values[field]
-		}
-		if time.field == "" {
-			trip.ambiguous = true
-			return nil
-		}
-		trip.times = append(trip.times, time)
+		trip.times = append(trip.times, stopTime{sequence: sequence, row: row})
 		return nil
 	})
 	if err != nil {
 		return false, nil, err
 	}
 
-	// 4. Order complete trip sequences and group them by route and direction
+	// 4. Hash each sorted sequence with its route and direction
 	groups := make(map[pattern][]string)
 	var order []pattern
+	var encoded []byte
 	for _, id := range tripIDs {
 		if err := ctx.Err(); err != nil {
 			return false, nil, err
@@ -138,42 +118,43 @@ func (PatternChecks) PatternSameStopSequence(ctx context.Context, db *sql.DB, co
 		slices.SortFunc(trip.times, func(a, b stopTime) int {
 			return cmp.Compare(a.sequence, b.sequence)
 		})
-		for i := 1; i < len(trip.times); i++ {
-			if trip.times[i-1].sequence == trip.times[i].sequence {
-				trip.ambiguous = true
-				break
-			}
+		// Length prefixes keep the route and direction IDs unambiguous.
+		encoded = binary.AppendUvarint(encoded[:0], uint64(len(trip.route)))
+		encoded = append(encoded, trip.route...)
+		encoded = binary.AppendUvarint(encoded, uint64(len(trip.direction)))
+		encoded = append(encoded, trip.direction...)
+		for _, time := range trip.times {
+			encoded = binary.AppendVarint(encoded, time.sequence)
 		}
-		if trip.ambiguous {
-			continue
-		}
+		trip.hash = sha256.Sum256(encoded)
 		if len(groups[trip.pattern]) == 0 {
 			order = append(order, trip.pattern)
 		}
 		groups[trip.pattern] = append(groups[trip.pattern], id)
 	}
 
-	// 5. Report the first difference and the compared rows for each conflicting group
+	// 5. Compare trip hashes and report differences within each group
 	var findings []types.Finding
 	for _, key := range order {
 		ids := groups[key]
-		reference := trips[ids[0]].times
+		reference := trips[ids[0]]
 		var difference string
 		for _, id := range ids[1:] {
-			candidate := trips[id].times
-			for i := range min(len(reference), len(candidate)) {
-				a, b := reference[i], candidate[i]
-				if a.stop != b.stop {
-					difference = fmt.Sprintf("Trips %q and %q differ at position %d: %s %q at sequence %d versus %s %q at sequence %d.", ids[0], id, i+1, a.field, a.location, a.sequence, b.field, b.location, b.sequence)
+			candidate := trips[id]
+			if reference.hash == candidate.hash {
+				continue
+			}
+			if len(reference.times) != len(candidate.times) {
+				difference = fmt.Sprintf("Trips %q and %q have %d and %d stop times, respectively.", ids[0], id, len(reference.times), len(candidate.times))
+				break
+			}
+			for i, time := range reference.times {
+				if other := candidate.times[i]; time.sequence != other.sequence {
+					difference = fmt.Sprintf("Trips %q and %q have stop_sequence values %d and %d at sorted position %d.", ids[0], id, time.sequence, other.sequence, i+1)
 					break
 				}
 			}
-			if difference == "" && len(reference) != len(candidate) {
-				difference = fmt.Sprintf("Trips %q and %q have %d and %d stop times, respectively.", ids[0], id, len(reference), len(candidate))
-			}
-			if difference != "" {
-				break
-			}
+			break
 		}
 		if difference == "" {
 			continue
