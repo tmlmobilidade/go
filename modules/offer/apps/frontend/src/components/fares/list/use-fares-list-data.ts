@@ -5,7 +5,6 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { useFaresAgenciesData } from '../shared/use-fares-agencies-data';
 import { useFaresData } from '../shared/use-fares-data';
 import { useFaresListFilterAgencies } from './filters/FaresListFilterAgencies/use-fares-list-filter-agencies';
 import { useFaresListFilterSearch } from './filters/FaresListFilterSearch/use-fares-list-filter-search';
@@ -35,10 +34,8 @@ export function useFaresListData(): UseFaresListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error: faresError, isLoading: faresLoading, isValidating, mutate, timestamp } = useFaresData();
-	const { error: agenciesError, isLoading: agenciesLoading } = useFaresAgenciesData();
-	const error = faresError ?? agenciesError;
-	const isLoading = faresLoading || agenciesLoading;
+	const { data, error, isLoading, isValidating, mutate, timestamp } = useFaresData();
+	const agenciesAvailable = !agencyFilter.error && !agencyFilter.isLoading;
 
 	//
 	// C. Transform data
@@ -47,11 +44,11 @@ export function useFaresListData(): UseFaresListDataReturnType {
 	const filtered = useMemo(() => {
 		return matches
 			.filter((item) => {
-				const matchesAgencies = item.agency_ids.some(id => agencyFilter.value.includes(id));
-				return matchesAgencies;
+				if (!agenciesAvailable || !agencyFilter.isActive) return true;
+				return item.agency_ids.some(id => agencyFilter.value.includes(id));
 			})
 			.sort((a, b) => b.created_at - a.created_at);
-	}, [matches, agencyFilter.value]);
+	}, [matches, agenciesAvailable, agencyFilter.isActive, agencyFilter.value]);
 
 	//
 	// D. Return data
