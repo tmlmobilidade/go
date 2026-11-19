@@ -199,6 +199,45 @@ func TestPatternSameShapeID(t *testing.T) {
 	}
 }
 
+func TestPatternSameTripHeadsign(t *testing.T) {
+	config := types.Rule{RuleID: "pattern_same_trip_headsign", Severity: types.SEVERITY_WARNING}
+	const trips = "CREATE TABLE trips (route_id TEXT, direction_id TEXT, trip_headsign TEXT);"
+
+	t.Run("consistent groups and skipped rows", func(t *testing.T) {
+		checkTripRule(t, trips+`INSERT INTO trips VALUES
+			('2006_0', '0', 'Central Station'),
+			('2006_0', '0', 'Central Station'),
+			('2006_0', '1', 'Airport'),
+			('2006_0', '00', 'City Centre'),
+			('2007_0', '0', 'City Centre'),
+			('2006_0', '0', NULL),
+			('2006_0', '0', ' '),
+			('2006_0', ' ', 'Airport'),
+			('2006_0', ' ', 'City Centre'),
+			(NULL, '0', 'Airport'),
+			(NULL, '0', 'City Centre');`, config, "trip_headsign", nil)
+	})
+
+	t.Run("conflicting groups", func(t *testing.T) {
+		checkTripRule(t, trips+`INSERT INTO trips VALUES
+			('2006_0', '0', 'Central Station'),
+			('2006_0', 'bad', 'Airport'),
+			('2006_0', '0', 'Central station'),
+			('2006_0', '0', 'Central Station'),
+			('2006_0', '0', NULL),
+			('2006_0', 'bad', 'City Centre');`, config, "trip_headsign", [][]int{{0, 2, 3}, {1, 5}})
+	})
+
+	for _, setup := range []string{
+		"CREATE TABLE routes (route_id TEXT);",
+		"CREATE TABLE trips (direction_id TEXT, trip_headsign TEXT); INSERT INTO trips VALUES ('0', 'Airport'), ('0', 'City Centre');",
+		"CREATE TABLE trips (route_id TEXT, trip_headsign TEXT); INSERT INTO trips VALUES ('2006_0', 'Airport'), ('2006_0', 'City Centre');",
+		"CREATE TABLE trips (route_id TEXT, direction_id TEXT); INSERT INTO trips VALUES ('2006_0', '0');",
+	} {
+		checkTripRule(t, setup, config, "trip_headsign", nil)
+	}
+}
+
 func checkTripRule(t *testing.T, setup string, config types.Rule, field string, wantRows [][]int) {
 	t.Helper()
 	db := openSQLTestDatabase(t, setup)
