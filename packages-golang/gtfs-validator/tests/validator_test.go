@@ -152,16 +152,47 @@ func TestValidateURLAndCancellation(t *testing.T) {
 	if !errors.Is(err, context.Canceled) {
 		t.Fatal(err)
 	}
+
+	cause := errors.New("test cancelled during import")
+	ctx, cancelWithCause := context.WithCancelCause(t.Context())
+	defer cancelWithCause(nil)
+	interrupted := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		cancelWithCause(cause)
+		w.Write(contents)
+	}))
+	defer interrupted.Close()
+	options.Source.Url = interrupted.URL
+	_, trace, err := validator.GtfsValidatorWithTrace(ctx, options)
+	if !errors.Is(err, context.Canceled) || trace == nil {
+		t.Fatalf("expected a partial trace: %v, %v", trace, err)
+	}
+	cancellations, skipped := 0, 0
+	for _, event := range trace.Events {
+		switch event.Kind {
+		case "cancelled":
+			cancellations++
+			if event.Error != cause.Error() {
+				t.Fatal(event)
+			}
+		case "rule_skipped":
+			skipped++
+		case "rule_started":
+			t.Fatalf("rule started after cancellation during import: %+v", event)
+		}
+	}
+	if cancellations != 1 || skipped != len(options.Rules) || trace.Events[len(trace.Events)-1].Status != "aborted" {
+		t.Fatalf("unexpected trace: %+v", trace.Events)
+	}
 }
 
 func TestRejectsRulesBeforeImport(t *testing.T) {
 	config := agencyRules()
 	config[0].DependsOn = []string{"agency_id_unique"}
-	_, err := validator.GtfsValidator(context.Background(), validator.Options{
+	_, trace, err := validator.GtfsValidatorWithTrace(context.Background(), validator.Options{
 		Source: importgtfs.ImportGtfsConfigSource{Path: filepath.Join(t.TempDir(), "missing.zip")},
 		Rules:  config,
 	})
-	if !errors.Is(err, rules.ErrInvalidConfiguration) {
-		t.Fatalf("expected a configuration error before opening the ZIP, got %v", err)
+	if !errors.Is(err, rules.ErrInvalidConfiguration) || trace != nil {
+		t.Fatalf("expected a configuration error before opening the ZIP, got %v, %v", trace, err)
 	}
 }

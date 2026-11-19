@@ -65,6 +65,33 @@ are omitted. Info findings are retained without increasing totals. Error and
 forbidden findings contribute to `total_errors`. Warnings contribute to
 `total_warnings`.
 
+### Execution visualization
+
+```sh
+./dist/gtfs-validator -path ./gtfs.zip -rules ./rules.json -concurrency 4 \
+  -trace ./validation-trace.json > report.json
+```
+
+Open [visualization.html](visualization.html) in a browser and select or drop
+`validation-trace.json`. The viewer opens on the full dependency chart in its
+final state. Use playback, the event log, or the timeline to inspect earlier
+steps. Select a rule to see its configured severity, observed outcome, queue
+and run time, finding count, and any blocking prerequisites.
+
+The version 1 trace includes the configured rule graph and the recorded run
+events. Each event has a monotonic `elapsed_ns` offset from the UTC `started_at`.
+Events cover graph setup, feed import, indexes, rule validation, report
+collection, and cleanup. The rule events track readiness, start, result, and
+reason for skipping. Finding counts are the diagnostics returned by a rule
+before report deduplication and sampling. Playback advances event by event and
+shows the recorded time for each step.
+
+Once a valid graph exists, the CLI saves the trace even if import, execution,
+or cancellation aborts the run. The trace records cancellation when it occurs.
+The importer finishes its current import before the validator checks for
+cancellation. If the trace cannot be saved, the CLI reports the write error
+on stderr and exits with code `2`. The report stays on stdout.
+
 ## Go library
 
 ```go
@@ -91,6 +118,9 @@ report, err := validator.GtfsValidator(context.Background(), validator.Options{
 A zero library concurrency uses 1. The CLI configures the shared telemetry logger
 to write to stderr. The validator checks for cancellation before and after
 import and passes the context to rule callbacks during execution.
+
+`GtfsValidatorWithTrace` accepts the same options and also returns a
+`*types.ValidationTrace` once the graph is valid.
 
 ## Rules and dependencies
 

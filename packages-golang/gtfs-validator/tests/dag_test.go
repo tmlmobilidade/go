@@ -2,14 +2,15 @@ package gtfsvalidator_test
 
 import (
 	"context"
-
 	"errors"
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
-	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 	"reflect"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
 // task builds a passing test node; deps ...string accepts any number of prerequisite IDs.
@@ -191,9 +192,25 @@ func TestAbortCancelsAndJoins(t *testing.T) {
 	}
 
 	graph, _ := services.NewDAG([]types.Task[struct{}, int]{a, b, task("c", "a")})
-	results, err := graph.Execute(ctx, struct{}{}, 2)
+	var mu sync.Mutex
+	var events []types.TaskEvent[int]
+	results, err := graph.ExecuteWithObserver(ctx, struct{}{}, 2, func(event types.TaskEvent[int]) {
+		mu.Lock()
+		defer mu.Unlock()
+		events = append(events, event)
+	})
 	if !errors.Is(err, failure) || !joined.Load() || results[2].Status != types.Skipped || results[0].Status != types.Errored {
 		t.Fatal(results, err)
+	}
+	// The order between the worker starts is unconstrained. Their recorded
+	// lifetimes must overlap, and only the first worker finishes before cancel.
+	if len(events) != 8 || events[0].Kind != types.TaskReady || events[1].Kind != types.TaskReady ||
+		events[2].Kind != types.TaskStarted || events[3].Kind != types.TaskStarted ||
+		events[4].Kind != types.TaskFinished || events[4].Result.ID != "a" || events[4].Result.Status != types.Errored ||
+		events[5].Kind != types.TaskCancelled || !errors.Is(events[5].Cause, failure) ||
+		events[6].Kind != types.TaskFinished || events[6].Result.ID != "b" ||
+		events[7].Kind != types.TaskSkipped || !reflect.DeepEqual(events[7].Result, results[2]) {
+		t.Fatalf("unexpected event order or result: %+v", events)
 	}
 }
 

@@ -130,9 +130,8 @@ func (d *DAG[I, T]) initial() (map[string]int, []string) {
 // Workers never mutate the scheduler's maps; they only send this message.
 // That way the main loop alone owns degrees/results and needs no locks.
 type completion[T any] struct {
-	id      string
-	outcome types.Outcome[T]
-	err     error
+	result types.Result[T]
+	err    error
 }
 
 // Execute runs the graph and returns one Result per task, sorted by task ID.
@@ -147,6 +146,13 @@ type completion[T any] struct {
 //   - Cancellation is cooperative: cancel the child context, wait for started
 //     workers to finish, then return — never leave orphaned work.
 func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types.Result[T], error) {
+	return d.ExecuteWithObserver(parent, input, limit, nil)
+}
+
+// ExecuteWithObserver also reports live transitions. The observer may be called
+// concurrently from the scheduler and its workers. It must return promptly and
+// treat the event and its result as read-only.
+func (d *DAG[I, T]) ExecuteWithObserver(parent context.Context, input I, limit int, observe func(types.TaskEvent[T])) ([]types.Result[T], error) {
 	if limit < 1 {
 		return nil, errors.New("concurrency must be >= 1")
 	}
@@ -166,16 +172,21 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 	running := 0
 	var firstErr error
 
-	// After a task finishes (or is skipped), decrement children and enqueue
-	// those whose last prerequisite just completed. Ready ≠ eligible to run:
-	// blockedBy still decides whether prerequisites Passed.
-	unlock := func(id string) {
-		for _, child := range d.dependents[id] {
-			degrees[child]--
-			if degrees[child] == 0 {
-				ready = append(ready, child)
-			}
+	emit := func(kind types.TaskEventKind, result types.Result[T]) {
+		if observe != nil {
+			observe(types.TaskEvent[T]{Kind: kind, Result: result})
 		}
+	}
+	abort := func(err error) {
+		firstErr = err
+		if observe != nil {
+			cause := err
+			if parent.Err() != nil && errors.Is(err, parent.Err()) {
+				cause = context.Cause(parent)
+			}
+			observe(types.TaskEvent[T]{Kind: types.TaskCancelled, Cause: cause})
+		}
+		cancel()
 	}
 
 	// Direct prerequisites that did not Pass (Failed / Skipped / Errored).
@@ -191,12 +202,32 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 		return blocked
 	}
 
+	markReady := func(id string) {
+		if observe != nil && ctx.Err() == nil && d.tasks[id].SkipReason == "" && len(blockedBy(id)) == 0 {
+			emit(types.TaskReady, types.Result[T]{ID: id})
+		}
+	}
+	for _, id := range ready {
+		markReady(id)
+	}
+
+	// An item can enter the scheduler queue to be skipped. Only emit a ready
+	// event when it can actually run and is waiting for a worker slot.
+	unlock := func(id string) {
+		for _, child := range d.dependents[id] {
+			degrees[child]--
+			if degrees[child] == 0 {
+				ready = append(ready, child)
+				markReady(child)
+			}
+		}
+	}
+
 	// Single-threaded scheduler: only this loop mutates degrees, ready, results.
 	// Workers only send completion messages on done.
 	for {
 		if firstErr == nil && parent.Err() != nil {
-			firstErr = parent.Err()
-			cancel()
+			abort(parent.Err())
 		}
 
 		// Fill free worker slots from the ready queue.
@@ -212,19 +243,21 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 				reason = "prerequisite unsuccessful"
 			}
 			if reason != "" {
-				results[id] = types.Result[T]{
+				entry := types.Result[T]{
 					ID:        id,
 					Status:    types.Skipped,
 					BlockedBy: blocked,
 					Reason:    reason,
 				}
+				results[id] = entry
+				emit(types.TaskSkipped, entry)
 				unlock(id)
 				continue
 			}
 
 			// go starts the function in parallel; the scheduler does not wait here.
 			running++
-			go runTask(ctx, input, task, done)
+			go runTask(ctx, input, task, done, emit)
 		}
 
 		if running == 0 {
@@ -241,47 +274,31 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 			select {
 			case result = <-done:
 			case <-ctx.Done():
-				firstErr = ctx.Err()
-				cancel()
+				abort(ctx.Err())
 				continue
 			}
 		}
 
 		running--
 
-		// Failed outcome = the check found a problem (normal validation result).
-		// Non-nil err = operational failure → abort the whole run.
-		entry := types.Result[T]{
-			ID:     result.id,
-			Status: types.Passed,
-			Value:  result.outcome.Value,
-		}
-		if result.outcome.Failed {
-			entry.Status = types.Failed
+		if result.err != nil && firstErr == nil {
+			abort(fmt.Errorf("task %s: %w", result.result.ID, result.err))
 		}
 
-		if result.err != nil {
-			entry.Status = types.Errored
-			entry.Error = result.err.Error()
-			if firstErr == nil {
-				firstErr = fmt.Errorf("task %s: %w", result.id, result.err)
-				cancel()
-			}
-		}
-
-		results[result.id] = entry
+		results[result.result.ID] = result.result
 		if firstErr == nil {
-			unlock(result.id)
+			unlock(result.result.ID)
 		}
 	}
 
 	// Tasks never started (e.g. after abort) still get a Skipped result.
+	const abortedReason = "execution aborted"
 	for _, id := range d.ids {
 		if _, exists := results[id]; !exists {
 			results[id] = types.Result[T]{
 				ID:     id,
 				Status: types.Skipped,
-				Reason: "execution aborted",
+				Reason: abortedReason,
 			}
 		}
 	}
@@ -292,12 +309,15 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 		entry := results[id]
 		if entry.Status == types.Skipped {
 			entry.BlockedBy = blockedBy(id)
+			if entry.Reason == abortedReason {
+				emit(types.TaskSkipped, entry)
+			}
 		}
 		ordered = append(ordered, entry)
 	}
 
-	if firstErr == nil {
-		firstErr = parent.Err()
+	if firstErr == nil && parent.Err() != nil {
+		abort(parent.Err())
 	}
 
 	return ordered, firstErr
@@ -305,17 +325,29 @@ func (d *DAG[I, T]) Execute(parent context.Context, input I, limit int) ([]types
 
 // runTask is the worker body. It always sends exactly one completion on done,
 // including when the task panics (Go's equivalent of an uncaught exception).
-func runTask[I, T any](ctx context.Context, input I, task types.Task[I, T], done chan<- completion[T]) {
-	result := completion[T]{id: task.ID}
+func runTask[I, T any](ctx context.Context, input I, task types.Task[I, T], done chan<- completion[T], emit func(types.TaskEventKind, types.Result[T])) {
+	entry := types.Result[T]{ID: task.ID, Status: types.Passed}
+	var err error
 
 	// defer runs when the function returns (or panics). recover() catches a panic
 	// and turns it into a normal error so the scheduler still gets a message.
 	defer func() {
 		if value := recover(); value != nil {
-			result.err = fmt.Errorf("panic: %v", value)
+			err = fmt.Errorf("panic: %v", value)
 		}
-		done <- result
+		if err != nil {
+			entry.Status = types.Errored
+			entry.Error = err.Error()
+		}
+		emit(types.TaskFinished, entry)
+		done <- completion[T]{result: entry, err: err}
 	}()
 
-	result.outcome, result.err = task.Run(ctx, input)
+	emit(types.TaskStarted, types.Result[T]{ID: task.ID})
+	outcome, runErr := task.Run(ctx, input)
+	err = runErr
+	entry.Value = outcome.Value
+	if outcome.Failed {
+		entry.Status = types.Failed
+	}
 }

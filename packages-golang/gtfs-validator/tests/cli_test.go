@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
+	"strings"
 	"testing"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
@@ -100,6 +102,82 @@ func TestCLI(t *testing.T) {
 			}
 		})
 	}
+	t.Run("execution trace", func(t *testing.T) {
+		config := write("trace-rules.json", []byte(`[
+			{"rule_id":"AGENCY_FILE_EXISTS","severity":"ERROR"},
+			{"rule_id":"agency_name_exists","severity":"warning","depends_on":["AGENCY_FILE_EXISTS"]},
+			{"rule_id":"agency_url_valid","severity":"ignore"}
+		]`))
+		for _, test := range []struct {
+			name, input, runState string
+			exit                  int
+			first, child          types.Status
+		}{
+			{"passed", feed, "completed", 0, types.Passed, types.Passed},
+			{"blocked", emptyFeed, "completed", 1, types.Failed, types.Skipped},
+			{"aborted", filepath.Join(directory, "missing.zip"), "aborted", 2, types.Skipped, types.Skipped},
+		} {
+			t.Run(test.name, func(t *testing.T) {
+				path := filepath.Join(directory, test.name+"-trace.json")
+				args := []string{"-path", test.input, "-rules", config, "-concurrency", "2"}
+				plain, _ := exec.Command(binary, args...).Output()
+				stdout, err := exec.Command(binary, append(args, "-trace", path)...).Output()
+				code := 0
+				if err != nil {
+					if exit, ok := err.(*exec.ExitError); ok {
+						code = exit.ExitCode()
+					} else {
+						t.Fatal(err)
+					}
+				}
+				if code != test.exit || len(stdout) == 0 || !bytes.Equal(stdout, plain) {
+					t.Fatalf("trace changed report or exit code: %d %s", code, stdout)
+				}
+				data, err := os.ReadFile(path)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var trace types.ValidationTrace
+				if err := json.Unmarshal(data, &trace); err != nil {
+					t.Fatal(err)
+				}
+				if trace.Version != 1 || trace.Concurrency != 2 || trace.StartedAt.IsZero() || len(trace.Rules) != 3 || len(trace.Events) < 2 ||
+					trace.Rules[0].RuleID != "agency_file_exists" || trace.Rules[0].Severity != types.SEVERITY_ERROR ||
+					!slices.Equal(trace.Rules[1].DependsOn, []string{"agency_file_exists"}) {
+					t.Fatalf("invalid trace metadata: %+v", trace)
+				}
+				var elapsed int64
+				states := map[string]types.TraceEvent{}
+				for _, event := range trace.Events {
+					if event.ElapsedNS < elapsed {
+						t.Fatal("timestamps went backwards")
+					}
+					elapsed = event.ElapsedNS
+					if event.Kind == "rule_finished" || event.Kind == "rule_skipped" {
+						states[event.RuleID] = event
+					}
+				}
+				last := trace.Events[len(trace.Events)-1]
+				if trace.Events[0].Kind != "run_started" || last.Kind != "run_finished" || last.Status != test.runState ||
+					len(states) != 3 || states["agency_file_exists"].Status != string(test.first) ||
+					states["agency_name_exists"].Status != string(test.child) || states["agency_url_valid"].Status != "skipped" {
+					t.Fatalf("wrong terminal states: %+v, %+v", states, last)
+				}
+				if test.name == "blocked" && (!slices.Equal(states["agency_name_exists"].BlockedBy, []string{"agency_file_exists"}) ||
+					states["agency_file_exists"].FindingCount != 1 || states["agency_url_valid"].Reason != "rule ignored") {
+					t.Fatalf("wrong rule details: %+v", states)
+				}
+			})
+		}
+		blockedOutput := exec.Command(binary, "-path", feed, "-rules", config, "-trace", directory)
+		var traceStderr bytes.Buffer
+		blockedOutput.Stderr = &traceStderr
+		stdout, err := blockedOutput.Output()
+		exit, ok := err.(*exec.ExitError)
+		if !ok || exit.ExitCode() != 2 || !json.Valid(stdout) || !strings.Contains(traceStderr.String(), "write trace") {
+			t.Fatalf("trace write failure: %v, stdout %q, stderr %q", err, stdout, traceStderr.String())
+		}
+	})
 	t.Run("unknown rule", func(t *testing.T) {
 		config := write("unknown-rule.json", []byte(`[{"rule_id":"test_rule","severity":"error"}]`))
 		command := exec.Command(binary, "-path", feed, "-rules", config)

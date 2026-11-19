@@ -11,10 +11,12 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	gtfsvalidator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 	telemetry "github.com/tmlmobilidade/go/packages-golang/telemetry/src"
 	"github.com/tmlmobilidade/go/packages-golang/telemetry/src/logger/render"
 )
@@ -35,6 +37,7 @@ func run() int {
 	// parsing can write the supplied value into it.
 	var options gtfsvalidator.Options
 	var rulesPath string
+	var tracePath string
 	var help bool
 
 	flags := flag.NewFlagSet("gtfs-validator", flag.ContinueOnError)
@@ -43,11 +46,12 @@ func run() int {
 	flags.StringVar(&options.Source.Url, "url", "", "GTFS ZIP URL")
 	flags.StringVar(&rulesPath, "rules", "", "Path to a JSON array of validation rules (required)")
 	flags.IntVar(&options.Concurrency, "concurrency", 1, "Maximum concurrent rules (>= 1)")
+	flags.StringVar(&tracePath, "trace", "", "Write a JSON execution trace for visualization.html")
 	flags.BoolVar(&help, "help", false, "Show help")
 	flags.BoolVar(&help, "h", false, "Show help")
 
 	flags.Usage = func() {
-		fmt.Fprintln(os.Stderr, "Usage: gtfs-validator (-path GTFS.zip | -url URL) -rules RULES.json [-concurrency N]")
+		fmt.Fprintln(os.Stderr, "Usage: gtfs-validator (-path GTFS.zip | -url URL) -rules RULES.json [-concurrency N] [-trace TRACE.json]")
 		flags.PrintDefaults()
 		fmt.Fprintln(os.Stderr, "JSON report: stdout. Logs: stderr. Exit: 0 clean/warnings/help, 1 validation errors, 2 invalid arguments or operational failure.")
 	}
@@ -82,10 +86,24 @@ func run() int {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
-	report, err := gtfsvalidator.GtfsValidator(ctx, options)
+	var report types.Summary
+	var trace *types.ValidationTrace
+	if tracePath == "" {
+		report, err = gtfsvalidator.GtfsValidator(ctx, options)
+	} else {
+		report, trace, err = gtfsvalidator.GtfsValidatorWithTrace(ctx, options)
+	}
 	if errors.Is(err, rules.ErrInvalidConfiguration) {
 		fmt.Fprintln(os.Stderr, err)
 		return 2
+	}
+
+	var traceErr error
+	if trace != nil {
+		traceErr = writeTrace(tracePath, trace, rulesPath, options.Source.Path)
+		if traceErr != nil {
+			fmt.Fprintf(os.Stderr, "write trace %q: %v\n", tracePath, traceErr)
+		}
 	}
 
 	// Keep stdout machine-readable for completed runs and operational failures.
@@ -96,6 +114,8 @@ func run() int {
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
+	}
+	if err != nil || traceErr != nil {
 		return 2
 	}
 
@@ -104,4 +124,37 @@ func run() int {
 	}
 
 	return 0
+}
+
+func writeTrace(path string, trace *types.ValidationTrace, inputs ...string) error {
+	if target, err := os.Stat(path); err == nil {
+		if !target.Mode().IsRegular() {
+			return errors.New("trace path must point to a regular file")
+		}
+		for _, input := range inputs {
+			if info, err := os.Stat(input); err == nil && os.SameFile(target, info) {
+				return errors.New("trace path points to an input file")
+			}
+		}
+		for _, output := range []*os.File{os.Stdout, os.Stderr} {
+			if info, err := output.Stat(); err == nil && os.SameFile(target, info) {
+				return errors.New("trace path points to a redirected output stream")
+			}
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return err
+	}
+
+	// Publish only a complete JSON file. A failed write leaves any existing trace intact.
+	file, err := os.CreateTemp(filepath.Dir(path), ".gtfs-validation-trace-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(file.Name())
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	if err := errors.Join(encoder.Encode(trace), file.Close()); err != nil {
+		return err
+	}
+	return os.Rename(file.Name(), path)
 }

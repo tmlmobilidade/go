@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules"
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
@@ -29,7 +30,22 @@ type Options struct {
 // the configured rules. A successful execution returns its findings. The
 // validator checks for cancellation before and after import and passes ctx to
 // the rule executor.
-func GtfsValidator(ctx context.Context, options Options) (summary types.Summary, err error) {
+func GtfsValidator(ctx context.Context, options Options) (types.Summary, error) {
+	return validate(ctx, options, nil)
+}
+
+// GtfsValidatorWithTrace also records execution for visualization.html. It
+// returns a trace once the graph is valid, including on operational failure.
+func GtfsValidatorWithTrace(ctx context.Context, options Options) (types.Summary, *types.ValidationTrace, error) {
+	trace := &traceRecorder{startedAt: time.Now()}
+	summary, err := validate(ctx, options, trace)
+	if trace.data.Version == 0 {
+		return summary, nil, err
+	}
+	return summary, &trace.data, err
+}
+
+func validate(ctx context.Context, options Options, trace *traceRecorder) (summary types.Summary, err error) {
 	//
 
 	//
@@ -53,34 +69,68 @@ func GtfsValidator(ctx context.Context, options Options) (summary types.Summary,
 		return summary, err
 	}
 
+	var observe func(types.TaskEvent[[]types.Finding])
+	if trace != nil {
+		trace.begin(options)
+		observe = trace.observe
+		stopWatching := context.AfterFunc(ctx, func() { trace.cancel(context.Cause(ctx)) })
+		defer func() {
+			if !stopWatching() {
+				trace.cancel(context.Cause(ctx))
+			}
+			trace.finish(err)
+		}()
+	}
+
 	//
 	// 4. Import the GTFS data into a SQLite database
 	// Own one temporary directory for the database and its SQLite sidecar files.
-	directory, err := os.MkdirTemp("", "gtfs-validator-*")
+	var directory string
+	var database *sqlite.SQLiteDatabase
+	defer func() {
+		trace.endPhase(err)
+		if directory == "" {
+			return
+		}
+		trace.startPhase("cleanup")
+		var closeErr error
+		if database != nil {
+			closeErr = database.DatabaseInstance.Close()
+		}
+		cleanupErr := errors.Join(closeErr, os.RemoveAll(directory))
+		trace.endPhase(cleanupErr)
+		err = errors.Join(err, cleanupErr)
+	}()
+	trace.startPhase("import")
+	directory, err = os.MkdirTemp("", "gtfs-validator-*")
 	if err != nil {
 		return summary, err
 	}
-	defer func() { err = errors.Join(err, os.RemoveAll(directory)) }()
 
-	database, err := importFeed(options.Source, filepath.Join(directory, "gtfs.db"))
+	database, err = importFeed(options.Source, filepath.Join(directory, "gtfs.db"))
 	if err != nil {
 		return summary, err
 	}
-	defer func() { err = errors.Join(err, database.DatabaseInstance.Close()) }()
+	trace.endPhase(nil)
 	if err := ctx.Err(); err != nil {
 		return summary, err
 	}
 
+	trace.startPhase("indexes")
 	if err := createValidationIndexes(ctx, database.DatabaseInstance); err != nil {
 		return summary, err
 	}
+	trace.endPhase(nil)
 
 	//
 	// 5. Run the validation rules
-	results, err := graph.Execute(ctx, database.DatabaseInstance, max(options.Concurrency, 1))
+	trace.startPhase("validation")
+	results, err := graph.ExecuteWithObserver(ctx, database.DatabaseInstance, max(options.Concurrency, 1), observe)
 	if err != nil {
 		return summary, err
 	}
+	trace.endPhase(nil)
+	trace.startPhase("report")
 	for _, result := range results {
 		for _, finding := range result.Value {
 			collector.Add(types.Message{

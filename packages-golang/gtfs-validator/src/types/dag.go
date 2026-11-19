@@ -38,3 +38,22 @@ type Result[T any] struct {
 	Reason    string
 	Error     string
 }
+
+type TaskEventKind string
+
+const (
+	TaskReady     TaskEventKind = "rule_ready"
+	TaskStarted   TaskEventKind = "rule_started"
+	TaskFinished  TaskEventKind = "rule_finished"
+	TaskSkipped   TaskEventKind = "rule_skipped"
+	TaskCancelled TaskEventKind = "cancelled"
+)
+
+// TaskEvent describes a live scheduler or worker transition. A cancellation
+// carries its cause. Other events describe a task, with a complete Result on
+// finish or skip.
+type TaskEvent[T any] struct {
+	Kind   TaskEventKind
+	Result Result[T]
+	Cause  error
+}
