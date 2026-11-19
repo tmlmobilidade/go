@@ -146,6 +146,59 @@ func TestTripsFilePresence(t *testing.T) {
 	checkTripRule(t, "CREATE TABLE routes (route_id TEXT);", config, "", nil)
 }
 
+func TestPatternSameShapeID(t *testing.T) {
+	config := types.Rule{RuleID: "pattern_same_shape_id", Severity: types.SEVERITY_WARNING}
+	const trips = "CREATE TABLE trips (route_id TEXT, direction_id TEXT, shape_id TEXT);"
+
+	t.Run("consistent groups and skipped rows", func(t *testing.T) {
+		checkTripRule(t, trips+`INSERT INTO trips VALUES
+			('2006_0', '0', 'ABC'),
+			('2006_0', '0', 'ABC'),
+			('2006_0', '1', 'DEF'),
+			('2006_0', '00', 'GHI'),
+			('2007_0', '0', 'GHI'),
+			('2006_0', '0', NULL),
+			('2006_0', '0', ' '),
+			('2006_0', NULL, 'DEF'),
+			('2006_0', ' ', 'DEF'),
+			('2006_0', 'bad', 'DEF'),
+			('2006_0', '2', 'DEF'),
+			('2006_0', '2', 'DEF'),
+			(NULL, '0', 'DEF'),
+			(NULL, '0', 'GHI'),
+			(' ', '0', 'DEF'),
+			(' ', '0', 'GHI');`, config, "shape_id", nil)
+	})
+
+	t.Run("conflicting groups", func(t *testing.T) {
+		checkTripRule(t, trips+`INSERT INTO trips VALUES
+			('2006_0', '0', 'ABC'),
+			('2006_0', '1', 'DEF'),
+			('2006_0', '0', 'THIS_IS_DIFFERENT'),
+			('2006_0', '0', 'ABC'),
+			('2006_0', '0', NULL),
+			('2006_0', '1', 'GHI'),
+			('2007_0', '0', 'JKL');`, config, "shape_id", [][]int{{0, 2, 3}, {1, 5}})
+	})
+
+	t.Run("conflicting groups with invalid directions", func(t *testing.T) {
+		checkTripRule(t, trips+`INSERT INTO trips VALUES
+			('2006_0', 'bad', 'ABC'),
+			('2006_0', '2', 'DEF'),
+			('2006_0', 'bad', 'GHI'),
+			('2006_0', '2', 'JKL');`, config, "shape_id", [][]int{{0, 2}, {1, 3}})
+	})
+
+	for _, setup := range []string{
+		"CREATE TABLE routes (route_id TEXT);",
+		"CREATE TABLE trips (direction_id TEXT, shape_id TEXT); INSERT INTO trips VALUES ('0', 'ABC'), ('0', 'DEF');",
+		"CREATE TABLE trips (route_id TEXT, shape_id TEXT); INSERT INTO trips VALUES ('2006_0', 'ABC'), ('2006_0', 'DEF');",
+		"CREATE TABLE trips (route_id TEXT, direction_id TEXT); INSERT INTO trips VALUES ('2006_0', '0');",
+	} {
+		checkTripRule(t, setup, config, "shape_id", nil)
+	}
+}
+
 func checkTripRule(t *testing.T, setup string, config types.Rule, field string, wantRows [][]int) {
 	t.Helper()
 	db := openSQLTestDatabase(t, setup)
