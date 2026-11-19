@@ -12,6 +12,7 @@ import { importPatternGtfsHandler } from './handlers/import-pattern-gtfs.js';
 import { listPatternShapesHandler } from './handlers/list-pattern-shapes.js';
 import { listPatternsStopsHandler } from './handlers/list-stops.js';
 import { lockPatternHandler } from './handlers/lock-pattern.js';
+import { resolvePatternZonesHandler } from './handlers/resolve-zones.js';
 import { updatePatternHandler } from './handlers/update-pattern.js';
 
 /* * */
@@ -72,6 +73,12 @@ server.register(
 			'/:id/import-gtfs',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
 			importPatternGtfsHandler,
+		);
+
+		instance.post(
+			'/:id/resolve-zones',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.lines.scope, [PermissionCatalog.all.lines.actions.update]) },
+			resolvePatternZonesHandler,
 		);
 
 		instance.post(

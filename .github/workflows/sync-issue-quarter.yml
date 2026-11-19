@@ -20,7 +20,6 @@ jobs:
       - name: Populate Quarter from Target date
         env:
           GH_TOKEN: ${{ secrets.GO_REPO_TOKEN_ISSUES }}
-          ORG: tmlmobilidade
           EVENT_NAME: ${{ github.event_name }}
           EVENT_ACTION: ${{ github.event.action || '' }}
           ISSUE_NODE_ID: ${{ github.event.issue.node_id || '' }}
@@ -51,8 +50,8 @@ jobs:
           fields_json=$(gh api graphql \
             -H "GraphQL-Features: issue_fields" \
             -f query='
-              query($login: String!) {
-                organization(login: $login) {
+              query($owner: String!, $name: String!) {
+                repository(owner: $owner, name: $name) {
                   issueFields(first: 50) {
                     nodes {
                       __typename
@@ -69,21 +68,22 @@ jobs:
                   }
                 }
               }' \
-            -f login="$ORG")
+            -f owner="${GITHUB_REPOSITORY%%/*}" \
+            -f name="${GITHUB_REPOSITORY#*/}")
 
           quarter_field_id=$(jq -r '
-            .data.organization.issueFields.nodes[]?
+            .data.repository.issueFields.nodes[]?
             | select(.name == "Quarter" and .__typename == "IssueFieldSingleSelect")
             | .id
           ' <<<"$fields_json")
           target_date_field_id=$(jq -r '
-            .data.organization.issueFields.nodes[]?
+            .data.repository.issueFields.nodes[]?
             | select(.name == "Target date" and .__typename == "IssueFieldDate")
             | .id
           ' <<<"$fields_json")
           option_map_json=$(jq -c '
             [
-              .data.organization.issueFields.nodes[]?
+              .data.repository.issueFields.nodes[]?
               | select(.name == "Quarter" and .__typename == "IssueFieldSingleSelect")
               | .options[]?
               | {key: .name, value: .id}
@@ -92,11 +92,11 @@ jobs:
           ' <<<"$fields_json")
 
           if [[ -z "$quarter_field_id" || "$quarter_field_id" == "null" ]]; then
-            echo "Error: organization Quarter single-select field not found."
+            echo "Error: Quarter single-select field not found."
             exit 1
           fi
           if [[ -z "$target_date_field_id" || "$target_date_field_id" == "null" ]]; then
-            echo "Error: organization Target date field not found."
+            echo "Error: Target date field not found."
             exit 1
           fi
 
@@ -236,7 +236,7 @@ jobs:
               *) failed=1 ;;
             esac
           else
-            search_query="org:${ORG} is:issue is:open"
+            search_query="repo:${GITHUB_REPOSITORY} is:issue is:open"
             cursor=""
             query="
               query(\$searchQuery: String!, \$cursor: String) {

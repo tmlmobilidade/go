@@ -37,7 +37,7 @@ export function LineCreateContextProvider({ children }: PropsWithChildren) {
 	// B. Setup form
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<CreateLineDto, typeof CreateLineSchema>({
-		defaultValues: { agency_id: '', code: '', name: '' },
+		defaultValues: { agency_id: '', code: '', name: '', typology: '' },
 		schema: CreateLineSchema,
 	});
 	const values = useStandardFormWatch({ control: form.control });

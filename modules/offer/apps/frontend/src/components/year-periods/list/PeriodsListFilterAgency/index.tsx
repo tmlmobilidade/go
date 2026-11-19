@@ -22,6 +22,8 @@ export function PeriodsListFilterAgency() {
 	return (
 		<ListFilter
 			active={filter.isActive}
+			disabled={filter.isLoading || !!filter.error}
+			isLoading={filter.isLoading}
 			label={t('shared:components.calendar.agencies')}
 			onChange={filter.set}
 			options={filter.options}

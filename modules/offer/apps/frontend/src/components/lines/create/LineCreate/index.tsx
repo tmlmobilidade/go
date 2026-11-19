@@ -8,7 +8,7 @@ import { Pane } from '@tmlmobilidade/ui';
 
 export function LineCreate() {
 	return (
-		<Pane header={[<LineCreateHeader />]}>
+		<Pane header={[<LineCreateHeader key="header" />]}>
 			<LineCreateBasicInfo />
 		</Pane>
 	);
