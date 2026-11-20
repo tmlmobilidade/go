@@ -24,18 +24,10 @@ interface UseMeDataReturnType {
 /* * */
 
 export function useMeData(enabled = true, refreshInterval = 60_000): UseMeDataReturnType {
-	//
-
-	//
-	// Fetch data
-
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<User>, Error>(enabled ? API_ROUTES.core.ME_LIST : null, {
 		fetcher: fetchMeData,
 		refreshInterval,
 	});
-
-	//
-	// Return data
 
 	return useMemo(() => ({
 		data: data?.data ?? undefined,
