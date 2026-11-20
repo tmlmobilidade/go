@@ -7,7 +7,7 @@ import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { calendarKey, Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { manualRuleMatchesContext } from '../calculation/matchers.js';
-import { getActivePeriodId } from '../utils/date.js';
+import { getActivePeriodIds } from '../utils/date.js';
 
 export interface CanonicalRegistryOptions {
 	events?: Event[]
@@ -60,9 +60,11 @@ function manualRuleAppliesOnDate(
 	const month = Number(key.slice(5, 7));
 	if (rule.months?.length && !(rule.months as number[]).includes(month)) return false;
 
+	const yearPeriodIds = getActivePeriodIds(date, periods);
 	const ctx: DayContext = {
 		weekday: calendarWeekday(key, holidays),
-		yearPeriodId: getActivePeriodId(date, periods),
+		yearPeriodId: yearPeriodIds[0] ?? '',
+		yearPeriodIds,
 	};
 
 	return manualRuleMatchesContext(rule, ctx);

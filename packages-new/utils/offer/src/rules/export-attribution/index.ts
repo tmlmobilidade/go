@@ -8,7 +8,7 @@ import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { calendarKey, Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { manualRuleMatchesMonth } from '../calculation/matchers.js';
-import { findReplacementForDate, getActivePeriodId } from '../utils/date.js';
+import { findReplacementForDate, getActivePeriodIds } from '../utils/date.js';
 import { collectNormalDayContributionsReconciled } from './normal-day-contributions.js';
 import { collectReplacementDayContributions } from './replacement-day-contributions.js';
 
@@ -84,9 +84,11 @@ export function collectGtfsIncludeContributionsForDate(
 	}
 
 	const key = calendarKey(Dates.fromOperationalDateInt(date, 'Europe/Lisbon'));
+	const yearPeriodIds = getActivePeriodIds(date, periods);
 	const ctx: DayContext = {
 		weekday: calendarWeekday(key, holidays),
-		yearPeriodId: getActivePeriodId(date, periods),
+		yearPeriodId: yearPeriodIds[0] ?? '',
+		yearPeriodIds,
 	};
 
 	return collectNormalDayContributionsReconciled(

@@ -5,7 +5,6 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useFilterStateList, useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { useEventsAgenciesData } from '../shared/use-events-agencies-data';
 import { useEventsData } from '../shared/use-events-data';
 import { useEventsListFilterAgencies } from './EventsListFilterAgencies/use-events-list-filter-agencies';
 import { useEventsListFilterSearch } from './EventsListFilterSearch/use-events-list-filter-search';
@@ -35,10 +34,8 @@ export function useEventsListData(): UseEventsListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error: eventsError, isLoading: eventsLoading, isValidating, mutate, timestamp } = useEventsData();
-	const { error: agenciesError, isLoading: agenciesLoading } = useEventsAgenciesData();
-	const error = eventsError ?? agenciesError;
-	const isLoading = eventsLoading || agenciesLoading;
+	const { data, error, isLoading, isValidating, mutate, timestamp } = useEventsData();
+	const agenciesAvailable = !agencyFilter.error && !agencyFilter.isLoading;
 
 	//
 	// C. Transform data
@@ -57,12 +54,12 @@ export function useEventsListData(): UseEventsListDataReturnType {
 	const filtered = useMemo(() => {
 		return matches
 			.filter((item) => {
-				const matchesAgencies = item.agency_ids.some(id => agencyFilter.value.includes(id));
+				const matchesAgencies = !agenciesAvailable || !agencyFilter.isActive || item.agency_ids.some(id => agencyFilter.value.includes(id));
 				const matchesDates = !datesFilter.value.length || item.dates.some(date => datesFilter.value.includes(String(date)));
 				return matchesAgencies && matchesDates;
 			})
 			.sort((a, b) => b.created_at - a.created_at);
-	}, [matches, agencyFilter.value, datesFilter.value]);
+	}, [matches, agenciesAvailable, agencyFilter.isActive, agencyFilter.value, datesFilter.value]);
 
 	//
 	// D. Return data

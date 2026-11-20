@@ -8,7 +8,7 @@ import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { calendarKey, Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { computeActiveRules } from '../calculation/index.js';
-import { getActivePeriodId } from '../utils/date.js';
+import { getActivePeriodIds } from '../utils/date.js';
 import { shouldEmitReplacementOnForcedRetarget } from './canonical-registry.js';
 import { collectReplacementManualIncludesByRule } from './collectors.js';
 import { compareGeneralManualOwnershipPriority } from './manual-ownership.js';
@@ -44,9 +44,11 @@ export function collectReplacementDayContributions(
 	const forcedRetarget = isForcedRetargetDay(date, effectiveReplacement, holidays);
 
 	const key = calendarKey(Dates.fromOperationalDateInt(date, 'Europe/Lisbon'));
+	const yearPeriodIds = getActivePeriodIds(date, periods);
 	const calendarCtx: DayContext = {
 		weekday: calendarWeekday(key, holidays),
-		yearPeriodId: getActivePeriodId(date, periods),
+		yearPeriodId: yearPeriodIds[0] ?? '',
+		yearPeriodIds,
 	};
 	const calendarContributions = collectNormalDayContributions(monthFilteredManualRules, calendarCtx);
 	const calendarOperatingByTimepoint = new Map<HHMM, ScheduleRule>();
