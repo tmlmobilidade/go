@@ -47,6 +47,13 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 			file: "calendar", field: "start_date", rows: [][]int{{2}, {7}}},
 		{name: "calendar end date column missing", rule: "calendar_start_date_before_end_date", setup: "CREATE TABLE calendar (start_date TEXT); INSERT INTO calendar VALUES ('20240301')"},
 		{name: "calendar table missing", rule: "calendar_start_date_before_end_date", setup: "CREATE TABLE calendar_dates (date TEXT)"},
+		{name: "feed info date order", rule: "feed_info_start_date_before_end_date", setup: `CREATE TABLE feed_info (feed_start_date TEXT, feed_end_date TEXT);
+			INSERT INTO feed_info VALUES ('20231231', '20240101'), ('20240229', '20240229'),
+			('20240301', '20240229'), (NULL, '20240101'), ('20240401', ' '),
+			('20240230', '20240229'), ('20240301', '2024-02-29'), (' 20250101 ', '20241231');`,
+			file: "feed_info", field: "feed_start_date", rows: [][]int{{2}, {7}}},
+		{name: "feed info date column missing", rule: "feed_info_start_date_before_end_date", setup: "CREATE TABLE feed_info (feed_start_date TEXT); INSERT INTO feed_info VALUES ('20240301')"},
+		{name: "feed info table missing", rule: "feed_info_start_date_before_end_date", setup: "CREATE TABLE calendar (start_date TEXT)"},
 		{name: "time", rule: "stop_times_arrival_time_valid", setup: "CREATE TABLE stop_times (arrival_time TEXT); INSERT INTO stop_times VALUES ('7:01:02'), ('25:01:02'), ('25:60:00'), ('7:1:02'), (NULL)", file: "stop_times", field: "arrival_time", rows: [][]int{{2}, {3}}},
 		{name: "color", rule: "routes_route_color_valid", setup: "CREATE TABLE routes (route_color TEXT); INSERT INTO routes VALUES ('Ff000A'), ('#FF000A'), ('ZZ0000'), (NULL)", file: "routes", field: "route_color", rows: [][]int{{1}, {2}}},
 		{name: "price", rule: "fare_attributes_price_valid", setup: "CREATE TABLE fare_attributes (price TEXT); INSERT INTO fare_attributes VALUES ('0'), ('1.75'), ('-0.01'), ('NaN'), ('+Inf'), (NULL)", file: "fare_attributes", field: "price", rows: [][]int{{2}, {3}, {4}}},
