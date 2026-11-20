@@ -28,7 +28,7 @@ func main() {
 }
 
 func run() int {
-	// Reserve stdout for machine-readable JSON. Importer logs use this shared logger.
+	// Keep importer logs on stderr with the other CLI diagnostics.
 	telemetry.Logger = telemetry.CreateLogger(func(record telemetry.LogRecord) {
 		render.RenderStructuredTo(record, os.Stderr, os.Stderr)
 	})
@@ -37,6 +37,7 @@ func run() int {
 	// parsing can write the supplied value into it.
 	var options gtfsvalidator.Options
 	var rulesPath string
+	var resultPath string
 	var tracePath string
 	var help bool
 
@@ -45,15 +46,16 @@ func run() int {
 	flags.StringVar(&options.Source.Path, "path", "", "Local GTFS ZIP path (exactly one of -path or -url)")
 	flags.StringVar(&options.Source.Url, "url", "", "GTFS ZIP URL")
 	flags.StringVar(&rulesPath, "rules", "", "Path to a JSON array of validation rules (required)")
+	flags.StringVar(&resultPath, "result", "", "Write the validation report to this JSON file (required)")
 	flags.IntVar(&options.Concurrency, "concurrency", 1, "Maximum concurrent rules (>= 1)")
 	flags.StringVar(&tracePath, "trace", "", "Write a JSON execution trace for visualization.html")
 	flags.BoolVar(&help, "help", false, "Show help")
 	flags.BoolVar(&help, "h", false, "Show help")
 
 	flags.Usage = func() {
-		fmt.Fprintln(os.Stderr, "Usage: gtfs-validator (-path GTFS.zip | -url URL) -rules RULES.json [-concurrency N] [-trace TRACE.json]")
+		fmt.Fprintln(os.Stderr, "Usage: gtfs-validator (-path GTFS.zip | -url URL) -rules RULES.json -result RESULT.json [-concurrency N] [-trace TRACE.json]")
 		flags.PrintDefaults()
-		fmt.Fprintln(os.Stderr, "JSON report: stdout. Logs: stderr. Exit: 0 clean/warnings/help, 1 validation errors, 2 invalid arguments or operational failure.")
+		fmt.Fprintln(os.Stderr, "Logs: stderr. Exit: 0 clean/warnings/help, 1 validation errors, 2 invalid arguments or operational failure.")
 	}
 
 	// os.Args[0] is the executable name; [1:] selects only its arguments.
@@ -69,6 +71,14 @@ func run() int {
 	// Reject positional arguments, ambiguous sources, and invalid worker limits.
 	if flags.NArg() != 0 || (options.Source.Path == "") == (options.Source.Url == "") || options.Concurrency < 1 || rulesPath == "" {
 		fmt.Fprintln(os.Stderr, "Provide exactly one source, a rules file, positive concurrency, and no positional arguments.")
+		return 2
+	}
+	if resultPath == "" {
+		fmt.Fprintln(os.Stderr, "Provide a validation report path with -result.")
+		return 2
+	}
+	if tracePath != "" && sameOutputPath(resultPath, tracePath) {
+		fmt.Fprintln(os.Stderr, "Use different files for -result and -trace.")
 		return 2
 	}
 
@@ -98,24 +108,22 @@ func run() int {
 		return 2
 	}
 
+	resultErr := writeJSON(resultPath, report, rulesPath, options.Source.Path)
+	if resultErr != nil {
+		fmt.Fprintf(os.Stderr, "write result %q: %v\n", resultPath, resultErr)
+	}
 	var traceErr error
 	if trace != nil {
-		traceErr = writeTrace(tracePath, trace, rulesPath, options.Source.Path)
+		traceErr = writeJSON(tracePath, trace, rulesPath, options.Source.Path, resultPath)
 		if traceErr != nil {
 			fmt.Fprintf(os.Stderr, "write trace %q: %v\n", tracePath, traceErr)
 		}
 	}
 
-	// Keep stdout machine-readable for completed runs and operational failures.
-	if encodeErr := json.NewEncoder(os.Stdout).Encode(report); encodeErr != nil {
-		fmt.Fprintln(os.Stderr, encodeErr)
-		return 2
-	}
-
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 	}
-	if err != nil || traceErr != nil {
+	if err != nil || resultErr != nil || traceErr != nil {
 		return 2
 	}
 
@@ -126,34 +134,46 @@ func run() int {
 	return 0
 }
 
-func writeTrace(path string, trace *types.ValidationTrace, inputs ...string) error {
+func sameOutputPath(first, second string) bool {
+	// Compare the containing directories too, since neither output may exist yet.
+	return filepath.Clean(first) == filepath.Clean(second) || sameFile(first, second) ||
+		(filepath.Base(first) == filepath.Base(second) && sameFile(filepath.Dir(first), filepath.Dir(second)))
+}
+
+func sameFile(first, second string) bool {
+	a, errA := os.Stat(first)
+	b, errB := os.Stat(second)
+	return errA == nil && errB == nil && os.SameFile(a, b)
+}
+
+func writeJSON(path string, value any, protectedPaths ...string) error {
 	if target, err := os.Stat(path); err == nil {
 		if !target.Mode().IsRegular() {
-			return errors.New("trace path must point to a regular file")
+			return errors.New("output path must point to a regular file")
 		}
-		for _, input := range inputs {
-			if info, err := os.Stat(input); err == nil && os.SameFile(target, info) {
-				return errors.New("trace path points to an input file")
+		for _, protected := range protectedPaths {
+			if info, err := os.Stat(protected); err == nil && os.SameFile(target, info) {
+				return fmt.Errorf("output path points to %q", protected)
 			}
 		}
 		for _, output := range []*os.File{os.Stdout, os.Stderr} {
 			if info, err := output.Stat(); err == nil && os.SameFile(target, info) {
-				return errors.New("trace path points to a redirected output stream")
+				return errors.New("output path points to a redirected output stream")
 			}
 		}
 	} else if !errors.Is(err, os.ErrNotExist) {
 		return err
 	}
 
-	// Publish only a complete JSON file. A failed write leaves any existing trace intact.
-	file, err := os.CreateTemp(filepath.Dir(path), ".gtfs-validation-trace-*")
+	// Publish only a complete JSON file. A failed write leaves existing output intact.
+	file, err := os.CreateTemp(filepath.Dir(path), ".gtfs-validation-*")
 	if err != nil {
 		return err
 	}
 	defer os.Remove(file.Name())
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
-	if err := errors.Join(encoder.Encode(trace), file.Close()); err != nil {
+	if err := errors.Join(encoder.Encode(value), file.Close()); err != nil {
 		return err
 	}
 	return os.Rename(file.Name(), path)

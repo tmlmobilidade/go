@@ -12,8 +12,8 @@ return success as placeholders.
 
 ```sh
 go build -ldflags=-w -o dist/gtfs-validator ./src/cli.go
-./dist/gtfs-validator -path ./gtfs.zip -rules ./rules.json -concurrency 1
-./dist/gtfs-validator -url https://example.com/gtfs.zip -rules ./rules.json > report.json
+./dist/gtfs-validator -path ./gtfs.zip -rules ./rules.json -result ./result.json -concurrency 1
+./dist/gtfs-validator -url https://example.com/gtfs.zip -rules ./rules.json -result ./result.json
 ```
 
 Provide exactly one of `-path` or `-url`. The required `-rules` file holds a nonempty
@@ -43,12 +43,12 @@ agency ID and whose `value` is the agency name.
 `-concurrency` defaults to 1 and must be positive. SQLite uses one connection,
 so concurrent rules still serialize database queries.
 
-Stdout contains one JSON report for completed runs and operational failures.
-Diagnostics go to stderr.
+Provide `-result` with the path to the JSON report. The CLI writes this file
+for completed runs and operational failures. Diagnostics go to stderr.
 
 - `0` for a run with no error findings or for help.
 - `1` for a run with error findings.
-- `2` for invalid arguments or rules, import failure, or execution failure.
+- `2` for invalid arguments or rules, or for a failure importing, validating, or writing output.
 
 The `Summary` report contains grouped `RuleMessage` objects in `messages`, plus
 `total_errors` and `total_warnings`. Each group contains detail `Message` objects,
@@ -68,8 +68,8 @@ forbidden findings contribute to `total_errors`. Warnings contribute to
 ### Execution visualization
 
 ```sh
-./dist/gtfs-validator -path ./gtfs.zip -rules ./rules.json -concurrency 4 \
-  -trace ./validation-trace.json > report.json
+./dist/gtfs-validator -path ./gtfs.zip -rules ./rules.json -result ./result.json \
+  -concurrency 4 -trace ./validation-trace.json
 ```
 
 Open [visualization.html](visualization.html) in a browser and select or drop
@@ -90,7 +90,7 @@ Once a valid graph exists, the CLI saves the trace even if import, execution,
 or cancellation aborts the run. The trace records cancellation when it occurs.
 The importer finishes its current import before the validator checks for
 cancellation. If the trace cannot be saved, the CLI reports the write error
-on stderr and exits with code `2`. The report stays on stdout.
+on stderr and exits with code `2`. The CLI writes the report and trace independently.
 
 ## Go library
 

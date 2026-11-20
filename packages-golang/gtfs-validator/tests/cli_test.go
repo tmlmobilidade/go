@@ -13,7 +13,7 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-// Exercise the standalone entry point, including its output streams and exit codes.
+// Exercise the standalone entry point, including its output files and exit codes.
 func TestCLI(t *testing.T) {
 	directory := t.TempDir()
 	binary := filepath.Join(directory, "gtfs-validator")
@@ -38,6 +38,31 @@ func TestCLI(t *testing.T) {
 		t.Fatal(err)
 	}
 	rulesPath := write("rules.json", data)
+	read := func(t *testing.T, path string) []byte {
+		t.Helper()
+		data, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return data
+	}
+	run := func(t *testing.T, args ...string) (int, string) {
+		t.Helper()
+		command := exec.Command(binary, args...)
+		var stdout, stderr bytes.Buffer
+		command.Stdout, command.Stderr = &stdout, &stderr
+		err := command.Run()
+		if stdout.Len() != 0 {
+			t.Fatalf("unexpected stdout: %s", &stdout)
+		}
+		if err != nil {
+			if exit, ok := err.(*exec.ExitError); ok {
+				return exit.ExitCode(), stderr.String()
+			}
+			t.Fatal(err)
+		}
+		return 0, stderr.String()
+	}
 
 	for _, test := range []struct {
 		name   string
@@ -60,48 +85,50 @@ func TestCLI(t *testing.T) {
 		{"notice ID", []string{"-path", feed, "-rules", write("notice.json", []byte(`[{"rule_id":"file_validation","severity":"error"}]`))}, 2, false},
 		{"concurrency", []string{"-path", feed, "-rules", rulesPath, "-concurrency", "0"}, 2, false},
 		{"positional", []string{"-path", feed, "-rules", rulesPath, "extra"}, 2, false},
-		{"help", []string{"-help"}, 0, false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			command := exec.Command(binary, test.args...)
-			var stdout, stderr bytes.Buffer
-			command.Stdout = &stdout
-			command.Stderr = &stderr
-			err := command.Run()
-			code := 0
-			if err != nil {
-				if exit, ok := err.(*exec.ExitError); ok {
-					code = exit.ExitCode()
-				} else {
-					t.Fatal(err)
-				}
-			}
-
+			path := filepath.Join(t.TempDir(), "result.json")
+			code, stderr := run(t, append([]string{"-result", path}, test.args...)...)
 			if code != test.exit {
-				t.Fatalf("exit %d, want %d: %s", code, test.exit, stderr.String())
+				t.Fatalf("exit %d, want %d: %s", code, test.exit, stderr)
 			}
-			if code == 2 && stderr.Len() == 0 {
+			if code == 2 && stderr == "" {
 				t.Fatal("missing error message")
 			}
 
 			if test.report {
+				data := read(t, path)
 				var report types.Summary
-				if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
-					t.Fatalf("stdout is not a JSON report: %s", stdout.String())
+				if err := json.Unmarshal(data, &report); err != nil {
+					t.Fatalf("result file is not a JSON report: %s", data)
 				}
 				if code == 1 {
 					if report.TotalErrors != 1 || report.TotalWarnings != 0 ||
 						len(report.Messages) != 1 || report.Messages[0].RuleID != "agency_file_exists" {
-						t.Fatal("expected a missing agency finding", stdout.String())
+						t.Fatal("expected a missing agency finding", string(data))
 					}
 				} else if report.Messages == nil || len(report.Messages) != 0 || report.TotalErrors != 0 || report.TotalWarnings != 0 {
-					t.Fatal("unexpected report", stdout.String())
+					t.Fatal("unexpected report", string(data))
 				}
-			} else if stdout.Len() != 0 {
-				t.Fatal("unexpected stdout", stdout.String())
+			} else if _, err := os.Stat(path); !os.IsNotExist(err) {
+				t.Fatalf("unexpected result file: %v", err)
 			}
 		})
 	}
+	t.Run("missing result flag", func(t *testing.T) {
+		path := filepath.Join(t.TempDir(), "trace.json")
+		if code, stderr := run(t, "-path", feed, "-rules", rulesPath, "-trace", path); code != 2 || !strings.Contains(stderr, "-result") {
+			t.Fatalf("missing result flag: %d, stderr %q", code, stderr)
+		}
+		if _, err := os.Stat(path); !os.IsNotExist(err) {
+			t.Fatalf("unexpected trace file: %v", err)
+		}
+	})
+	t.Run("help", func(t *testing.T) {
+		if code, stderr := run(t, "-help"); code != 0 || !strings.Contains(stderr, "-result RESULT.json") {
+			t.Fatalf("help: %d, stderr %q", code, stderr)
+		}
+	})
 	t.Run("execution trace", func(t *testing.T) {
 		config := write("trace-rules.json", []byte(`[
 			{"rule_id":"AGENCY_FILE_EXISTS","severity":"ERROR"},
@@ -118,27 +145,20 @@ func TestCLI(t *testing.T) {
 			{"aborted", filepath.Join(directory, "missing.zip"), "aborted", 2, types.Skipped, types.Skipped},
 		} {
 			t.Run(test.name, func(t *testing.T) {
-				path := filepath.Join(directory, test.name+"-trace.json")
+				dir := t.TempDir()
+				path, plain, result := filepath.Join(dir, "trace.json"), filepath.Join(dir, "plain.json"), filepath.Join(dir, "result.json")
 				args := []string{"-path", test.input, "-rules", config, "-concurrency", "2"}
-				plain, _ := exec.Command(binary, args...).Output()
-				stdout, err := exec.Command(binary, append(args, "-trace", path)...).Output()
-				code := 0
-				if err != nil {
-					if exit, ok := err.(*exec.ExitError); ok {
-						code = exit.ExitCode()
-					} else {
-						t.Fatal(err)
-					}
+				if code, stderr := run(t, append(args, "-result", plain)...); code != test.exit {
+					t.Fatalf("validation: %d, stderr %q", code, stderr)
 				}
-				if code != test.exit || len(stdout) == 0 || !bytes.Equal(stdout, plain) {
-					t.Fatalf("trace changed report or exit code: %d %s", code, stdout)
+				if code, stderr := run(t, append(args, "-result", result, "-trace", path)...); code != test.exit {
+					t.Fatalf("traced validation: %d, stderr %q", code, stderr)
 				}
-				data, err := os.ReadFile(path)
-				if err != nil {
-					t.Fatal(err)
+				if !bytes.Equal(read(t, plain), read(t, result)) {
+					t.Fatal("trace changed report")
 				}
 				var trace types.ValidationTrace
-				if err := json.Unmarshal(data, &trace); err != nil {
+				if err := json.Unmarshal(read(t, path), &trace); err != nil {
 					t.Fatal(err)
 				}
 				if trace.Version != 1 || trace.Concurrency != 2 || trace.StartedAt.IsZero() || len(trace.Rules) != 3 || len(trace.Events) < 2 ||
@@ -169,26 +189,33 @@ func TestCLI(t *testing.T) {
 				}
 			})
 		}
-		blockedOutput := exec.Command(binary, "-path", feed, "-rules", config, "-trace", directory)
-		var traceStderr bytes.Buffer
-		blockedOutput.Stderr = &traceStderr
-		stdout, err := blockedOutput.Output()
-		exit, ok := err.(*exec.ExitError)
-		if !ok || exit.ExitCode() != 2 || !json.Valid(stdout) || !strings.Contains(traceStderr.String(), "write trace") {
-			t.Fatalf("trace write failure: %v, stdout %q, stderr %q", err, stdout, traceStderr.String())
+	})
+	t.Run("output failures", func(t *testing.T) {
+		args := []string{"-path", feed, "-rules", rulesPath}
+		path := filepath.Join(t.TempDir(), "output.json")
+		if code, stderr := run(t, append(args, "-result", path, "-trace", directory)...); code != 2 || !strings.Contains(stderr, "write trace") || !json.Valid(read(t, path)) {
+			t.Fatalf("trace write failure: %d, stderr %q", code, stderr)
+		}
+		trace := filepath.Join(t.TempDir(), "trace.json")
+		if code, stderr := run(t, append(args, "-result", directory, "-trace", trace)...); code != 2 || !strings.Contains(stderr, "write result") || !json.Valid(read(t, trace)) {
+			t.Fatalf("result write failure: %d, stderr %q", code, stderr)
+		}
+		original := read(t, path)
+		if code, stderr := run(t, append(args, "-result", path, "-trace", path)...); code != 2 || !strings.Contains(stderr, "different files") || !bytes.Equal(read(t, path), original) {
+			t.Fatalf("output path collision: %d, stderr %q", code, stderr)
+		}
+		if code, stderr := run(t, append(args, "-result", rulesPath)...); code != 2 || !strings.Contains(stderr, "write result") || !bytes.Equal(read(t, rulesPath), data) {
+			t.Fatalf("input path collision: %d, stderr %q", code, stderr)
 		}
 	})
 	t.Run("unknown rule", func(t *testing.T) {
 		config := write("unknown-rule.json", []byte(`[{"rule_id":"test_rule","severity":"error"}]`))
-		command := exec.Command(binary, "-path", feed, "-rules", config)
-		var stdout, stderr bytes.Buffer
-		command.Stdout = &stdout
-		command.Stderr = &stderr
-		if err := command.Run(); err != nil {
-			t.Fatalf("unknown rule aborted execution: %v: %s", err, stderr.String())
+		path := filepath.Join(t.TempDir(), "result.json")
+		if code, stderr := run(t, "-path", feed, "-rules", config, "-result", path); code != 0 {
+			t.Fatalf("unknown rule aborted execution: %d, stderr %q", code, stderr)
 		}
 		var report types.Summary
-		if err := json.Unmarshal(stdout.Bytes(), &report); err != nil {
+		if err := json.Unmarshal(read(t, path), &report); err != nil {
 			t.Fatal(err)
 		}
 		if report.TotalErrors != 0 || report.TotalWarnings != 1 || len(report.Messages) != 1 ||
