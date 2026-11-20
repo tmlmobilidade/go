@@ -1,0 +1,79 @@
+{
+	"LandingFooter": {
+		"links": {
+			"github": "GitHub",
+			"infrastructure": "Infraestrutura",
+			"roadmap": "Roadmap",
+			"status": "Estado"
+		}
+	},
+	"LandingModules": {
+		"infrastructure": {
+			"stops": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "As paragens são a espinha dorsal da rede de transportes."
+			},
+			"title": "Infraestrutura"
+		},
+		"intro": {
+			"description": "O GO está organizado em 4 módulos essenciais que completam o ciclo de responsabilidades de uma autoridade de transportes.",
+			"title": "Desenvolvido de forma modular — usa só o que precisas."
+		},
+		"meetings": {
+			"actions": {
+				"schedule_meeting": "Marcar reunião",
+				"send_email": "Enviar email"
+			},
+			"description": "Presencial ou por Teams, estamos disponíveis para conversar sobre o que precisas.",
+			"title": "Marcamos uma reunião?"
+		},
+		"offer": {
+			"offer": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "As paragens são a espinha dorsal da rede de transportes."
+			},
+			"title": "Oferta"
+		},
+		"operation": {
+			"alerts": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "Alertas"
+			},
+			"plans": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "Planos"
+			},
+			"rides": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "Circulações / Monitorização"
+			},
+			"title": "Operação"
+		},
+		"performance": {
+			"performance": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "As paragens são a espinha dorsal da rede de transportes."
+			},
+			"title": "Performance"
+		}
+	},
+	"LandingOverview": {
+		"actions": {
+			"explore": "Explorar",
+			"login": "Login"
+		},
+		"description": "O GO é uma plataforma que responde às necessidades das autoridades e dos operadores de transporte, de forma ágil e intuitiva.",
+		"title": "Uma nova forma de trabalhar transportes públicos em Portugal."
+	},
+	"LandingOverviewLinks": {
+		"label": "Links rápidos",
+		"links": {
+			"apex": "Sistema APEX",
+			"documentation": "Documentação",
+			"gtfs": "Standard GTFS",
+			"open_data": "API Dados Abertos",
+			"open_services": "Serviços Abertos",
+			"roadmap": "Roadmap"
+		}
+	}
+}
