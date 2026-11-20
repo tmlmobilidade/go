@@ -171,6 +171,23 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "price", rule: "fare_attributes_price_valid", setup: "CREATE TABLE fare_attributes (price TEXT); INSERT INTO fare_attributes VALUES ('0'), ('1.75'), ('-0.01'), ('NaN'), ('+Inf'), (NULL)", file: "fare_attributes", field: "price", rows: [][]int{{2}, {3}, {4}}},
 		{name: "currency", rule: "fare_attributes_currency_type_valid", setup: "CREATE TABLE fare_attributes (currency_type TEXT); INSERT INTO fare_attributes VALUES ('EUR'), ('USD'), ('ZZZ'), ('€')", file: "fare_attributes", field: "currency_type", rows: [][]int{{2}, {3}}},
 		{name: "coordinate bounds", rule: "shapes_shape_pt_lat_valid", setup: "CREATE TABLE shapes (shape_pt_lat TEXT); INSERT INTO shapes VALUES ('-90'), ('90'), ('90.01'), ('-90.1'), ('NaN')", file: "shapes", field: "shape_pt_lat", rows: [][]int{{2}, {3}, {4}}},
+		{name: "shape maximum distance matches geographic length", rule: "shapes_shape_dist_traveled_equals_geo_length", setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT, shape_dist_traveled TEXT);
+			INSERT INTO shapes VALUES
+			('fits', '10', '0', '.001', '.1112'), ('long', '10', '0', '.001', '.240'),
+			('fits', '2', '0', '0', '0'), ('fits', '20', '.001', '.001', '.2224'),
+			('long', '2', '0', '0', '.240'), ('long', '20', '.001', '.001', '.2224'),
+			('short', '1', '0', '0', '0'), ('short', '2', '0', '.001', '.101'),
+			('within', '1', '0', '0', '0'), ('within', '2', '0', '.001', '.102'),
+			('boundary', '1', '0', '0', '0'), ('boundary', '2', '0', '0', '.010'),
+			('invalid coordinates', '1', '0', '0', '0'), ('invalid coordinates', '2', '91', '0', '1'),
+			('ambiguous sequence', '1', '0', '0', '0'), ('ambiguous sequence', '01', '0', '.001', '1'),
+			('invalid sequence', '1', '0', '0', '0'), ('invalid sequence', 'x', '0', '.001', '1'),
+			('missing distance', '1', '0', '0', NULL), ('missing distance', '2', '0', '.001', 'bad'),
+			('one point', '1', '0', '0', '1'),
+			('zero distance', '1', '0', '0', '0'), ('zero distance', '2', '0', '.001', '0');`,
+			file: "shapes", field: "shape_dist_traveled", rows: [][]int{{1, 4}, {7}, {21, 22}}},
+		{name: "shape distance column missing for length comparison", rule: "shapes_shape_dist_traveled_equals_geo_length", setup: "CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT); INSERT INTO shapes VALUES ('a', '1', '0', '0'), ('a', '2', '0', '.001')"},
+		{name: "shapes table missing for length comparison", rule: "shapes_shape_dist_traveled_equals_geo_length", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "shape sequence unique within each shape", rule: "shapes_shape_pt_sequence_strictly_increasing", setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT);
 			INSERT INTO shapes VALUES ('a', '10'), ('b', '10'), ('a', '2'), ('a', '010'),
 			('b', '0'), ('a', ' 10 '), ('a', '-1'), ('a', '-1'), ('a', 'bad'), ('a', 'bad'),
