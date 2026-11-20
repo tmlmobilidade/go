@@ -11,7 +11,7 @@ import { fetchMeData } from './fetch-me-data';
 /* * */
 
 interface UseMeDataReturnType {
-	data: User
+	data: undefined | User
 	error: null | string
 	/** Undefined means authentication has not been established; false means a confirmed 401. */
 	isAuthenticated: boolean | undefined
@@ -38,7 +38,7 @@ export function useMeData(enabled = true, refreshInterval = 60_000): UseMeDataRe
 	// Return data
 
 	return useMemo(() => ({
-		data: data?.data,
+		data: data?.data ?? undefined,
 		error: data?.error ?? error?.message ?? null,
 		isAuthenticated: data?.status_code === '401' ? false : data?.data ? true : undefined,
 		isLoading,
