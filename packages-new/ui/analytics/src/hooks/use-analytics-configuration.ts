@@ -39,7 +39,6 @@ export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }:
 		onLoadStart();
 
 		const controller = new AbortController();
-		let active = true;
 
 		fetch(configurationUrl, { cache: 'no-store', signal: controller.signal })
 			.then((response) => {
@@ -47,16 +46,13 @@ export function useAnalyticsConfiguration({ apiKey, configurationUrl, options }:
 				return response.json();
 			})
 			.then((value: AnalyticsConfiguration) => {
-				if (active) setConfiguration({ url: configurationUrl, value });
+				if (!controller.signal.aborted) setConfiguration({ url: configurationUrl, value });
 			})
 			.catch((cause: unknown) => {
-				if (active) onError(cause);
+				if (!controller.signal.aborted) onError(cause);
 			});
 
-		return () => {
-			active = false;
-			controller.abort();
-		};
+		return () => controller.abort();
 	}, [apiKey, configurationUrl, onError, onLoadStart]);
 
 	//
