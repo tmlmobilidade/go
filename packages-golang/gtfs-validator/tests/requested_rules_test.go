@@ -40,6 +40,17 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "all options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", options: []string{"all_options"}, rows: [][]int{{2}}},
 		{name: "empty options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", options: []string{}, rows: [][]int{{0}, {1}, {2}}},
 		{name: "date", rule: "calendar_start_date_valid", setup: "CREATE TABLE calendar (start_date TEXT); INSERT INTO calendar VALUES ('20240229'), ('20230229'), ('2024-02-29'), (NULL)", file: "calendar", field: "start_date", rows: [][]int{{1}, {2}}},
+		{name: "calendar dates unique per service", rule: "calendar_dates_date_unique_per_service_id", setup: `CREATE TABLE calendar_dates (service_id TEXT, date TEXT, exception_type TEXT);
+			INSERT INTO calendar_dates VALUES ('a', '20240229', '1'), ('b', '20240229', '1'),
+			('a', ' 20240229 ', '2'), ('a', '20240301', '1'), ('a', '20240229', '1'),
+			('a', '20240302', '1'), ('a', '20240302', '1'),
+			(NULL, '20240229', '1'), (NULL, '20240229', '1'),
+			(' ', '20240229', '1'), (' ', '20240229', '1'),
+			('a', NULL, '1'), ('a', NULL, '1'),
+			('a', '20240230', '1'), ('a', '20240230', '1');`,
+			file: "calendar_dates", field: "date", rows: [][]int{{0, 2, 4}, {5, 6}}},
+		{name: "calendar dates date column missing", rule: "calendar_dates_date_unique_per_service_id", setup: "CREATE TABLE calendar_dates (service_id TEXT); INSERT INTO calendar_dates VALUES ('a'), ('a')"},
+		{name: "calendar dates table missing", rule: "calendar_dates_date_unique_per_service_id", setup: "CREATE TABLE calendar (service_id TEXT)"},
 		{name: "calendar date order", rule: "calendar_start_date_before_end_date", setup: `CREATE TABLE calendar (start_date TEXT, end_date TEXT);
 			INSERT INTO calendar VALUES ('20231231', '20240101'), ('20240229', '20240229'),
 			('20240301', '20240229'), (NULL, '20240101'), ('20240401', ' '),
