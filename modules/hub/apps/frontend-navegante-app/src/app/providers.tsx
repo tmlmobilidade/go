@@ -1,5 +1,6 @@
 'use client';
 
+import { NativeSafeArea } from '@/components/common/layout/NativeSafeArea';
 import { AnalyticsContextProvider } from '@/contexts/Analytics.context';
 import { UserLocationContextProvider } from '@/contexts/UserLocation.context';
 import { MapProvider } from '@vis.gl/react-maplibre';
@@ -11,6 +12,7 @@ import { OverlayProvider } from 'react-aria';
 export function Providers({ children }: PropsWithChildren) {
 	return (
 		<OverlayProvider>
+			<NativeSafeArea />
 			<UserLocationContextProvider>
 				<MapProvider>
 					<AnalyticsContextProvider>

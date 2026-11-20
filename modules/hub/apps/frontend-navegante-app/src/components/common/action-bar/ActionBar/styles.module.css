@@ -4,7 +4,7 @@
 .container {
 	position: fixed;
 	right: 15px;
-	bottom: 20px;
+	bottom: calc(var(--app-bottom-inset) + 20px);
 	/* Above the mapAware bottom sheet's container (z-index: 100) so it never renders hidden
 	   behind the sheet, even if the sheet's measured height and this offset briefly disagree
 	   (e.g. during a mobile browser's dynamic viewport resize). */
