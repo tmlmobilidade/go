@@ -2,5 +2,11 @@ export { Counter, createMetricsRegistry, Gauge, Histogram, Registry, Summary } f
 export type { MetricsRegistry } from './create-registry.js';
 export { createHttpMetrics } from './http-metrics.js';
 export type { HttpMetrics } from './http-metrics.js';
+export { listenPrometheusMetrics } from './listen.js';
+export type { PrometheusMetricsServer } from './listen.js';
 export { registerPrometheusMetrics } from './register-on-fastify.js';
-export type { CreateMetricsRegistryOptions, RegisterPrometheusMetricsOptions } from './types.js';
+export type {
+	CreateMetricsRegistryOptions,
+	ListenPrometheusMetricsOptions,
+	RegisterPrometheusMetricsOptions,
+} from './types.js';

@@ -22,3 +22,15 @@ export type RegisterPrometheusMetricsOptions = CreateMetricsRegistryOptions & {
 	/** Collect per-route HTTP duration/count. Default true. */
 	httpMetrics?: boolean
 };
+
+/**
+ * Options for a standalone Prometheus scrape HTTP server (workers / CLI).
+ */
+export type ListenPrometheusMetricsOptions = CreateMetricsRegistryOptions & {
+	/** Scrape path. Default `/metrics`. */
+	endpoint?: string
+	/** Host to bind. Default `::`. */
+	host?: string
+	/** Port to listen on. Default `METRICS_PORT` env or `9090`. */
+	port?: number
+};
