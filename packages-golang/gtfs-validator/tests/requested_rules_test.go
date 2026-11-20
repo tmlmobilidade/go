@@ -75,6 +75,25 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "description duplicates short name", rule: "routes_route_desc_different_from_route_short_name", setup: routeDescriptions, file: "routes", field: "route_desc", rows: [][]int{{1}, {2}}},
 		{name: "route long name column missing", rule: "routes_route_desc_different_from_route_long_name", setup: "CREATE TABLE routes (route_desc TEXT); INSERT INTO routes VALUES ('Bus')"},
 		{name: "routes table missing", rule: "routes_route_desc_different_from_route_short_name", setup: "CREATE TABLE trips (trip_id TEXT)"},
+		{name: "route URL matches corresponding agency", rule: "routes_route_url_different_from_agency_url", setup: `CREATE TABLE agency (agency_id TEXT, agency_url TEXT);
+			INSERT INTO agency VALUES ('a', 'https://a.example'), ('b', 'https://b.example'),
+			('ambiguous', 'https://a.example'), ('ambiguous', 'https://b.example'), ('invalid', 'bad');
+			CREATE TABLE routes (agency_id TEXT, route_url TEXT);
+			INSERT INTO routes VALUES ('a', 'https://a.example'), ('a', 'https://b.example'),
+			('b', 'https://b.example'), ('a', 'https://a.example/'), (NULL, 'https://a.example'),
+			('unknown', 'https://a.example'), ('ambiguous', 'https://a.example'),
+			('ambiguous', 'https://b.example'), ('invalid', 'bad'), ('a', NULL);`,
+			file: "routes", field: "route_url", rows: [][]int{{0}, {2}}},
+		{name: "route URL matches sole agency", rule: "routes_route_url_different_from_agency_url", setup: `CREATE TABLE agency (agency_url TEXT);
+			INSERT INTO agency VALUES ('https://a.example');
+			CREATE TABLE routes (agency_id TEXT, route_url TEXT);
+			INSERT INTO routes VALUES (NULL, 'https://a.example'), ('missing', 'https://a.example');`,
+			file: "routes", field: "route_url", rows: [][]int{{0}}},
+		{name: "agency URL column missing", rule: "routes_route_url_different_from_agency_url", setup: `CREATE TABLE agency (agency_id TEXT);
+			INSERT INTO agency VALUES ('a');
+			CREATE TABLE routes (route_url TEXT);
+			INSERT INTO routes VALUES ('https://a.example');`},
+		{name: "route URL without agency table", rule: "routes_route_url_different_from_agency_url", setup: "CREATE TABLE routes (route_url TEXT)"},
 		{name: "price", rule: "fare_attributes_price_valid", setup: "CREATE TABLE fare_attributes (price TEXT); INSERT INTO fare_attributes VALUES ('0'), ('1.75'), ('-0.01'), ('NaN'), ('+Inf'), (NULL)", file: "fare_attributes", field: "price", rows: [][]int{{2}, {3}, {4}}},
 		{name: "currency", rule: "fare_attributes_currency_type_valid", setup: "CREATE TABLE fare_attributes (currency_type TEXT); INSERT INTO fare_attributes VALUES ('EUR'), ('USD'), ('ZZZ'), ('€')", file: "fare_attributes", field: "currency_type", rows: [][]int{{2}, {3}}},
 		{name: "coordinate bounds", rule: "shapes_shape_pt_lat_valid", setup: "CREATE TABLE shapes (shape_pt_lat TEXT); INSERT INTO shapes VALUES ('-90'), ('90'), ('90.01'), ('-90.1'), ('NaN')", file: "shapes", field: "shape_pt_lat", rows: [][]int{{2}, {3}, {4}}},
