@@ -71,6 +71,10 @@
 			"vehicle": "Veículo"
 		},
 		"form": {
+			"FeedbackReasonOptions": {
+				"comment_label": "Outro motivo",
+				"comment_placeholder": "Descreve o motivo (máx. {count} caracteres)"
+			},
 			"categories_happy_title": "O que podemos melhorar?",
 			"categories_prompt": "Ajude-nos a melhorar o serviço.",
 			"categories_unhappy_title": "Com o que está insatisfeito?",
@@ -117,7 +121,6 @@
 			"no_bench": "Sem banco",
 			"no_shelter": "Sem abrigo",
 			"no_trash_bin": "Sem caixote do lixo",
-			"other": "Outro",
 			"route_changed_without_notice": "Percurso alterado sem aviso",
 			"rude_staff": "Atendimento rude",
 			"safety_incident": "Incidente de segurança",

@@ -71,6 +71,10 @@
 			"vehicle": "Vehicle"
 		},
 		"form": {
+			"FeedbackReasonOptions": {
+				"comment_label": "Other reason",
+				"comment_placeholder": "Describe the reason (max. {count} characters)"
+			},
 			"categories_happy_title": "What can we improve?",
 			"categories_prompt": "Help us improve the service.",
 			"categories_unhappy_title": "What are you dissatisfied with?",
@@ -117,7 +121,6 @@
 			"no_bench": "No bench",
 			"no_shelter": "No shelter",
 			"no_trash_bin": "No rubbish bin",
-			"other": "Other",
 			"route_changed_without_notice": "Route changed without notice",
 			"rude_staff": "Rude staff",
 			"safety_incident": "Safety incident",
