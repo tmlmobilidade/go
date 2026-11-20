@@ -30,7 +30,7 @@ JSON array. Each entry has a `rule_id` and `severity`. It can also supply
 ```
 
 Agency field rules enforce GTFS-required fields at every active severity.
-For an optional field, use `error` severity on its `_field` rule to require
+For an optional field, use `error` severity on its `_exists` rule to require
 the column and a value on each row. GTFS requires `agency_id` when there are
 multiple agencies. Configure agency field rules with `agency_file_exists` in
 `depends_on`.

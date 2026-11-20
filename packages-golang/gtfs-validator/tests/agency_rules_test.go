@@ -14,7 +14,7 @@ func TestAgencyFieldRequirements(t *testing.T) {
 	for _, field := range []string{"name", "timezone", "url", "id", "fare_url", "lang", "phone"} {
 		t.Run(field, func(t *testing.T) {
 			required := field == "name" || field == "timezone" || field == "url"
-			config := types.Rule{RuleID: "agency_" + field + "_field", Severity: types.SEVERITY_WARNING}
+			config := types.Rule{RuleID: "agency_" + field + "_exists", Severity: types.SEVERITY_WARNING}
 			var want [][]int
 			if required {
 				want = [][]int{nil}
