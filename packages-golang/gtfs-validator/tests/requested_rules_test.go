@@ -116,6 +116,18 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "departure column missing for same stop", rule: "stop_times_arrival_time_before_departure_time", setup: "CREATE TABLE stop_times (arrival_time TEXT); INSERT INTO stop_times VALUES ('10:00:00')"},
 		{name: "stop sequence column missing for time order", rule: "stop_times_increasing_arrival_time", setup: "CREATE TABLE stop_times (trip_id TEXT, arrival_time TEXT); INSERT INTO stop_times VALUES ('a', '10:00:00'), ('a', '9:00:00')"},
 		{name: "stop times table missing for departure order", rule: "stop_times_increasing_departure_time", setup: "CREATE TABLE trips (trip_id TEXT)"},
+		{name: "location group conflicts with other stop locations", rule: "stop_times_location_group_id_forbidden", setup: `CREATE TABLE stop_times (location_group_id TEXT, stop_id TEXT, location_id TEXT);
+			INSERT INTO stop_times VALUES ('g', 's', NULL), ('g', NULL, 'l'), ('g', 's', 'l'),
+			('g', NULL, NULL), (NULL, 's', 'l'), (' ', 's', 'l'), ('g', '', ' ');`,
+			file: "stop_times", field: "location_group_id", severity: types.SEVERITY_FORBIDDEN, rows: [][]int{{0}, {1}, {2}}},
+		{name: "location group alone with missing columns", rule: "stop_times_location_group_id_forbidden", setup: "CREATE TABLE stop_times (location_group_id TEXT); INSERT INTO stop_times VALUES ('g')"},
+		{name: "location ID conflicts with other stop locations", rule: "stop_times_location_id_forbidden", setup: `CREATE TABLE stop_times (location_id TEXT, stop_id TEXT, location_group_id TEXT);
+			INSERT INTO stop_times VALUES ('l', 's', NULL), ('l', NULL, 'g'), ('l', 's', 'g'),
+			('l', NULL, NULL), (NULL, 's', 'g'), (' ', 's', 'g'), ('l', '', ' ');`,
+			file: "stop_times", field: "location_id", severity: types.SEVERITY_FORBIDDEN, rows: [][]int{{0}, {1}, {2}}},
+		{name: "location ID alone with missing columns", rule: "stop_times_location_id_forbidden", setup: "CREATE TABLE stop_times (location_id TEXT); INSERT INTO stop_times VALUES ('l')"},
+		{name: "stop times missing for location ID restriction", rule: "stop_times_location_id_forbidden", setup: "CREATE TABLE trips (trip_id TEXT)"},
+		{name: "stop times missing for location group restriction", rule: "stop_times_location_group_id_forbidden", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "stop sequence unique within each trip", rule: "stop_times_increasing_stop_sequence", setup: stopDistanceOrder, file: "stop_times", field: "stop_sequence", rows: [][]int{{13, 14}}},
 		{name: "stop distance increases by numeric sequence", rule: "stop_times_increasing_shape_dist_traveled", setup: stopDistanceOrder, file: "stop_times", field: "shape_dist_traveled", rows: [][]int{{2, 0}, {0, 3}}},
 		{name: "stop sequence column missing", rule: "stop_times_increasing_stop_sequence", setup: "CREATE TABLE stop_times (trip_id TEXT); INSERT INTO stop_times VALUES ('a'), ('a')"},
