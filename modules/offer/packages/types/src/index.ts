@@ -3,6 +3,7 @@ import '@tmlmobilidade/go-utils-validation';
 export * from './events/index.js';
 export * from './fares/index.js';
 export * from './lines/populated-line.js';
+export * from './organizations/organization-filter.js';
 export * from './patterns/patterns-comment-request.js';
 export * from './patterns/patterns-detail-form.js';
 export * from './patterns/patterns-detail.js';

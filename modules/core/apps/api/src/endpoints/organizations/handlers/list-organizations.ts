@@ -5,7 +5,7 @@ import { type OrganizationsListItem, OrganizationsListItemSchema } from '@tmlmob
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 
 /**
- * Returns all Organizations sorted by ID.
+ * Returns all Organizations sorted alphabetically by name.
  * @param request The request object
  * @param reply The reply object
  */
@@ -21,7 +21,8 @@ export async function listOrganizationsHandler(request: FastifyRequest, reply: F
 		});
 	}
 
-	const validatedOrganizations = OrganizationsListItemSchema.array().parse(foundOrganizations);
+	const validatedOrganizations = OrganizationsListItemSchema.array().parse(foundOrganizations)
+		.sort((a, b) => a.long_name.localeCompare(b.long_name, 'pt', { sensitivity: 'base' }) || a._id.localeCompare(b._id));
 
 	return sendSuccessApiResponse(reply, validatedOrganizations);
 }

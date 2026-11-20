@@ -1,7 +1,7 @@
 'use client';
 
-import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Grid, MultiSelect, Section, StandardFormController, Switch, TextInput } from '@tmlmobilidade/ui';
+import { CreateOrganizationSchema, OrganizationTypeSchema } from '@tmlmobilidade/go-types-core';
+import { Grid, MultiSelect, Section, Select, StandardFormController, Switch, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsAgenciesData } from '../../shared/use-organizations-agencies-data';
@@ -61,6 +61,21 @@ export function OrganizationsCreateBasicInfo() {
 							placeholder={t('default:organizations.create.SectionBasicInfo.fields.short_name.placeholder')}
 							value={field.value ?? ''}
 							withAsterisk
+						/>
+					)}
+				/>
+
+				<StandardFormController
+					control={form.control}
+					name="organization_type"
+					render={({ field, fieldState }) => (
+						<Select
+							data={OrganizationTypeSchema.options.map(value => ({ label: t(`organizations:shared.types.${value}`), value }))}
+							error={fieldState.error?.message}
+							label={t('organizations:create.OrganizationsCreateBasicInfo.organization_type')}
+							onChange={field.onChange}
+							readOnly={!capabilities.editEnabled}
+							value={field.value ?? 'other'}
 						/>
 					)}
 				/>

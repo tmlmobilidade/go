@@ -5,8 +5,10 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PatternsShapeMapItem, type PatternsShapeMapQuery, PatternsShapeMapQuerySchema } from '@tmlmobilidade/go-offer-pckg-types';
 import { filterPermissionResourceValues, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
+const FULL_SHAPE_LIMIT = 100;
+
 /**
- * Retrieves compact pattern shape data for one agency.
+ * Retrieves full or simplified overview shapes for the permitted agencies.
  */
 export async function listPatternShapesHandler(request: FastifyRequest<{ Querystring: PatternsShapeMapQuery }>, reply: FastifyReply<PatternsShapeMapItem[]>) {
 	//
@@ -51,11 +53,16 @@ export async function listPatternShapesHandler(request: FastifyRequest<{ Queryst
 	const typologyTextColorById = new Map(agencyTypologies.map(typology => [typology._id, typology.text_color]));
 	const lineById = new Map(agencyLines.map(line => [line._id, line]));
 
+	// Inspect at most 101 IDs before fetching geometry; avoid counting the entire selection.
+	const shapeFilter = {
+		'line_id': { $in: lineIds },
+		'shape.encoded_polyline': { $exists: true, $ne: '' },
+	};
+	const shapeSample = await goDb.offer.patterns.findMany(shapeFilter, { limit: FULL_SHAPE_LIMIT + 1, projection: { _id: 1 } });
+	const useSimplified = shapeSample.length > FULL_SHAPE_LIMIT;
+
 	const agencyPatterns = await goDb.offer.patterns.findMany(
-		{
-			'line_id': { $in: lineIds },
-			'shape.encoded_polyline': { $exists: true },
-		},
+		shapeFilter,
 		{
 			projection: {
 				'_id': 1,
@@ -65,9 +72,10 @@ export async function listPatternShapesHandler(request: FastifyRequest<{ Queryst
 				'line_id': 1,
 				'origin': 1,
 				'route_id': 1,
-				'shape.encoded_polyline': 1,
+				'shape.encoded_polyline': useSimplified
+					? { $ifNull: ['$shape.encoded_polyline_simplified', '$shape.encoded_polyline'] }
+					: 1,
 			},
-			sort: { code: 1 },
 		},
 	);
 
@@ -91,6 +99,12 @@ export async function listPatternShapesHandler(request: FastifyRequest<{ Queryst
 			pattern_id: pattern._id,
 			route_id: pattern.route_id,
 		}];
+	});
+
+	// Sort the compact response; sorting full Pattern documents in MongoDB spills to disk.
+	result.sort((a, b) => {
+		if (a.pattern_code === b.pattern_code) return 0;
+		return a.pattern_code < b.pattern_code ? -1 : 1;
 	});
 
 	return sendSuccessApiResponse(reply, result);
