@@ -36,13 +36,13 @@ missing, invalid, or repeated sequences. Each finding includes both endpoint row
 
 [shapes.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/shapes
 */
-func (ShapesChecks) ShapesShapeDistTraveledSegmentMaxGeoLenght(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+func (ShapesChecks) ShapesShapeDistTraveledSegmentMaxGeoLength(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 
 	//
 	// 1. Read the maximum segment length in meters
 	limitMeters := 1000.0
 	if len(config.Options) > 1 {
-		return false, nil, fmt.Errorf("shapes_shape_dist_traveled_segment_max_geo_lenght accepts at most one distance in meters in options")
+		return false, nil, fmt.Errorf("shapes_shape_dist_traveled_segment_max_geo_length accepts at most one distance in meters in options")
 	}
 	if len(config.Options) == 1 {
 		var err error

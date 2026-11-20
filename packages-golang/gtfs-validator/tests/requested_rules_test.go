@@ -178,14 +178,14 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "price", rule: "fare_attributes_price_valid", setup: "CREATE TABLE fare_attributes (price TEXT); INSERT INTO fare_attributes VALUES ('0'), ('1.75'), ('-0.01'), ('NaN'), ('+Inf'), (NULL)", file: "fare_attributes", field: "price", rows: [][]int{{2}, {3}, {4}}},
 		{name: "currency", rule: "fare_attributes_currency_type_valid", setup: "CREATE TABLE fare_attributes (currency_type TEXT); INSERT INTO fare_attributes VALUES ('EUR'), ('USD'), ('ZZZ'), ('€')", file: "fare_attributes", field: "currency_type", rows: [][]int{{2}, {3}}},
 		{name: "coordinate bounds", rule: "shapes_shape_pt_lat_valid", setup: "CREATE TABLE shapes (shape_pt_lat TEXT); INSERT INTO shapes VALUES ('-90'), ('90'), ('90.01'), ('-90.1'), ('NaN')", file: "shapes", field: "shape_pt_lat", rows: [][]int{{2}, {3}, {4}}},
-		{name: "shape segment length default maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", setup: shapeSegmentLengths,
+		{name: "shape segment length default maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_length", setup: shapeSegmentLengths,
 			file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{0, 4}}},
-		{name: "shape segment length configured maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", setup: shapeSegmentLengths,
+		{name: "shape segment length configured maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_length", setup: shapeSegmentLengths,
 			options: []string{"800"}, file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{2, 3}, {3, 0}, {0, 4}}},
-		{name: "shape segment length equal to maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", options: []string{"0"}, setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT);
+		{name: "shape segment length equal to maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_length", options: []string{"0"}, setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT);
 			INSERT INTO shapes VALUES ('a', '1', '0', '0'), ('a', '2', '0', '0'), ('a', '3', '0', '.001');`,
 			file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{1, 2}}},
-		{name: "shapes table missing for segment length", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", setup: "CREATE TABLE trips (trip_id TEXT)"},
+		{name: "shapes table missing for segment length", rule: "shapes_shape_dist_traveled_segment_max_geo_length", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "shape maximum distance matches geographic length", rule: "shapes_shape_dist_traveled_equals_geo_length", setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT, shape_dist_traveled TEXT);
 			INSERT INTO shapes VALUES
 			('fits', '10', '0', '.001', '.1112'), ('long', '10', '0', '.001', '.240'),
@@ -266,7 +266,7 @@ func TestShapeSegmentMaximumRejectsInvalidOptions(t *testing.T) {
 	db := openSQLTestDatabase(t, "CREATE TABLE trips (trip_id TEXT)")
 	for _, options := range [][]string{{"-1"}, {"NaN"}, {"+Inf"}, {"bad"}, {"10", "20"}} {
 		graph, err := rules.NewValidationGraph([]types.Rule{{
-			RuleID: "shapes_shape_dist_traveled_segment_max_geo_lenght", Severity: types.SEVERITY_ERROR, Options: options,
+			RuleID: "shapes_shape_dist_traveled_segment_max_geo_length", Severity: types.SEVERITY_ERROR, Options: options,
 		}})
 		if err != nil {
 			t.Fatal(err)
