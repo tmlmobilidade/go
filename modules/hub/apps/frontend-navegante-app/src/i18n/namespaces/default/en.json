@@ -71,6 +71,10 @@
 			"vehicle": "Vehicle"
 		},
 		"form": {
+			"FeedbackReasonOptions": {
+				"comment_label": "Other reason",
+				"comment_placeholder": "Describe the reason (max. {count} characters)"
+			},
 			"categories_happy_title": "What can we improve?",
 			"categories_prompt": "Help us improve the service.",
 			"categories_unhappy_title": "What are you dissatisfied with?",

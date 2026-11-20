@@ -1,6 +1,6 @@
 /* * */
 
-import { getPublicFeedbackReasonCategoriesByEntity, getPublicFeedbackReasonValuesByCategory, type PublicFeedbackEntityType, type PublicFeedbackReason, type PublicFeedbackReasonCategory } from '@tmlmobilidade/go-types-hub';
+import { getPublicFeedbackReasonCategoriesByEntity, getPublicFeedbackV2ReasonValuesByCategory, type PublicFeedbackEntityType, type PublicFeedbackReasonCategory, type PublicFeedbackV2Reason } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
@@ -14,7 +14,7 @@ export interface FeedbackReasonGroup {
 
 export interface FeedbackReasonOption {
 	label: string
-	value: PublicFeedbackReason
+	value: PublicFeedbackV2Reason
 }
 
 export type FeedbackReasonGroups = Partial<Record<FeedbackReasonCategory, FeedbackReasonGroup>>;
@@ -28,13 +28,13 @@ export function getFeedbackReasonCategories(entityType: FeedbackEntityType) {
 export function getFeedbackReasonGroups(
 	entityType: FeedbackEntityType,
 	translateCategory: (category: FeedbackReasonCategory) => string,
-	translateReason: (reason: PublicFeedbackReason) => string,
+	translateReason: (reason: PublicFeedbackV2Reason) => string,
 ): FeedbackReasonGroups {
 	const categories = getFeedbackReasonCategories(entityType);
 	const reasonGroups: FeedbackReasonGroups = {};
 
 	for (const category of categories) {
-		const options = getPublicFeedbackReasonValuesByCategory(category)
+		const options = getPublicFeedbackV2ReasonValuesByCategory(category)
 			.map(reason => ({
 				label: translateReason(reason),
 				value: reason,

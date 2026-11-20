@@ -1,79 +1,21 @@
 /* * */
 
-import { UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
-import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
-import { type PublicFeedbackEntityType, PublicFeedbackEntityTypeSchema } from './entity-type.js';
-import { PublicFeedbackMoodSchema } from './mood.js';
-import { getPublicFeedbackReasonValuesByEntity, type PublicFeedbackReason, PublicFeedbackReasonSchema } from './reason.js';
+import { PublicFeedbackV1Schema, PublicFeedbackV1SubmissionSchema } from './v1/feedback-v1.js';
+import { PublicFeedbackV2Schema, PublicFeedbackV2SubmissionSchema } from './v2/feedback-v2.js';
 
 /* * */
 
-export const PUBLIC_FEEDBACK_REASON_SELECTION_LIMIT = 4;
-
-const PublicFeedbackSubmissionBaseSchema = z.object({
-	entity_id: z.string().min(1),
-	mood: PublicFeedbackMoodSchema,
-	reasons: z.array(PublicFeedbackReasonSchema).max(PUBLIC_FEEDBACK_REASON_SELECTION_LIMIT),
-	schema_version: z.literal('v1').default('v1'),
-});
-
-const PublicLineFeedbackSubmissionSchema = PublicFeedbackSubmissionBaseSchema.extend({
-	agency_id: z.string().min(1),
-	entity_type: z.literal(PublicFeedbackEntityTypeSchema.enum.line),
-});
-
-const PublicStopFeedbackSubmissionSchema = PublicFeedbackSubmissionBaseSchema.extend({
-	agency_id: z.never().optional(),
-	entity_type: z.literal(PublicFeedbackEntityTypeSchema.enum.stop),
-});
-
-const PublicFeedbackSubmissionUnionSchema = z.discriminatedUnion('entity_type', [
-	PublicLineFeedbackSubmissionSchema,
-	PublicStopFeedbackSubmissionSchema,
+export const PublicFeedbackSubmissionSchema = z.discriminatedUnion('schema_version', [
+	PublicFeedbackV1SubmissionSchema,
+	PublicFeedbackV2SubmissionSchema,
 ]);
 
-interface PublicFeedbackReasonSelection {
-	entity_type: PublicFeedbackEntityType
-	reasons: PublicFeedbackReason[]
-}
-
-function validateReasonsForEntity(feedback: PublicFeedbackReasonSelection, context: z.RefinementCtx) {
-	const allowedReasons = new Set(getPublicFeedbackReasonValuesByEntity(feedback.entity_type));
-	const selectedReasons = new Set();
-
-	feedback.reasons.forEach((reason, index) => {
-		if (!allowedReasons.has(reason)) {
-			context.addIssue({
-				code: 'custom',
-				...validationParams('custom.feedback.reason', { entity: feedback.entity_type, reason }),
-				path: ['reasons', index],
-			});
-		}
-
-		if (selectedReasons.has(reason)) {
-			context.addIssue({
-				code: 'custom',
-				...validationParams('custom.feedback.duplicate_reason', { reason }),
-				path: ['reasons', index],
-			});
-		}
-
-		selectedReasons.add(reason);
-	});
-}
-
-export const PublicFeedbackSubmissionSchema = PublicFeedbackSubmissionUnionSchema.superRefine(validateReasonsForEntity);
-
-export const PublicFeedbackSchema = z.discriminatedUnion('entity_type', [
-	PublicLineFeedbackSubmissionSchema.extend({ created_at: UnixMillisecondsSchema }),
-	PublicStopFeedbackSubmissionSchema.omit({ agency_id: true }).extend({
-		agency_id: z.null(),
-		created_at: UnixMillisecondsSchema,
-	}),
-])
-	.superRefine(validateReasonsForEntity);
+export const PublicFeedbackSchema = z.discriminatedUnion('schema_version', [
+	PublicFeedbackV1Schema,
+	PublicFeedbackV2Schema,
+]);
 
 /* * */
 

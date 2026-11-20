@@ -1,8 +1,8 @@
-import { PUBLIC_FEEDBACK_REASON_SELECTION_LIMIT, type PublicFeedbackReason } from '@tmlmobilidade/go-types-hub';
+import { PUBLIC_FEEDBACK_REASON_SELECTION_LIMIT, type PublicFeedbackV2Reason } from '@tmlmobilidade/go-types-hub';
 
 /* * */
 
-export function toggleFeedbackReason(selectedValues: PublicFeedbackReason[], reasonValue: PublicFeedbackReason) {
+export function toggleFeedbackReason(selectedValues: PublicFeedbackV2Reason[], reasonValue: PublicFeedbackV2Reason) {
 	if (selectedValues.includes(reasonValue)) {
 		return selectedValues.filter(value => value !== reasonValue);
 	}
