@@ -11,6 +11,8 @@ export type GtfsIncludeContributionKind = 'base_off' | 'operating';
  *   `excludeRule` is what displaces it (event manual or replacement).
  */
 export interface GtfsIncludeContribution {
+	/** Replacement periods selecting a manual outside its ordinary calendar. */
+	effectivePeriodIds?: readonly string[]
 	/** Present when `kind` is `base_off`: the rule that displaces `rule`. */
 	excludeRule?: ScheduleRule
 	kind: GtfsIncludeContributionKind
