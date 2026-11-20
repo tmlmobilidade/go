@@ -86,12 +86,14 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "routes table missing", rule: "routes_route_desc_different_from_route_short_name", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "route URL matches corresponding agency", rule: "routes_route_url_different_from_agency_url", setup: `CREATE TABLE agency (agency_id TEXT, agency_url TEXT);
 			INSERT INTO agency VALUES ('a', 'https://a.example'), ('b', 'https://b.example'),
-			('ambiguous', 'https://a.example'), ('ambiguous', 'https://b.example'), ('invalid', 'bad');
+			('ambiguous', 'https://a.example'), ('ambiguous', 'https://b.example'), ('invalid', 'bad'),
+			('empty', NULL), ('blank', ' ');
 			CREATE TABLE routes (agency_id TEXT, route_url TEXT);
 			INSERT INTO routes VALUES ('a', 'https://a.example'), ('a', 'https://b.example'),
 			('b', 'https://b.example'), ('a', 'https://a.example/'), (NULL, 'https://a.example'),
 			('unknown', 'https://a.example'), ('ambiguous', 'https://a.example'),
-			('ambiguous', 'https://b.example'), ('invalid', 'bad'), ('a', NULL);`,
+			('ambiguous', 'https://b.example'), ('invalid', 'bad'), ('a', NULL),
+			('empty', NULL), ('blank', ' '), ('unknown', NULL);`,
 			file: "routes", field: "route_url", rows: [][]int{{0}, {2}}},
 		{name: "route URL matches sole agency", rule: "routes_route_url_different_from_agency_url", setup: `CREATE TABLE agency (agency_url TEXT);
 			INSERT INTO agency VALUES ('https://a.example');

@@ -20,10 +20,11 @@ import (
 
 # Description
 
-Reports a valid route_url that exactly matches the corresponding agency_url.
+Reports a nonblank route_url that exactly matches the corresponding agency_url.
+The URL format rules check syntax.
 Matches agency IDs exactly. When a route has no agency ID and the feed has
 one agency row, compares against that agency. Skips unresolved or ambiguous
-agency references and leaves missing or malformed values to the field checks.
+agency references and blank URLs.
 
 [routes.txt]: https://gtfs.org/documentation/schedule/reference/#routestxt
 */
@@ -69,7 +70,7 @@ func (RoutesChecks) RoutesRouteURLDifferentFromAgencyURL(ctx context.Context, db
 				agencyURL = soleAgencyURL
 			}
 		}
-		if routeURL == agencyURL {
+		if routeURL == agencyURL && strings.TrimSpace(routeURL) != "" {
 			findings = append(findings, types.Finding{
 				Description: "The route URL must differ from the agency URL.",
 				Message:     fmt.Sprintf("The route_url value %q matches its agency_url.", routeURL),
