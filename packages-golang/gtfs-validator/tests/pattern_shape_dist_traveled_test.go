@@ -9,7 +9,7 @@ import (
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-func TestPatternSameShapeDistTraveled(t *testing.T) {
+func TestPatternSameStopDistTraveled(t *testing.T) {
 	const trips = `
 		CREATE TABLE trips (route_id TEXT, direction_id TEXT, trip_id TEXT);
 		INSERT INTO trips VALUES
@@ -81,7 +81,7 @@ func TestPatternSameShapeDistTraveled(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			db := openSQLTestDatabase(t, tt.setup)
-			graph, err := rules.NewValidationGraph([]types.Rule{{RuleID: "pattern_same_shape_dist_traveled", Severity: types.SEVERITY_WARNING}})
+			graph, err := rules.NewValidationGraph([]types.Rule{{RuleID: "pattern_same_stop_dist_traveled", Severity: types.SEVERITY_WARNING}})
 			if err != nil {
 				t.Fatal(err)
 			}
