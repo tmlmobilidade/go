@@ -5,8 +5,33 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/validators"
 )
 
-func (FeedInfoChecks) FeedInfoDefaultLangValid(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
-	return true, nil, nil
+/*
+# Attributes
+
+  - File: [feed_info.txt]
+  - Field: default_lang
+  - Presence: Optional
+  - Type: Language code
+
+# Description
+
+Checks that each supplied default_lang is a valid BCP 47 language tag.
+Missing or blank values are handled by the presence rule. Forbidden severity rejects supplied values.
+
+[feed_info.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/feed-info
+*/
+func (FeedInfoChecks) FeedInfoDefaultLangValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Reject supplied values when the field is forbidden
+	if config.Severity == types.SEVERITY_FORBIDDEN {
+		return fields.CheckValues(ctx, db, config, "feed_info", "default_lang", "The default_lang field must be empty.", func(string) bool { return false })
+	}
+
+	// 2. Check the format of supplied values
+	return fields.CheckValues(ctx, db, config, "feed_info", "default_lang", "The default_lang field must be a valid BCP 47 language tag.", validators.ValidateLanguage)
 }

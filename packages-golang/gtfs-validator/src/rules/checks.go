@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"strings"
 
+	stopcontent "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/content-validations/stops"
 	agency "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/agency"
 	calendar "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/calendar"
 	calendardates "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/rules/file-validations/calendar-dates"
@@ -29,7 +30,7 @@ type check func(context.Context, *sql.DB, types.Rule) (bool, []Finding, error)
 // checks exposes the rule methods from each table package. New methods in these
 // packages are available automatically after rebuilding the validator.
 type checks struct {
-	
+
 	// File Validations
 	agency.AgencyChecks
 	calendar.CalendarChecks
@@ -47,6 +48,9 @@ type checks struct {
 	// Relationship Validations
 	geometry.GeometryChecks
 	pattern.PatternChecks
+
+	// Content Validations
+	stopcontent.StopContentChecks
 }
 
 // findCheck matches snake_case IDs to exported methods, including acronyms such

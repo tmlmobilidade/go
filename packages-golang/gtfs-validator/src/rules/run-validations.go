@@ -73,7 +73,8 @@ func NewValidationGraph(configs []types.Rule) (*services.DAG[*sql.DB, []Finding]
 		}
 		// Ignored file-presence checks still enforce prerequisites. Missing
 		// implementations still run so their warning is included in the report.
-		if validate != nil && config.Severity == SEVERITY_IGNORE && !strings.HasSuffix(config.RuleID, "_file_missing") {
+		isFilePresence := strings.HasSuffix(config.RuleID, "_file_exists")
+		if validate != nil && config.Severity == SEVERITY_IGNORE && !isFilePresence {
 			task.SkipReason = "rule ignored"
 		}
 		tasks = append(tasks, task)

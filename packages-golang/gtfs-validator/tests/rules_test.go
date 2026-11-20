@@ -11,7 +11,7 @@ import (
 )
 
 func TestRuleFilesAreExecutable(t *testing.T) {
-	paths, err := filepath.Glob(filepath.Join("..", "src", "rules", "file-validations", "*", "*.go"))
+	paths, err := filepath.Glob(filepath.Join("..", "src", "rules", "*-validations", "*", "*.go"))
 	if err != nil {
 		t.Fatal(err)
 	}
