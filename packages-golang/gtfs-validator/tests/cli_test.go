@@ -166,7 +166,9 @@ func TestCLI(t *testing.T) {
 		} {
 			t.Run(test.name, func(t *testing.T) {
 				dir := t.TempDir()
-				path, plain, result := filepath.Join(dir, "trace.json"), filepath.Join(dir, "plain.json"), filepath.Join(dir, "result.json")
+				path := filepath.Join(dir, "out", "traces", "trace.json")
+				plain := filepath.Join(dir, "plain.json")
+				result := filepath.Join(dir, "out", "reports", "result.json")
 				args := []string{"-path", test.input, "-rules", config, "-concurrency", "2"}
 				if code, stderr := run(t, append(args, "-result", plain)...); code != test.exit {
 					t.Fatalf("validation: %d, stderr %q", code, stderr)

@@ -165,8 +165,13 @@ func writeJSON(path string, value any, protectedPaths ...string) error {
 		return err
 	}
 
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return err
+	}
+
 	// Publish only a complete JSON file. A failed write leaves existing output intact.
-	file, err := os.CreateTemp(filepath.Dir(path), ".gtfs-validation-*")
+	file, err := os.CreateTemp(dir, ".gtfs-validation-*")
 	if err != nil {
 		return err
 	}
