@@ -30,7 +30,6 @@ export const PublicFeedbackReasonValuesByCategory = {
 		'rude_staff',
 		'driver_bad_conduct',
 		'disorganized_boarding',
-		'other',
 	],
 	line_service: [
 		'early',
@@ -51,7 +50,6 @@ export const PublicFeedbackReasonValuesByCategory = {
 		'skipped_stop',
 		'inadequate_service',
 		'excessive_travel_time',
-		'other',
 	],
 	stop: [
 		'wrong_panel_information',
@@ -74,7 +72,6 @@ export const PublicFeedbackReasonValuesByCategory = {
 		'shelter_issue',
 		'no_trash_bin',
 		'weather_exposure_issue',
-		'other',
 	],
 	vehicle: [
 		'damaged',
@@ -88,7 +85,6 @@ export const PublicFeedbackReasonValuesByCategory = {
 		'unsafe_speed',
 		'traffic_law_violation',
 		'safety_incident',
-		'other',
 	],
 } as const satisfies Record<PublicFeedbackReasonCategory, readonly string[]>;
 
