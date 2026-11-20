@@ -15,6 +15,12 @@ import (
 )
 
 func TestRequestedRulesThroughGraph(t *testing.T) {
+	const stopLocationTypes = `CREATE TABLE stops (location_type TEXT, parent_station TEXT, platform_code TEXT);
+		INSERT INTO stops VALUES ('0', 'station', 'A'), ('1', 'station', 'B'), ('1', ' ', NULL),
+		('2', NULL, 'C'), ('3', '', 'D'), ('4', ' ', 'E'), ('2', 'station', NULL),
+		('3', 'station', NULL), ('4', 'platform', ' '), ('01', 'station', 'F'),
+		(' 0 ', NULL, 'G'), (NULL, NULL, 'H'), (' ', NULL, 'I'),
+		('bad', 'station', 'J'), ('5', NULL, 'K');`
 	const stopDistanceOrder = `CREATE TABLE stop_times (trip_id TEXT, stop_sequence TEXT, shape_dist_traveled TEXT);
 		INSERT INTO stop_times VALUES ('a', '10', '5'), ('b', '10', '6'), ('a', '2', '5.0'),
 		('a', '20', '4'), ('b', '2', '0'), ('a', '30', '6.5'), ('a', '40', '1e1'),
@@ -54,6 +60,12 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "fare zone lookup", rule: "fare_rules_origin_id_foreign_key_exists", setup: "CREATE TABLE stops (zone_id TEXT); INSERT INTO stops VALUES ('01'); CREATE TABLE fare_rules (origin_id TEXT); INSERT INTO fare_rules VALUES ('01'), ('1'), (NULL)", file: "fare_rules", field: "origin_id", rows: [][]int{{1}}},
 		{name: "missing target table", rule: "fare_rules_fare_id_foreign_key_exists", setup: "CREATE TABLE fare_rules (fare_id TEXT); INSERT INTO fare_rules VALUES ('a')", file: "fare_rules", field: "fare_id", rows: [][]int{{0}}},
 		{name: "self reference", rule: "stops_parent_station_foreign_key_exists", setup: "CREATE TABLE stops (stop_id TEXT, parent_station TEXT); INSERT INTO stops VALUES ('p', NULL), ('a', 'p'), ('b', 'q')", file: "stops", field: "parent_station", rows: [][]int{{2}}},
+		{name: "parent station forbidden for stations", rule: "stops_parent_station_forbidden", setup: stopLocationTypes, file: "stops", field: "parent_station", rows: [][]int{{1}, {9}}},
+		{name: "parent station required by location type", rule: "stops_parent_station_required", setup: stopLocationTypes, file: "stops", field: "parent_station", rows: [][]int{{3}, {4}, {5}}},
+		{name: "platform code forbidden for nonzero location types", rule: "stops_platform_code_forbidden", setup: stopLocationTypes, file: "stops", field: "platform_code", rows: [][]int{{1}, {3}, {4}, {5}, {9}, {14}}},
+		{name: "required parent column missing", rule: "stops_parent_station_required", setup: "CREATE TABLE stops (location_type TEXT); INSERT INTO stops VALUES ('2'), ('0')", file: "stops", field: "parent_station", rows: [][]int{{0}}},
+		{name: "platform code with location type column missing", rule: "stops_platform_code_forbidden", setup: "CREATE TABLE stops (platform_code TEXT); INSERT INTO stops VALUES ('A')"},
+		{name: "stops table missing for location type restrictions", rule: "stops_parent_station_forbidden", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "stop code equals stop ID", rule: "stops_stop_code_equals_stop_id", setup: `CREATE TABLE stops (stop_id TEXT, stop_code TEXT);
 			INSERT INTO stops VALUES ('001', '001'), ('001', '1'), ('A', 'a'), ('B', 'B '),
 			(NULL, '1'), ('2', NULL), ('3', ' '), (' ', '4');`,
