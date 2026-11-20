@@ -1,9 +1,10 @@
-package gtfsvalidator
+package gtfsvalidator_test
 
 import (
 	"strings"
 	"testing"
 
+	validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
 	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 )
 
@@ -18,7 +19,7 @@ func TestCreateValidationIndexes(t *testing.T) {
 		CREATE TABLE stop_times (trip_id TEXT);`); err != nil {
 		t.Fatal(err)
 	}
-	if err := createValidationIndexes(t.Context(), db); err != nil {
+	if err := validator.CreateValidationIndexes(t.Context(), db); err != nil {
 		t.Fatal(err)
 	}
 
@@ -35,14 +36,16 @@ func TestCreateValidationIndexes(t *testing.T) {
 	assertIndex("idx_shapes_shape_id_shape_pt_sequence", "")
 	assertIndex("idx_stop_times_trip_id_stop_sequence", "")
 
-	if _, err := db.Exec(`CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT);
+	if _, err := db.Exec(`CREATE TABLE shapes (SHAPE_ID TEXT, shape_pt_sequence TEXT);
+		CREATE TEMP TABLE shapes (unused TEXT);
 		ALTER TABLE stop_times ADD COLUMN stop_sequence TEXT;`); err != nil {
 		t.Fatal(err)
 	}
-	if err := createValidationIndexes(t.Context(), db); err != nil {
+	if err := validator.CreateValidationIndexes(t.Context(), db); err != nil {
 		t.Fatal(err)
 	}
-	assertIndex("idx_shapes_shape_id_shape_pt_sequence", "shape_id,shape_pt_sequence")
+	assertIndex("idx_shapes_shape_id_shape_pt_sequence", "SHAPE_ID,shape_pt_sequence")
+	assertIndex("idx_shapes_shape_id", "SHAPE_ID")
 	assertIndex("idx_stop_times_trip_id_stop_sequence", "trip_id,stop_sequence")
 	assertIndex("idx_trips_shape_id_trip_id", "shape_id,trip_id")
 	assertIndex("idx_trips_trip_id", "trip_id")
@@ -83,7 +86,7 @@ func TestCreateValidationIndexesRollsBack(t *testing.T) {
 		CREATE VIEW trips AS SELECT 'shape' AS shape_id, 'trip' AS trip_id;`); err != nil {
 		t.Fatal(err)
 	}
-	if err := createValidationIndexes(t.Context(), db); err == nil || !strings.Contains(err.Error(), "create index idx_trips_shape_id_trip_id") {
+	if err := validator.CreateValidationIndexes(t.Context(), db); err == nil || !strings.Contains(err.Error(), "create index idx_trips_shape_id_trip_id") {
 		t.Fatalf("expected trips index creation to fail, got %v", err)
 	}
 	var indexes int
