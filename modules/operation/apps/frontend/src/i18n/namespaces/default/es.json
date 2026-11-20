@@ -116,8 +116,42 @@
 		"list": {
 			"PlansListCellFeedDates": {
 				"has_overlap": "Las fechas de validez de este plano están superpuestas con otros planes. Solo un plano debe estar activo para un período determinado."
+			},
+			"PlansListHeader": {
+				"title": "Planos"
+			},
+			"PlansListHeaderMenu": {
+				"extract": "Exportar",
+				"extractPDFs": "Exportar PDFs"
 			}
 		}
+	},
+	"posterExport": {
+		"PlanPostersExtractBody": {
+			"canvasProfileAutomatic": "Automático",
+			"canvasProfileDescription": "Elija Automático para seleccionar el modelo por parada, o aplique un modelo fijo a los PDFs exportados.",
+			"canvasProfileLabel": "Modelo del PDF",
+			"canvas_profiles": {
+				"a": "Modelo A",
+				"b": "Modelo B",
+				"c": "Modelo C",
+				"f": "Modelo F"
+			},
+			"contentModeAll": "Todos",
+			"contentModeLabel": "Contenido a exportar",
+			"contentModeStops": "Paradas",
+			"filterModeExclude": "Todas excepto seleccionadas",
+			"filterModeInclude": "Solo seleccionadas",
+			"stop_filter_label": "Filtro de paradas"
+		},
+		"PlanPostersExtractHeader": {
+			"exportButtonLabel": "Generar PDFs",
+			"title": "Generar PDFs"
+		},
+		"agenciesDescription": "Seleccione los operadores y elija un plan por operador.",
+		"agenciesLabel": "Seleccionar operadores",
+		"planDescription": "Seleccione un único plan para este operador.",
+		"planLabel": "Seleccionar plan"
 	},
 	"rides": {
 		"acceptance": {

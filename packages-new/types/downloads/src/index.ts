@@ -3,6 +3,8 @@ import '@tmlmobilidade/go-utils-validation';
 export * from './base.js';
 export * from './file-exports.js';
 export * from './gtfs-export.js';
+export * from './plan-export.js';
+export * from './plan-posters-export.js';
 export * from './ride-export.js';
 export * from './sams-analysis-export.js';
 export * from './stop-export.js';
