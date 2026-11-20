@@ -122,6 +122,9 @@
 			"line_count": "{count, plural, one {# line} other {# lines}}",
 			"pattern_line_count": "{count, plural, one {# pattern} other {# patterns}} on {line_count, plural, one {# line} other {# lines}}"
 		},
+		"LinesOverviewMapPopup": {
+			"no_organization": "No associated organization"
+		},
 		"LinesOverviewMapStatus": {
 			"count": "{count, plural, one {# pattern} other {# patterns}}",
 			"loading": "Loading patterns…"

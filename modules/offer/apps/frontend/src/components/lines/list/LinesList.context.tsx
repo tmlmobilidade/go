@@ -1,7 +1,7 @@
 'use client';
 
 import { useAgenciesData } from '@/components/common/use-agencies-data';
-import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
+import { type OrganizationFilter, type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeData, useSearch } from '@tmlmobilidade/ui';
@@ -20,6 +20,7 @@ interface LinesListContextState {
 		agencyOptions: SelectDataItem[]
 		filtered: PopulatedLine[]
 		filteredAgencyIds: string[]
+		organizations: OrganizationFilter[]
 		raw: PopulatedLine[]
 	}
 	filters: {
@@ -117,6 +118,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			agencyOptions: agenciesOptions,
 			filtered: filterResultsData,
 			filteredAgencyIds,
+			organizations: organizationsData,
 			raw: allLinesData,
 		},
 		filters: {
@@ -130,7 +132,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			error: allLinesError ?? organizationsError,
 			loading: allLinesLoading || organizationsLoading,
 		},
-	}), [agenciesData, agenciesIds, agenciesLoading, agenciesOptions, filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading, filterOrganizations, organizationsError, organizationsLoading, filteredAgencyIds]);
+	}), [agenciesData, agenciesIds, agenciesLoading, agenciesOptions, filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading, filterOrganizations, organizationsError, organizationsLoading, filteredAgencyIds, organizationsData]);
 
 	//
 	// F. Render components

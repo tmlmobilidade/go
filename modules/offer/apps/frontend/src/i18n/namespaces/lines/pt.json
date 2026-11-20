@@ -122,6 +122,9 @@
 			"line_count": "{count, plural, one {# linha} other {# linhas}}",
 			"pattern_line_count": "{count, plural, one {# percurso} other {# percursos}} em {line_count, plural, one {# linha} other {# linhas}}"
 		},
+		"LinesOverviewMapPopup": {
+			"no_organization": "Sem organização associada"
+		},
 		"LinesOverviewMapStatus": {
 			"count": "{count, plural, one {# percurso} other {# percursos}}",
 			"loading": "A carregar percursos…"
