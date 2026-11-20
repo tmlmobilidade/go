@@ -4,6 +4,7 @@ import { generateComments } from '@/utils/comments.js';
 import { authorizePatternAccess } from '@/utils/pattern-access.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { withSimplifiedPatternShape } from '@tmlmobilidade/go-offer-pckg-utils';
 import { type Pattern, PatternPathParametersSchema, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 
 /**
@@ -50,7 +51,10 @@ export async function updatePatternHandler(request: FastifyRequest<{ Body: Updat
 		if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error, status_code: '400' });
 	}
 
-	const sanitizedBody = validatedPattern.data;
+	const sanitizedBody = {
+		...validatedPattern.data,
+		...(validatedPattern.data.shape ? { shape: withSimplifiedPatternShape(validatedPattern.data.shape) } : {}),
+	};
 
 	//
 	// Generate activity comments

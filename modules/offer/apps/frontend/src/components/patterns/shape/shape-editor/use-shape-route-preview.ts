@@ -4,7 +4,7 @@ import { buildRoutePreviewModel, buildRoutePreviewRecalculationPlan, composeRout
 import { applyRouteToPath, type ShapeEditorDraft } from '@/utils/shape-editor-draft';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PatternsDetailPathItem, PatternsResolveZonesResponseSchema, RoutePreviewResponseSchema, ShapesRoutePreviewRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
-import { populateEmptyPathZones } from '@tmlmobilidade/go-offer-pckg-utils';
+import { populateEmptyPathZones, withSimplifiedPatternShape } from '@tmlmobilidade/go-offer-pckg-utils';
 import { type ShapeAnchor } from '@tmlmobilidade/go-types-offer';
 import { fetchApiData, useToast } from '@tmlmobilidade/ui';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -132,14 +132,14 @@ export function useShapeRoutePreview(options: UseShapeRoutePreviewOptions): UseS
 				resolvePathZones(latest.current.patternId, path, controller.signal, t('default:patterns.shapeEditor.unknownError')),
 			]);
 			if (controller.signal.aborted || !mounted.current || closed.current || !latest.current.editEnabled || currentRevision !== revision.current) return;
-			const shape = {
+			const shape = withSimplifiedPatternShape({
 				...latest.current.draft.shape,
 				anchors,
 				encoded_polyline: response.encoded_polyline,
 				extension: Math.round(response.distance),
 				geojson: response.geojson,
 				legs: response.legs,
-			};
+			});
 			latest.current.onApply(applyRouteToPath(populatedPath, response, points), shape);
 			setRouteData(response);
 		} catch (error) {
