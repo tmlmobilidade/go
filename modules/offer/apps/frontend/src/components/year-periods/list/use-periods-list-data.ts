@@ -5,7 +5,6 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { usePeriodsAgenciesData } from '../shared/use-periods-agencies-data';
 import { usePeriodsData } from '../shared/use-periods-data';
 import { usePeriodsListFilterAgencies } from './PeriodsListFilterAgencies/use-periods-list-filter-agencies';
 import { usePeriodsListFilterSearch } from './PeriodsListFilterSearch/use-periods-list-filter-search';
@@ -35,10 +34,8 @@ export function usePeriodsListData(): UsePeriodsListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error: periodsError, isLoading: periodsLoading, isValidating, mutate, timestamp } = usePeriodsData();
-	const { error: agenciesError, isLoading: agenciesLoading } = usePeriodsAgenciesData();
-	const error = periodsError ?? agenciesError;
-	const isLoading = periodsLoading || agenciesLoading;
+	const { data, error, isLoading, isValidating, mutate, timestamp } = usePeriodsData();
+	const agenciesAvailable = !agencyFilter.error && !agencyFilter.isLoading;
 
 	//
 	// C. Transform data
@@ -47,11 +44,11 @@ export function usePeriodsListData(): UsePeriodsListDataReturnType {
 	const filtered = useMemo(() => {
 		return matches
 			.filter((item) => {
-				const matchesAgencies = item.agency_ids.some(id => agencyFilter.value.includes(id));
-				return matchesAgencies;
+				if (!agenciesAvailable || !agencyFilter.isActive) return true;
+				return item.agency_ids.some(id => agencyFilter.value.includes(id));
 			})
 			.sort((a, b) => b.created_at - a.created_at);
-	}, [matches, agencyFilter.value]);
+	}, [matches, agenciesAvailable, agencyFilter.isActive, agencyFilter.value]);
 
 	//
 	// D. Return data

@@ -13,11 +13,17 @@ export async function listAgenciesHandler(request: FastifyRequest, reply: Fastif
 	//
 
 	//
-	// Fetch and validate the lookup response.
+	// Fetch agencies and validate each lookup item independently.
 
 	const foundAgencies = await goDb.core.agencies.findMany();
 
-	const validatedAgencies = TypologiesAgencyItemSchema.array().parse(foundAgencies);
+	const validatedAgencies = foundAgencies.flatMap((agency) => {
+		const result = TypologiesAgencyItemSchema.safeParse(agency);
+		if (result.success) return [result.data];
+
+		request.log.warn({ agency_id: agency._id, issues: result.error.issues }, 'Skipping invalid agency in lookup response');
+		return [];
+	});
 
 	return sendSuccessApiResponse(reply, validatedAgencies);
 }

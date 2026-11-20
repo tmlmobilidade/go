@@ -5,7 +5,7 @@ import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { DayPeriod, type Event, type HHMM, hhmm, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type IsoWeekday, type OperationalDateInt, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
-import { buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, getActivePeriodId, getTimepointsRemovedByEventRestriction, type OfferSchedulingTranslator, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap } from '@tmlmobilidade/go-utils-offer';
+import { buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, getActivePeriodIds, getTimepointsRemovedByEventRestriction, type OfferSchedulingTranslator, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap } from '@tmlmobilidade/go-utils-offer';
 
 /* * */
 
@@ -465,9 +465,10 @@ function resolveTripRows(
 				? `${includeRuleName}-OFF-${excludeRuleNames.join('-')}`
 				: includeRuleName;
 
-			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates, agencyId);
+			const periodIds = 'year_period_ids' in row.includeSchedule.rule ? row.includeSchedule.rule.year_period_ids : [];
+			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates, agencyId, periodIds);
 			const resolvedRuleToken = serviceRegistry.resolveRuleToken(ruleToken, hashServiceId);
-			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates, agencyId);
+			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates, agencyId, periodIds);
 
 			resolvedRows.push({
 				dates: resultingDates,
@@ -498,8 +499,7 @@ function collectDateMetadata(
 	for (const date of dates) {
 		weekdaysSet.add(calendarWeekday(toCalendarDate(date), holidays));
 
-		const yearPeriodId = getActivePeriodId(date, periods);
-		if (yearPeriodId) {
+		for (const yearPeriodId of getActivePeriodIds(date, periods)) {
 			periodIdsSet.add(yearPeriodId);
 		}
 	}

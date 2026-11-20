@@ -1,6 +1,11 @@
 import type { EventReplacementRule, YearPeriod } from '@tmlmobilidade/go-types-offer';
 import type { OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 
+/** Returns every period covering a date; annual and narrower calendars may overlap. */
+export function getActivePeriodIds(date: OperationalDateInt, periods: YearPeriod[]): string[] {
+	return periods.filter(period => period.dates?.includes(date)).map(period => period._id);
+}
+
 /**
  * Finds the ID of the period that is active on a given date.
  *

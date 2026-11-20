@@ -5,7 +5,6 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { useZonesAgenciesData } from '../shared/use-zones-agencies-data';
 import { useZonesData } from '../shared/use-zones-data';
 import { useZonesListFilterAgencies } from './filters/ZonesListFilterAgencies/use-zones-list-filter-agencies';
 import { useZonesListFilterSearch } from './filters/ZonesListFilterSearch/use-zones-list-filter-search';
@@ -35,10 +34,8 @@ export function useZonesListData(): UseZonesListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error: zonesError, isLoading: zonesLoading, isValidating, mutate, timestamp } = useZonesData();
-	const { error: agenciesError, isLoading: agenciesLoading } = useZonesAgenciesData();
-	const error = zonesError ?? agenciesError;
-	const isLoading = zonesLoading || agenciesLoading;
+	const { data, error, isLoading, isValidating, mutate, timestamp } = useZonesData();
+	const agenciesAvailable = !agencyFilter.error && !agencyFilter.isLoading;
 
 	//
 	// C. Transform data
@@ -47,11 +44,11 @@ export function useZonesListData(): UseZonesListDataReturnType {
 	const filtered = useMemo(() => {
 		return matches
 			.filter((item) => {
-				const matchesAgencies = item.agency_ids.some(id => agencyFilter.value.includes(id));
-				return matchesAgencies;
+				if (!agenciesAvailable || !agencyFilter.isActive) return true;
+				return item.agency_ids.some(id => agencyFilter.value.includes(id));
 			})
 			.sort((a, b) => b.created_at - a.created_at);
-	}, [matches, agencyFilter.value]);
+	}, [matches, agenciesAvailable, agencyFilter.isActive, agencyFilter.value]);
 
 	//
 	// D. Return data
