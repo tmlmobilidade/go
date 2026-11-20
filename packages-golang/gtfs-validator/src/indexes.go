@@ -60,7 +60,7 @@ func createValidationIndexes(ctx context.Context, database *sql.DB) error {
 
 		// A feed with missing files or headers must still reach validation.
 		var count int
-		err := tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM pragma_table_info(?) WHERE name IN (?, NULLIF(?, ''))`,
+		err := tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM pragma_table_info(?, 'main') WHERE name COLLATE NOCASE IN (?, NULLIF(?, ''))`,
 			index.table, index.column, index.second).Scan(&count)
 		if err != nil {
 			return fmt.Errorf("check index columns for %s: %w", index.table, err)
@@ -69,7 +69,7 @@ func createValidationIndexes(ctx context.Context, database *sql.DB) error {
 			continue
 		}
 
-		statement := fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s ON %s (%s)", name, index.table, keys)
+		statement := fmt.Sprintf("CREATE INDEX IF NOT EXISTS main.%s ON %s (%s)", name, index.table, keys)
 		if _, err := tx.ExecContext(ctx, statement); err != nil {
 			return fmt.Errorf("create index %s: %w", name, err)
 		}

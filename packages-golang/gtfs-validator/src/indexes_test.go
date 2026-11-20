@@ -1,10 +1,9 @@
-package gtfsvalidator_test
+package gtfsvalidator
 
 import (
 	"strings"
 	"testing"
 
-	validator "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src"
 	sqlite "github.com/tmlmobilidade/go/packages-golang/sqlite/src"
 )
 
@@ -19,7 +18,7 @@ func TestCreateValidationIndexes(t *testing.T) {
 		CREATE TABLE stop_times (trip_id TEXT);`); err != nil {
 		t.Fatal(err)
 	}
-	if err := validator.CreateValidationIndexes(t.Context(), db); err != nil {
+	if err := createValidationIndexes(t.Context(), db); err != nil {
 		t.Fatal(err)
 	}
 
@@ -41,7 +40,7 @@ func TestCreateValidationIndexes(t *testing.T) {
 		ALTER TABLE stop_times ADD COLUMN stop_sequence TEXT;`); err != nil {
 		t.Fatal(err)
 	}
-	if err := validator.CreateValidationIndexes(t.Context(), db); err != nil {
+	if err := createValidationIndexes(t.Context(), db); err != nil {
 		t.Fatal(err)
 	}
 	assertIndex("idx_shapes_shape_id_shape_pt_sequence", "SHAPE_ID,shape_pt_sequence")
@@ -86,7 +85,7 @@ func TestCreateValidationIndexesRollsBack(t *testing.T) {
 		CREATE VIEW trips AS SELECT 'shape' AS shape_id, 'trip' AS trip_id;`); err != nil {
 		t.Fatal(err)
 	}
-	if err := validator.CreateValidationIndexes(t.Context(), db); err == nil || !strings.Contains(err.Error(), "create index idx_trips_shape_id_trip_id") {
+	if err := createValidationIndexes(t.Context(), db); err == nil || !strings.Contains(err.Error(), "create index idx_trips_shape_id_trip_id") {
 		t.Fatalf("expected trips index creation to fail, got %v", err)
 	}
 	var indexes int
