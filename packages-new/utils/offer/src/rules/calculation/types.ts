@@ -19,6 +19,8 @@ export interface RuleApplication {
 export interface DayContext {
 	/** ISO weekday number (1=Monday, 7=Sunday) */
 	weekday: IsoWeekday
-	/** The active period ID for this day (e.g., school term, summer, etc.) */
+	/** First active period, retained for callers supplying a single-period context. */
 	yearPeriodId: string
+	/** Every period covering this date, including overlapping annual and school calendars. */
+	yearPeriodIds?: readonly string[]
 }

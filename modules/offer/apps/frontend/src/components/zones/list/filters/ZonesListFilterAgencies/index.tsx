@@ -22,6 +22,8 @@ export function ZonesListFilterAgencies() {
 	return (
 		<ListFilter
 			active={filter.isActive}
+			disabled={filter.isLoading || !!filter.error}
+			isLoading={filter.isLoading}
 			label={t('default:zones.fields.agency_ids.label')}
 			onChange={filter.set}
 			options={filter.options}

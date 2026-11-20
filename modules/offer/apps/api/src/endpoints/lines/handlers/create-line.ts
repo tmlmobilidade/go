@@ -52,6 +52,15 @@ export async function createLineHandler(request: FastifyRequest<{ Body: CreateLi
 	}
 
 	//
+	// Validate the typology belongs to the selected agency.
+
+	const typology = await goDb.offer.typologies.findById(validatedLine.data.typology);
+
+	if (!typology?.agency_ids.includes(validatedLine.data.agency_id)) {
+		return sendErrorApiResponse(reply, { error: 'Select an existing typology for this agency', status_code: '400' });
+	}
+
+	//
 	// Create the new line
 
 	const newLine = await goDb.offer.lines.insertOne({
