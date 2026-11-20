@@ -15,6 +15,16 @@ import (
 )
 
 func TestRequestedRulesThroughGraph(t *testing.T) {
+	const tripTimeOrder = `CREATE TABLE stop_times (trip_id TEXT, stop_sequence TEXT, arrival_time TEXT, departure_time TEXT);
+		INSERT INTO stop_times VALUES ('a', '10', '25:00:00', '25:02:00'),
+		('b', '2', '0:00:00', '0:00:00'), ('a', '2', '9:00:00', '10:00:00'),
+		('a', '20', '24:59:59', '25:01:00'), ('a', '30', '024:59:59', '25:01:00'),
+		('b', '10', '0:00:00', '0:00:00'), ('missing', '1', '20:00:00', '20:00:00'),
+		('missing', '2', NULL, 'bad'), ('missing', '3', '10:00:00', '10:00:00'),
+		('ambiguous', '1', '20:00:00', '20:00:00'), ('ambiguous', '01', '15:00:00', '15:00:00'),
+		('ambiguous', '2', '10:00:00', '10:00:00'), ('b', 'bad', '99:00:00', '99:00:00'),
+		('b', '-1', '99:00:00', '99:00:00'), (NULL, '1', '20:00:00', '20:00:00'),
+		(NULL, '2', '10:00:00', '10:00:00');`
 	const routeDescriptions = `CREATE TABLE routes (route_desc TEXT, route_long_name TEXT, route_short_name TEXT);
 		INSERT INTO routes VALUES ('Bus', 'Bus', 'B'), ('X', 'Express', 'X'), ('Loop', 'Loop', 'Loop'),
 		('bus', 'Bus', 'Bus'), ('Loop ', 'Loop', 'Loop'), (' ', ' ', ' '),
@@ -70,6 +80,17 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "feed info date column missing", rule: "feed_info_start_date_before_end_date", setup: "CREATE TABLE feed_info (feed_start_date TEXT); INSERT INTO feed_info VALUES ('20240301')"},
 		{name: "feed info table missing", rule: "feed_info_start_date_before_end_date", setup: "CREATE TABLE calendar (start_date TEXT)"},
 		{name: "time", rule: "stop_times_arrival_time_valid", setup: "CREATE TABLE stop_times (arrival_time TEXT); INSERT INTO stop_times VALUES ('7:01:02'), ('25:01:02'), ('25:60:00'), ('7:1:02'), (NULL)", file: "stop_times", field: "arrival_time", rows: [][]int{{2}, {3}}},
+		{name: "arrival before departure at a stop", rule: "stop_times_arrival_time_before_departure_time", setup: `CREATE TABLE stop_times (arrival_time TEXT, departure_time TEXT);
+			INSERT INTO stop_times VALUES ('9:59:59', '10:00:00'), ('9:00:00', '09:00:00'),
+			(' 25:00:00 ', '24:59:59'), ('23:59:59', '24:00:00'), (NULL, '09:00:00'),
+			('09:00:00', '08:60:00'), ('00:00:01', '0:00:00'),
+			('999999999999999999999:59:59', '1000000000000000000000:00:00');`,
+			file: "stop_times", field: "arrival_time", rows: [][]int{{2}, {6}}},
+		{name: "arrival times increase by stop sequence", rule: "stop_times_increasing_arrival_time", setup: tripTimeOrder, file: "stop_times", field: "arrival_time", rows: [][]int{{0, 3}}},
+		{name: "departure times increase by stop sequence", rule: "stop_times_increasing_departure_time", setup: tripTimeOrder, file: "stop_times", field: "departure_time", rows: [][]int{{0, 3}}},
+		{name: "departure column missing for same stop", rule: "stop_times_arrival_time_before_departure_time", setup: "CREATE TABLE stop_times (arrival_time TEXT); INSERT INTO stop_times VALUES ('10:00:00')"},
+		{name: "stop sequence column missing for time order", rule: "stop_times_increasing_arrival_time", setup: "CREATE TABLE stop_times (trip_id TEXT, arrival_time TEXT); INSERT INTO stop_times VALUES ('a', '10:00:00'), ('a', '9:00:00')"},
+		{name: "stop times table missing for departure order", rule: "stop_times_increasing_departure_time", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "color", rule: "routes_route_color_valid", setup: "CREATE TABLE routes (route_color TEXT); INSERT INTO routes VALUES ('Ff000A'), ('#FF000A'), ('ZZ0000'), (NULL)", file: "routes", field: "route_color", rows: [][]int{{1}, {2}}},
 		{name: "route color contrast", rule: "routes_route_color_route_text_color_contrast", setup: `CREATE TABLE routes (route_color TEXT, route_text_color TEXT);
 			INSERT INTO routes VALUES ('ffffff', '000000'), ('000000', 'ffffff'),
@@ -94,7 +115,7 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 			('unknown', 'https://a.example'), ('ambiguous', 'https://a.example'),
 			('ambiguous', 'https://b.example'), ('invalid', 'bad'), ('a', NULL),
 			('empty', NULL), ('blank', ' '), ('unknown', NULL);`,
-			file: "routes", field: "route_url", rows: [][]int{{0}, {2}}},
+			file: "routes", field: "route_url", rows: [][]int{{0}, {2}, {8}}},
 		{name: "route URL matches sole agency", rule: "routes_route_url_different_from_agency_url", setup: `CREATE TABLE agency (agency_url TEXT);
 			INSERT INTO agency VALUES ('https://a.example');
 			CREATE TABLE routes (agency_id TEXT, route_url TEXT);
