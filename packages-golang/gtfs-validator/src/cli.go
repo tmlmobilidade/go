@@ -30,7 +30,7 @@ func main() {
 func run() int {
 	// Keep importer logs on stderr with the other CLI diagnostics.
 	telemetry.Logger = telemetry.CreateLogger(func(record telemetry.LogRecord) {
-		render.RenderStructuredTo(record, os.Stderr, os.Stderr)
+		render.RenderDevTo(record, os.Stderr, os.Stderr)
 	})
 
 	// StringVar/IntVar bind flags to fields. & passes the address of a field so
@@ -70,25 +70,25 @@ func run() int {
 
 	// Reject positional arguments, ambiguous sources, and invalid worker limits.
 	if flags.NArg() != 0 || (options.Source.Path == "") == (options.Source.Url == "") || options.Concurrency < 1 || rulesPath == "" {
-		fmt.Fprintln(os.Stderr, "Provide exactly one source, a rules file, positive concurrency, and no positional arguments.")
+		telemetry.Logger.Error("Provide exactly one source, a rules file, positive concurrency, and no positional arguments.")
 		return 2
 	}
 	if resultPath == "" {
-		fmt.Fprintln(os.Stderr, "Provide a validation report path with -result.")
+		telemetry.Logger.Error("Provide a validation report path with -result.")
 		return 2
 	}
 	if tracePath != "" && sameOutputPath(resultPath, tracePath) {
-		fmt.Fprintln(os.Stderr, "Use different files for -result and -trace.")
+		telemetry.Logger.Error("Use different files for -result and -trace.")
 		return 2
 	}
 
 	data, err := os.ReadFile(rulesPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "read rules file: %v\n", err)
+		telemetry.Logger.Error(fmt.Errorf("read rules file: %w", err))
 		return 2
 	}
 	if err := json.Unmarshal(data, &options.Rules); err != nil {
-		fmt.Fprintf(os.Stderr, "rules file must contain a JSON array: %v\n", err)
+		telemetry.Logger.Error(fmt.Errorf("rules file must contain a JSON array: %w", err))
 		return 2
 	}
 
@@ -104,25 +104,25 @@ func run() int {
 		report, trace, err = gtfsvalidator.GtfsValidatorWithTrace(ctx, options)
 	}
 	if errors.Is(err, rules.ErrInvalidConfiguration) {
-		fmt.Fprintln(os.Stderr, err)
 		return 2
 	}
 
 	resultErr := writeJSON(resultPath, report, rulesPath, options.Source.Path)
 	if resultErr != nil {
-		fmt.Fprintf(os.Stderr, "write result %q: %v\n", resultPath, resultErr)
+		telemetry.Logger.Error(fmt.Sprintf("write result %q: %v", resultPath, resultErr))
+	} else {
+		telemetry.Logger.Success(fmt.Sprintf("Saved validation result to %q", resultPath))
 	}
 	var traceErr error
 	if trace != nil {
 		traceErr = writeJSON(tracePath, trace, rulesPath, options.Source.Path, resultPath)
 		if traceErr != nil {
-			fmt.Fprintf(os.Stderr, "write trace %q: %v\n", tracePath, traceErr)
+			telemetry.Logger.Error(fmt.Sprintf("write trace %q: %v", tracePath, traceErr))
+		} else {
+			telemetry.Logger.Success(fmt.Sprintf("Saved validation trace to %q", tracePath))
 		}
 	}
 
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
 	if err != nil || resultErr != nil || traceErr != nil {
 		return 2
 	}

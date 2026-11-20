@@ -44,7 +44,10 @@ agency ID and whose `value` is the agency name.
 so concurrent rules still serialize database queries.
 
 Provide `-result` with the path to the JSON report. The CLI writes this file
-for completed runs and operational failures. Diagnostics go to stderr.
+for completed runs and operational failures. The telemetry logger sends live
+progress and diagnostics to stderr. It shows the current phase, each rule's
+start and outcome, the resolved rule count, and a final summary. Skipped rules
+include the reason and any blocking prerequisites. The CLI creates no log files.
 
 - `0` for a run with no error findings or for help.
 - `1` for a run with error findings.

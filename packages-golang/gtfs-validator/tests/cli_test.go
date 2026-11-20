@@ -98,6 +98,10 @@ func TestCLI(t *testing.T) {
 
 			if test.report {
 				data := read(t, path)
+				entries, err := os.ReadDir(filepath.Dir(path))
+				if err != nil || len(entries) != 1 {
+					t.Fatalf("expected only the result file: %v, %v", entries, err)
+				}
 				var report types.Summary
 				if err := json.Unmarshal(data, &report); err != nil {
 					t.Fatalf("result file is not a JSON report: %s", data)
@@ -109,6 +113,22 @@ func TestCLI(t *testing.T) {
 					}
 				} else if report.Messages == nil || len(report.Messages) != 0 || report.TotalErrors != 0 || report.TotalWarnings != 0 {
 					t.Fatal("unexpected report", string(data))
+				}
+				wantLogs := []string{"Starting GTFS validation", "Importing GTFS feed", "Saved validation result"}
+				switch code {
+				case 0:
+					wantLogs = append(wantLogs, "Running 3 validation rules", "[0/3] agency_file_exists started", "[1/3] agency_file_exists passed",
+						"3/3 rules resolved, 3 passed", "Report totals: errors 0, warnings 0")
+				case 1:
+					wantLogs = append(wantLogs, "[1/3] agency_file_exists failed", "agency_name_exists skipped (prerequisite unsuccessful; blocked by agency_file_exists)",
+						"3/3 rules resolved, 0 passed, 1 failed, 2 skipped", "Report totals: errors 1, warnings 0")
+				case 2:
+					wantLogs = append(wantLogs, "Validation aborted during feed import", "0/3 rules resolved")
+				}
+				for _, message := range wantLogs {
+					if !strings.Contains(stderr, message) {
+						t.Fatalf("missing console log %q in:\n%s", message, stderr)
+					}
 				}
 			} else if _, err := os.Stat(path); !os.IsNotExist(err) {
 				t.Fatalf("unexpected result file: %v", err)

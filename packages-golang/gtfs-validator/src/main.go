@@ -46,6 +46,16 @@ func GtfsValidatorWithTrace(ctx context.Context, options Options) (types.Summary
 }
 
 func validate(ctx context.Context, options Options, trace *traceRecorder) (summary types.Summary, err error) {
+	concurrency := max(options.Concurrency, 1)
+	progress := validationProgress{
+		total:     len(options.Rules),
+		startedAt: time.Now(),
+		started:   make(map[string]time.Time),
+		outcomes:  make(map[types.Status]int),
+	}
+	progress.startPhase("setup", fmt.Sprintf("Starting GTFS validation (%d rules, concurrency %d)", progress.total, concurrency))
+	defer func() { progress.finish(summary, err) }()
+
 	//
 
 	//
@@ -69,10 +79,13 @@ func validate(ctx context.Context, options Options, trace *traceRecorder) (summa
 		return summary, err
 	}
 
-	var observe func(types.TaskEvent[[]types.Finding])
+	observe := progress.observe
 	if trace != nil {
 		trace.begin(options)
-		observe = trace.observe
+		observe = func(event types.TaskEvent[[]types.Finding]) {
+			trace.observe(event)
+			progress.observe(event)
+		}
 		stopWatching := context.AfterFunc(ctx, func() { trace.cancel(context.Cause(ctx)) })
 		defer func() {
 			if !stopWatching() {
@@ -99,8 +112,12 @@ func validate(ctx context.Context, options Options, trace *traceRecorder) (summa
 		}
 		cleanupErr := errors.Join(closeErr, os.RemoveAll(directory))
 		trace.endPhase(cleanupErr)
+		if err == nil && cleanupErr != nil {
+			progress.phase = "cleanup"
+		}
 		err = errors.Join(err, cleanupErr)
 	}()
+	progress.startPhase("feed import", "Importing GTFS feed")
 	trace.startPhase("import")
 	directory, err = os.MkdirTemp("", "gtfs-validator-*")
 	if err != nil {
@@ -116,6 +133,7 @@ func validate(ctx context.Context, options Options, trace *traceRecorder) (summa
 		return summary, err
 	}
 
+	progress.startPhase("index creation", "Preparing validation indexes")
 	trace.startPhase("indexes")
 	if err := createValidationIndexes(ctx, database.DatabaseInstance); err != nil {
 		return summary, err
@@ -124,12 +142,14 @@ func validate(ctx context.Context, options Options, trace *traceRecorder) (summa
 
 	//
 	// 5. Run the validation rules
+	progress.startPhase("rule execution", fmt.Sprintf("Running %d validation rules", progress.total))
 	trace.startPhase("validation")
-	results, err := graph.ExecuteWithObserver(ctx, database.DatabaseInstance, max(options.Concurrency, 1), observe)
+	results, err := graph.ExecuteWithObserver(ctx, database.DatabaseInstance, concurrency, observe)
 	if err != nil {
 		return summary, err
 	}
 	trace.endPhase(nil)
+	progress.startPhase("report collection", "Collecting validation findings")
 	trace.startPhase("report")
 	for _, result := range results {
 		for _, finding := range result.Value {
