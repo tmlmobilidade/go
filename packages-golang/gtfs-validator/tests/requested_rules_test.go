@@ -15,6 +15,10 @@ import (
 )
 
 func TestRequestedRulesThroughGraph(t *testing.T) {
+	const routeDescriptions = `CREATE TABLE routes (route_desc TEXT, route_long_name TEXT, route_short_name TEXT);
+		INSERT INTO routes VALUES ('Bus', 'Bus', 'B'), ('X', 'Express', 'X'), ('Loop', 'Loop', 'Loop'),
+		('bus', 'Bus', 'Bus'), ('Loop ', 'Loop', 'Loop'), (' ', ' ', ' '),
+		(NULL, NULL, NULL), ('Spare', NULL, NULL);`
 	for _, test := range []struct {
 		name, rule, setup, file, field string
 		severity                       types.Severities
@@ -67,6 +71,10 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "feed info table missing", rule: "feed_info_start_date_before_end_date", setup: "CREATE TABLE calendar (start_date TEXT)"},
 		{name: "time", rule: "stop_times_arrival_time_valid", setup: "CREATE TABLE stop_times (arrival_time TEXT); INSERT INTO stop_times VALUES ('7:01:02'), ('25:01:02'), ('25:60:00'), ('7:1:02'), (NULL)", file: "stop_times", field: "arrival_time", rows: [][]int{{2}, {3}}},
 		{name: "color", rule: "routes_route_color_valid", setup: "CREATE TABLE routes (route_color TEXT); INSERT INTO routes VALUES ('Ff000A'), ('#FF000A'), ('ZZ0000'), (NULL)", file: "routes", field: "route_color", rows: [][]int{{1}, {2}}},
+		{name: "description duplicates long name", rule: "routes_route_desc_different_from_route_long_name", setup: routeDescriptions, file: "routes", field: "route_desc", rows: [][]int{{0}, {2}}},
+		{name: "description duplicates short name", rule: "routes_route_desc_different_from_route_short_name", setup: routeDescriptions, file: "routes", field: "route_desc", rows: [][]int{{1}, {2}}},
+		{name: "route long name column missing", rule: "routes_route_desc_different_from_route_long_name", setup: "CREATE TABLE routes (route_desc TEXT); INSERT INTO routes VALUES ('Bus')"},
+		{name: "routes table missing", rule: "routes_route_desc_different_from_route_short_name", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "price", rule: "fare_attributes_price_valid", setup: "CREATE TABLE fare_attributes (price TEXT); INSERT INTO fare_attributes VALUES ('0'), ('1.75'), ('-0.01'), ('NaN'), ('+Inf'), (NULL)", file: "fare_attributes", field: "price", rows: [][]int{{2}, {3}, {4}}},
 		{name: "currency", rule: "fare_attributes_currency_type_valid", setup: "CREATE TABLE fare_attributes (currency_type TEXT); INSERT INTO fare_attributes VALUES ('EUR'), ('USD'), ('ZZZ'), ('€')", file: "fare_attributes", field: "currency_type", rows: [][]int{{2}, {3}}},
 		{name: "coordinate bounds", rule: "shapes_shape_pt_lat_valid", setup: "CREATE TABLE shapes (shape_pt_lat TEXT); INSERT INTO shapes VALUES ('-90'), ('90'), ('90.01'), ('-90.1'), ('NaN')", file: "shapes", field: "shape_pt_lat", rows: [][]int{{2}, {3}, {4}}},
