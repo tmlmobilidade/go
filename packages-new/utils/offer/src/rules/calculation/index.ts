@@ -7,7 +7,7 @@ import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { calendarKey, Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { resolveEffectiveReplacement } from '../export-attribution/replacement.js';
-import { findReplacementForDate, getActivePeriodId } from '../utils/date.js';
+import { findReplacementForDate, getActivePeriodIds } from '../utils/date.js';
 import { collectManualIncludes, collectReplacementManualIncludes } from './collectors.js';
 import { applyEventRestrictions, applyManualExcludes, applyReplacementManualExcludes } from './filters.js';
 import { getTimepointsRemovedByEventRestriction } from './filters.js';
@@ -37,15 +37,17 @@ export function buildActiveRulesEventIndex(events: Event[] = []): Map<string, Ev
 }
 
 /**
- * Resolve one civil service date: holidays count as Sunday and the first matching
- * Period supplies the context. Callers must supply the same agency scope as the rules.
+ * Resolve one civil service date: holidays count as Sunday and all matching
+ * Periods supply the context. Callers must supply the same agency scope as the rules.
  */
 export function buildActiveRulesDateContext(date: OperationalDateInt, periods: YearPeriod[], holidays: Holiday[]): ActiveRulesDateContext {
 	const key = calendarKey(Dates.fromOperationalDateInt(date, 'Europe/Lisbon'));
+	const yearPeriodIds = getActivePeriodIds(date, periods);
 	return {
 		key,
 		weekday: calendarWeekday(key, holidays),
-		yearPeriodId: getActivePeriodId(date, periods),
+		yearPeriodId: yearPeriodIds[0] ?? '',
+		yearPeriodIds,
 	};
 }
 
@@ -195,7 +197,7 @@ export function computeActiveRulesFromSplit(
 		// Apply manual excludes *also* by intersection with replacement targets
 		applyReplacementManualExcludes(timepoints, appliedRuleIds, effectiveReplacement, monthFilteredManualRules);
 	} else {
-		// Normal mode: day resolves to a single weekday + single yearPeriodId
+		// Normal mode: match the weekday and any period covering this date.
 		const ctx = options?.dateContext ?? buildActiveRulesDateContext(date, periods, holidays);
 
 		const base = collectManualIncludes(monthFilteredManualRules, ctx);

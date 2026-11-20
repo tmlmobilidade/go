@@ -5,7 +5,8 @@
 			"code": "Code",
 			"code_example": "E.g. 1001",
 			"line_example": "E.g. Alfragide - Reboleira",
-			"name": "Name"
+			"name": "Name",
+			"typology": "Typology"
 		},
 		"LineCreateHeader": {
 			"new_line": "New line"
