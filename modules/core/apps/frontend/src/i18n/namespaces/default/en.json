@@ -843,6 +843,10 @@
 			}
 		},
 		"detail": {
+			"Amplitude": {
+				"description": "Authorize and manage Session Replay captures to support this user.",
+				"title": "Amplitude"
+			},
 			"BasicInfo": {
 				"description": "Basic user information",
 				"fields": {
@@ -893,6 +897,33 @@
 					}
 				},
 				"title": "Roles & Organizations"
+			},
+			"SessionReplay": {
+				"authorize": {
+					"label": "Enable Session Replay",
+					"success": "Capture request authorized for this user."
+				},
+				"cancel": {
+					"label": "Stop Session Replay",
+					"success": "Stop requested. Data already sent to Amplitude is retained."
+				},
+				"error": {
+					"capture": "This browser was unable to start Session Replay capture.",
+					"title": "Unable to manage Session Replay"
+				},
+				"states": {
+					"active": {
+						"description": "Authorization is valid until {{deadline}} (Lisbon time).",
+						"label": "Active"
+					},
+					"inactive": {
+						"description": "No valid authorization exists to capture Session Replay for this user.",
+						"label": "Inactive"
+					}
+				},
+				"success": {
+					"title": "Session Replay"
+				}
 			}
 		},
 		"list": {

@@ -6,6 +6,7 @@ import { z } from 'zod';
 
 import { UserBannerDismissalSchema } from './banner-dismissal.js';
 import { UserChangelogSeenSchema } from './changelog-seen.js';
+import { UserSessionReplayAuthorizationSchema } from './session-replay-authorization.js';
 
 /* * */
 
@@ -36,10 +37,11 @@ export const UserSchema = BaseDocumentSchema.extend({
 	seen_changelogs: z.array(UserChangelogSeenSchema).default([]),
 	seen_last_at: UnixMillisecondsSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),
+	session_replay: UserSessionReplayAuthorizationSchema.nullish(),
 	verification_token_ids: z.array(z.string()).default([]),
 });
 
-export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, dismissed_banners: true, seen_changelogs: true, updated_at: true });
+export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, dismissed_banners: true, seen_changelogs: true, session_replay: true, updated_at: true });
 export const UpdateUserSchema = partialWithoutDefaults(CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }));
 
 export type User = z.infer<typeof UserSchema>;

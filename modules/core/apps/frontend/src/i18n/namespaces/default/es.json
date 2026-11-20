@@ -876,6 +876,10 @@
 			}
 		},
 		"detail": {
+			"Amplitude": {
+				"description": "Autorizar y gestionar capturas de Session Replay para dar soporte a este usuario.",
+				"title": "Amplitude"
+			},
 			"BasicInfo": {
 				"description": "Información básica del usuario",
 				"fields": {
@@ -926,6 +930,33 @@
 					}
 				},
 				"title": "Roles y organizaciones"
+			},
+			"SessionReplay": {
+				"authorize": {
+					"label": "Activar Session Replay",
+					"success": "Solicitud de captura autorizada para este usuario."
+				},
+				"cancel": {
+					"label": "Detener Session Replay",
+					"success": "Parada solicitada. Se conservan los datos ya enviados a Amplitude."
+				},
+				"error": {
+					"capture": "Este navegador no ha podido iniciar la captura de Session Replay.",
+					"title": "No se ha podido gestionar Session Replay"
+				},
+				"states": {
+					"active": {
+						"description": "La autorización es válida hasta {{deadline}} (hora de Lisboa).",
+						"label": "Activo"
+					},
+					"inactive": {
+						"description": "No existe una autorización válida para capturar Session Replay de este usuario.",
+						"label": "Inactivo"
+					}
+				},
+				"success": {
+					"title": "Session Replay"
+				}
 			}
 		},
 		"list": {

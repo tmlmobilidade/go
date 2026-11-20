@@ -43,7 +43,7 @@ export class CoreDatabase {
 		this.banners = createGoDbCollection<Banner>({ collectionName: 'banners', database: this.database, indexDescription: bannersIndexes, schema: BannerSchema });
 		this.roles = createGoDbCollection<Role>({ collectionName: 'roles', database: this.database, indexDescription: null, schema: RoleSchema });
 		this.sessions = createGoDbCollection<Session>({ collectionName: 'sessions', database: this.database, indexDescription: null, schema: SessionSchema });
-		this.users = createGoDbCollection<User>({ collectionName: 'users', database: this.database, indexDescription: null, schema: UserSchema });
+		this.users = createGoDbCollection<User>({ collectionName: 'users', database: this.database, indexDescription: null, protectedUpdateFields: ['session_replay'], schema: UserSchema });
 		this.verificationTokens = createGoDbCollection<VerificationToken>({ collectionName: 'verification-tokens', database: this.database, indexDescription: null, schema: VerificationTokenSchema });
 	}
 }
