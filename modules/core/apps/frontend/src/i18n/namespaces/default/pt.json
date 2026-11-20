@@ -938,11 +938,12 @@
 					"success": "Paragem solicitada. Os dados já enviados ao Amplitude são mantidos."
 				},
 				"error": {
+					"capture": "Este navegador não conseguiu iniciar a captura do Session Replay.",
 					"title": "Não foi possível gerir o Session Replay"
 				},
 				"states": {
 					"active": {
-						"description": "A captura está autorizada até {{deadline}} (hora de Lisboa).",
+						"description": "O GO aceitou o início. A autorização termina às {{deadline}} (hora de Lisboa).",
 						"label": "Ativo"
 					},
 					"inactive": {

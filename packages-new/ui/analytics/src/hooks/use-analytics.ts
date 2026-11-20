@@ -37,7 +37,7 @@ export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...con
 		if (ready && initialization && user !== undefined) identifyAnalyticsUser(initialization.client, user, handleError);
 	}, [handleError, initialization, ready, user]);
 
-	const stopReplay = useSessionReplay({
+	const { failedReplayActivationId, stopReplay } = useSessionReplay({
 		authorization: replayAuthorization,
 		initialization: ready ? initialization : undefined,
 		onError: handleError,
@@ -116,6 +116,6 @@ export function useAnalytics({ replayAuthorization, replayStartUrl, user, ...con
 
 	return useMemo(() => ({
 		actions: { identify, track },
-		flags: { error, ready },
-	}), [error, identify, ready, track]);
+		flags: { error, failedReplayActivationId, ready },
+	}), [error, failedReplayActivationId, identify, ready, track]);
 }

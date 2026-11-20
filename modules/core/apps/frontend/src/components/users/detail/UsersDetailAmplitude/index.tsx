@@ -3,9 +3,9 @@
 import { IconPlayerRecord, IconPlayerStop } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type UserSessionReplayAuthorization, type UserSessionReplayResponse } from '@tmlmobilidade/go-types-core';
-import { Button, Collapsible, fetchApiData, Grid, Section, Tag, useHandleAction, useMeContext } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, Collapsible, fetchApiData, Grid, Section, Tag, useAnalyticsContext, useHandleAction, useMeContext } from '@tmlmobilidade/ui';
 import { type TOptions } from 'i18next';
-import { useEffect } from 'react';
+import { useEffect, useEffectEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUsersDetailUserId } from '../use-users-detail-user-id';
@@ -15,7 +15,7 @@ import { useUsersDetailUserId } from '../use-users-detail-user-id';
 interface UsersDetailAmplitudeProps {
 	authorization: null | undefined | UserSessionReplayAuthorization
 	isLoading: boolean
-	onChange: () => void
+	onChange: () => Promise<unknown>
 }
 
 /* * */
@@ -24,6 +24,7 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 	const { i18n, t } = useTranslation();
 	const { userId } = useUsersDetailUserId();
 	const { data: { user }, mutate: { me: refreshMe } } = useMeContext();
+	const { flags: { failedReplayActivationId } } = useAnalyticsContext();
 
 	const isPending = authorization?.started_at === null;
 	const expiresAt = isPending ? authorization.pending_expires_at : authorization?.expires_at;
@@ -60,23 +61,35 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 	});
 
 	const isPendingAction = isAuthorizing || isCancelling;
+	const refreshIfIdle = useEffectEvent(async (expired: boolean) => {
+		if (!isLoading && (expired || document.visibilityState === 'visible')) await onChange();
+	});
 
-	useEffect(() => {
-		if (!isPending || deadline === null) return;
-
-		const interval = setInterval(() => {
-			if (document.visibilityState === 'visible') onChange();
-		}, 2_000);
-
-		return () => clearInterval(interval);
-	}, [deadline, isPending, onChange]);
-
-	// Refresh at expiry even when the user document has not changed.
 	useEffect(() => {
 		if (deadline === null) return;
-		const timeout = setTimeout(onChange, Math.max(0, deadline - Date.now()) + 1);
-		return () => clearTimeout(timeout);
-	}, [deadline, onChange]);
+
+		let disposed = false;
+		let timeout: ReturnType<typeof setTimeout>;
+
+		const scheduleRefresh = () => {
+			const untilExpiry = Math.max(0, deadline - Date.now()) + 1;
+			timeout = setTimeout(refresh, isPending ? Math.min(2_000, untilExpiry) : untilExpiry);
+		};
+		const refresh = async () => {
+			const expired = Date.now() >= deadline;
+			try {
+				await refreshIfIdle(expired);
+			} finally {
+				if (isPending && !expired && !disposed) scheduleRefresh();
+			}
+		};
+
+		scheduleRefresh();
+		return () => {
+			disposed = true;
+			clearTimeout(timeout);
+		};
+	}, [deadline, isPending, onChange]);
 
 	return (
 		<Collapsible description={t('default:users.detail.Amplitude.description')} title={t('default:users.detail.Amplitude.title')}>
@@ -96,6 +109,9 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 						variant="secondary"
 					/>
 				</Grid>
+				{activationId && activationId === failedReplayActivationId && user?._id === userId && (
+					<AlertMessage title={t('default:users.detail.SessionReplay.error.capture')} variant="danger" />
+				)}
 			</Section>
 		</Collapsible>
 	);

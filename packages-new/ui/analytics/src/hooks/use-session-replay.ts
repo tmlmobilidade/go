@@ -1,7 +1,7 @@
 'use client';
 
 import { type UserSessionReplayAuthorization } from '@tmlmobilidade/go-types-core';
-import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import { type AnalyticsInitialization } from '../types/analytics.js';
 import { getReplayTimeRemaining, startSessionReplay } from '../utils/session-replay.js';
@@ -18,8 +18,9 @@ interface UseSessionReplayProps {
 
 /* * */
 
-export function useSessionReplay({ authorization, initialization, onError, startUrl, userId }: UseSessionReplayProps): () => void {
+export function useSessionReplay({ authorization, initialization, onError, startUrl, userId }: UseSessionReplayProps) {
 	const activationId = authorization?.cancelled_at === null ? authorization.activation_id : undefined;
+	const [failedActivationId, setFailedActivationId] = useState<string>();
 	const expiredActivation = useRef<string>(undefined);
 	const stopCapture = useRef<() => void>(undefined);
 	const sdkOperations = useRef(Promise.resolve());
@@ -33,7 +34,7 @@ export function useSessionReplay({ authorization, initialization, onError, start
 		if (!deviceId || client.getOptOut() || client.getUserId() !== userId) return;
 
 		const controller = new AbortController();
-		const requestTimeout = setTimeout(() => controller.abort(), 10_000);
+		let requestTimeout: ReturnType<typeof setTimeout> | undefined;
 		let expiryTimeout: ReturnType<typeof setTimeout> | undefined;
 		let shutdown: (() => void) | undefined;
 
@@ -49,7 +50,21 @@ export function useSessionReplay({ authorization, initialization, onError, start
 		};
 		stopCapture.current = stop;
 
-		try {
+		const setup = sdkOperations.current.then(async () => {
+			if (!isCurrent()) return stop();
+			const replay = await import('@amplitude/session-replay-browser');
+			if (!isCurrent()) return stop();
+
+			// Let the queued Identify reach Amplitude before replay data whenever possible.
+			await Promise.race([
+				client.flush().promise.catch((cause: unknown) => {
+					if (isCurrent()) onError(cause);
+				}),
+				new Promise<void>(resolve => setTimeout(resolve, 1_000)),
+			]);
+			if (!isCurrent()) return stop();
+
+			requestTimeout = setTimeout(() => controller.abort(), 10_000);
 			const deadline = await startSessionReplay(startUrl, userId, activationId, controller.signal);
 			clearTimeout(requestTimeout);
 			if (!isCurrent()) return stop();
@@ -68,27 +83,35 @@ export function useSessionReplay({ authorization, initialization, onError, start
 			expiryTimeout = setTimeout(expire, getReplayTimeRemaining(deadline));
 			document.addEventListener('visibilitychange', canRecord, { signal: controller.signal });
 
-			const setup = sdkOperations.current.then(async () => {
-				const replay = await import('@amplitude/session-replay-browser');
-				if (!canRecord()) return stop();
-				shutdown = replay.shutdown;
-				await replay.init(apiKey, {
-					deviceId,
-					privacyConfig: { defaultMaskLevel: 'light' },
-					sampleRate: 1,
-					serverZone: options?.serverZone ?? 'EU',
-					// A new GO authorization must create a distinct replay.
-					sessionId: activationId,
-				}).promise;
-				if (!canRecord()) {
-					replay.shutdown();
-					stop();
-				}
-			});
-			sdkOperations.current = setup.catch(() => {});
+			if (!canRecord()) return stop();
+			shutdown = replay.shutdown;
+			await replay.init(apiKey, {
+				deviceId,
+				privacyConfig: { defaultMaskLevel: 'light' },
+				sampleRate: 1,
+				serverZone: options?.serverZone ?? 'EU',
+				// A new GO authorization must create a distinct replay.
+				sessionId: activationId,
+			}).promise;
+			if (!canRecord()) {
+				replay.shutdown();
+				return stop();
+			}
+
+			// Init can resolve even when remote configuration disables capture.
+			if (!replay.getSessionReplayProperties()['[Amplitude] Session Replay ID']) {
+				throw new Error('Amplitude Session Replay capture is unavailable');
+			}
+			setFailedActivationId(undefined);
+		});
+		sdkOperations.current = setup.catch(() => {});
+		try {
 			await setup;
 		} catch (cause: unknown) {
-			if (isCurrent()) onError(cause);
+			if (isCurrent()) {
+				setFailedActivationId(activationId);
+				onError(cause);
+			}
 			stop();
 		}
 	});
@@ -112,5 +135,5 @@ export function useSessionReplay({ authorization, initialization, onError, start
 		void startReplay();
 	}, [activationId, authorization, initialization, onError, startUrl, userId]);
 
-	return stopReplay;
+	return { failedReplayActivationId: failedActivationId === activationId ? failedActivationId : undefined, stopReplay };
 }

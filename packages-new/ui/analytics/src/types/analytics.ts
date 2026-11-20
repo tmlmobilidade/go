@@ -25,6 +25,7 @@ export interface AnalyticsContextState {
 	}
 	flags: {
 		error: Error | undefined
+		failedReplayActivationId: string | undefined
 		ready: boolean
 	}
 }

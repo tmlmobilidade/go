@@ -908,11 +908,12 @@
 					"success": "Stop requested. Data already sent to Amplitude is retained."
 				},
 				"error": {
+					"capture": "This browser was unable to start Session Replay capture.",
 					"title": "Unable to manage Session Replay"
 				},
 				"states": {
 					"active": {
-						"description": "Capture is authorized until {{deadline}} (Lisbon time).",
+						"description": "GO accepted the start request. Authorization ends at {{deadline}} (Lisbon time).",
 						"label": "Active"
 					},
 					"inactive": {
