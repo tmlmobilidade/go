@@ -5,7 +5,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type UserSessionReplayAuthorization, type UserSessionReplayResponse } from '@tmlmobilidade/go-types-core';
 import { AlertMessage, Button, Collapsible, fetchApiData, Grid, Section, Tag, useAnalyticsContext, useHandleAction, useMeContext } from '@tmlmobilidade/ui';
 import { type TOptions } from 'i18next';
-import { useEffect, useEffectEvent } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUsersDetailUserId } from '../use-users-detail-user-id';
@@ -15,7 +15,7 @@ import { useUsersDetailUserId } from '../use-users-detail-user-id';
 interface UsersDetailAmplitudeProps {
 	authorization: null | undefined | UserSessionReplayAuthorization
 	isLoading: boolean
-	onChange: () => Promise<unknown>
+	onChange: () => void
 }
 
 /* * */
@@ -26,11 +26,10 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 	const { data: { user }, mutate: { me: refreshMe } } = useMeContext();
 	const { flags: { failedReplayActivationId } } = useAnalyticsContext();
 
-	const isPending = authorization?.started_at === null;
-	const expiresAt = isPending ? authorization.pending_expires_at : authorization?.expires_at;
+	const expiresAt = authorization?.started_at === null ? authorization.pending_expires_at : authorization?.expires_at;
 	const deadline = authorization?.cancelled_at === null && expiresAt != null && expiresAt > Date.now() ? expiresAt : null;
 	const activationId = deadline === null ? undefined : authorization?.activation_id;
-	const state = activationId ? (isPending ? 'pending' : 'active') : 'inactive';
+	const state = activationId ? 'active' : 'inactive';
 	const formattedDeadline = deadline === null ? '' : new Intl.DateTimeFormat(i18n.resolvedLanguage ?? i18n.language, {
 		dateStyle: 'short',
 		timeStyle: 'short',
@@ -61,35 +60,12 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 	});
 
 	const isPendingAction = isAuthorizing || isCancelling;
-	const refreshIfIdle = useEffectEvent(async (expired: boolean) => {
-		if (!isLoading && (expired || document.visibilityState === 'visible')) await onChange();
-	});
 
 	useEffect(() => {
 		if (deadline === null) return;
-
-		let disposed = false;
-		let timeout: ReturnType<typeof setTimeout>;
-
-		const scheduleRefresh = () => {
-			const untilExpiry = Math.max(0, deadline - Date.now()) + 1;
-			timeout = setTimeout(refresh, isPending ? Math.min(2_000, untilExpiry) : untilExpiry);
-		};
-		const refresh = async () => {
-			const expired = Date.now() >= deadline;
-			try {
-				await refreshIfIdle(expired);
-			} finally {
-				if (isPending && !expired && !disposed) scheduleRefresh();
-			}
-		};
-
-		scheduleRefresh();
-		return () => {
-			disposed = true;
-			clearTimeout(timeout);
-		};
-	}, [deadline, isPending, onChange]);
+		const timeout = setTimeout(onChange, Math.max(0, deadline - Date.now()) + 1);
+		return () => clearTimeout(timeout);
+	}, [deadline, onChange]);
 
 	return (
 		<Collapsible description={t('default:users.detail.Amplitude.description')} title={t('default:users.detail.Amplitude.title')}>

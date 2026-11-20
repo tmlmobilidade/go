@@ -5,7 +5,7 @@ import { type User } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
-import useSWR, { type KeyedMutator } from 'swr';
+import useSWR from 'swr';
 
 import { useUsersDetailUserId } from './use-users-detail-user-id';
 
@@ -16,7 +16,7 @@ interface UseUsersDetailDataReturnType {
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: KeyedMutator<ApiResponse<User>>
+	mutate: (newData?: ApiResponse<User>) => void
 	timestamp: null | UnixMilliseconds
 }
 

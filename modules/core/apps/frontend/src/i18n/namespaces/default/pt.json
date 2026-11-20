@@ -943,16 +943,12 @@
 				},
 				"states": {
 					"active": {
-						"description": "O GO aceitou o início. A autorização termina às {{deadline}} (hora de Lisboa).",
+						"description": "A autorização é válida até {{deadline}} (hora de Lisboa).",
 						"label": "Ativo"
 					},
 					"inactive": {
 						"description": "Não existe uma autorização válida para capturar Session Replay deste utilizador.",
 						"label": "Inativo"
-					},
-					"pending": {
-						"description": "Pedido válido até {{deadline}} (hora de Lisboa). Os cinco minutos começam no primeiro início aceite.",
-						"label": "Pendente"
 					}
 				},
 				"success": {

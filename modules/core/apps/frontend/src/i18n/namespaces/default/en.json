@@ -913,16 +913,12 @@
 				},
 				"states": {
 					"active": {
-						"description": "GO accepted the start request. Authorization ends at {{deadline}} (Lisbon time).",
+						"description": "Authorization is valid until {{deadline}} (Lisbon time).",
 						"label": "Active"
 					},
 					"inactive": {
 						"description": "No valid authorization exists to capture Session Replay for this user.",
 						"label": "Inactive"
-					},
-					"pending": {
-						"description": "Request valid until {{deadline}} (Lisbon time). The five-minute window begins with the first accepted start.",
-						"label": "Pending"
 					}
 				},
 				"success": {
