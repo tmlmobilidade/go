@@ -3,6 +3,9 @@
 import namespaceDefaultEn from '@/i18n/namespaces/default/en.json' with { type: 'json' };
 import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
+import namespaceOrganizationsEn from '@/i18n/namespaces/organizations/en.json' with { type: 'json' };
+import namespaceOrganizationsEs from '@/i18n/namespaces/organizations/es.json' with { type: 'json' };
+import namespaceOrganizationsPt from '@/i18n/namespaces/organizations/pt.json' with { type: 'json' };
 import namespaceUnauthenticatedEn from '@/i18n/namespaces/unauthenticated/en.json' with { type: 'json' };
 import namespaceUnauthenticatedEs from '@/i18n/namespaces/unauthenticated/es.json' with { type: 'json' };
 import namespaceUnauthenticatedPt from '@/i18n/namespaces/unauthenticated/pt.json' with { type: 'json' };
@@ -18,6 +21,7 @@ import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtS
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
 	default: namespaceDefaultPt,
+	organizations: namespaceOrganizationsPt,
 	unauthenticated: namespaceUnauthenticatedPt,
 } as const;
 
@@ -27,6 +31,7 @@ export const i18nResourceKeysPt = {
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
 	default: namespaceDefaultEs,
+	organizations: namespaceOrganizationsEs,
 	unauthenticated: namespaceUnauthenticatedEs,
 } as const;
 
@@ -36,5 +41,6 @@ export const i18nResourceKeysEs = {
 export const i18nResourceKeysEn = {
 	...i18nResourceKeysEnShared,
 	default: namespaceDefaultEn,
+	organizations: namespaceOrganizationsEn,
 	unauthenticated: namespaceUnauthenticatedEn,
 } as const;

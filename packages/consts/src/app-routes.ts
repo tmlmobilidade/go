@@ -390,6 +390,9 @@ export const API_ROUTES = Object.freeze({
 		LINES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}/lock`,
 		LINES_LIST: `${getModuleConfig('offer', 'api_url')}/lines`,
 
+		// ORGANIZATIONS
+		ORGANIZATIONS_LIST: `${getModuleConfig('offer', 'api_url')}/organizations`,
+
 		// PATTERNS
 		PATTERNS_CREATE: `${getModuleConfig('offer', 'api_url')}/patterns/create`,
 		PATTERNS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}`,
