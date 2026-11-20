@@ -23,6 +23,7 @@
 		"@tmlmobilidade/go-extractions-dates-annotations": "*",
 		"@tmlmobilidade/go-extractions-infrastructure-stops": "*",
 		"@tmlmobilidade/go-extractions-offer-gtfs": "*",
+		"@tmlmobilidade/go-extractions-offer-zones": "*",
 		"@tmlmobilidade/go-extractions-operation-alerts": "*",
 		"@tmlmobilidade/go-extractions-operation-rides": "*",
 		"@tmlmobilidade/go-interfaces-godb": "*",
