@@ -10,8 +10,8 @@ import { LinesListFilterAgencies } from '../LinesListFilterAgencies';
 export function LinesListFiltersBar() {
 	return (
 		<FiltersBar>
-			<LinesListFilterAgencies />
 			<LinesListFilterOrganizations />
+			<LinesListFilterAgencies />
 		</FiltersBar>
 	);
 }

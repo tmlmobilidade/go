@@ -64,8 +64,15 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterAgencies = useFilterStateList('agency', agenciesIds, agenciesOptions);
 	const filterOrganizations = useFilterStateList('organization', [], organizationsOptions, organizationsLoading);
+
+	const organizationAgencyIds = useMemo(() => getLinesFilterAgencyIds(agenciesIds, organizationsData, filterOrganizations.value), [agenciesIds, organizationsData, filterOrganizations.value]);
+	const organizationAgencyOptions = useMemo(() => {
+		const agencyIdsSet = new Set(organizationAgencyIds);
+		return agenciesOptions.filter(option => agencyIdsSet.has(option.value));
+	}, [agenciesOptions, organizationAgencyIds]);
+
+	const filterAgencies = useFilterStateList('agency', organizationAgencyIds, organizationAgencyOptions);
 
 	//
 	// C. Fetch data
@@ -81,11 +88,10 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		query: filterSearch.value,
 	});
 
-	const filteredAgencyIds = useMemo(() => getLinesFilterAgencyIds(
-		filterAgencies.value,
-		organizationsData,
-		filterOrganizations.value,
-	), [filterAgencies.value, filterOrganizations.value, organizationsData]);
+	const filteredAgencyIds = useMemo(() => {
+		const agencyIdsSet = new Set(organizationAgencyIds);
+		return filterAgencies.value.filter(agencyId => agencyIdsSet.has(agencyId));
+	}, [filterAgencies.value, organizationAgencyIds]);
 
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
