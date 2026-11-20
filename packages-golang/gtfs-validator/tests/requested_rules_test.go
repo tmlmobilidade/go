@@ -54,6 +54,12 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "fare zone lookup", rule: "fare_rules_origin_id_foreign_key_exists", setup: "CREATE TABLE stops (zone_id TEXT); INSERT INTO stops VALUES ('01'); CREATE TABLE fare_rules (origin_id TEXT); INSERT INTO fare_rules VALUES ('01'), ('1'), (NULL)", file: "fare_rules", field: "origin_id", rows: [][]int{{1}}},
 		{name: "missing target table", rule: "fare_rules_fare_id_foreign_key_exists", setup: "CREATE TABLE fare_rules (fare_id TEXT); INSERT INTO fare_rules VALUES ('a')", file: "fare_rules", field: "fare_id", rows: [][]int{{0}}},
 		{name: "self reference", rule: "stops_parent_station_foreign_key_exists", setup: "CREATE TABLE stops (stop_id TEXT, parent_station TEXT); INSERT INTO stops VALUES ('p', NULL), ('a', 'p'), ('b', 'q')", file: "stops", field: "parent_station", rows: [][]int{{2}}},
+		{name: "stop code equals stop ID", rule: "stops_stop_code_equals_stop_id", setup: `CREATE TABLE stops (stop_id TEXT, stop_code TEXT);
+			INSERT INTO stops VALUES ('001', '001'), ('001', '1'), ('A', 'a'), ('B', 'B '),
+			(NULL, '1'), ('2', NULL), ('3', ' '), (' ', '4');`,
+			file: "stops", field: "stop_code", rows: [][]int{{1}, {2}, {3}}},
+		{name: "stop code column missing", rule: "stops_stop_code_equals_stop_id", setup: "CREATE TABLE stops (stop_id TEXT); INSERT INTO stops VALUES ('001')"},
+		{name: "stops table missing for stop code comparison", rule: "stops_stop_code_equals_stop_id", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "standard zone", rule: "stops_zone_id_foreign_key_exists", setup: "CREATE TABLE stops (zone_id TEXT); INSERT INTO stops VALUES ('a')"},
 		{name: "extension zone", rule: "stops_zone_id_foreign_key_exists", setup: "CREATE TABLE zones (zone_id TEXT); INSERT INTO zones VALUES ('a'); CREATE TABLE stops (zone_id TEXT); INSERT INTO stops VALUES ('a'), ('b')", file: "stops", field: "zone_id", rows: [][]int{{1}}},
 		{name: "valid enum", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", rows: [][]int{{2}}},
