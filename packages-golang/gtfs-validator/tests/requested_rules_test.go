@@ -15,6 +15,13 @@ import (
 )
 
 func TestRequestedRulesThroughGraph(t *testing.T) {
+	const stopDistanceOrder = `CREATE TABLE stop_times (trip_id TEXT, stop_sequence TEXT, shape_dist_traveled TEXT);
+		INSERT INTO stop_times VALUES ('a', '10', '5'), ('b', '10', '6'), ('a', '2', '5.0'),
+		('a', '20', '4'), ('b', '2', '0'), ('a', '30', '6.5'), ('a', '40', '1e1'),
+		('missing', '1', '9'), ('missing', '2', NULL), ('missing', '3', '1'),
+		('invalid', '1', '9'), ('invalid', '2', 'NaN'), ('invalid', '3', '1'),
+		('ambiguous', '1', '9'), ('ambiguous', '01', '5'), ('ambiguous', '2', '0'),
+		('b', '-1', '99'), ('b', '-1', '98'), (NULL, '10', '6'), (NULL, '10', '4');`
 	const tripTimeOrder = `CREATE TABLE stop_times (trip_id TEXT, stop_sequence TEXT, arrival_time TEXT, departure_time TEXT);
 		INSERT INTO stop_times VALUES ('a', '10', '25:00:00', '25:02:00'),
 		('b', '2', '0:00:00', '0:00:00'), ('a', '2', '9:00:00', '10:00:00'),
@@ -91,6 +98,11 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "departure column missing for same stop", rule: "stop_times_arrival_time_before_departure_time", setup: "CREATE TABLE stop_times (arrival_time TEXT); INSERT INTO stop_times VALUES ('10:00:00')"},
 		{name: "stop sequence column missing for time order", rule: "stop_times_increasing_arrival_time", setup: "CREATE TABLE stop_times (trip_id TEXT, arrival_time TEXT); INSERT INTO stop_times VALUES ('a', '10:00:00'), ('a', '9:00:00')"},
 		{name: "stop times table missing for departure order", rule: "stop_times_increasing_departure_time", setup: "CREATE TABLE trips (trip_id TEXT)"},
+		{name: "stop sequence unique within each trip", rule: "stop_times_increasing_stop_sequence", setup: stopDistanceOrder, file: "stop_times", field: "stop_sequence", rows: [][]int{{13, 14}}},
+		{name: "stop distance increases by numeric sequence", rule: "stop_times_increasing_shape_dist_traveled", setup: stopDistanceOrder, file: "stop_times", field: "shape_dist_traveled", rows: [][]int{{2, 0}, {0, 3}}},
+		{name: "stop sequence column missing", rule: "stop_times_increasing_stop_sequence", setup: "CREATE TABLE stop_times (trip_id TEXT); INSERT INTO stop_times VALUES ('a'), ('a')"},
+		{name: "stop distance column missing", rule: "stop_times_increasing_shape_dist_traveled", setup: "CREATE TABLE stop_times (trip_id TEXT, stop_sequence TEXT); INSERT INTO stop_times VALUES ('a', '1'), ('a', '2')"},
+		{name: "stop times table missing for distance", rule: "stop_times_increasing_shape_dist_traveled", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "color", rule: "routes_route_color_valid", setup: "CREATE TABLE routes (route_color TEXT); INSERT INTO routes VALUES ('Ff000A'), ('#FF000A'), ('ZZ0000'), (NULL)", file: "routes", field: "route_color", rows: [][]int{{1}, {2}}},
 		{name: "route color contrast", rule: "routes_route_color_route_text_color_contrast", setup: `CREATE TABLE routes (route_color TEXT, route_text_color TEXT);
 			INSERT INTO routes VALUES ('ffffff', '000000'), ('000000', 'ffffff'),
