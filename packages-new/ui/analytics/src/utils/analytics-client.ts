@@ -1,9 +1,8 @@
 import { createInstance, Identify, type Types } from '@amplitude/analytics-browser';
 
 import { type AnalyticsContextProps, type AnalyticsInitialization } from '../types/analytics.js';
-import { type AnalyticsEventInput } from '../types/events/shared.js';
+import { type AnalyticsEvent, type AnalyticsEventInput } from '../types/events/shared.js';
 import { type AnalyticsUserProperties } from '../types/user-properties.js';
-import { normalizeAnalyticsEvent } from './analytics-event.js';
 
 /* * */
 
@@ -44,6 +43,14 @@ export function identifyAnalyticsUser(client: Types.BrowserClient, user: Analyti
 
 		return false;
 	}
+}
+
+/* * */
+
+function normalizeAnalyticsEvent(event: AnalyticsEventInput): AnalyticsEvent {
+	if (typeof event === 'string') return { title: event };
+
+	return event.parse({ title: event.shape.title.value });
 }
 
 /* * */
