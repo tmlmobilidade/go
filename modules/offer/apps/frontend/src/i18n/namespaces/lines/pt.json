@@ -105,6 +105,9 @@
 		"LinesListFilterAgencies": {
 			"agencies": "Operadores"
 		},
+		"LinesListFilterOrganizations": {
+			"organizations": "Organizações"
+		},
 		"LinesListHeader": {
 			"actions": "Ações",
 			"export_gtfs": "Exportar GTFS",

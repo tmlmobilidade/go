@@ -7,6 +7,8 @@ import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeData, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
+import { useLinesOrganizationsData } from '../shared/use-lines-organizations-data';
+import { getLinesFilterAgencyIds } from './get-lines-filter-agency-ids';
 import { useLinesListData } from './use-lines-list-data';
 
 /* * */
@@ -17,10 +19,12 @@ interface LinesListContextState {
 		agencyIds: string[]
 		agencyOptions: SelectDataItem[]
 		filtered: PopulatedLine[]
+		filteredAgencyIds: string[]
 		raw: PopulatedLine[]
 	}
 	filters: {
 		agencies: UseFilterStateListReturnType
+		organizations: UseFilterStateListReturnType
 		search: UseFilterStateTextReturnType
 	}
 	flags: {
@@ -53,12 +57,14 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { data: me } = useMeData();
 	const { data: agenciesData, ids: agenciesIds, isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData();
+	const { data: organizationsData, error: organizationsError, isLoading: organizationsLoading, options: organizationsOptions } = useLinesOrganizationsData();
 
 	//
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
 	const filterAgencies = useFilterStateList('agency', agenciesIds, agenciesOptions);
+	const filterOrganizations = useFilterStateList('organization', [], organizationsOptions, organizationsLoading);
 
 	//
 	// C. Fetch data
@@ -74,11 +80,17 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 		query: filterSearch.value,
 	});
 
+	const filteredAgencyIds = useMemo(() => getLinesFilterAgencyIds(
+		filterAgencies.value,
+		organizationsData,
+		filterOrganizations.value,
+	), [filterAgencies.value, filterOrganizations.value, organizationsData]);
+
 	const filterResultsData = useMemo(() => {
 		// Skip if no data is available
 		if (!searchResultsData) return [];
 		// 1. Convert filter arrays to sets for O(1) membership checks
-		const agencySet = new Set(filterAgencies.value);
+		const agencySet = new Set(filteredAgencyIds);
 
 		return searchResultsData
 			.filter((item: PopulatedLine) => {
@@ -91,7 +103,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			.sort((a, b) => {
 				return a.code.localeCompare(b.code);
 			});
-	}, [searchResultsData, filterAgencies]);
+	}, [searchResultsData, filteredAgencyIds]);
 
 	const canCreatePermission = PermissionCatalog.hasPermission(me?.permissions ?? [], PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.create);
 
@@ -104,19 +116,21 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			agencyIds: agenciesIds,
 			agencyOptions: agenciesOptions,
 			filtered: filterResultsData,
+			filteredAgencyIds,
 			raw: allLinesData,
 		},
 		filters: {
 			agencies: filterAgencies,
+			organizations: filterOrganizations,
 			search: filterSearch,
 		},
 		flags: {
 			agenciesLoading,
 			canCreate: canCreatePermission,
-			error: allLinesError,
-			loading: allLinesLoading,
+			error: allLinesError ?? organizationsError,
+			loading: allLinesLoading || organizationsLoading,
 		},
-	}), [agenciesData, agenciesIds, agenciesLoading, agenciesOptions, filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading]);
+	}), [agenciesData, agenciesIds, agenciesLoading, agenciesOptions, filterResultsData, allLinesData, filterAgencies, filterSearch, canCreatePermission, allLinesError, allLinesLoading, filterOrganizations, organizationsError, organizationsLoading, filteredAgencyIds]);
 
 	//
 	// F. Render components

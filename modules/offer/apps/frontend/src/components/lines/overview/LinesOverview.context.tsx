@@ -53,14 +53,14 @@ export const LinesOverviewContextProvider = ({ children }: PropsWithChildren) =>
 	// A. Setup state
 
 	const linesListContext = useLinesListContext();
-	const agencyIds = linesListContext.filters.agencies.value;
+	const agencyIds = linesListContext.data.filteredAgencyIds;
 
 	const [hoverInfo, setHoverInfo] = useState<null | PatternShapeMapInteractionState>(null);
 	const [highlightedPatternIds, setHighlightedPatternIds] = useState<string[]>([]);
 	const [popupInfo, setPopupInfo] = useState<null | PatternShapeMapInteractionState>(null);
 
 	const { data: patternsData, error: patternsError, isLoading } = useLinesOverviewPatternsData(agencyIds);
-	const patternsLoading = linesListContext.flags.agenciesLoading || isLoading;
+	const patternsLoading = linesListContext.flags.agenciesLoading || linesListContext.flags.loading || isLoading;
 
 	//
 	// B. Handle effects and actions
