@@ -21,14 +21,14 @@ interface UseSessionReplayProps {
 export function useSessionReplay({ authorization, initialization, onError, startUrl, userId }: UseSessionReplayProps) {
 	const activationId = authorization?.cancelled_at === null ? authorization.activation_id : undefined;
 	const [failedActivationId, setFailedActivationId] = useState<string>();
-	const expiredActivation = useRef<string>(undefined);
+	const expiredActivationId = useRef<string>(undefined);
 	const stopCapture = useRef<() => void>(undefined);
-	const sdkOperations = useRef(Promise.resolve());
+	const replaySetupQueue = useRef(Promise.resolve());
 
 	const stopReplay = useCallback(() => stopCapture.current?.(), []);
 
 	const startReplay = useEffectEvent(async () => {
-		if (!activationId || !initialization || !startUrl || !userId || stopCapture.current || expiredActivation.current === activationId) return;
+		if (!activationId || !initialization || !startUrl || !userId || stopCapture.current || expiredActivationId.current === activationId) return;
 		const { apiKey, client, options } = initialization;
 		const deviceId = client.getDeviceId();
 		if (!deviceId || client.getOptOut() || client.getUserId() !== userId) return;
@@ -50,7 +50,7 @@ export function useSessionReplay({ authorization, initialization, onError, start
 		};
 		stopCapture.current = stop;
 
-		const setup = sdkOperations.current.then(async () => {
+		const setupPromise = replaySetupQueue.current.then(async () => {
 			if (!isCurrent()) return stop();
 			const replay = await import('@amplitude/session-replay-browser');
 			if (!isCurrent()) return stop();
@@ -70,7 +70,7 @@ export function useSessionReplay({ authorization, initialization, onError, start
 			if (!isCurrent()) return stop();
 
 			const expire = () => {
-				expiredActivation.current = activationId;
+				expiredActivationId.current = activationId;
 				stop();
 			};
 			const canRecord = () => {
@@ -104,9 +104,9 @@ export function useSessionReplay({ authorization, initialization, onError, start
 			}
 			setFailedActivationId(undefined);
 		});
-		sdkOperations.current = setup.catch(() => {});
+		replaySetupQueue.current = setupPromise.catch(() => {});
 		try {
-			await setup;
+			await setupPromise;
 		} catch (cause: unknown) {
 			if (isCurrent()) {
 				setFailedActivationId(activationId);
