@@ -15,6 +15,13 @@ import (
 )
 
 func TestRequestedRulesThroughGraph(t *testing.T) {
+	const shapeSegmentLengths = `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT, shape_dist_traveled TEXT);
+		INSERT INTO shapes VALUES ('a', '20', '0', '.016', '0'), ('b', '1', '0', '90', NULL),
+		('a', '2', '0', '0', NULL), ('a', '10', '0', '.008', 'bad'),
+		('a', '30', '0', '.03', '0'), ('b', '2', '0', '90.001', NULL),
+		('invalid coordinates', '1', '0', '0', NULL), ('invalid coordinates', '2', '91', '0', NULL),
+		('invalid coordinates', '3', '0', '90', NULL), ('duplicate sequence', '1', '0', '0', NULL),
+		('duplicate sequence', '01', '0', '90', NULL), ('duplicate sequence', '2', '0', '90', NULL);`
 	const stopLocationTypes = `CREATE TABLE stops (location_type TEXT, parent_station TEXT, platform_code TEXT);
 		INSERT INTO stops VALUES ('0', 'station', 'A'), ('1', 'station', 'B'), ('1', ' ', NULL),
 		('2', NULL, 'C'), ('3', '', 'D'), ('4', ' ', 'E'), ('2', 'station', NULL),
@@ -171,6 +178,14 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "price", rule: "fare_attributes_price_valid", setup: "CREATE TABLE fare_attributes (price TEXT); INSERT INTO fare_attributes VALUES ('0'), ('1.75'), ('-0.01'), ('NaN'), ('+Inf'), (NULL)", file: "fare_attributes", field: "price", rows: [][]int{{2}, {3}, {4}}},
 		{name: "currency", rule: "fare_attributes_currency_type_valid", setup: "CREATE TABLE fare_attributes (currency_type TEXT); INSERT INTO fare_attributes VALUES ('EUR'), ('USD'), ('ZZZ'), ('€')", file: "fare_attributes", field: "currency_type", rows: [][]int{{2}, {3}}},
 		{name: "coordinate bounds", rule: "shapes_shape_pt_lat_valid", setup: "CREATE TABLE shapes (shape_pt_lat TEXT); INSERT INTO shapes VALUES ('-90'), ('90'), ('90.01'), ('-90.1'), ('NaN')", file: "shapes", field: "shape_pt_lat", rows: [][]int{{2}, {3}, {4}}},
+		{name: "shape segment length default maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", setup: shapeSegmentLengths,
+			file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{0, 4}}},
+		{name: "shape segment length configured maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", setup: shapeSegmentLengths,
+			options: []string{"800"}, file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{2, 3}, {3, 0}, {0, 4}}},
+		{name: "shape segment length equal to maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", options: []string{"0"}, setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT);
+			INSERT INTO shapes VALUES ('a', '1', '0', '0'), ('a', '2', '0', '0'), ('a', '3', '0', '.001');`,
+			file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{1, 2}}},
+		{name: "shapes table missing for segment length", rule: "shapes_shape_dist_traveled_segment_max_geo_lenght", setup: "CREATE TABLE trips (trip_id TEXT)"},
 		{name: "shape maximum distance matches geographic length", rule: "shapes_shape_dist_traveled_equals_geo_length", setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT, shape_dist_traveled TEXT);
 			INSERT INTO shapes VALUES
 			('fits', '10', '0', '.001', '.1112'), ('long', '10', '0', '.001', '.240'),
@@ -244,6 +259,21 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 				t.Fatalf("got %s with rows %v, want %s with rows %v", result.Status, gotRows, wantStatus, test.rows)
 			}
 		})
+	}
+}
+
+func TestShapeSegmentMaximumRejectsInvalidOptions(t *testing.T) {
+	db := openSQLTestDatabase(t, "CREATE TABLE trips (trip_id TEXT)")
+	for _, options := range [][]string{{"-1"}, {"NaN"}, {"+Inf"}, {"bad"}, {"10", "20"}} {
+		graph, err := rules.NewValidationGraph([]types.Rule{{
+			RuleID: "shapes_shape_dist_traveled_segment_max_geo_lenght", Severity: types.SEVERITY_ERROR, Options: options,
+		}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := graph.Execute(t.Context(), db, 1); err == nil {
+			t.Errorf("expected an error for options %q", options)
+		}
 	}
 }
 
