@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 )
 
 /*
@@ -17,13 +18,15 @@ import (
 
 # Description
 
-Unimplemented. Check for duplicate service IDs. This placeholder always passes.
+Reports each duplicate nonblank service_id value with all its source rows.
+Values are compared exactly. Missing tables, missing columns, and blank values
+are handled by the presence rules.
 
 [calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
 */
-func (CalendarChecks) CalendarServiceIDUnique(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
+func (CalendarChecks) CalendarServiceIDUnique(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 
 	//
-	// 1. Pass until this validation is implemented
-	return true, nil, nil
+	// 1. Check for duplicate values
+	return fields.CheckUnique(ctx, db, config, "calendar", "service_id")
 }

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 )
 
 /*
@@ -17,13 +18,15 @@ import (
 
 # Description
 
-Unimplemented. Check for duplicate vehicle IDs. This placeholder always passes.
+Reports each duplicate nonblank vehicle_id value with all its source rows.
+Values are compared exactly. Missing tables, missing columns, and blank values
+are handled by the presence rules.
 
 [vehicles.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/vehicles
 */
-func (VehiclesChecks) VehiclesVehicleIDUnique(context.Context, *sql.DB, types.Rule) (bool, []types.Finding, error) {
+func (VehiclesChecks) VehiclesVehicleIDUnique(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 
 	//
-	// 1. Pass until this validation is implemented
-	return true, nil, nil
+	// 1. Check for duplicate values
+	return fields.CheckUnique(ctx, db, config, "vehicles", "vehicle_id")
 }
