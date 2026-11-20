@@ -7,6 +7,15 @@
 			"status": "Status"
 		}
 	},
+	"LandingMap": {
+		"popup": {
+			"agency": "Agency: {{value}}",
+			"route": "Line {{value}}",
+			"speed": "Speed: {{value}} km/h",
+			"status": "Status: {{value}}",
+			"vehicle": "Vehicle: {{value}}"
+		}
+	},
 	"LandingModules": {
 		"infrastructure": {
 			"stops": {

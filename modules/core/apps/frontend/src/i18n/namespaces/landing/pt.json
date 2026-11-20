@@ -7,6 +7,15 @@
 			"status": "Estado"
 		}
 	},
+	"LandingMap": {
+		"popup": {
+			"agency": "Operador: {{value}}",
+			"route": "Linha {{value}}",
+			"speed": "Velocidade: {{value}} km/h",
+			"status": "Estado: {{value}}",
+			"vehicle": "Veículo: {{value}}"
+		}
+	},
 	"LandingModules": {
 		"infrastructure": {
 			"stops": {
