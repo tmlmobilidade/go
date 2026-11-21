@@ -1,7 +1,7 @@
 'use client';
 
-import { centerMapView, MapContextProvider, MapOverlayVehicles, MapOverlayVehiclesInteractiveLayerId, MapView, useMapViewContext } from '@tmlmobilidade/ui';
-import { type MapLayerMouseEvent } from '@vis.gl/react-maplibre';
+import { centerMapView, MapContextProvider, MapView, useMapViewContext } from '@tmlmobilidade/ui';
+import { Layer, type MapLayerMouseEvent, Source } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -16,6 +16,8 @@ const LISBON_VIEW = {
 	longitude: -9.145,
 	zoom: 12.4,
 };
+
+const VEHICLES_LAYER_ID = 'landing-vehicles';
 
 /* * */
 
@@ -56,7 +58,7 @@ export function LandingMap() {
 			<MapContextProvider preferenceScope="landing-map">
 				<MapView
 					id="landing-map"
-					interactiveLayerIds={[MapOverlayVehiclesInteractiveLayerId]}
+					interactiveLayerIds={[VEHICLES_LAYER_ID]}
 					layers={{ navigation: true }}
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
@@ -64,7 +66,18 @@ export function LandingMap() {
 					toolbar={false}
 				>
 					<LandingMapViewport features={geoJson.features} />
-					<MapOverlayVehicles vehiclesData={geoJson} />
+					<Source data={geoJson} id={VEHICLES_LAYER_ID} type="geojson">
+						<Layer
+							id={VEHICLES_LAYER_ID}
+							type="circle"
+							paint={{
+								'circle-color': '#ffdd01',
+								'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 3, 16, 8],
+								'circle-stroke-color': '#000000',
+								'circle-stroke-width': 1,
+							}}
+						/>
+					</Source>
 					{hoveredVehicle && <LandingMapVehiclePopup data={hoveredVehicle} />}
 				</MapView>
 			</MapContextProvider>

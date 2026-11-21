@@ -1,6 +1,5 @@
 'use client';
 
-import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
 import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
@@ -10,7 +9,7 @@ import useSWR from 'swr';
 
 /* * */
 
-const LANDING_ORGANIZATION_ID = 'Y4FLB';
+const LANDING_VEHICLES_URL = 'https://go.tmlmobilidade.pt/hub/api/v1/WORLD/vehicles/positions';
 
 /* * */
 
@@ -20,7 +19,7 @@ export function useLandingVehiclesData() {
 	//
 	// A. Fetch data
 
-	const { data } = useSWR<ApiResponse<HubV1ApiVehiclePosition[]>>(API_ROUTES.hub.VEHICLES_POSITIONS(LANDING_ORGANIZATION_ID), {
+	const { data } = useSWR<ApiResponse<HubV1ApiVehiclePosition[]>>(LANDING_VEHICLES_URL, {
 		fetcher: async (url: string) => await fetchApiData<HubV1ApiVehiclePosition[]>({ credentials: 'omit', url }),
 		refreshInterval: 5_000,
 	});
