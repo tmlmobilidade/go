@@ -1,7 +1,7 @@
 /* * */
 
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Holiday } from '@tmlmobilidade/go-types-offer';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
 
 /* * */
 

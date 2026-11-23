@@ -1,7 +1,7 @@
 /* * */
 
-import { HTTP_STATUS, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendResetPasswordEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -14,7 +14,7 @@ export async function sendPasswordResetEmailHandler(request: FastifyRequest<{ Bo
 	// Search user by the email provided in the request body
 	const foundUser = await goDb.core.users.findOne({ email: { $eq: request.body.email } });
 	if (!foundUser) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, `User not found with email ${request.body.email}`);
+		return sendErrorApiResponse(reply, { error: `User not found with email ${request.body.email}`, status_code: '404' });
 	}
 	// Generate a random token for password reset
 	const randomToken = generateRandomToken();
@@ -34,5 +34,5 @@ export async function sendPasswordResetEmailHandler(request: FastifyRequest<{ Bo
 		to: request.body.email,
 	});
 	// Send a success response
-	reply.send({ data: undefined, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, undefined);
 }

@@ -7,7 +7,6 @@ import { z } from 'zod';
 
 export const StopsUpdateRequestSchema = StopSchema.omit({
 	_id: true,
-	associated_patterns: true,
 	created_at: true,
 	created_by: true,
 	file_ids: true,

@@ -6,6 +6,7 @@ import { getPlanHash } from '@tmlmobilidade/go-operation-pckg-utils';
 import { type Plan, type UpdatePlanDto } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { z } from 'zod';
 
 /**
  * Updates an existing plan by ID
@@ -46,8 +47,10 @@ export async function updatePlanHandler(request: FastifyRequest<{ Body: UpdatePl
 	//
 	// Validate the new feed info dates
 
-	const validatedFeedStartDate = OperationalDateIntSchema.parse(request.body.active_from);
-	const validatedFeedEndDate = OperationalDateIntSchema.parse(request.body.active_until);
+	const dates = z.object({ active_from: OperationalDateIntSchema, active_until: OperationalDateIntSchema }).safeParse(request.body);
+	if (!dates.success) return sendErrorApiResponse(reply, { error: dates.error, status_code: '400' });
+	const validatedFeedStartDate = dates.data.active_from;
+	const validatedFeedEndDate = dates.data.active_until;
 
 	if (validatedFeedStartDate > validatedFeedEndDate) {
 		return sendErrorApiResponse(reply, {

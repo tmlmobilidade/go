@@ -3,14 +3,16 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { getRideHash, setPlanStatus } from '@tmlmobilidade/go-operation-pckg-utils';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { GtfsStrictV30RoutesSchema, GtfsStrictV30ShapesSchema, GtfsStrictV30StopsSchema, GtfsStrictV30StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type HashableRide, type HashedShape, type HashedTrip, type Plan, RideSchema } from '@tmlmobilidade/go-types-operation';
 import { HexColorSchema, NonNegativeIntegerSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates, fromOperationalDateTimeToUnixMilliseconds } from '@tmlmobilidade/go-utils-dates';
 import { startHeartbeat } from '@tmlmobilidade/go-utils-exec';
+import { GtfsStrictV30SQLTables, type ImportGtfsConfig, importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
-import { type ImportGtfsConfig, importGtfsStrictV30ToDatabase } from '@tmlmobilidade/import-gtfs';
 
 import { cleanupOrphanRidesForPlan } from '../utils/cleanup.js';
+import { sanitizeRideId } from '../utils/sanitize-ride-id.js';
 import { toHashedShape } from '../utils/to-hashed-shape.js';
 import { toHashedTrip } from '../utils/to-hashed-trip.js';
 import { hashedShapesWriter, hashedTripsWriter, ridesWriter } from '../utils/writers.js';
@@ -81,7 +83,15 @@ export async function parsePlanTask(planData: Plan) {
 			},
 		};
 
-		const importedGtfsSql = await importGtfsStrictV30ToDatabase(importConfig);
+		const importedGtfsSql = await importGtfsToDatabase<GtfsStrictV30SQLTables>(importConfig);
+
+		// Staging indexes are dropped by the importer; index the final lookup tables.
+		importedGtfsSql._db.databaseInstance.exec(`
+			CREATE INDEX IF NOT EXISTS idx_feeder_shapes_shape_id ON shapes(shape_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_stop_times_trip_id ON stop_times(trip_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_routes_route_id ON routes(route_id);
+			CREATE INDEX IF NOT EXISTS idx_feeder_stops_stop_id ON stops(stop_id);
+		`);
 
 		Logger.success(`Imported Plan ${planData._id} in ${importTimer.get()}.`);
 
@@ -128,10 +138,18 @@ export async function parsePlanTask(planData: Plan) {
 				// as well as other commonly used variables in the next steps.
 
 				const calendarDatesData = importedGtfsSql.calendar_dates[currentTrip.service_id];
-				const routeData = importedGtfsSql.routes.get('route_id', currentTrip.route_id);
-				const shapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
-				const stopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY stop_sequence ASC', [currentTrip.trip_id]);
-				const stopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
+				const rawRouteData = importedGtfsSql.routes.get('route_id', currentTrip.route_id);
+				const rawShapeData = importedGtfsSql.shapes.all('WHERE shape_id = ?', [currentTrip.shape_id]);
+				const rawStopTimesData = importedGtfsSql.stop_times.all('WHERE trip_id = ? ORDER BY CAST(stop_sequence AS INTEGER)', [currentTrip.trip_id]);
+				const rawStopsData = importedGtfsSql.stops.all('WHERE stop_id IN (SELECT DISTINCT stop_id FROM stop_times WHERE trip_id = ?)', [currentTrip.trip_id]);
+
+				const routeData = GtfsStrictV30RoutesSchema.parse(rawRouteData);
+				const shapeData = rawShapeData.map(shape => GtfsStrictV30ShapesSchema.parse(shape));
+				const stopTimesData = rawStopTimesData.map(stopTime => GtfsStrictV30StopTimesSchema.parse(stopTime));
+				const stopsData = rawStopsData.map(stop => GtfsStrictV30StopsSchema.parse(stop));
+
+				//
+				// Parse data
 
 				//
 				// Validate the required data for this trip
@@ -219,7 +237,7 @@ export async function parsePlanTask(planData: Plan) {
 					//
 					// Setup the required variables for the Ride document.
 
-					const uniqueIdValueForRide = `${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`;
+					const uniqueIdValueForRide = sanitizeRideId(`${planData._id}-${routeData.agency_id}-${calendarDate}-${currentTrip.trip_id}`);
 
 					const startTimeScheduledString = stopTimesData[0].arrival_time;
 					const startTimeScheduledUnixMilliseconds = fromOperationalDateTimeToUnixMilliseconds({

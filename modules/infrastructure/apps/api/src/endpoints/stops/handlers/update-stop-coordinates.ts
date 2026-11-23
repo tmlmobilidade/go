@@ -22,7 +22,7 @@ export async function updateStopCoordinatesHandler(request: FastifyRequest<{ Bod
 
 	if (!validatedRequest.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedRequest.error.message,
+			error: validatedRequest.error,
 			status_code: '400',
 		});
 	}

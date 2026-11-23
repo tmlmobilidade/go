@@ -1,9 +1,10 @@
 'use client';
 
-import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, Section, StandardFormController, TextInput, UploadImage } from '@tmlmobilidade/ui';
+import { CreateOrganizationSchema, OrganizationTypeSchema } from '@tmlmobilidade/go-types-core';
+import { Collapsible, Grid, MultiSelect, Section, Select, StandardFormController, TextInput, UploadImage } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
+import { useOrganizationsAgenciesData } from '../../shared/use-organizations-agencies-data';
 import { useOrganizationsDetailFormContext } from '../OrganizationsDetailForm.context';
 import { useOrganizationsImageDetailData } from '../use-organizations-image-detail-data';
 
@@ -21,6 +22,8 @@ export function OrganizationsDetailBasicInfo() {
 
 	const { data: logoLightUrlValue, isLoading: isLoadingLogoLight } = useOrganizationsImageDetailData('light');
 	const { data: logoDarkUrlValue, isLoading: isLoadingLogoDark } = useOrganizationsImageDetailData('dark');
+
+	const { error: agenciesError, isLoading: agenciesLoading, options: agenciesOptions } = useOrganizationsAgenciesData();
 
 	//
 	// B. Render components
@@ -67,6 +70,56 @@ export function OrganizationsDetailBasicInfo() {
 								value={field.value ?? ''}
 								data-autofocus
 								withAsterisk
+							/>
+						)}
+					/>
+				</Grid>
+
+				<Grid columns="a" gap="lg">
+					<StandardFormController
+						control={form.control}
+						name="organization_type"
+						render={({ field, fieldState }) => (
+							<Select
+								data={OrganizationTypeSchema.options.map(value => ({ label: t(`organizations:shared.types.${value}`), value }))}
+								error={fieldState.error?.message}
+								label={t('organizations:detail.OrganizationsDetailBasicInfo.organization_type')}
+								onChange={field.onChange}
+								readOnly={!capabilities.editEnabled}
+								value={field.value ?? 'other'}
+							/>
+						)}
+					/>
+					<StandardFormController
+						control={form.control}
+						name="website_url"
+						render={({ field, fieldState }) => (
+							<TextInput
+								error={fieldState.error?.message}
+								label={t('organizations:detail.OrganizationsDetailBasicInfo.website_url')}
+								onChange={event => field.onChange(event.currentTarget.value || null)}
+								readOnly={!capabilities.editEnabled}
+								value={field.value ?? ''}
+							/>
+						)}
+					/>
+				</Grid>
+
+				<Grid columns="a" gap="lg">
+					<StandardFormController
+						control={form.control}
+						name="agency_ids"
+						render={({ field, fieldState }) => (
+							<MultiSelect
+								data={agenciesOptions}
+								disabled={agenciesLoading}
+								error={fieldState.error?.message ?? agenciesError}
+								label={t('default:organizations.detail.SectionBasicInfo.fields.agency_ids.label')}
+								onBlur={field.onBlur}
+								onChange={field.onChange}
+								placeholder={t('default:organizations.detail.SectionBasicInfo.fields.agency_ids.placeholder')}
+								readOnly={!capabilities.editEnabled}
+								value={field.value ?? []}
 							/>
 						)}
 					/>

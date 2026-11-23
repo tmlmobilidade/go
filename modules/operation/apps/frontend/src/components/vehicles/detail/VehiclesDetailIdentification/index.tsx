@@ -1,9 +1,8 @@
 'use client';
 
-import { useVehiclesAgenciesData } from '@/components/vehicles/shared/use-vehicles-agencies-data';
 import { CreateVehicleSchema } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { Collapsible, DateInput, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, DateInput, Grid, Section, Select, StandardFormController, TextInput, useAgenciesData } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useVehiclesDetailFormContext } from '../VehiclesDetailForm.context';
@@ -20,7 +19,7 @@ export function VehiclesDetailIdentification() {
 
 	const { capabilities, form } = useVehiclesDetailFormContext();
 
-	const { options: agencyOptions } = useVehiclesAgenciesData();
+	const { options: agencyOptions } = useAgenciesData();
 
 	//
 	// B. Render components

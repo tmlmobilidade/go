@@ -1,47 +1,23 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
-import { HubV1ApiTripStopEta } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type HubV1ApiTripStopEta } from '@tmlmobilidade/go-types-hub';
 
-/**
- * Retrieves trip stop ETAs for a trip from the cache.
- * @param request The request object.
- * @param reply The reply object.
- */
-export async function getEtaByTripIdHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<HubV1ApiTripStopEta[]>) {
+/** Return organization-scoped published data. */
+export async function getEtaByTripIdHandler(request: FastifyRequest<{ Params: { tripId: string } }>, reply: FastifyReply<HubV1ApiTripStopEta[]>) {
 	//
 
 	//
-	// Get the published data from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.get(`hub:v1:realtime:eta:by-trip:${request.params.id}`);
-
-	if (!cachedData) {
-		Logger.error({ message: `[hub/v1/realtime:getEtaByTripIdHandler(${request.params.id})] No data in cache.` });
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=5')
-			.code(HTTP_STATUS.NO_CONTENT)
-			.send({
-				data: [],
-				error: null,
-				status_code: HTTP_STATUS.NO_CONTENT,
-			});
-	}
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiTripStopEta[]>(agencyIds, `realtime:eta:by-trip:${request.params.tripId}`);
+	const data = entries.flatMap(entry => entry.data);
 
 	//
-	// Return the parsed data
+	// Return the merged data
 
-	return reply
-		.header('access-control-allow-origin', '*')
-		.header('cache-control', 'public, max-age=5')
-		.code(HTTP_STATUS.OK)
-		.send({
-			data: JSON.parse(cachedData),
-			error: null,
-			status_code: HTTP_STATUS.OK,
-		});
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '3s' });
 }

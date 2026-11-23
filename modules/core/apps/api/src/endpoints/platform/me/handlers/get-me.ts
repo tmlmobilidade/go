@@ -49,16 +49,14 @@ export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<
 	// and merge them into the user data.
 
 	userData.permissions = await authProvider.getPermissionsFromSessionToken(sessionToken);
-
-	//
-	// Send the user data back in the response.
-
-	sendSuccessApiResponse(reply, userData);
-
 	//
 	// Add seen_last_at for this user asynchronously
 
 	await goDb.core.users.updateById(userData._id, { seen_last_at: Dates.now('utc').unix_milliseconds });
+	//
+	// Send the user data back in the response.
+
+	return sendSuccessApiResponse(reply, userData);
 
 	//
 }

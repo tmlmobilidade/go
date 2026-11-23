@@ -32,7 +32,8 @@ async function loadMapAsset(mapObject: MapLibreMap, asset: MapAssetType) {
 	const assetLoad = (async () => {
 		const fullAssetUrl = asset.url.startsWith('/') ? `${process.env.NEXT_PUBLIC_BASE_PATH}${asset.url}` : asset.url;
 		const image = await mapObject.loadImage(fullAssetUrl);
-		if (mapObject.hasImage(asset.name)) return;
+		// Closing a map can dispose its style while an image is still loading.
+		if (!mapObject.getStyle() || mapObject.hasImage(asset.name)) return;
 		mapObject.addImage(asset.name, image.data, { sdf: asset.sdf });
 	})();
 

@@ -2,7 +2,7 @@
 
 import { GtfsValidationSummarySchema } from '@/clean/summary.js';
 import { GtfsAgencySchema, GtfsFeedInfoSchema } from '@tmlmobilidade/go-types-gtfs';
-import { BaseDocumentSchema, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults, ProcessingStatusSchema, ValidityStatusSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -20,7 +20,7 @@ export const GtfsValidationSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateGtfsValidationSchema = GtfsValidationSchema.omit({ _id: true, updated_at: true });
-export const UpdateGtfsValidationSchema = CreateGtfsValidationSchema.omit({ created_at: true, created_by: true }).partial();
+export const UpdateGtfsValidationSchema = partialWithoutDefaults(CreateGtfsValidationSchema.omit({ created_at: true, created_by: true }));
 
 export type GtfsValidation = z.infer<typeof GtfsValidationSchema>;
 export type CreateGtfsValidationDto = z.infer<typeof CreateGtfsValidationSchema>;

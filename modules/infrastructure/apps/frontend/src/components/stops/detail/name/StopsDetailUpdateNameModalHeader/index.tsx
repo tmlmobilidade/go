@@ -33,10 +33,10 @@ export function StopsDetailUpdateNameModalHeader() {
 	return (
 		<Toolbar>
 			<CloseButton onClick={handleClose} type="close" />
-			<Label size="lg" singleLine>{t('default:stops.detail.UpdateNameModal.Header.title')}</Label>
+			<Label size="lg" singleLine>{t('stops:detail.StopsDetailUpdateNameModalHeader.title')}</Label>
 			<Spacer />
 			<Button
-				label={t('default:stops.detail.UpdateNameModal.Header.UpdateButton.label')}
+				label={t('stops:detail.StopsDetailUpdateNameModalHeader.update_button.label')}
 				loading={status.isUpdating}
 				onClick={actions.update}
 			/>

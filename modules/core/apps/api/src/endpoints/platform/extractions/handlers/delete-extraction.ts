@@ -47,5 +47,5 @@ export async function deleteExtractionHandler(request: FastifyRequest<{ Params: 
 
 	const foundExtractions = await getUserExtractions(request.me._id);
 
-	sendSuccessApiResponse(reply, foundExtractions ?? []);
+	return sendSuccessApiResponse(reply, foundExtractions ?? []);
 }

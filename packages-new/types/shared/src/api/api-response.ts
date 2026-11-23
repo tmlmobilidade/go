@@ -23,16 +23,30 @@ export type ApiResponseSuccess<T> = Omit<z.infer<typeof ApiResponseSuccessSchema
 
 /* * */
 
+/** Safe validation details; never contains submitted values or Zod internals. */
+export const ApiValidationIssueSchema = z.object({
+	code: z.string(),
+	message: z.string(),
+	path: z.array(z.union([z.string(), z.number()])),
+});
+
+export type ApiValidationIssue = z.infer<typeof ApiValidationIssueSchema>;
+
 export const ApiResponseErrorSchema = z.object({
 	data: z.null(),
 	error: z.string(),
+	issues: z.array(ApiValidationIssueSchema).optional(),
 	status_code: HttpStatusSchema.extract([
 		'400', // Bad Request
 		'401', // Unauthorized
 		'403', // Forbidden
 		'404', // Not Found
+		'405', // Method Not Allowed
+		'408', // Request Timeout
 		'409', // Conflict
+		'413', // Payload Too Large
 		'415', // Unsupported Media Type
+		'422', // Unprocessable Content
 		'429', // Too Many Requests
 		'500', // Internal Server Error
 		'502', // Bad Gateway

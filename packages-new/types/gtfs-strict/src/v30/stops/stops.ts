@@ -2,21 +2,22 @@
 
 import { LatitudeSchema, LongitudeSchema } from '@tmlmobilidade/go-types-geo';
 import { GtfsLocationTypeSchema, GtfsTernarySchema } from '@tmlmobilidade/go-types-gtfs';
+import { nullAsUndefined } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsStrictV30StopsSchema = z.object({
-	level_id: z.string().optional(),
-	location_type: GtfsLocationTypeSchema.optional(),
-	parent_station: z.string().optional(),
-	platform_code: z.string().optional(),
+	level_id: nullAsUndefined(z.string().optional()),
+	location_type: nullAsUndefined(GtfsLocationTypeSchema.optional()),
+	parent_station: nullAsUndefined(z.string().optional()),
+	platform_code: nullAsUndefined(z.string().optional()),
 	stop_code: z.string(),
 	stop_id: z.string(),
 	stop_lat: LatitudeSchema,
 	stop_lon: LongitudeSchema,
 	stop_name: z.string(),
-	wheelchair_boarding: GtfsTernarySchema.optional(),
+	wheelchair_boarding: nullAsUndefined(GtfsTernarySchema.optional()),
 });
 
 /**

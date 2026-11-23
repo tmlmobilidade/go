@@ -1,9 +1,8 @@
+import { CreateAnnotationSchema, CreateHolidaySchema, UpdateAnnotationSchema, UpdateHolidaySchema } from '@tmlmobilidade/go-types-dates';
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
 
-import { CreateAnnotationSchema, UpdateAnnotationSchema } from '../src/dates/annotation.js';
 import { CreateEventSchema, UpdateEventSchema } from '../src/dates/event.js';
-import { CreateHolidaySchema, UpdateHolidaySchema } from '../src/dates/holiday.js';
 import { CreateYearPeriodSchema, UpdateYearPeriodSchema } from '../src/dates/year-period.js';
 import { CreateFareSchema, UpdateFareSchema } from '../src/network/fare.js';
 import { CreateTypologySchema, UpdateTypologySchema } from '../src/network/typology.js';
@@ -26,7 +25,7 @@ const resources = [
 for (const { create, name, update } of resources) {
 	describe(`${name} agency requirements`, () => {
 		test('creation requires at least one agency', () => {
-			const fields = { code: 'CODE', name: 'Record', title: 'Record' };
+			const fields = { code: 'CODE', name: 'Record', short_name: 'REC', title: 'Record' };
 			assert.equal(create.safeParse(fields).success, false);
 			assert.equal(create.safeParse({ ...fields, agency_ids: [] }).success, false);
 			assert.equal(create.safeParse({ ...fields, agency_ids: ['A'] }).success, true);

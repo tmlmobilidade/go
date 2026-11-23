@@ -81,9 +81,9 @@ export function StopsCreateStepSummary() {
 			<Divider />
 
 			<Section>
-				<ValueDisplay label={t('default:stops.create.StepSummary.fields.short_name.label')} value={automaticShortName} variant="plain" />
-				<ValueDisplay label={t('default:stops.create.StepSummary.fields.tts_name.label')} value={automaticTtsName} variant="plain" />
-				<TagGroup label={t('default:stops.create.StepSummary.fields.agency_ids.label')} limit={agencyTags.length} tags={agencyTags} variant="plain" wrap="wrap" />
+				<ValueDisplay label={t('stops:create.StopsCreateStepSummary.fields.short_name.label')} value={automaticShortName} variant="plain" />
+				<ValueDisplay label={t('stops:create.StopsCreateStepSummary.fields.tts_name.label')} value={automaticTtsName} variant="plain" />
+				<TagGroup label={t('stops:create.StopsCreateStepSummary.fields.agency_ids.label')} limit={agencyTags.length} tags={agencyTags} variant="plain" wrap="wrap" />
 			</Section>
 
 			<Divider />

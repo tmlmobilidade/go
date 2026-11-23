@@ -2,11 +2,11 @@
 
 import { type TripSchedule } from '@/versions/v29/exports/trips.js';
 import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
-import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/dates';
 import { type GtfsStrictV29StopTimes } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { HHMM, Path, type Pattern, type StopsParameter, type StopsParameterOverride } from '@tmlmobilidade/go-types-offer';
 import { OperationalTimeSchema } from '@tmlmobilidade/go-types-shared';
+import { computeSegmentTravelTimes, getMergedPath } from '@tmlmobilidade/go-utils-offer';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { metersToGtfsKm } from '@tmlmobilidade/types';
 

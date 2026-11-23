@@ -31,42 +31,42 @@ export function StopsList() {
 		{
 			accessor: '_id',
 			render: item => <IdTag id={item._id} />,
-			title: t('default:stops.list.Table.columns.id'),
+			title: t('stops:list.StopsList.columns.id'),
 			width: 100,
 		},
 		{
 			accessor: 'name',
-			title: t('default:stops.list.Table.columns.name'),
+			title: t('stops:list.StopsList.columns.name'),
 			width: 500,
 		},
 		{
 			accessor: 'latitude',
-			title: t('default:stops.list.Table.columns.latitude'),
+			title: t('stops:list.StopsList.columns.latitude'),
 			width: 150,
 		},
 		{
 			accessor: 'longitude',
-			title: t('default:stops.list.Table.columns.longitude'),
+			title: t('stops:list.StopsList.columns.longitude'),
 			width: 150,
 		},
 		{
 			accessor: 'location.primary.name',
-			title: t('default:stops.list.Table.columns.location_primary_name'),
+			title: t('stops:list.StopsList.columns.location_primary_name'),
 			width: 250,
 		},
 		{
 			accessor: 'location.secondary.name',
-			title: t('default:stops.list.Table.columns.location_secondary_name'),
+			title: t('stops:list.StopsList.columns.location_secondary_name'),
 			width: 400,
 		},
 		{
 			accessor: 'location.tertiary.name',
-			title: t('default:stops.list.Table.columns.location_tertiary_name'),
+			title: t('stops:list.StopsList.columns.location_tertiary_name'),
 			width: 250,
 		},
 		{
 			accessor: 'location.neighbourhood.name',
-			title: t('default:stops.list.Table.columns.location_neighbourhood_name'),
+			title: t('stops:list.StopsList.columns.location_neighbourhood_name'),
 			width: 250,
 		},
 	];

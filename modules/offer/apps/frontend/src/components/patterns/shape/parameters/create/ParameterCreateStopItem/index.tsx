@@ -5,7 +5,8 @@
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { IconArrowNarrowDown, IconClockPause, IconGauge } from '@tabler/icons-react';
 import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
-import { Divider, NumberInput, Text } from '@tmlmobilidade/ui';
+import { Divider, NumberInput, StandardFormController, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -28,6 +29,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const ctx = useParameterCreateContext();
 
 	//
@@ -38,7 +40,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 		: null;
 
 	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<div className={styles.card}>
@@ -52,16 +54,24 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 						#{pathItem.stop_id}
 					</Text>
 				</div>
-				<NumberInput
-					aria-label={`Tempo de paragem para a sequência ${index + 1}`}
-					leftSection={<IconClockPause size={14} />}
-					max={900}
-					min={0}
-					placeholder="seg"
-					size="xs"
-					step={10}
-					suffix=" seg"
-					{...ctx.data.form.getInputProps(`path.${index}.dwell_time`)}
+				<StandardFormController
+					control={ctx.form.control}
+					name={`path.${index}.dwell_time`}
+					render={({ field, fieldState }) => (
+						<NumberInput
+							aria-label={t('patterns:shape.ParameterCreateStopItem.dwell_sequence', { sequence: index + 1 })}
+							error={fieldState.error ? t('default:scheduling.copy.validNonnegativeNumber') : undefined}
+							leftSection={<IconClockPause size={14} />}
+							max={900}
+							min={0}
+							placeholder={t('patterns:shape.ParameterCreateStopItem.seconds')}
+							size="xs"
+							step={10}
+							suffix={t('patterns:shape.ParameterCreateStopItem.seconds')}
+							{...field}
+							value={field.value ?? ''}
+						/>
+					)}
 				/>
 			</div>
 
@@ -70,7 +80,7 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 			<div className={styles.segmentRow}>
 				{isLast
 					? (
-						<Text c="var(--color-system-text-200)" size="sm">Fim da viagem</Text>
+						<Text c="var(--color-system-text-200)" size="sm">{t('default:scheduling.copy.tripEnd')}</Text>
 					)
 					: (
 						<>
@@ -78,22 +88,30 @@ export function ParameterCreateStopItem({ distance, index, isLast, nextPathItem,
 								<div className={styles.segmentDestination}>
 									<IconArrowNarrowDown size={14} />
 									<Text size="sm">
-										{`Até ${nextPathItem?.stop?.name ?? `Paragem ${nextPathItem?.stop_id}`}`}
+										{t('default:scheduling.copy.toStop', '', { stop: nextPathItem?.stop?.name ?? t('default:scheduling.copy.stopFallback', '', { id: nextPathItem?.stop_id ?? '' }) })}
 									</Text>
 								</div>
 								<Text c="var(--color-system-text-200)" size="xs">
 									{[distanceLabel, travelTime].filter(Boolean).join(' · ')}
 								</Text>
 							</div>
-							<NumberInput
-								aria-label={`Velocidade média do segmento ${index + 1}`}
-								leftSection={<IconGauge size={14} />}
-								min={0}
-								placeholder="km/h"
-								size="xs"
-								step={1}
-								suffix=" km/h"
-								{...ctx.data.form.getInputProps(`path.${index + 1}.avg_speed`)}
+							<StandardFormController
+								control={ctx.form.control}
+								name={`path.${index + 1}.avg_speed`}
+								render={({ field, fieldState }) => (
+									<NumberInput
+										aria-label={t('default:scheduling.copy.segmentSpeed', '', { sequence: index + 1 })}
+										error={fieldState.error ? t('default:scheduling.copy.validNonnegativeNumber') : undefined}
+										leftSection={<IconGauge size={14} />}
+										min={0}
+										placeholder="km/h"
+										size="xs"
+										step={1}
+										suffix=" km/h"
+										{...field}
+										value={field.value ?? ''}
+									/>
+								)}
 							/>
 						</>
 					)}

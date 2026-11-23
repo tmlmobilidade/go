@@ -3,11 +3,12 @@
 /* * */
 
 import { IconAlertTriangle } from '@tabler/icons-react';
-import { Button, Modal, Section, Text } from '@tmlmobilidade/ui';
+import { AlertMessage, Button, Modal, Section, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 import { ShapeEditorContent } from '../ShapeEditorContent';
 import { ShapeEditorFooter } from '../ShapeEditorFooter';
 
@@ -19,7 +20,13 @@ export function ShapeEditor() {
 	//
 	// A. Setup variables
 
-	const stopsEditorContext = useStopsEditorContext();
+	const shapeEditorContext = useShapeEditorContext();
+	const { t } = useTranslation();
+	const anchorIssues = shapeEditorContext.data.anchorIssues;
+	const anchorIssuesLabel = anchorIssues.map((issue) => {
+		const segments = issue.candidates.map(candidate => `${candidate.afterIndex + 1}→${candidate.beforeIndex + 1} (${candidate.afterStopId}→${candidate.beforeStopId})`).join(', ');
+		return `${issue.anchorId}: ${segments || t('default:patterns.shapeEditor.missingSegment')}`;
+	}).join('; ');
 
 	//
 	// B. Render components
@@ -29,6 +36,12 @@ export function ShapeEditor() {
 
 			{/* Main Content */}
 			<div className={styles.mainContent}>
+				{anchorIssues.length > 0 && (
+					<Section gap="sm" padding="none">
+						<AlertMessage title={t('default:patterns.shapeEditor.anchorIssuesTitle')} />
+						<Text>{anchorIssuesLabel}</Text>
+					</Section>
+				)}
 				{/* Header */}
 				<div className={styles.header} />
 
@@ -44,42 +57,38 @@ export function ShapeEditor() {
 
 				{/* Migration Warning Modal */}
 				<Modal
+					classNames={{ inner: styles.migrationModalInner }}
 					closeOnClickOutside={false}
 					closeOnEscape={false}
-					onClose={() => stopsEditorContext.actions.dismissMigrationWarning()}
-					opened={stopsEditorContext.flags.migrationWarningVisible}
+					onClose={() => shapeEditorContext.actions.dismissMigrationWarning()}
+					opened={shapeEditorContext.flags.migrationWarningVisible}
 					size="md"
-					styles={{ inner: { alignItems: 'center' } }}
-					title="Shape importado do GTFS"
+					title={anchorIssues.length ? t('default:patterns.shapeEditor.anchorIssuesTitle') : t('default:patterns.shapeEditor.importedTitle')}
 				>
 					<Section alignItems="center" gap="lg">
 						<IconAlertTriangle color="var(--color-status-warning-primary)" size={40} />
 						<Section gap="sm" padding="none">
-							<Text>
-								Este percurso foi importado diretamente do GTFS e não contém informação
-								de pontos intermédios calculados pela nossa plataforma.
-							</Text>
-							<Text>
-								Para poder editar paragens e desvios, é necessário converter a shape
-								para o formato editável, recalculando o percurso.
-							</Text>
-							<Text weight="semibold">
-								O trajeto resultante pode diferir ligeiramente do original.
-							</Text>
-							<Text>
-								Esta conversão fica registada no histórico e pode ser revertida.
-							</Text>
+							{anchorIssues.length > 0 ? (
+								<Text>{t('default:patterns.shapeEditor.anchorIssuesDescription')}</Text>
+							) : (
+								<>
+									<Text>{t('default:patterns.shapeEditor.importedDescription')}</Text>
+									<Text>{t('default:patterns.shapeEditor.convertDescription')}</Text>
+									<Text weight="semibold">{t('default:patterns.shapeEditor.conversionWarning')}</Text>
+									<Text>{t('default:patterns.shapeEditor.conversionHistory')}</Text>
+								</>
+							)}
 						</Section>
 						<Section flexDirection="row" gap="sm" justifyContent="center" padding="none">
 							<Button
-								label="Dispensar"
-								onClick={() => stopsEditorContext.actions.dismissMigrationWarning()}
+								label={t('default:patterns.shapeEditor.dismiss')}
+								onClick={() => shapeEditorContext.actions.dismissMigrationWarning()}
 								variant="secondary"
 							/>
 							<Button
-								label="Converter e editar"
-								loading={stopsEditorContext.flags.isLoadingRoute}
-								onClick={() => void stopsEditorContext.actions.convertShapeToEditable()}
+								label={t('default:patterns.shapeEditor.convert')}
+								loading={shapeEditorContext.flags.isLoadingRoute}
+								onClick={() => void shapeEditorContext.actions.convertShapeToEditable()}
 							/>
 						</Section>
 					</Section>

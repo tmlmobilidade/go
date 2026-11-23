@@ -7,6 +7,7 @@ import { EventsDetailBasicInfo } from '../EventsDetailBasicInfo';
 import { EventsDetailHeader } from '../EventsDetailHeader';
 import { EventsDetailRules } from '../EventsDetailRules';
 import { useEventsDetailData } from '../use-events-detail-data';
+import { useEventsDetailPatternsData } from '../use-events-detail-patterns-data';
 
 /* * */
 
@@ -17,6 +18,7 @@ export function EventsDetail() {
 	// A. Setup variables
 
 	const { data, error, isLoading } = useEventsDetailData();
+	const patternsData = useEventsDetailPatternsData();
 
 	//
 	// B. Render components
@@ -25,7 +27,7 @@ export function EventsDetail() {
 	if (isLoading || !data) return <LoadingOverlay />;
 
 	return (
-		<Pane header={[<EventsDetailHeader key="header" />]}>
+		<Pane header={[<EventsDetailHeader key="header" patternsData={patternsData} />]}>
 			<Section>
 				<Grid columns="a" gap="lg">
 					<EventsDetailBasicInfo />

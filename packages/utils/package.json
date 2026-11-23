@@ -37,7 +37,7 @@
 		"@tmlmobilidade/consts": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"mergekit": "3.0.6",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

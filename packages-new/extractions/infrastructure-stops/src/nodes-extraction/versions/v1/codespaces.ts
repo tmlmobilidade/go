@@ -38,7 +38,9 @@ const MUNICIPALITY_CODES_BY_CODESPACE = {
  * A map of INE municipality codes to codespaces.
  */
 const codespacesByMunicipalityCode = new Map(
-	Object.entries(MUNICIPALITY_CODES_BY_CODESPACE).flatMap(([codespace, codes]) => codes.map(code => [code, codespace] as const)),
+	Object
+		.entries(MUNICIPALITY_CODES_BY_CODESPACE)
+		.flatMap(([codespace, codes]) => codes.map(code => [code, codespace] as const)),
 );
 
 /**
@@ -46,9 +48,10 @@ const codespacesByMunicipalityCode = new Map(
  * @returns The codespaces by municipality code.
  */
 export async function getCodespacesByMunicipality(): Promise<Map<number, string>> {
-	const municipalities = await locationsDb.findLocationsByCountryAndAdminLevel('PT', '7');
-
-	return new Map(municipalities.flatMap<[number, string]>((municipality) => {
+	// Get municipalities
+	const foundMunicipalities = await locationsDb.findLocationsByCountryAndAdminLevel('PT', '7');
+	// Get codespaces for municipalities
+	return new Map(foundMunicipalities.flatMap<[number, string]>((municipality) => {
 		const codespace = municipality.code ? codespacesByMunicipalityCode.get(municipality.code) : undefined;
 		return codespace ? [[Number(municipality.id), codespace]] : [];
 	}));

@@ -8,12 +8,12 @@ import { useTranslation } from 'react-i18next';
 
 import { useEventsDetailFormContext } from '../EventsDetailForm.context';
 import { EventsDetailPatternsMenu } from '../EventsDetailPatternsMenu';
-import { useEventsDetailData } from '../use-events-detail-data';
 import { useEventsDetailEventId } from '../use-events-detail-event-id';
+import { type UseEventsDetailPatternsDataReturnType } from '../use-events-detail-patterns-data';
 
 /* * */
 
-export function EventsDetailHeader() {
+export function EventsDetailHeader({ patternsData }: { patternsData: UseEventsDetailPatternsDataReturnType }) {
 	//
 
 	//
@@ -24,7 +24,6 @@ export function EventsDetailHeader() {
 	const title = useStandardFormWatch({ control: form.control, name: 'title' });
 	const router = useRouter();
 	const { eventId } = useEventsDetailEventId();
-	const { data } = useEventsDetailData();
 	const close = () => router.push(keepUrlParams(PAGE_ROUTES.offer.EVENTS_LIST));
 
 	//
@@ -36,7 +35,7 @@ export function EventsDetailHeader() {
 			<IdTag id={eventId} copyOnClick />
 			<Label size="lg" singleLine>{title}</Label>
 			<Spacer />
-			<EventsDetailPatternsMenu patterns={data?.associated_patterns} />
+			<EventsDetailPatternsMenu error={patternsData.error} isLoading={patternsData.isLoading} patterns={patternsData.data} />
 			<HasPermission action={PermissionCatalog.all.events.actions.lock} scope={PermissionCatalog.all.events.scope}>
 				<LockButton isDisabled={!capabilities.lockEnabled} isLoading={status.isLocking} isLocked={!!status.isLocked} onClick={actions.lock} />
 			</HasPermission>

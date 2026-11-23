@@ -1,8 +1,11 @@
 'use client';
 
 import { useRuleCreateContext } from '@/components/patterns/rules/create/RuleCreate.context';
-import { WEEKDAYS } from '@tmlmobilidade/go-types-offer';
+import { WEEKDAYS } from '@tmlmobilidade/go-types-shared';
 import { Section, SelectChipGroup, Text, WeekdaySelector } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import { RuleAsteriskField } from '../../shared/RuleAsteriskField';
 
 /* * */
 
@@ -39,21 +42,22 @@ export function RuleCreateWeekdays() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const createRuleContext = useRuleCreateContext();
 
 	//
 	// B. Handle actions
 
-	const currentWeekdays = createRuleContext.data.form.values.weekdays || [];
+	const currentWeekdays = createRuleContext.data.values.weekdays || [];
 	const selectedPresetKey = getSelectedPresetKey(currentWeekdays);
 
 	const applyPreset = (key: null | WeekdayPresetKey) => {
 		if (!key) {
-			createRuleContext.data.form.setFieldValue('weekdays', undefined);
+			createRuleContext.form.setValue('weekdays', undefined, { shouldDirty: true, shouldValidate: true });
 			return;
 		}
 
-		createRuleContext.data.form.setFieldValue('weekdays', [...WEEKDAY_PRESETS[key]]);
+		createRuleContext.form.setValue('weekdays', [...WEEKDAY_PRESETS[key]], { shouldDirty: true, shouldValidate: true });
 	};
 
 	//
@@ -63,8 +67,12 @@ export function RuleCreateWeekdays() {
 		<Section gap="md">
 
 			<Section gap="xs" padding="none">
-				<Text>Dias da Semana {createRuleContext.flags.isEventExceptionEnabled ? 'do evento' : ''}</Text>
-				{createRuleContext.flags.isEventExceptionEnabled && <Text c="dimmed">Se não selecionar, aplica-se a todos os dias do evento</Text>}
+				<RuleAsteriskField withAsterisk={!createRuleContext.flags.isEventExceptionEnabled}>
+					{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:scheduling.copy.eventWeekdays' : 'default:scheduling.copy.weekdays')}
+				</RuleAsteriskField>
+				<Text c="dimmed" size="sm">
+					{t(createRuleContext.flags.isEventExceptionEnabled ? 'default:patterns.create.RuleCreateWeekdays.optional_hint' : 'default:patterns.create.RuleCreateWeekdays.required_hint')}
+				</Text>
 			</Section>
 
 			{/* Quick Select Tags */}
@@ -72,18 +80,24 @@ export function RuleCreateWeekdays() {
 				onChange={applyPreset}
 				value={selectedPresetKey}
 				options={[
-					{ label: 'Todos', value: 'all' },
-					{ label: 'Dias úteis', value: 'business' },
-					{ label: 'Fim de semana', value: 'weekend' },
+					{ label: t('default:scheduling.copy.all'), value: 'all' },
+					{ label: t('default:scheduling.copy.businessDays'), value: 'business' },
+					{ label: t('default:scheduling.copy.weekend'), value: 'weekend' },
 				]}
 			/>
 
 			<WeekdaySelector
 				value={currentWeekdays}
 				onChange={(selectedDays) => {
-					createRuleContext.data.form.setFieldValue('weekdays', selectedDays.length > 0 ? selectedDays : undefined);
+					createRuleContext.form.setValue('weekdays', selectedDays.length > 0 ? selectedDays : undefined, { shouldDirty: true, shouldValidate: true });
 				}}
 			/>
+
+			{createRuleContext.form.formState.errors.weekdays?.message && (
+				<Text c="var(--color-status-danger-primary)">
+					{t('default:scheduling.copy.selectWeekday')}
+				</Text>
+			)}
 
 		</Section>
 	);

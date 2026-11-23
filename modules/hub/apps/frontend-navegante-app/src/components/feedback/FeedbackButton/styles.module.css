@@ -19,7 +19,7 @@
 
 .button[data-position='bottom-left'] {
 	position: fixed;
-	bottom: 16px;
+	bottom: calc(var(--app-bottom-inset) + 16px);
 	left: 16px;
 	z-index: 110;
 }
@@ -27,7 +27,7 @@
 .button[data-position='bottom-right'] {
 	position: fixed;
 	right: 16px;
-	bottom: 16px;
+	bottom: calc(var(--app-bottom-inset) + 16px);
 	z-index: 101;
 }
 

@@ -1,6 +1,6 @@
 import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
 import { type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type ApiResponse, ApiResponseErrorSchema } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, ApiResponseErrorSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import assert from 'node:assert/strict';
 import { describe, mock, test } from 'node:test';
 
@@ -20,8 +20,6 @@ let ROWS: Record<string, unknown>[];
 let WRITES: Record<string, unknown>[];
 let DELETED: string[];
 let LIST_QUERY: unknown;
-let ASSOCIATED_PATTERNS: Record<string, unknown>[] = [];
-let PATTERN_QUERY: unknown;
 
 const collection = {
 	deleteById: async (id: string) => { DELETED.push(id); },
@@ -41,14 +39,12 @@ const collection = {
 	updateOne: async (_query: unknown, data: Record<string, unknown>) => {
 		WRITES.push(data);
 		ROW = { ...ROW, ...data };
+		return ROW;
 	},
 };
 
 mock.module('@tmlmobilidade/go-interfaces-godb', {
-	namedExports: { goDb: { offer: { ...Object.fromEntries(resources.map(resource => [resource.collection, collection])), patterns: { aggregate: async (query: unknown) => {
-		PATTERN_QUERY = query;
-		return ASSOCIATED_PATTERNS;
-	} } } } },
+	namedExports: { goDb: { offer: Object.fromEntries(resources.map(resource => [resource.collection, collection])) } },
 });
 
 function permission(scope: string, action: string, agencyIds = ['A']): Permission {
@@ -235,10 +231,9 @@ const periodHandlers = {
 } as Record<string, Handler>;
 
 // Branded operational dates use the same canonical parser as production requests.
-const { OperationalDateSchema } = await import('@tmlmobilidade/go-types-shared');
-const firstDate = OperationalDateSchema.parse('20261020');
-const secondDate = OperationalDateSchema.parse('20261021');
-const thirdDate = OperationalDateSchema.parse('20261022');
+const firstDate = OperationalDateIntSchema.parse(20261020);
+const secondDate = OperationalDateIntSchema.parse(20261021);
+const thirdDate = OperationalDateIntSchema.parse(20261022);
 
 function period(id: string, agencyIds: string[], dates = [firstDate]) {
 	return { _id: id, agency_ids: agencyIds, created_at: 1_792_368_000_000, created_by: 'original', dates, is_locked: false, name: id, updated_at: 1_792_368_000_000 };
@@ -354,18 +349,13 @@ describe('period conflicts and assignment', () => {
 	});
 });
 
-describe('event detail enrichment', () => {
-	test('fetches associated patterns and overrides legacy stored association fields', async () => {
-		ROW = { _id: 'event', agency_ids: ['A'], associated_patterns: [{ _id: 'stale' }], code: 'EVENT', title: 'Event' };
-		ASSOCIATED_PATTERNS = [{ _id: 'pattern', code: 'P1', headsign: 'Destination', line_id: 'line', route_id: 'route' }];
+describe('event detail response', () => {
+	test('returns only the event, without querying patterns or returning stored associations', async () => {
+		ROW = { _id: 'event', agency_ids: ['A'], associated_patterns: [{ _id: 'stale' }], code: 'EVENT', created_at: 1_792_368_000_000, created_by: 'actor', title: 'Event', updated_at: 1_792_368_000_000 };
 		const result = await invoke(getEventHandler as Handler, undefined, [permission('events', 'read')]);
 		assert.equal(result.httpStatus, 200);
 		const data = result.response.data as Record<string, unknown>;
-		assert.deepEqual(data.associated_patterns, ASSOCIATED_PATTERNS);
-		assert.deepEqual(PATTERN_QUERY, [
-			{ $match: { rules: { $elemMatch: { event_id: 'record', kind: 'manual' } } } },
-			{ $project: { _id: 1, code: 1, headsign: 1, line_id: 1, route_id: 1 } },
-			{ $sort: { code: 1 } },
-		]);
+		assert.equal(data._id, 'event');
+		assert.equal('associated_patterns' in data, false);
 	});
 });

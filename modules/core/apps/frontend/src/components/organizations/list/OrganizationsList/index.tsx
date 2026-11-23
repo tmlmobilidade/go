@@ -3,11 +3,12 @@
 import { OrganizationsListHeader } from '@/components/organizations/list/OrganizationsListHeader';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { OrganizationsListItem } from '@tmlmobilidade/go-core-pckg-types';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Pane, ProcessingStatusDisplay } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsDetailOrganizationId } from '../../detail/use-organizations-detail-organization-id';
+import { OrganizationsListFiltersBar } from '../OrganizationsListFiltersBar';
 import { useOrganizationsListData } from '../use-organizations-list-data';
 
 /* * */
@@ -36,7 +37,19 @@ export function OrganizationsList() {
 		{
 			accessor: 'long_name',
 			title: t('default:organizations.list.table.columns.name.label'),
-			width: 600,
+			width: 400,
+		},
+		{
+			accessor: 'organization_type',
+			render: item => t(`organizations:shared.types.${item.organization_type}`),
+			title: t('organizations:list.OrganizationsList.type'),
+			width: 300,
+		},
+		{
+			accessor: 'open_data.plans.status',
+			render: item => <ProcessingStatusDisplay value={item.open_data.enabled ? item.open_data.plans.status : 'skipped'} />,
+			title: t('default:organizations.list.table.columns.gtfs_published.label'),
+			width: 180,
 		},
 	];
 
@@ -51,7 +64,7 @@ export function OrganizationsList() {
 	// C. Render components
 
 	return (
-		<Pane header={[<OrganizationsListHeader key="header" />]}>
+		<Pane header={[<OrganizationsListHeader key="header" />, <OrganizationsListFiltersBar key="filters" />]}>
 			{organizationsData.error && <ErrorDisplay message={organizationsData.error} />}
 			<DataTable
 				columns={columns}

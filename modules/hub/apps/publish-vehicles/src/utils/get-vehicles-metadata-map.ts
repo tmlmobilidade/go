@@ -16,7 +16,7 @@ let LOCAL_CACHE_TIMESTAMP: null | UnixMilliseconds = null;
  * The local cache is updated every 10 minutes.
  * @returns A map of vehicle metadata by agency ID and vehicle ID.
  */
-export async function getVehiclesMetadataMap(): Promise<Map<string, HubV1ApiVehicleMetadata>> {
+export async function getVehiclesMetadataMap(agencyId: string): Promise<Map<string, HubV1ApiVehicleMetadata>> {
 	//
 
 	//
@@ -33,7 +33,7 @@ export async function getVehiclesMetadataMap(): Promise<Map<string, HubV1ApiVehi
 
 	Logger.title('Retrieving fresh vehicle metadata from GoDB...');
 
-	const foundVehicles = await goDb.operation.vehicles.findMany();
+	const foundVehicles = await goDb.operation.vehicles.findMany({ agency_id: agencyId });
 
 	LOCAL_CACHE_DATA = new Map<string, HubV1ApiVehicleMetadata>();
 

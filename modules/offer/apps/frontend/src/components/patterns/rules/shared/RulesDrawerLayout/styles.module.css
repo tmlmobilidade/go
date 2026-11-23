@@ -1,0 +1,124 @@
+/* CONTAINER */
+
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-system-background-100);
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: var(--size-spacing-3xl);
+    padding: 0;
+    border: 0;
+    color: var(--color-contrast);
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    z-index: 20;
+}
+
+.sidebar:focus-visible {
+    outline: 2px solid var(--color-contrast);
+    outline-offset: -4px;
+}
+
+.sidebar[data-overlay] {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 101;
+}
+
+/* MAIN CONTENT */
+
+.mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    justify-content: space-between;
+}
+
+/* BACKDROP */
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: var(--size-spacing-3xl);
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 90;
+}
+
+/* DRAWER */
+
+.drawer[hidden] {
+    display: none;
+}
+
+.drawer {
+    position: fixed;
+    top: 0;
+    left: var(--size-spacing-3xl);
+    width: min(calc(100% - var(--size-spacing-3xl)), 1456px);
+    height: 100%;
+    background: var(--color-system-background-100);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.1);
+    animation: drawer-enter 220ms cubic-bezier(.15, 1.1, .6, 1) both;
+}
+
+@keyframes drawer-enter {
+    from {
+        opacity: 0.85;
+        transform: translateX(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drawer {
+        animation: none;
+    }
+}
+
+.drawer[data-size='compact'] {
+    width: min(80%, 960px);
+}
+
+.drawerHeader {
+    min-height: calc(var(--size-spacing-3xl) + 2 * var(--size-spacing-md) + 1px);
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--color-system-background-200);
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--size-spacing-md);
+    padding: var(--size-spacing-md);
+}
+
+.drawerContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    padding: var(--size-spacing-md);
+    overflow-y: auto;
+    gap: var(--size-spacing-md);
+}

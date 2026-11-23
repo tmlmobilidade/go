@@ -20,7 +20,7 @@ export async function createFareHandler(request: FastifyRequest<{ Body: CreateFa
 
 	if (!validatedFare.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedFare.error.message,
+			error: validatedFare.error,
 			status_code: '400',
 		});
 	}

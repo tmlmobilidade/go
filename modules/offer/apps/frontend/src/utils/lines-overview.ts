@@ -1,4 +1,5 @@
-import { PatternShapeMapFeatureProperties, PatternShapeMapLineGroup } from '@/types/lines-overview';
+import { PatternShapeMapFeatureProperties, PatternShapeMapLineGroup, PatternShapeMapOrganizationGroup } from '@/types/lines-overview';
+import { type OrganizationFilter } from '@tmlmobilidade/go-offer-pckg-types';
 import { MapLayerMouseEvent, MapMouseEvent } from '@vis.gl/react-maplibre';
 
 export function areStringArraysEqual(left: string[], right: string[]) {
@@ -62,4 +63,40 @@ export function groupFeaturesByLine(features: PatternShapeMapFeatureProperties[]
 		...group,
 		patterns: group.patterns.sort((a, b) => a.pattern_code.localeCompare(b.pattern_code)),
 	}));
+}
+
+/** Group by the complete membership set so each pattern appears only once. */
+export function groupFeaturesByOrganization(features: PatternShapeMapFeatureProperties[], organizations: OrganizationFilter[]): PatternShapeMapOrganizationGroup[] {
+	const organizationsByAgency = new Map<string, OrganizationFilter[]>();
+	const sortedOrganizations = organizations
+		.filter(organization => organization.organization_type !== 'agency' && organization.organization_type !== 'other')
+		.toSorted((a, b) => a.long_name.localeCompare(b.long_name, 'pt', { sensitivity: 'base' }) || a._id.localeCompare(b._id));
+
+	for (const organization of sortedOrganizations) {
+		for (const agencyId of new Set(organization.agency_ids)) {
+			const memberships = organizationsByAgency.get(agencyId) ?? [];
+			memberships.push(organization);
+			organizationsByAgency.set(agencyId, memberships);
+		}
+	}
+
+	const groups = new Map<string, { features: PatternShapeMapFeatureProperties[], organizations: OrganizationFilter[] }>();
+	for (const feature of dedupePatternFeatures(features)) {
+		const memberships = organizationsByAgency.get(feature.agency_id) ?? [];
+		const key = JSON.stringify(memberships.map(organization => organization._id));
+		const group = groups.get(key) ?? { features: [], organizations: memberships };
+		group.features.push(feature);
+		groups.set(key, group);
+	}
+
+	return Array.from(groups, ([id, group]) => ({
+		id,
+		lines: groupFeaturesByLine(group.features),
+		organizations: group.organizations,
+	})).sort((a, b) => {
+		if (!a.organizations.length) return b.organizations.length ? 1 : 0;
+		if (!b.organizations.length) return -1;
+		return a.organizations.map(organization => organization.long_name).join(' · ')
+			.localeCompare(b.organizations.map(organization => organization.long_name).join(' · '), 'pt', { sensitivity: 'base' });
+	});
 }

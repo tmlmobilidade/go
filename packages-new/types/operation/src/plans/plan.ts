@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, OperationalDateIntSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { PlanAppsSchema } from './apps.js';
@@ -19,7 +19,7 @@ export const PlanSchema = BaseDocumentSchema.extend({
 });
 
 export const CreatePlanSchema = PlanSchema.omit({ _id: true, updated_at: true });
-export const UpdatePlanSchema = CreatePlanSchema.omit({ created_at: true, created_by: true }).partial();
+export const UpdatePlanSchema = partialWithoutDefaults(CreatePlanSchema.omit({ created_at: true, created_by: true }));
 
 /* * */
 

@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 
-import { toAgencySelectItem } from '../src/filters/list/to-agency-select-item.ts';
+import { toAgencySelectItem } from '../src/filters/list/to-agency-select-item';
 
 /* * */
 

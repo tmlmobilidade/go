@@ -8,6 +8,8 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useStopsListFilterAgency } from './filters/StopsListFilterAgency/use-stops-list-filter-agency';
+import { isWithinStopsListCoordinatesRadius } from './filters/StopsListFilterCoordinates/coordinates';
+import { useStopsListFilterCoordinates } from './filters/StopsListFilterCoordinates/use-stops-list-filter-coordinates';
 import { useStopsListFilterLegacyId } from './filters/StopsListFilterLegacyId/use-stops-list-filter-legacy-id';
 import { useStopsListFilterLocationPrimary } from './filters/StopsListFilterLocationPrimary/use-stops-list-filter-location-primary';
 import { useStopsListFilterLocationSecondary } from './filters/StopsListFilterLocationSecondary/use-stops-list-filter-location-secondary';
@@ -34,6 +36,7 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	// A. Setup variables
 
 	const filterAgency = useStopsListFilterAgency();
+	const { coordinates } = useStopsListFilterCoordinates();
 	const filterLegacyId = useStopsListFilterLegacyId();
 	const filterLocationPrimary = useStopsListFilterLocationPrimary();
 	const filterLocationSecondary = useStopsListFilterLocationSecondary();
@@ -80,14 +83,22 @@ export function useStopsListData(): UseStopsListDataReturnType {
 	});
 
 	//
-	// E. Return data
+	// E. Apply the coordinate filter to the shared list and map results
+
+	const coordinateFilteredStops = useMemo(() => {
+		if (!coordinates) return searchResultsData;
+		return searchResultsData?.filter(stop => isWithinStopsListCoordinatesRadius(coordinates, stop));
+	}, [searchResultsData, coordinates]);
+
+	//
+	// F. Return data
 
 	return useMemo(() => ({
-		data: searchResultsData,
+		data: coordinateFilteredStops,
 		error: error?.error,
-		isLoading,
+		isLoading: isLoading || filterAgency.isLoading || filterLocationPrimary.isLoading || filterLocationSecondary.isLoading || filterLocationTertiary.isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [coordinateFilteredStops, data?.timestamp, error, filterAgency.isLoading, filterLocationPrimary.isLoading, filterLocationSecondary.isLoading, filterLocationTertiary.isLoading, isLoading, isValidating, mutate]);
 };

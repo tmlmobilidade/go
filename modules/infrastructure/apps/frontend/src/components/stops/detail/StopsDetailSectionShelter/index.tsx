@@ -31,8 +31,8 @@ export function StopsDetailSectionShelter() {
 
 	return (
 		<Collapsible
-			description={t('default:stops.detail.SectionShelter.description')}
-			title={t('default:stops.detail.SectionShelter.title')}
+			description={t('stops:detail.StopsDetailSectionShelter.description')}
+			title={t('stops:detail.StopsDetailSectionShelter.title')}
 		>
 			<Section>
 				<Grid columns="ab" gap="md">
@@ -43,7 +43,7 @@ export function StopsDetailSectionShelter() {
 							<Select
 								data={conditionStatusOptions}
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionShelter.fields.shelter_status.label')}
+								label={t('stops:detail.StopsDetailSectionShelter.fields.shelter_status.label')}
 								onChange={field.onChange}
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
@@ -56,7 +56,7 @@ export function StopsDetailSectionShelter() {
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionShelter.fields.shelter_code.label')}
+								label={t('stops:detail.StopsDetailSectionShelter.fields.shelter_code.label')}
 								onChange={e => field.onChange(e.currentTarget.value || null)}
 								readOnly={!capabilities.editEnabled}
 								value={field.value ?? ''}
@@ -69,7 +69,7 @@ export function StopsDetailSectionShelter() {
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionShelter.fields.shelter_maintainer.label')}
+								label={t('stops:detail.StopsDetailSectionShelter.fields.shelter_maintainer.label')}
 								onChange={e => field.onChange(e.currentTarget.value || null)}
 								readOnly={!capabilities.editEnabled}
 								value={field.value ?? ''}
@@ -82,7 +82,7 @@ export function StopsDetailSectionShelter() {
 						render={({ field, fieldState }) => (
 							<DateTimeInput
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionShelter.fields.shelter_installation_date.label')}
+								label={t('stops:detail.StopsDetailSectionShelter.fields.shelter_installation_date.label')}
 								onChange={field.onChange}
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
@@ -96,7 +96,7 @@ export function StopsDetailSectionShelter() {
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionShelter.fields.shelter_make.label')}
+								label={t('stops:detail.StopsDetailSectionShelter.fields.shelter_make.label')}
 								onChange={e => field.onChange(e.currentTarget.value || null)}
 								readOnly={!capabilities.editEnabled}
 								value={field.value ?? ''}
@@ -109,7 +109,7 @@ export function StopsDetailSectionShelter() {
 						render={({ field, fieldState }) => (
 							<TextInput
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionShelter.fields.shelter_model.label')}
+								label={t('stops:detail.StopsDetailSectionShelter.fields.shelter_model.label')}
 								onChange={e => field.onChange(e.currentTarget.value || null)}
 								readOnly={!capabilities.editEnabled}
 								value={field.value ?? ''}

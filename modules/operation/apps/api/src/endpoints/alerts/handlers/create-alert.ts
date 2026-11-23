@@ -15,7 +15,9 @@ export async function createAlertHandler(request: FastifyRequest<{ Body: CreateA
 	//
 	// Validate the request body
 
-	const validatedAlert = CreateAlertSchema.parse(request.body);
+	const validatedAlertResult = CreateAlertSchema.safeParse(request.body);
+	if (!validatedAlertResult.success) return sendErrorApiResponse(reply, { error: validatedAlertResult.error, status_code: '400' });
+	const validatedAlert = validatedAlertResult.data;
 
 	const insertResult = await goDb.operation.alerts.insertOne({
 		...validatedAlert,

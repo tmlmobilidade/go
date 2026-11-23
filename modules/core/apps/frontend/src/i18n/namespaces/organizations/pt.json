@@ -1,0 +1,54 @@
+{
+	"create": {
+		"OrganizationsCreateBasicInfo": {
+			"organization_type": "Tipo de organização"
+		}
+	},
+	"detail": {
+		"OrganizationsDetailBasicInfo": {
+			"organization_type": "Tipo de organização",
+			"website_url": "Website"
+		},
+		"OrganizationsDetailContactFields": {
+			"email": "Email",
+			"job_description": "Função",
+			"name": "Nome",
+			"phone": "Telefone",
+			"remove": "Remover"
+		},
+		"OrganizationsDetailContacts": {
+			"add": "Adicionar contacto",
+			"empty": "Ainda não foram adicionados contactos.",
+			"title": "Contactos"
+		},
+		"OrganizationsDetailGeoJson": {
+			"invalid_file": "GeoJSON inválido. Selecione uma Feature ou FeatureCollection válida.",
+			"remove": "Remover geometria",
+			"title": "GeoJSON",
+			"upload": "Carregar GeoJSON"
+		}
+	},
+	"list": {
+		"OrganizationsList": {
+			"type": "Tipo de organização"
+		},
+		"OrganizationsListFilterType": {
+			"label": "Tipo de organização"
+		},
+		"OrganizationsListFiltersBar": {
+			"label": "Filtrar por"
+		}
+	},
+	"shared": {
+		"types": {
+			"agency": "Operador",
+			"autonomous_region": "Região autónoma",
+			"cim": "Comunidade intermunicipal",
+			"metropolitan_area": "Área metropolitana",
+			"municipality": "Município",
+			"other": "Outra",
+			"transport_authority": "Autoridade de transportes",
+			"transport_network": "Rede de transportes"
+		}
+	}
+}

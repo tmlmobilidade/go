@@ -1,6 +1,7 @@
 export * from './calendar-date.js';
 export * from './date-format.js';
 export * from './interval.js';
+export * from './months.js';
 export * from './operational-date-int.js';
 export * from './operational-date.js';
 export * from './operational-time.js';
@@ -8,3 +9,4 @@ export * from './time-slot.js';
 export * from './timezone-identified.js';
 export * from './unix-millis.js';
 export * from './unix-seconds.js';
+export * from './weekdays.js';

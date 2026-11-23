@@ -17,7 +17,9 @@ export async function listAgenciesHandler(request: FastifyRequest<{ Body: Alerts
 	//
 	// Validate the filters
 
-	const validatedFilters = AlertsAgencyRequestSchema.parse(request.body);
+	const validatedFiltersResult = AlertsAgencyRequestSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Get the agency IDs from the permissions

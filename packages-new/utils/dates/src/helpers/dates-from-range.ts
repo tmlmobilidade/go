@@ -1,42 +1,22 @@
 /* * */
 
-import { Dates } from '@/dates.js';
-import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { type OperationalDateInt, OperationalDateIntSchema, type TimezoneIdentified, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+
+import { DEFAULT_CAL_TZ, eachCalendarDay } from './calendar.js';
 
 /**
  * Returns an array of individual dates from a given range of operational dates.
- * @param start The start date of the range, in OperationalDate format.
- * @param end The end date of the range, in OperationalDate format.
- * @returns An array of OperationalDate objects representing each date in the range.
+ * @param start The start date of the range, in OperationalDateInt format.
+ * @param end The end date of the range, in OperationalDateInt format.
+ * @param timezone The timezone used for calendar-day iteration.
+ * @returns An array of OperationalDateInt objects representing each date in the range.
  */
-export function getOperationalDatesFromRange(start: OperationalDateInt, end: OperationalDateInt): OperationalDateInt[] {
-	//
-
-	//
-	// Validate the start and end dates
-
+export function getOperationalDatesFromRange(start: OperationalDateInt, end: OperationalDateInt, timezone: TimezoneIdentified = DEFAULT_CAL_TZ): OperationalDateInt[] {
 	if (end < start) {
 		throw new Error(`End date "${end}" must be after start date "${start}"`);
 	}
 
-	//
-	// Parse the start and end dates to ensure they are in the correct format
-
-	const startDate = Dates.fromOperationalDateInt(start, 'Europe/Lisbon');
-	const endDate = Dates.fromOperationalDateInt(end, 'Europe/Lisbon');
-
-	//
-	// Create an array to hold the individual dates and iterate
-	// from the start date to the end date, adding each date to the array
-
-	const dates: OperationalDateInt[] = [];
-
-	let current = startDate;
-
-	while (current.operational_date_int <= endDate.operational_date_int) {
-		dates.push(current.operational_date_int);
-		current = current.plus({ days: 1 });
-	}
-
-	return dates;
+	// These are date labels, not instants: walk calendar days without applying a cutoff.
+	return eachCalendarDay(toCalendarDate(start), toCalendarDate(end), timezone)
+		.map(date => OperationalDateIntSchema.parse(date));
 }

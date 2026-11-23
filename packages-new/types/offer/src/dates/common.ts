@@ -1,5 +1,6 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 /* * */
@@ -95,7 +96,7 @@ export const HHMMSchema = z
 			console.warn('Invalid HHMM:', value, err);
 			return false;
 		}
-	}, 'Invalid operational time (expected HH:MM between 04:00 and 29:59)')
+	}, validationParams('custom.formats.hhmm', { format: 'HH:mm', maximum: '29:59', minimum: '04:00' }))
 	.brand<'HHMM'>();
 
 export type HHMM = z.infer<typeof HHMMSchema>;

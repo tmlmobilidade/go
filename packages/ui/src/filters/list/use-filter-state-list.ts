@@ -10,6 +10,7 @@ import { parseAsArrayOfStringsWithNone } from '../../utils';
 
 export interface UseFilterStateListReturnType<T extends string = string> {
 	isActive: boolean
+	isLoading?: boolean
 	options: SelectDataItem[]
 	set: (value: T[]) => void
 	value: T[]
@@ -26,7 +27,7 @@ export interface UseFilterStateListReturnType<T extends string = string> {
  * @param options Optional list of options for the filter.
  * @returns The filter state management object.
  */
-export function useFilterStateList<T extends string>(key: string, defaults: T[], options?: SelectDataItem[]): UseFilterStateListReturnType<T> {
+export function useFilterStateList<T extends string>(key: string, defaults: T[], options?: SelectDataItem[], isLoading?: boolean): UseFilterStateListReturnType<T> {
 	//
 
 	//
@@ -83,8 +84,9 @@ export function useFilterStateList<T extends string>(key: string, defaults: T[],
 
 	return useMemo(() => ({
 		isActive,
+		isLoading,
 		options: parsedOptions,
 		set: setUrlValue,
 		value: effectiveValue,
-	}), [isActive, parsedOptions, effectiveValue]);
+	}), [isActive, isLoading, parsedOptions, effectiveValue]);
 }

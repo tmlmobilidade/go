@@ -7,7 +7,7 @@ import { z } from 'zod';
 export const MePreferencesPlatformRequestSchema = z.object({
 	key: z.string(),
 	scope: z.string(),
-	value: z.any(),
+	value: z.any().optional(),
 });
 
 /**

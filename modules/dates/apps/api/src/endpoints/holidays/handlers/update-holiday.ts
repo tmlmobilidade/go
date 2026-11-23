@@ -20,7 +20,7 @@ export async function updateHolidayHandler(request: FastifyRequest<{ Body: Updat
 
 	if (!validatedHoliday.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedHoliday.error.message,
+			error: validatedHoliday.error,
 			status_code: '400',
 		});
 	}

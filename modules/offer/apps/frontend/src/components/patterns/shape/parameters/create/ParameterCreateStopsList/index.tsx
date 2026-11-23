@@ -4,18 +4,23 @@
 
 import { useParameterCreateContext } from '@/components/patterns/shape/parameters/create/ParameterCreate.context';
 import { ParameterCreateStopItem } from '@/components/patterns/shape/parameters/create/ParameterCreateStopItem';
-import { PatternsDetailPathItem } from '@tmlmobilidade/go-offer-pckg-types';
 
 import styles from './styles.module.css';
 
 /* * */
 
 export function ParameterCreateStopsList() {
+	//
+	// A. Setup variables
+
 	const ctx = useParameterCreateContext();
 
-	const paths = (ctx.data.path as PatternsDetailPathItem[]) ?? [];
+	const paths = ctx.data.path ?? [];
 	const mergedPath = ctx.data.mergedPath ?? [];
 	const travelTimes = ctx.data.parameterForUI.travelTimes;
+
+	//
+	// B. Render components
 
 	return (
 		<div className={styles.container}>

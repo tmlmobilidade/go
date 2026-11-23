@@ -38,7 +38,9 @@ export async function getSidebarLogoHandler(request: FastifyRequest<{ Body: Side
 	//
 	// Validate the request parameters and get the corresponding file URL
 
-	const validatedParams = SidebarLogoPlatformRequestSchema.parse(request.body);
+	const validatedParamsResult = SidebarLogoPlatformRequestSchema.safeParse(request.body);
+	if (!validatedParamsResult.success) return sendErrorApiResponse(reply, { error: validatedParamsResult.error, status_code: '400' });
+	const validatedParams = validatedParamsResult.data;
 
 	const fileId = validatedParams.theme_mode === 'light'
 		? foundOrganization.logo_light

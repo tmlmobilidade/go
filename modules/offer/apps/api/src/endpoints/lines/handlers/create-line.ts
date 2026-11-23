@@ -19,7 +19,7 @@ export async function createLineHandler(request: FastifyRequest<{ Body: CreateLi
 	const validatedLine = CreateLineSchema.safeParse(request.body);
 
 	if (!validatedLine.success) {
-		return sendErrorApiResponse(reply, { error: validatedLine.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedLine.error, status_code: '400' });
 	}
 
 	//
@@ -49,6 +49,15 @@ export async function createLineHandler(request: FastifyRequest<{ Body: CreateLi
 
 	if (!hasPermissionForAgency) {
 		return sendErrorApiResponse(reply, { error: 'You are not authorized to create lines for this agency', status_code: '403' });
+	}
+
+	//
+	// Validate the typology belongs to the selected agency.
+
+	const typology = await goDb.offer.typologies.findById(validatedLine.data.typology);
+
+	if (!typology?.agency_ids.includes(validatedLine.data.agency_id)) {
+		return sendErrorApiResponse(reply, { error: 'Select an existing typology for this agency', status_code: '400' });
 	}
 
 	//

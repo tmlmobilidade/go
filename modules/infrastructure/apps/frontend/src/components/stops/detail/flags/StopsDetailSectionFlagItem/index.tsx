@@ -80,7 +80,7 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							data={agenciesOptions}
 							disabled={field.disabled || flagIsHarmonized}
 							error={fieldState.error?.message}
-							label={t('default:stops.detail.SectionFlagItem.fields.agency_ids.label')}
+							label={t('stops:detail.StopsDetailSectionFlagItem.fields.agency_ids.label')}
 							onChange={values => field.onChange(values)}
 							value={field.value ?? []}
 							w="100%"
@@ -96,10 +96,10 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							<TextInput
 								disabled={field.disabled || flagIsHarmonized}
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionFlagItem.fields.stop_id.label')}
+								label={t('stops:detail.StopsDetailSectionFlagItem.fields.stop_id.label')}
 								leftSection={flagIdMatchesStopId ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
 								onChange={event => field.onChange(event.target.value)}
-								placeholder={t('default:stops.detail.SectionFlagItem.fields.stop_id.placeholder')}
+								placeholder={t('stops:detail.StopsDetailSectionFlagItem.fields.stop_id.placeholder')}
 								value={field.value ?? ''}
 								w="100%"
 							/>
@@ -112,10 +112,10 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							<TextInput
 								disabled={field.disabled || flagIsHarmonized}
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionFlagItem.fields.short_name.label')}
+								label={t('stops:detail.StopsDetailSectionFlagItem.fields.short_name.label')}
 								leftSection={flagShortNameMatchesStopName ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
 								onChange={event => field.onChange(event.target.value)}
-								placeholder={t('default:stops.detail.SectionFlagItem.fields.short_name.placeholder')}
+								placeholder={t('stops:detail.StopsDetailSectionFlagItem.fields.short_name.placeholder')}
 								value={field.value ?? ''}
 								w="100%"
 							/>
@@ -131,7 +131,7 @@ export function StopsDetailSectionFlagItem({ index }: StopsDetailSectionFlagItem
 							<Checkbox
 								checked={field.value ?? false}
 								error={fieldState.error?.message}
-								label={t('default:stops.detail.SectionFlagItem.fields.is_harmonized.label')}
+								label={t('stops:detail.StopsDetailSectionFlagItem.fields.is_harmonized.label')}
 								onChange={event => field.onChange(event.target.checked)}
 							/>
 						)}

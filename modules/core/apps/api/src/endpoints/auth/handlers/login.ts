@@ -16,7 +16,7 @@ export async function loginHandler(request: FastifyRequest<{ Body: LoginDto }>, 
 
 	if (!validationResult.success) {
 		return sendErrorApiResponse(reply, {
-			error: validationResult.error.message,
+			error: validationResult.error,
 			status_code: '400',
 		});
 	}

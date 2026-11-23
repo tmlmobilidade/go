@@ -9,7 +9,7 @@ import { z } from 'zod';
  * @returns The converted object containing only the fields defined in the schema
  * @throws {Error} If a required field is missing from the source object
  */
-export function convertObject<T extends z.ZodObject<z.ZodRawShape>>(source: unknown, template: T): z.infer<T> {
+export function convertObject<T extends z.ZodObject<Record<string, z.ZodType>>>(source: unknown, template: T): z.infer<T> {
 	//
 
 	const templateKeys = Object.keys(template.shape);
@@ -30,7 +30,7 @@ export function convertObject<T extends z.ZodObject<z.ZodRawShape>>(source: unkn
 		const parsedValue = fieldSchema.safeParse(value);
 		if (!parsedValue.success) {
 			throw new Error(
-				`Invalid field type for "${key}" in the source object:\n> ${parsedValue.error.errors.map(error => error.message).join('\n')}`,
+				`Invalid field type for "${key}" in the source object:\n> ${parsedValue.error.issues.map(error => error.message).join('\n')}`,
 			);
 		}
 
