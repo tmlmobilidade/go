@@ -6,7 +6,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OfferGtfsV29ExtractionCreate } from '@tmlmobilidade/go-types-extractions';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDateInt, OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, useForm } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, useExtractionsListData, useForm } from '@tmlmobilidade/ui';
 import { closeModal, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -70,6 +70,7 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const { mutate } = useExtractionsListData();
 	const linesListContext = useLinesListContext();
 	const form = useForm<GtfsExportFormValues>({
 		initialValues: {
@@ -165,14 +166,16 @@ export const GtfsExportModalContextProvider = ({ children }: PropsWithChildren) 
 			if (fileExport.error || !fileExport.data) {
 				throw new Error(fileExport.error ?? t('lines:export.GtfsExportModalContextProvider.export_failed'));
 			}
+			mutate(fileExport);
 			useToast.success({ message: t('lines:export.GtfsExportModalContextProvider.export_started'), title: t('lines:export.GtfsExportModalContextProvider.success') });
 			closeModal(GTFS_EXPORT_MODAL_ID);
+			openExtractionsListModal();
 		} catch (error) {
 			useToast.error({ message: error instanceof Error ? error.message : t('lines:export.GtfsExportModalContextProvider.export_failed'), title: t('lines:export.GtfsExportModalContextProvider.error') });
 		} finally {
 			setLoading(false);
 		}
-	}, [form, t]);
+	}, [form, mutate, t]);
 
 	//
 	// D. Define context value

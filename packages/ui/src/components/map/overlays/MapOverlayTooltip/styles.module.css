@@ -1,0 +1,8 @@
+.popup {
+	pointer-events: none;
+}
+
+.popup > div {
+	padding: 0;
+	border: none;
+}

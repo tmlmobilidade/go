@@ -6,7 +6,7 @@ import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 
 /* * */
 
-export type MapFloatingControlsLayoutKind = 'above-sheet' | 'default' | 'hidden';
+export type MapFloatingControlsLayoutKind = 'above-live-bar' | 'above-sheet' | 'default' | 'hidden';
 
 export interface MapFloatingControlsLayout {
 	// Pixel offset (not dvh/vh) so it matches exactly how react-modal-sheet itself measures the
@@ -42,7 +42,7 @@ export function useMapFloatingControlsLayout(): MapFloatingControlsLayout {
 		if (routePlannerContext.flags.is_navigating) {
 			return {
 				bottomOffsetPx: ROUTE_PLANNER_LIVE_BAR_OFFSET_PX,
-				layout: 'above-sheet',
+				layout: 'above-live-bar',
 			};
 		}
 

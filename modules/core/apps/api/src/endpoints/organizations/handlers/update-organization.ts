@@ -1,8 +1,8 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Organization, type UpdateOrganizationDto } from '@tmlmobilidade/go-types-core';
+import { type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 
 /**
  * Updates an Organization in the database.
@@ -12,10 +12,15 @@ import { type Organization, type UpdateOrganizationDto } from '@tmlmobilidade/go
 export async function updateOrganizationHandler(request: FastifyRequest<{ Body: UpdateOrganizationDto, Params: { id: string } }>, reply: FastifyReply<Organization>) {
 	//
 
-	const updatedOrganizationData = await goDb.core.organizations.updateById(request.params.id, {
+	const validatedOrganization = UpdateOrganizationSchema.safeParse({
 		...request.body,
 		updated_by: request.me._id,
 	});
+	if (!validatedOrganization.success) {
+		return sendErrorApiResponse(reply, { error: validatedOrganization.error.message, status_code: '400' });
+	}
+
+	const updatedOrganizationData = await goDb.core.organizations.updateById(request.params.id, validatedOrganization.data);
 
 	return sendSuccessApiResponse(reply, updatedOrganizationData);
 }
