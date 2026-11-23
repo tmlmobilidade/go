@@ -3,7 +3,7 @@
 import { z } from 'zod';
 
 import { type PublicFeedbackEntityType } from '../v1/entity-type.js';
-import { getPublicFeedbackReasonCategoriesByEntity, type PublicFeedbackReasonCategory } from '../v1/reason-v1.js';
+import { getPublicFeedbackReasonCategoriesByEntity, type PublicFeedbackReasonCategory } from '../v1/reason.js';
 
 /* * */
 

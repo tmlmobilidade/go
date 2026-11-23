@@ -2,8 +2,10 @@
 
 import { z } from 'zod';
 
-import { PublicFeedbackV1Schema, PublicFeedbackV1SubmissionSchema } from './v1/feedback-v1.js';
-import { PublicFeedbackV2Schema, PublicFeedbackV2SubmissionSchema } from './v2/feedback-v2.js';
+import { PublicFeedbackV1Schema } from './v1/feedback.js';
+import { PublicFeedbackV1SubmissionSchema } from './v1/submission-payload.js';
+import { PublicFeedbackV2Schema } from './v2/feedback.js';
+import { PublicFeedbackV2SubmissionSchema } from './v2/submission-payload.js';
 
 /* * */
 
