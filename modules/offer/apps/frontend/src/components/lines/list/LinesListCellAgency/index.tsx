@@ -1,6 +1,9 @@
+'use client';
+
 /* * */
 
-import { Tag } from '@tmlmobilidade/ui';
+import { useLinesListContext } from '@/components/lines/list/LinesList.context';
+import { AgencyTag } from '@tmlmobilidade/ui';
 
 /* * */
 
@@ -11,5 +14,20 @@ interface LinesListCellAgencyProps {
 /* * */
 
 export function LinesListCellAgency({ agencyId }: LinesListCellAgencyProps) {
-	return <Tag label={agencyId} variant="muted" />;
+	//
+	// A. Setup variables
+
+	const { data } = useLinesListContext();
+
+	//
+	// B. Render components
+
+	return (
+		<AgencyTag
+			agencyId={agencyId}
+			copyOnClick={false}
+			data={data.agencies}
+			showShortName
+		/>
+	);
 }

@@ -3,6 +3,7 @@
 import { authorizePatternAccess } from '@/utils/pattern-access.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { withSimplifiedPatternShape } from '@tmlmobilidade/go-offer-pckg-utils';
 import { type CreatePatternDto, CreatePatternSchema, type Pattern, PatternPathParametersSchema, type StopsParameter } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
@@ -48,6 +49,7 @@ export async function createPatternHandler(request: FastifyRequest<{ Body: Creat
 		created_by: request.me._id,
 		is_locked: false,
 		parameters: [defaultParameter],
+		shape: validatedPattern.data.shape ? withSimplifiedPatternShape(validatedPattern.data.shape) : validatedPattern.data.shape,
 		updated_by: request.me._id,
 	});
 

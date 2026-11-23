@@ -1,0 +1,54 @@
+{
+	"create": {
+		"OrganizationsCreateBasicInfo": {
+			"organization_type": "Organization type"
+		}
+	},
+	"detail": {
+		"OrganizationsDetailBasicInfo": {
+			"organization_type": "Organization type",
+			"website_url": "Website"
+		},
+		"OrganizationsDetailContactFields": {
+			"email": "Email",
+			"job_description": "Job description",
+			"name": "Name",
+			"phone": "Phone",
+			"remove": "Remove"
+		},
+		"OrganizationsDetailContacts": {
+			"add": "Add contact",
+			"empty": "No contacts added yet.",
+			"title": "Contacts"
+		},
+		"OrganizationsDetailGeoJson": {
+			"invalid_file": "Invalid GeoJSON. Select a valid Feature or FeatureCollection.",
+			"remove": "Remove geometry",
+			"title": "GeoJSON",
+			"upload": "Upload GeoJSON"
+		}
+	},
+	"list": {
+		"OrganizationsList": {
+			"type": "Organization type"
+		},
+		"OrganizationsListFilterType": {
+			"label": "Organization type"
+		},
+		"OrganizationsListFiltersBar": {
+			"label": "Filter by"
+		}
+	},
+	"shared": {
+		"types": {
+			"agency": "Agency",
+			"autonomous_region": "Autonomous region",
+			"cim": "Intermunicipal community",
+			"metropolitan_area": "Metropolitan area",
+			"municipality": "Municipality",
+			"other": "Other",
+			"transport_authority": "Transport authority",
+			"transport_network": "Transport network"
+		}
+	}
+}
