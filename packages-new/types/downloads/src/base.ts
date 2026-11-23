@@ -14,7 +14,7 @@ export type FileExportType = z.infer<typeof FileExportTypeSchema>;
 export const FileExportBaseSchema = BaseDocumentSchema
 	.omit({ is_locked: true })
 	.extend({
-		download_url: z.string().nullish(),
+		download_url: z.string().nullish().optional(),
 		file_id: z.string().nullish(),
 		file_name: z.string(),
 		processing_status: ProcessingStatusSchema,
