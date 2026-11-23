@@ -1,16 +1,16 @@
 /* * */
 
-import { type GtfsStrictV30Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 
 /* * */
 
-type TripDirectionReference = Pick<GtfsStrictV30Trips, 'route_id' | 'shape_id' | 'trip_headsign'>;
+type TripDirectionReference = Pick<GtfsStrictV29Trips, 'route_id' | 'shape_id' | 'trip_headsign'>;
 
 /** Keeps the first exported trip as the direction reference for each route. */
 export class TripDirectionRegistry {
 	private references = new Map<string, TripDirectionReference>();
 
-	resolve(trip: TripDirectionReference): GtfsStrictV30Trips['direction_id'] {
+	resolve(trip: TripDirectionReference): GtfsStrictV29Trips['direction_id'] {
 		const reference = this.references.get(trip.route_id);
 
 		if (!reference) {
