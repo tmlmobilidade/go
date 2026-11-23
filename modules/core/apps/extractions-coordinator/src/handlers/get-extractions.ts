@@ -2,6 +2,7 @@
 
 import { type ExtractionsCoordinatorResponse } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { ExtractionVersionValues } from '@tmlmobilidade/go-types-extractions';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
@@ -68,13 +69,13 @@ export async function getExtractionsHandler(): Promise<ExtractionsCoordinatorRes
 		Logger.info({ message: `[extractions] [${sessionId}] Released ${updateResult.modifiedCount} stuck extractions. (${timer.get()})` });
 
 		//
-		// Find the next Extraction that is waiting to be processed.
-		// Sort the query by descending date to prioritize the most recent Extractions.
+		// Find the oldest waiting extraction with a supported version.
 
 		const foundWaitingExtractions = await goDb.core.extractions.findMany(
 			{
 				...environmentFilter,
 				processing_status: 'waiting',
+				version: { $in: ExtractionVersionValues },
 			},
 			{
 				limit: 1,
