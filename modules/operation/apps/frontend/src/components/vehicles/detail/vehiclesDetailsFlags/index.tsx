@@ -1,6 +1,6 @@
 import { IconEqual, IconEqualNot } from '@tabler/icons-react';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Section, Select, StandardFormController, Surface, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { DeleteButton, Section, Select, StandardFormController, Surface, TextInput, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -30,11 +30,20 @@ export function VehiclesDetailFlags({ index }) {
 	}, [flagsValues, index, form]);
 
 	//
+	//
+
+	const handleDeleteFlagItem = () => {
+		const latestValues = form.getValues('flags');
+		form.setValue('flags', latestValues?.filter((_, i) => i !== index) ?? [], { shouldDirty: true });
+	};
+
+	//
 	// B. Render components
 
 	return (
 		<Surface variant="bordered">
 			<Section gap="md">
+				<DeleteButton onDelete={handleDeleteFlagItem} />
 				<StandardFormController
 					control={form.control}
 					name={`flags.${index}.agency_ids`}
@@ -45,7 +54,7 @@ export function VehiclesDetailFlags({ index }) {
 							error={fieldState.error?.message}
 							label={t('default:vehicles.detail.VehiclesDetailFlags.fields.agency_ids.label')}
 							onChange={values => field.onChange(values)}
-							value={field.value ?? []}
+							value={field.value?.join(',') ?? ''}
 							w="100%"
 						/>
 					)}
