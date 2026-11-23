@@ -1,5 +1,6 @@
 /* * */
 
+import { extractDatesAnnotationsV1 } from '@tmlmobilidade/go-extractions-dates-annotations';
 import { extractInfrastructureNodesV1, extractInfrastructureStopsV1 } from '@tmlmobilidade/go-extractions-infrastructure-stops';
 import { extractOfferGtfsV29 } from '@tmlmobilidade/go-extractions-offer-gtfs';
 import { extractOperationAlertsV1 } from '@tmlmobilidade/go-extractions-operation-alerts';
@@ -9,6 +10,7 @@ import { type Extraction, type ExtractionTaskContext, type ExtractionTaskResult 
 /* * */
 
 export const VERSIONS_MAP: Record<Extraction['version'], (context: ExtractionTaskContext, extraction: Extraction) => Promise<ExtractionTaskResult>> = {
+	'dates-annotations-v1': extractDatesAnnotationsV1,
 	'infrastructure-nodes-v1': extractInfrastructureNodesV1,
 	'infrastructure-stops-v1': extractInfrastructureStopsV1,
 	'offer-gtfs-v29': extractOfferGtfsV29,

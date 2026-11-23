@@ -1,0 +1,243 @@
+package gtfsvalidator_test
+
+import (
+	"context"
+	"errors"
+	"reflect"
+	"sync"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+)
+
+// task builds a passing test node; deps ...string accepts any number of prerequisite IDs.
+func task(id string, deps ...string) types.Task[struct{}, int] {
+	return types.Task[struct{}, int]{
+		ID:           id,
+		Dependencies: deps,
+		Run: func(context.Context, struct{}) (types.Outcome[int], error) {
+			return types.Outcome[int]{Value: 1}, nil
+		},
+	}
+}
+
+// Table-driven tests run the same assertion against several named input cases.
+func TestMalformedGraphs(t *testing.T) {
+	for name, tasks := range map[string][]types.Task[struct{}, int]{
+		"empty id":           {task("")},
+		"nil function":       {{ID: "a"}},
+		"duplicate id":       {task("a"), task("a")},
+		"unknown dependency": {task("a", "b")},
+		"duplicate edge":     {task("a"), task("b", "a", "a")},
+		"cycle":              {task("a", "b"), task("b", "a")},
+		"self cycle":         {task("a", "a")},
+	} {
+		t.Run(name, func(t *testing.T) {
+			if _, err := services.NewDAG(tasks); err == nil {
+				t.Fatal("accepted malformed graph")
+			}
+		})
+	}
+}
+
+// A failed root must skip its entire branch without blocking the independent z node.
+func TestBranchFailureAndReuse(t *testing.T) {
+	var ran atomic.Int32
+	a := task("a")
+	a.Run = func(context.Context, struct{}) (types.Outcome[int], error) {
+		return types.Outcome[int]{Failed: true}, nil
+	}
+	b := task("b", "a")
+	b.Run = func(context.Context, struct{}) (types.Outcome[int], error) {
+		t.Error("blocked task ran")
+		return types.Outcome[int]{}, nil
+	}
+
+	z := task("z")
+	z.Run = func(context.Context, struct{}) (types.Outcome[int], error) {
+		ran.Add(1)
+		return types.Outcome[int]{Value: 42}, nil
+	}
+
+	input := []types.Task[struct{}, int]{task("d", "b", "c"), task("c", "a"), b, z, a}
+	graph, err := services.NewDAG(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Mutating the original slice must not affect the graph's copied dependencies.
+	input[0].Dependencies[0] = "unknown"
+
+	for range 2 {
+		results, err := graph.Execute(context.Background(), struct{}{}, 3)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		statuses := []types.Status{}
+		for _, r := range results {
+			statuses = append(statuses, r.Status)
+		}
+
+		if !reflect.DeepEqual(statuses, []types.Status{types.Failed, types.Skipped, types.Skipped, types.Skipped, types.Passed}) {
+			t.Fatal(results)
+		}
+
+		if !reflect.DeepEqual(results[3].BlockedBy, []string{"b", "c"}) || results[4].Value != 42 {
+			t.Fatal(results)
+		}
+	}
+
+	if ran.Load() != 2 {
+		t.Fatal("independent branch did not run twice")
+	}
+}
+
+// Hold workers at a channel barrier to prove parallelism without relying on sleeps.
+func TestBoundedParallelDiamond(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Empty struct messages carry a signal without any data. Closing release
+	// wakes every worker waiting on that channel. Atomic counters are safe to
+	// read/write from multiple goroutines without data races.
+	started := make(chan struct{}, 3)
+	release := make(chan struct{})
+	var active, peak atomic.Int32
+	tasks := []types.Task[struct{}, int]{}
+	for _, id := range []string{"a", "b", "c"} {
+		node := task(id)
+		node.Run = func(ctx context.Context, _ struct{}) (types.Outcome[int], error) {
+			n := active.Add(1)
+			defer active.Add(-1)
+			for old := peak.Load(); n > old; old = peak.Load() {
+				if peak.CompareAndSwap(old, n) {
+					break
+				}
+			}
+			started <- struct{}{}
+			select {
+			case <-release:
+				return types.Outcome[int]{}, nil
+			case <-ctx.Done():
+				return types.Outcome[int]{}, ctx.Err()
+			}
+		}
+		tasks = append(tasks, node)
+	}
+
+	child := task("d", "a", "b", "c")
+	child.Run = func(context.Context, struct{}) (types.Outcome[int], error) {
+		if active.Load() != 0 {
+			t.Error("dependent started early")
+		}
+
+		return types.Outcome[int]{}, nil
+	}
+
+	graph, _ := services.NewDAG(append(tasks, child))
+	finished := make(chan error, 1)
+	go func() {
+		_, err := graph.Execute(ctx, struct{}{}, 2)
+		finished <- err
+	}()
+	for range 2 {
+		select {
+		case <-started:
+		case <-ctx.Done():
+			t.Fatal(ctx.Err())
+		}
+	}
+
+	if active.Load() != 2 {
+		t.Error("ready tasks did not run concurrently")
+	}
+
+	close(release)
+	if err := <-finished; err != nil {
+		t.Fatal(err)
+	}
+
+	if peak.Load() != 2 {
+		t.Fatal(peak.Load())
+	}
+}
+
+// Force one task to fail while another is active; Execute must wait for both.
+func TestAbortCancelsAndJoins(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	running := make(chan struct{})
+	var joined atomic.Bool
+	failure := errors.New("database unavailable")
+	a := task("a")
+	a.Run = func(ctx context.Context, _ struct{}) (types.Outcome[int], error) {
+		select {
+		case <-running:
+			return types.Outcome[int]{}, failure
+		case <-ctx.Done():
+			return types.Outcome[int]{}, ctx.Err()
+		}
+	}
+
+	b := task("b")
+	b.Run = func(ctx context.Context, _ struct{}) (types.Outcome[int], error) {
+		close(running)
+		<-ctx.Done()
+		joined.Store(true)
+		return types.Outcome[int]{}, ctx.Err()
+	}
+
+	graph, _ := services.NewDAG([]types.Task[struct{}, int]{a, b, task("c", "a")})
+	var mu sync.Mutex
+	var events []types.TaskEvent[int]
+	results, err := graph.ExecuteWithObserver(ctx, struct{}{}, 2, func(event types.TaskEvent[int]) {
+		mu.Lock()
+		defer mu.Unlock()
+		events = append(events, event)
+	})
+	if !errors.Is(err, failure) || !joined.Load() || results[2].Status != types.Skipped || results[0].Status != types.Errored {
+		t.Fatal(results, err)
+	}
+	// The order between the worker starts is unconstrained. Their recorded
+	// lifetimes must overlap, and only the first worker finishes before cancel.
+	if len(events) != 8 || events[0].Kind != types.TaskReady || events[1].Kind != types.TaskReady ||
+		events[2].Kind != types.TaskStarted || events[3].Kind != types.TaskStarted ||
+		events[4].Kind != types.TaskFinished || events[4].Result.ID != "a" || events[4].Result.Status != types.Errored ||
+		events[5].Kind != types.TaskCancelled || !errors.Is(events[5].Cause, failure) ||
+		events[6].Kind != types.TaskFinished || events[6].Result.ID != "b" ||
+		events[7].Kind != types.TaskSkipped || !reflect.DeepEqual(events[7].Result, results[2]) {
+		t.Fatalf("unexpected event order or result: %+v", events)
+	}
+}
+
+// Check the exceptional paths that must terminate without leaving work behind.
+func TestPanicCancellationAndEmptyGraph(t *testing.T) {
+	a := task("a")
+	a.Run = func(context.Context, struct{}) (types.Outcome[int], error) { panic("broken rule") }
+	graph, _ := services.NewDAG([]types.Task[struct{}, int]{a})
+	results, err := graph.Execute(context.Background(), struct{}{}, 1)
+	if err == nil || results[0].Status != types.Errored {
+		t.Fatal(results, err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	results, err = graph.Execute(ctx, struct{}{}, 1)
+	if !errors.Is(err, context.Canceled) || results[0].Status != types.Skipped {
+		t.Fatal(results, err)
+	}
+
+	if _, err := graph.Execute(context.Background(), struct{}{}, 0); err == nil {
+		t.Fatal("accepted invalid limit")
+	}
+
+	empty, _ := services.NewDAG([]types.Task[struct{}, int]{})
+	results, err = empty.Execute(context.Background(), struct{}{}, 1)
+	if err != nil || len(results) != 0 {
+		t.Fatal(results, err)
+	}
+}

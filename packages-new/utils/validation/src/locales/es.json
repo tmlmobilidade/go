@@ -7,7 +7,9 @@
 			"event_id": "Debe contener letras mayúsculas, números o guiones bajos",
 			"overlap": "No se pueden añadir y eliminar fechas en la misma solicitud: {dates}",
 			"period_name": "Introduzca un nombre para el período",
-			"period_required": "Seleccione un período"
+			"period_required": "Seleccione un período",
+			"source_required": "Indique un nombre o un enlace para la fuente",
+			"source_url": "Introduzca un enlace HTTP o HTTPS válido"
 		},
 		"documents": {
 			"changes_required": "multiple_fields requiere el array metadata.changes",

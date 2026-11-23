@@ -28,11 +28,6 @@
 		"create": {
 			"title": "Nueva anotación"
 		},
-		"dates": {
-			"prompt": "Seleccione las fechas de la incidencia",
-			"removeMonth": "Quitar mes",
-			"selectMonth": "Seleccionar mes"
-		},
 		"detail": {
 			"cancel": "Cancelar",
 			"confirm": "Eliminar",
@@ -41,7 +36,9 @@
 		},
 		"fields": {
 			"agency_ids": {
-				"label": "Operadores afectados"
+				"description": "Opcional. Sin selección, visible para todos; con selección, requiere acceso a todos los operadores seleccionados.",
+				"label": "Operadores",
+				"unassigned": "Sin operadores"
 			},
 			"description": {
 				"label": "Descripción",

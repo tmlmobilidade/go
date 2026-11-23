@@ -1,0 +1,17 @@
+{
+	"name": "@tmlmobilidade/go-golang-gtfs-validator",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "GO111MODULE=on go build -ldflags=-w -o dist/gtfs-validator ./src/cli.go",
+		"dev": "go run -ldflags=-w ./src/cli.go",
+		"lint": "go vet ./...",
+		"test": "go test ./...",
+		"tidy": "go mod tidy"
+	},
+	"devDependencies": {
+		"@tmlmobilidade/go-golang-import-gtfs": "*",
+		"@tmlmobilidade/go-golang-sqlite": "*",
+		"@tmlmobilidade/go-golang-telemetry": "*"
+	}
+}

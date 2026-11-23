@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GTFS validation trace</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --page: light-dark(#f2f5f8, #10161f);
+      --surface: light-dark(#fff, #171f2b);
+      --ink: light-dark(#152238, #e7edf5);
+      --muted: light-dark(#536277, #aebbd0);
+      --border: light-dark(#d5dfe9, #364455);
+      --accent: light-dark(#195a85, #88c5f8);
+      --accent-ink: light-dark(#fff, #142234);
+      --line: light-dark(#8294aa, #788ea8);
+      --danger: light-dark(#a12c29, #ff9f99);
+      --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font: 15px/1.45 system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; color: var(--ink); background: var(--page); }
+    main { width: min(96%, 1560px); margin: 0 auto; padding: 28px 0; }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: clamp(1.5rem, 3vw, 2.15rem); letter-spacing: -.035em; }
+    h2 { font-size: 1rem; }
+    .row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; }
+    .spread { justify-content: space-between; }
+    .muted { color: var(--muted); }
+    .small { font-size: .87rem; }
+    .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+    button, select {
+      font: inherit; min-height: 36px; padding: 5px 10px; color: var(--ink);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 7px;
+    }
+    button { cursor: pointer; }
+    button:hover:not(:disabled), button[aria-pressed="true"] { border-color: var(--accent); }
+    button:disabled { opacity: .55; cursor: default; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+    header { margin-bottom: 16px; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; min-width: 0; }
+    .panel-head { padding: 12px 15px; border-bottom: 1px solid var(--border); }
+    #drop-zone {
+      padding: 28px 14px; border: 1px dashed var(--line); border-radius: 12px;
+      text-align: center; background: var(--surface); color: var(--muted);
+    }
+    body.dragging { outline: 3px solid var(--accent); outline-offset: -4px; }
+    #load-error { color: var(--danger); margin-bottom: 12px; overflow-wrap: anywhere; }
+    .run-meta { padding-bottom: 12px; overflow-wrap: anywhere; }
+    .run-meta strong, .counts strong { color: var(--ink); }
+    #run-state[data-state="aborted"] { color: var(--danger); }
+    .transport { padding: 12px 15px; margin-bottom: 12px; }
+    .controls { gap: 6px; }
+    .scrub { flex: 1 1 330px; min-width: 0; }
+    .scrub input { width: 100%; margin: 2px 0 0; accent-color: var(--accent); }
+    .counts { margin-left: auto; }
+    .work-area { display: grid; grid-template-columns: minmax(0, 1fr) 316px; gap: 12px; align-items: start; }
+    .legend { display: flex; flex-wrap: wrap; gap: 3px 12px; padding: 9px 15px; border-bottom: 1px solid var(--border); }
+    [data-state="pending"] { --state: light-dark(#627187, #acbad0); }
+    [data-state="ready"] { --state: light-dark(#79550d, #f3ce77); }
+    [data-state="running"] { --state: light-dark(#155c93, #86c7ff); }
+    [data-state="passed"] { --state: light-dark(#216446, #80d8a9); }
+    [data-state="failed"] { --state: light-dark(#a12c29, #ff9f99); }
+    [data-state="skipped"] { --state: light-dark(#6b4b8d, #d6b6fa); }
+    [data-state="errored"] { --state: light-dark(#a23d13, #ffb38f); }
+    .status { color: var(--state); white-space: nowrap; font-weight: 600; }
+    #graph-window {
+      height: clamp(270px, 56vh, 650px); overflow: auto; display: grid;
+      background: radial-gradient(color-mix(in srgb, var(--border) 67%, transparent) 1px, transparent 1px) 0 0 / 18px 18px;
+      border-radius: 0 0 12px 12px;
+    }
+    #graph-space { position: relative; margin: auto; overflow: clip; }
+    #graph { position: absolute; inset: 0 auto auto 0; transform-origin: top left; }
+    #edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; color: var(--line); }
+    .edge.hot { color: var(--accent); stroke-width: 2.5; }
+    .node {
+      position: absolute; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px;
+      border-inline-start: 4px solid var(--state); text-align: left;
+      background: color-mix(in srgb, var(--state) 7%, var(--surface));
+      min-height: 0; font: 13px var(--mono);
+    }
+    .node[aria-pressed="true"] { outline: 2px solid var(--accent); }
+    .node span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .node span:last-child { font-size: 16px; }
+    .graph-label { position: absolute; font-size: 13px; color: var(--muted); }
+    .inspect { padding: 12px 15px; overflow-wrap: anywhere; }
+    .inspect select { width: 100%; margin: 6px 0 10px; }
+    dl { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; row-gap: 4px; margin: 8px 0 0; }
+    dt { color: var(--muted); }
+    dd { margin: 0; }
+    .rule-link, .jump { font: inherit; color: var(--accent); text-align: left; border: 0; padding: 0; background: none; }
+    .rule-link { min-height: 26px; }
+    .rule-link:hover, .jump:hover { text-decoration: underline; }
+    .now { border-top: 1px solid var(--border); margin-top: 13px; padding-top: 12px; }
+    .now p { margin-top: 5px; }
+    .event-log { margin-top: 12px; overflow: hidden; }
+    .event-scroll { position: relative; max-height: 290px; overflow: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 4px 13px; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
+    th { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+    td:first-child { width: 1%; white-space: nowrap; }
+    tr[aria-current="step"] { background: color-mix(in srgb, var(--accent) 13%, var(--surface)); }
+    @media (max-width: 900px) { .work-area { grid-template-columns: minmax(0, 1fr); } }
+    @media (max-width: 500px) {
+      main { padding-top: 14px; }
+      .transport, .panel-head, .legend, .inspect { padding-inline: 10px; }
+      .scrub { order: 1; }
+      .counts { margin-left: 0; }
+      #graph-window { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="row spread">
+    <h1>GTFS validation trace</h1>
+    <button class="primary" id="open" type="button">Open trace</button>
+    <input id="file" type="file" accept=".json,application/json" aria-label="Trace JSON file" hidden>
+  </header>
+  <p id="load-error" role="alert" hidden></p>
+  <div id="drop-zone">Drop a trace JSON file here or choose <strong>Open trace</strong>.</div>
+  <div id="viewer" hidden>
+    <div class="row run-meta small muted">
+      <strong id="run-state"></strong><span id="filename"></span><time id="started"></time><span id="graph-summary"></span>
+    </div>
+    <section class="panel transport row" aria-label="Playback">
+      <div class="row controls">
+        <button id="play" type="button">Play events</button>
+        <button id="prev" type="button">Previous</button>
+        <button id="next" type="button">Next</button>
+      </div>
+      <div class="scrub">
+        <label for="step" class="row spread small"><span id="step-count">Event</span><output class="mono" id="elapsed" for="step"></output></label>
+        <input id="step" type="range" min="0" value="0" max="0" step="1">
+      </div>
+      <p class="counts small muted"><strong id="active"></strong> running · peak <strong id="peak"></strong></p>
+    </section>
+    <div class="work-area">
+      <section class="panel" aria-labelledby="chart-heading">
+        <div class="panel-head row spread">
+          <div><h2 id="chart-heading">Rule dependencies</h2><p class="muted small">Arrows point from prerequisite to dependent.</p></div>
+          <div class="row controls">
+            <button id="fit" type="button" aria-pressed="true">Fit chart</button>
+            <button id="actual" type="button" aria-pressed="false">Actual size</button>
+          </div>
+        </div>
+        <div class="legend small" id="legend" aria-label="Rule statuses"></div>
+        <div id="graph-window" tabindex="0" aria-label="Rule dependency chart">
+          <div id="graph-space">
+            <div id="graph">
+              <svg id="edges" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"></path>
+                  </marker>
+                </defs>
+                <g id="edge-lines"></g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+      <aside class="panel inspect" aria-labelledby="inspect-heading">
+        <h2 id="inspect-heading">Rule details</h2>
+        <select id="rule-choice" aria-label="Select a rule"></select>
+        <div id="rule-details" class="small"></div>
+        <section class="now" aria-labelledby="current-heading">
+          <h2 id="current-heading">Current event</h2>
+          <p id="event-name" class="small"></p>
+          <p id="event-detail" class="small muted"></p>
+        </section>
+      </aside>
+    </div>
+    <section class="panel event-log" aria-labelledby="events-heading">
+      <div class="panel-head"><h2 id="events-heading">Event log</h2></div>
+      <div class="event-scroll" id="event-scroll" tabindex="0" aria-label="Scroll through events">
+        <table class="small"><thead><tr><th scope="col">Elapsed</th><th scope="col">Event</th></tr></thead><tbody id="events"></tbody></table>
+      </div>
+    </section>
+  </div>
+</main>
+<script>
+  "use strict";
+  const byID = (id) => document.getElementById(id);
+  const statuses = {
+    pending: ["○", "Pending"], ready: ["◇", "Ready"], running: ["▶", "Running"],
+    passed: ["✓", "Passed"], failed: ["×", "Failed"], skipped: ["↷", "Skipped"], errored: ["!", "Errored"],
+  };
+  const phases = {graph: "Graph setup", import: "Feed import", indexes: "Database indexes",
+    validation: "Rule validation", report: "Report collection", cleanup: "Cleanup"};
+  const eventKinds = new Set(["run_started", "run_finished", "phase_started", "phase_finished",
+    "rule_ready", "rule_started", "rule_finished", "rule_skipped", "cancelled"]);
+  const svgNS = byID("edges").namespaceURI;
+  for (const [state, [symbol, label]] of Object.entries(statuses)) {
+    const key = document.createElement("span");
+    key.className = "status";
+    key.dataset.state = state;
+    key.textContent = symbol + " " + label;
+    byID("legend").append(key);
+  }
+
+  const terminal = new Set(["passed", "failed", "errored"]);
+  let model, selected, index = 0, fit = true, timer = null, loadToken = 0;
+
+  function requireTrace(condition, message) {
+    if (!condition) throw new Error(message);
+  }
+
+  function parseTrace(text) {
+    const trace = JSON.parse(text);
+    requireTrace(trace?.version === 1, "This viewer requires a version 1 validation trace.");
+    requireTrace(Array.isArray(trace.rules) && trace.rules.length && Array.isArray(trace.events) &&
+      trace.events.length >= 2 && typeof trace.started_at === "string" && Number.isFinite(Date.parse(trace.started_at)) &&
+      Number.isInteger(trace.concurrency) && trace.concurrency > 0, "The trace header is incomplete.");
+    const rules = new Map();
+    for (const rule of trace.rules) {
+      requireTrace(typeof rule?.rule_id === "string" && rule.rule_id && !rules.has(rule.rule_id) &&
+        typeof rule.severity === "string" && (rule.depends_on === undefined || Array.isArray(rule.depends_on)),
+        "The trace contains an invalid or duplicate rule.");
+      rules.set(rule.rule_id, {...rule, deps: rule.depends_on ?? [], children: [], nodes: {}});
+    }
+    for (const [id, rule] of rules) {
+      requireTrace(new Set(rule.deps).size === rule.deps.length, "The trace contains a duplicate dependency.");
+      for (const dep of rule.deps) {
+        requireTrace(rules.has(dep), "The trace contains a dependency on an unknown rule.");
+        rules.get(dep).children.push(id);
+      }
+    }
+
+    let elapsed = -1, running = 0, peak = 0;
+    const openedPhases = new Map();
+    for (const [i, event] of trace.events.entries()) {
+      requireTrace(eventKinds.has(event?.kind) && Number.isSafeInteger(event.elapsed_ns) && event.elapsed_ns >= 0 &&
+        event.elapsed_ns >= elapsed, "The trace contains an invalid or out-of-order event.");
+      requireTrace([event.reason, event.error].every((value) => value === undefined || typeof value === "string") &&
+        (event.blocked_by === undefined || Array.isArray(event.blocked_by)), "The trace contains invalid event details.");
+      elapsed = event.elapsed_ns;
+      if (event.kind.startsWith("rule_")) {
+        const rule = rules.get(event.rule_id);
+        requireTrace(rule && rule.finishAt === undefined, "The trace contains an unexpected rule transition.");
+        if (event.kind === "rule_ready") {
+          requireTrace(rule.readyAt === undefined, "The trace marks a rule ready twice.");
+          rule.readyAt = i;
+        } else if (event.kind === "rule_started") {
+          requireTrace(rule.readyAt !== undefined && rule.startAt === undefined, "A rule started before it was ready.");
+          rule.startAt = i;
+          running++;
+        } else {
+          requireTrace(event.kind === "rule_skipped"
+            ? event.status === "skipped" && rule.startAt === undefined
+            : terminal.has(event.status) && rule.startAt !== undefined, "The trace contains an invalid rule outcome.");
+          requireTrace(event.blocked_by === undefined || event.blocked_by.every((id) => rule.deps.includes(id)),
+            "The trace contains an invalid blocking rule.");
+          rule.finishAt = i;
+          if (event.kind === "rule_finished") running--;
+        }
+      } else if (event.kind === "phase_started") {
+        requireTrace(typeof event.phase === "string", "A phase is missing its name.");
+        openedPhases.set(event.phase, elapsed);
+      } else if (event.kind === "phase_finished" && openedPhases.has(event.phase)) {
+        event.duration = elapsed - openedPhases.get(event.phase);
+        openedPhases.delete(event.phase);
+      }
+      requireTrace(running <= trace.concurrency, "The trace exceeds its configured concurrency.");
+      peak = Math.max(running, peak);
+      event.running = running;
+      event.peak = peak;
+    }
+    requireTrace(trace.events[0].kind === "run_started" && trace.events.at(-1).kind === "run_finished" &&
+      running === 0 && [...rules.values()].every((rule) => rule.finishAt !== undefined),
+      "The trace is missing final states.");
+    return {...trace, rules, layout: layoutGraph(rules)};
+  }
+
+  function layoutGraph(rules) {
+    const rowHeight = 42, nodeHeight = 32, margin = 16, gap = 54;
+    const longest = Math.max(...Array.from(rules.keys(), (id) => id.length));
+    const nodeWidth = Math.min(360, Math.max(218, longest * 8 + 40));
+    const degrees = new Map();
+    const queue = [], layers = [], isolated = [];
+    for (const [id, rule] of rules) {
+      degrees.set(id, rule.deps.length);
+      rule.depth = 0;
+      if (!rule.deps.length) queue.push(id);
+    }
+    for (const id of queue) {
+      const rule = rules.get(id);
+      if (!rule.deps.length && !rule.children.length) {
+        isolated.push(rule);
+        continue;
+      }
+      (layers[rule.depth] ??= []).push(rule);
+      for (const child of rule.children) {
+        const target = rules.get(child);
+        target.depth = Math.max(target.depth, rule.depth + 1);
+        degrees.set(child, degrees.get(child) - 1);
+        if (degrees.get(child) === 0) queue.push(child);
+      }
+    }
+    requireTrace(queue.length === rules.size, "The trace graph contains a dependency cycle.");
+
+    function measure(rowLimit) {
+      const counts = layers.map((layer) => Math.ceil(layer.length / rowLimit));
+      const connectedColumns = counts.reduce((sum, count) => sum + count, 0);
+      const isolatedColumns = Math.min(isolated.length, Math.max(connectedColumns, Math.min(5, Math.ceil(Math.sqrt(isolated.length)))));
+      const graphRows = Math.max(0, ...layers.map((layer, i) => Math.ceil(layer.length / counts[i])));
+      const independentTop = margin + graphRows * rowHeight + (graphRows && isolated.length ? 24 : 0);
+      const columns = Math.max(connectedColumns, isolatedColumns);
+      const width = margin * 2 + columns * nodeWidth + (columns - 1) * gap;
+      const height = independentTop + (isolatedColumns ? Math.ceil(isolated.length / isolatedColumns) * rowHeight : 0) + 4;
+      return {counts, graphRows, isolatedColumns, independentTop, width, height};
+    }
+
+    // Split wide ranks across adjacent columns to use the viewport in graph fit mode.
+    const tallestRank = Math.max(1, ...layers.map((layer) => layer.length));
+    const viewScale = ({width, height}) => Math.min(1100 / width, 600 / height);
+    let size = measure(tallestRank);
+    for (let limit = tallestRank - 1; limit > 0; limit--) {
+      const candidate = measure(limit);
+      if (viewScale(candidate) > viewScale(size)) size = candidate;
+    }
+
+    const {counts, graphRows, isolatedColumns, independentTop, width, height} = size;
+    let firstColumn = 0;
+    for (const [depth, layer] of layers.entries()) {
+      const parentCenter = (rule) => rule.deps.reduce((sum, id) => sum + rules.get(id).y, 0) / rule.deps.length;
+      if (depth > 0) layer.sort((a, b) => parentCenter(a) - parentCenter(b) || a.rule_id.localeCompare(b.rule_id));
+      const rows = Math.ceil(layer.length / counts[depth]);
+      layer.forEach((rule, i) => {
+        const column = Math.floor(i / rows);
+        const columnRows = Math.min(rows, layer.length - column * rows);
+        rule.x = margin + (firstColumn + column) * (nodeWidth + gap);
+        rule.y = margin + (i % rows + Math.floor((graphRows - columnRows) / 2)) * rowHeight;
+      });
+      firstColumn += counts[depth];
+    }
+
+    isolated.forEach((rule, i) => {
+      rule.x = margin + (i % isolatedColumns) * (nodeWidth + gap);
+      rule.y = independentTop + Math.floor(i / isolatedColumns) * rowHeight;
+    });
+    return {width, height, nodeWidth, nodeHeight, rowHeight, gap,
+      label: graphRows && isolated.length ? independentTop - 24 : null};
+  }
+
+  function elapsedText(ns) {
+    if (ns < 1000) return ns + " ns";
+    if (ns < 1000000) return (ns / 1000).toFixed(2) + " µs";
+    if (ns < 1000000000) return (ns / 1000000).toFixed(3) + " ms";
+    return (ns / 1000000000).toFixed(3) + " s";
+  }
+
+  function eventTitle(event) {
+    switch (event.kind) {
+      case "run_started": return "Run started";
+      case "run_finished": return event.status === "aborted" ? "Run aborted" : "Run completed";
+      case "phase_started": return phaseLabel(event.phase) + " started";
+      case "phase_finished": return phaseLabel(event.phase) + (event.status === "errored" ? " failed" : " finished");
+      case "rule_ready": return "Ready · " + event.rule_id;
+      case "rule_started": return "Started · " + event.rule_id;
+      case "rule_skipped": return "Skipped · " + event.rule_id;
+      case "rule_finished": return statuses[event.status][1] + " · " + event.rule_id;
+      case "cancelled": return "Cancellation requested";
+    }
+  }
+
+  function phaseLabel(phase) {
+    return Object.hasOwn(phases, phase) ? phases[phase] : phase;
+  }
+
+  function buildGraph() {
+    const graph = byID("graph"), lines = byID("edge-lines"), svg = byID("edges");
+    const {width, height, nodeWidth, nodeHeight, rowHeight, gap, label} = model.layout;
+    for (const element of [...graph.children]) if (element !== svg) element.remove();
+    graph.style.width = width + "px";
+    graph.style.height = height + "px";
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    lines.replaceChildren();
+    byID("rule-choice").replaceChildren(new Option("Choose a rule", ""));
+    if (label !== null) {
+      const heading = document.createElement("span");
+      heading.className = "graph-label";
+      heading.style.cssText = "left:16px;top:" + label + "px";
+      heading.textContent = "Independent rules";
+      graph.append(heading);
+    }
+    for (const [id, rule] of model.rules) {
+      for (const dep of rule.deps) {
+        const source = model.rules.get(dep);
+        const fromX = source.x + nodeWidth, toX = rule.x - 4;
+        const fromY = source.y + nodeHeight / 2, toY = rule.y + nodeHeight / 2;
+        const control = (toX - fromX) / 2;
+        // Run long edges between node rows so they remain visible across ranks.
+        const d = toX - fromX < gap
+          ? `M ${fromX},${fromY} C ${fromX + control},${fromY} ${toX - control},${toY} ${toX},${toY}`
+          : `M ${fromX},${fromY} H ${fromX + gap / 3} V ${toY - rowHeight / 2} H ${toX - gap / 3} V ${toY} H ${toX}`;
+        const edge = document.createElementNS(svgNS, "path");
+        edge.setAttribute("d", d);
+        edge.setAttribute("fill", "none");
+        edge.setAttribute("stroke", "currentColor");
+        edge.setAttribute("marker-end", "url(#arrow)");
+        edge.classList.add("edge");
+        edge.dataset.from = dep;
+        edge.dataset.to = id;
+        lines.append(edge);
+      }
+      const button = document.createElement("button");
+      const name = document.createElement("span"), symbol = document.createElement("span");
+      button.className = "node";
+      button.type = "button";
+      button.title = id;
+      button.style.cssText = `left:${rule.x}px;top:${rule.y}px;width:${nodeWidth}px;height:${nodeHeight}px`;
+      name.textContent = id;
+      symbol.className = "status";
+      symbol.setAttribute("aria-hidden", "true");
+      button.append(name, symbol);
+      button.addEventListener("click", () => selectRule(id));
+      graph.append(button);
+      rule.nodes = {button, symbol};
+      byID("rule-choice").add(new Option(id, id));
+    }
+  }
+
+  function scaleGraph() {
+    if (!model) return;
+    const {width, height} = model.layout;
+    const viewport = byID("graph-window");
+    const scale = fit ? Math.min(1, viewport.clientWidth / width, viewport.clientHeight / height) : 1;
+    if (scale <= 0) return;
+    byID("graph-space").style.cssText = `width:${width * scale}px;height:${height * scale}px`;
+    byID("graph").style.transform = `scale(${scale})`;
+    if (fit) viewport.scrollTo(0, 0);
+  }
+
+  function setFit(value) {
+    fit = value;
+    byID("fit").setAttribute("aria-pressed", fit);
+    byID("actual").setAttribute("aria-pressed", !fit);
+    scaleGraph();
+    if (!fit && selected) {
+      const viewport = byID("graph-window"), rule = model.rules.get(selected);
+      viewport.scrollTo(Math.max(0, rule.x - viewport.clientWidth / 3), Math.max(0, rule.y - viewport.clientHeight / 3));
+    }
+  }
+
+  function stateAt(rule) {
+    if (rule.finishAt <= index) return model.events[rule.finishAt].status;
+    if (rule.startAt <= index) return "running";
+    if (rule.readyAt <= index) return "ready";
+    return "pending";
+  }
+
+  function showDetails() {
+    const details = byID("rule-details");
+    const rule = model.rules.get(selected);
+    if (!rule) {
+      details.dataset.rule = "";
+      details.textContent = "Select a rule to inspect its prerequisites and outcome.";
+      return;
+    }
+    // Keep the inspector stable while unrelated rules move through playback.
+    const state = stateAt(rule);
+    const relatedStates = [...rule.deps, ...rule.children].map((id) => stateAt(model.rules.get(id))).join(",");
+    if (details.dataset.rule === selected && details.dataset.state === state &&
+      details.dataset.related === relatedStates) return;
+    details.dataset.rule = selected;
+    details.dataset.state = state;
+    details.dataset.related = relatedStates;
+    const list = document.createElement("dl");
+    function field(label, value) {
+      const title = document.createElement("dt"), content = document.createElement("dd");
+      title.textContent = label;
+      if (typeof value === "string") content.textContent = value;
+      else content.append(value);
+      list.append(title, content);
+    }
+    function links(ids) {
+      const group = document.createElement("div");
+      for (const id of ids) {
+        const link = document.createElement("button");
+        link.type = "button";
+        link.className = "rule-link";
+        link.textContent = id + " · " + statuses[stateAt(model.rules.get(id))][1];
+        link.addEventListener("click", () => {
+          selectRule(id);
+          byID("rule-choice").focus();
+        });
+        group.append(link, document.createElement("br"));
+      }
+      return group;
+    }
+    const outcome = document.createElement("span");
+    outcome.className = "status";
+    outcome.dataset.state = state;
+    outcome.textContent = statuses[state].join(" ");
+    field("Outcome", outcome);
+    field("Severity", rule.severity);
+    if (rule.readyAt <= index) field("Ready at", elapsedText(model.events[rule.readyAt].elapsed_ns));
+    if (rule.startAt <= index) {
+      field("Started at", elapsedText(model.events[rule.startAt].elapsed_ns));
+      field("Queue time", elapsedText(model.events[rule.startAt].elapsed_ns - model.events[rule.readyAt].elapsed_ns));
+    }
+    if (rule.finishAt <= index) {
+      const finish = model.events[rule.finishAt];
+      field("Ended at", elapsedText(finish.elapsed_ns));
+      if (rule.startAt !== undefined) field("Run time", elapsedText(finish.elapsed_ns - model.events[rule.startAt].elapsed_ns));
+      field("Findings", String(finish.finding_count ?? 0));
+      if (finish.reason) field("Reason", finish.reason);
+      if (finish.error) field("Error", finish.error);
+      if (finish.blocked_by?.length) field("Blocked by", links(finish.blocked_by));
+    }
+    if (rule.deps.length) field("Prerequisites", links(rule.deps));
+    if (rule.children.length) field("Dependents", links(rule.children));
+    details.replaceChildren(list);
+  }
+
+  function selectRule(id) {
+    selected = id;
+    byID("rule-choice").value = id;
+    for (const [ruleID, rule] of model.rules) rule.nodes.button.setAttribute("aria-pressed", ruleID === id);
+    const lines = byID("edge-lines");
+    for (const edge of [...lines.children]) {
+      const hot = edge.dataset.from === id || edge.dataset.to === id;
+      edge.classList.toggle("hot", hot);
+      if (hot) lines.append(edge);
+    }
+    showDetails();
+  }
+
+  function seek(i) {
+    const last = model.events.length - 1;
+    const currentRow = byID("events").children[index];
+    currentRow?.removeAttribute("aria-current");
+    index = Math.max(0, Math.min(i, last));
+    const event = model.events[index];
+    byID("step").value = index;
+    byID("step-count").textContent = `Event ${index + 1} of ${last + 1}`;
+    byID("elapsed").textContent = "+" + elapsedText(event.elapsed_ns);
+    byID("active").textContent = event.running + " / " + model.concurrency;
+    byID("peak").textContent = event.peak;
+    byID("prev").disabled = index === 0;
+    byID("next").disabled = index === last;
+    byID("event-name").textContent = eventTitle(event);
+    byID("event-detail").textContent = [
+      event.error ?? event.reason, event.duration === undefined ? null : "Duration " + elapsedText(event.duration),
+      event.blocked_by?.length ? "Blocked by " + event.blocked_by.join(", ") : null,
+    ].filter(Boolean).join(" · ");
+
+    const row = byID("events").children[index];
+    row.setAttribute("aria-current", "step");
+    const log = byID("event-scroll");
+    const sticky = log.querySelector("thead").offsetHeight;
+    if (row.offsetTop < log.scrollTop + sticky) log.scrollTop = row.offsetTop - sticky;
+    else if (row.offsetTop + row.offsetHeight > log.scrollTop + log.clientHeight) {
+      log.scrollTop = row.offsetTop + row.offsetHeight - log.clientHeight;
+    }
+    for (const rule of model.rules.values()) {
+      const {button, symbol} = rule.nodes;
+      const state = stateAt(rule);
+      if (button.dataset.state === state) continue;
+      button.dataset.state = state;
+      button.setAttribute("aria-label", rule.rule_id + ", " + statuses[state][1]);
+      symbol.textContent = statuses[state][0];
+    }
+    showDetails();
+  }
+
+  function pause() {
+    clearInterval(timer);
+    timer = null;
+    byID("play").textContent = "Play events";
+  }
+
+  function jump(i) {
+    pause();
+    seek(i);
+  }
+
+  async function load(file) {
+    if (!file) return;
+    const token = ++loadToken;
+    byID("load-error").hidden = true;
+    try {
+      const parsed = parseTrace(await file.text());
+      if (token !== loadToken) return;
+      pause();
+      model = parsed;
+      selected = "";
+      byID("rule-details").dataset.rule = "";
+      byID("viewer").hidden = false;
+      byID("drop-zone").hidden = true;
+      const status = model.events.at(-1).status;
+      byID("run-state").dataset.state = status;
+      byID("run-state").textContent = status === "aborted" ? "Run aborted" : "Run completed";
+      byID("filename").textContent = file.name;
+      byID("started").dateTime = model.started_at;
+      byID("started").textContent = new Date(model.started_at).toLocaleString();
+      byID("started").title = model.started_at;
+      const edgeCount = [...model.rules.values()].reduce((sum, rule) => sum + rule.deps.length, 0);
+      byID("graph-summary").textContent = `${model.rules.size} rules · ${edgeCount} dependencies`;
+      byID("step").max = model.events.length - 1;
+      buildGraph();
+      const rows = document.createDocumentFragment();
+      for (const [i, event] of model.events.entries()) {
+        const row = document.createElement("tr");
+        const stamp = row.insertCell(), item = row.insertCell();
+        stamp.className = "mono muted";
+        stamp.textContent = "+" + elapsedText(event.elapsed_ns);
+        stamp.title = event.elapsed_ns + " ns since run start";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "jump";
+        button.textContent = eventTitle(event);
+        button.addEventListener("click", () => jump(i));
+        item.append(button);
+        rows.append(row);
+      }
+      byID("events").replaceChildren(rows);
+      seek(model.events.length - 1);
+      setFit(true);
+    } catch (error) {
+      if (token !== loadToken) return;
+      byID("load-error").textContent = "Could not open " + file.name + ". " + error.message;
+      byID("load-error").hidden = false;
+    }
+  }
+
+  byID("open").addEventListener("click", () => byID("file").click());
+  byID("file").addEventListener("change", (event) => {
+    load(event.target.files[0]);
+    event.target.value = "";
+  });
+  window.addEventListener("dragover", (event) => {
+    if (!event.dataTransfer.types.includes("Files")) return;
+    event.preventDefault();
+    document.body.classList.add("dragging");
+  });
+  window.addEventListener("dragleave", (event) => {
+    if (!event.relatedTarget) document.body.classList.remove("dragging");
+  });
+  window.addEventListener("drop", (event) => {
+    event.preventDefault();
+    document.body.classList.remove("dragging");
+    load(event.dataTransfer.files[0]);
+  });
+  byID("rule-choice").addEventListener("change", (event) => selectRule(event.target.value));
+  byID("fit").addEventListener("click", () => setFit(true));
+  byID("actual").addEventListener("click", () => setFit(false));
+  byID("step").addEventListener("input", (event) => jump(Number(event.target.value)));
+  byID("prev").addEventListener("click", () => jump(index - 1));
+  byID("next").addEventListener("click", () => jump(index + 1));
+  byID("play").addEventListener("click", () => {
+    if (timer !== null) {
+      pause();
+      return;
+    }
+    const last = model.events.length - 1;
+    if (index === last) seek(0);
+    byID("play").textContent = "Pause";
+    timer = setInterval(() => {
+      seek(index + 1);
+      if (index === last) pause();
+    }, 140);
+  });
+  new ResizeObserver(scaleGraph).observe(byID("graph-window"));
+</script>
+</body>
+</html>
