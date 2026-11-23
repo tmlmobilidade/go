@@ -1,6 +1,5 @@
 /* * */
 
-import { FileExportDownloadUrlSchema } from '@tmlmobilidade/go-types-downloads';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
@@ -83,10 +82,7 @@ export async function generatePlanDownload(plans: Plan[], exportId: string, opti
 			throw new Error(`PDF job ${pdfId} completed without a download URL.`);
 		}
 
-		//
-		// 7. Return the download URL
-
-		const downloadUrl = FileExportDownloadUrlSchema.parse(pdfStatus.downloadLink);
+		const downloadUrl = pdfStatus.downloadLink;
 		Logger.info({ message: `Poster export ${exportId} is ready for download from ZPHERES.` });
 
 		return downloadUrl;
