@@ -5,7 +5,7 @@ import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsValidationOutputSummary, type GtfsValidatorCliRule, GtfsValidatorRuleIdSchema } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidationOutputSummary, type GtfsValidatorCliRule, GtfsValidatorRulesSchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { validateGtfs } from '@tmlmobilidade/go-utils-gtfs-validator';
@@ -57,14 +57,11 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		});
 
 		//
-		// Convert the agency's saved rule map to the validator's rules array.
+		// Read the agency's saved validation rules.
 
 		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
 		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
-		const rules = Object.entries(foundAgency.plans?.validation_rules ?? {}).map(([id, rule]) => ({
-			...rule,
-			rule_id: GtfsValidatorRuleIdSchema.parse(id),
-		}));
+		const rules = GtfsValidatorRulesSchema.parse(foundAgency.plans?.validation_rules ?? []);
 		if (!rules.length) throw new Error(`No GTFS validation rules configured for agency: ${gtfsValidation.agency_id}`);
 
 		//

@@ -1,8 +1,7 @@
 /* * */
 
 import { type Agency } from '@tmlmobilidade/go-types-core';
-import { type GtfsValidatorRuleId, GtfsValidatorRuleIdValues } from '@tmlmobilidade/go-types-gtfs-validator';
-import { type SeverityStatus, SeverityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { type GtfsValidatorRuleId, GtfsValidatorRuleIdValues, GtfsValidatorRuleSeveritySchema, type GtfsValidatorRuleSeverityValues } from '@tmlmobilidade/go-types-gtfs-validator';
 
 /* * */
 
@@ -10,11 +9,13 @@ import { type SeverityStatus, SeverityStatusSchema } from '@tmlmobilidade/go-typ
 // A. Define the agency input and report cell types
 
 type ReportAgency = Pick<Agency, '_id' | 'name' | 'short_name'> & { plans?: { validation_rules?: unknown } };
-type CellState = 'invalid' | 'missing' | SeverityStatus;
+type RuleSeverity = (typeof GtfsValidatorRuleSeverityValues)[number];
+type CellState = 'invalid' | 'missing' | RuleSeverity;
 interface Cell { label: string, state: CellState, title: string }
 
-const severityLabels: Record<SeverityStatus, string> = {
+const severityLabels: Record<RuleSeverity, string> = {
 	error: 'Erro',
+	forbidden: 'Proibido',
 	ignore: 'Ignorado',
 	info: 'Informação',
 	warning: 'Aviso',
@@ -22,8 +23,8 @@ const severityLabels: Record<SeverityStatus, string> = {
 
 // File-level IDs provide the table names, including names containing underscores.
 const ruleFiles = GtfsValidatorRuleIdValues
-	.filter(id => id.endsWith('_file_missing'))
-	.map(id => id.slice(0, -'_file_missing'.length))
+	.filter(id => id.endsWith('_file_exists'))
+	.map(id => id.slice(0, -'_file_exists'.length))
 	.sort((a, b) => b.length - a.length);
 
 /* * */
@@ -47,12 +48,22 @@ function escapeHtml(value: string): string {
 /* * */
 
 /**
- * Accept object and JSON-string storage formats while distinguishing absent from invalid settings.
+ * Read the rule array or a previously saved map, including JSON strings.
  */
 function parseRules(value: unknown): { invalid: boolean, rules: Record<string, unknown> } {
 	try {
 		const parsed: unknown = typeof value === 'string' ? JSON.parse(value) : value;
 		if (parsed === null || parsed === undefined) return { invalid: false, rules: {} };
+		if (Array.isArray(parsed)) {
+			const rules = Object.create(null) as Record<string, unknown>;
+			for (const rule of parsed) {
+				if (!isRecord(rule) || typeof rule.rule_id !== 'string') return { invalid: true, rules: {} };
+				const id = rule.rule_id.toLowerCase();
+				if (Object.hasOwn(rules, id)) return { invalid: true, rules: {} };
+				rules[id] = rule;
+			}
+			return { invalid: false, rules };
+		}
 		return isRecord(parsed) ? { invalid: false, rules: parsed } : { invalid: true, rules: {} };
 	} catch {
 		return { invalid: true, rules: {} };
@@ -72,7 +83,7 @@ function getCell(config: ReturnType<typeof parseRules>, ruleId: GtfsValidatorRul
 	if (!Object.hasOwn(config.rules, ruleId)) return missing;
 	const rule = config.rules[ruleId];
 	if (!isRecord(rule)) return invalid;
-	const severity = SeverityStatusSchema.safeParse(rule.severity);
+	const severity = GtfsValidatorRuleSeveritySchema.safeParse(rule.severity);
 	if (!severity.success) return invalid;
 	return { label: severityLabels[severity.data], state: severity.data, title: `${ruleId}: ${severity.data}` };
 }
@@ -164,7 +175,7 @@ small { display: block; font-size: 12px; font-weight: normal; color: #52616b; ma
 tr[data-different="true"] th { box-shadow: inset 4px 0 #2563eb; }
 tbody tr:hover td { background: #f8fafc; }
 .badge { display: inline-block; padding: 4px 9px; border-radius: 5px; font-size: 12px; font-weight: 650; white-space: nowrap; }
-.error { color: #9b1c1c; background: #fee2e2; }
+.error, .forbidden { color: #9b1c1c; background: #fee2e2; }
 .warning { color: #854d0e; background: #fef3c7; }
 .ignore { color: #475569; background: #e2e8f0; }
 .info { color: #075985; background: #e0f2fe; }

@@ -1,6 +1,6 @@
 'use client';
 
-import { SeverityStatusSchema, SeverityStatusValues } from '@tmlmobilidade/go-types-shared';
+import { GtfsValidatorRuleSeveritySchema, GtfsValidatorRuleSeverityValues } from '@tmlmobilidade/go-types-gtfs-validator';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -17,7 +17,7 @@ export function GtfsValidationRuleSeverity({ onChange, readOnly, rule, rules }: 
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const options = SeverityStatusValues.map(value => ({ label: t(`shared:components.gtfsValidationRules.severities.${value}`), value }));
+	const options = GtfsValidatorRuleSeverityValues.map(value => ({ label: t(`shared:components.gtfsValidationRules.severities.${value}`), value }));
 	const severity = rules[rule]?.severity;
 
 	//
@@ -35,7 +35,7 @@ export function GtfsValidationRuleSeverity({ onChange, readOnly, rule, rules }: 
 			value={severity ?? ''}
 			onChange={(value) => {
 				if (readOnly) return;
-				onChange({ ...rules, [rule]: { depends_on: [], ...rules[rule], severity: SeverityStatusSchema.parse(value) } });
+				onChange({ ...rules, [rule]: { depends_on: [], ...rules[rule], severity: GtfsValidatorRuleSeveritySchema.parse(value) } });
 			}}
 			fullWidth
 		/>

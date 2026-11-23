@@ -2,6 +2,7 @@
 
 import { type GtfsValidatorRulesDraft } from '@tmlmobilidade/go-types-gtfs-validator';
 import { Collapsible, GtfsValidationRulesEditor, Section, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesDetailFormContext } from '../AgenciesDetailForm.context';
@@ -15,7 +16,8 @@ export function AgenciesDetailValidationRules() {
 
 	const { t } = useTranslation();
 	const { capabilities, form } = useAgenciesDetailFormContext();
-	const validationRules = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' }) ?? {};
+	const validationRules = useStandardFormWatch({ control: form.control, name: 'plans.validation_rules' });
+	const editorRules = useMemo(() => Object.fromEntries((validationRules ?? []).map(({ rule_id: ruleId, ...rule }) => [ruleId, rule])), [validationRules]);
 
 	//
 	// B. Handle actions
@@ -34,7 +36,7 @@ export function AgenciesDetailValidationRules() {
 			title={t('default:agencies.detail.ValidationRules.title')}
 		>
 			<Section gap="lg">
-				<GtfsValidationRulesEditor onChange={handleChange} readOnly={!capabilities.editEnabled} rules={validationRules} />
+				<GtfsValidationRulesEditor onChange={handleChange} readOnly={!capabilities.editEnabled} rules={editorRules} />
 			</Section>
 		</Collapsible>
 	);

@@ -2,7 +2,6 @@
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency, type AgencyPlans, type UpdateAgencyDto, UpdateAgencySchema } from '@tmlmobilidade/go-types-core';
-import { type GtfsValidatorRulesDraft } from '@tmlmobilidade/go-types-gtfs-validator';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleAction, useToast } from '@tmlmobilidade/ui';
@@ -10,7 +9,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useMemo
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesListData } from '../list/use-agencies-list-data';
-import { getAgenciesDetailValidationRules } from './get-agencies-detail-validation-rules';
+import { type AgenciesDetailValidationRule, getAgenciesDetailValidationRules } from './get-agencies-detail-validation-rules';
 import { useAgenciesDetailAgencyId } from './use-agencies-detail-agency-id';
 import { useAgenciesDetailData } from './use-agencies-detail-data';
 
@@ -18,7 +17,7 @@ import { useAgenciesDetailData } from './use-agencies-detail-data';
 
 type AgenciesDetailFormValues = Omit<UpdateAgencyDto, 'plans'> & {
 	plans?: Omit<AgencyPlans, 'validation_rules'> & {
-		validation_rules: GtfsValidatorRulesDraft
+		validation_rules?: AgenciesDetailValidationRule[]
 	}
 };
 
@@ -52,12 +51,12 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	// B. Setup form
 
 	const agencyFormData = useMemo(() => {
-		if (!agencyData?.plans) return agencyData;
+		if (!agencyData?.plans || Array.isArray(agencyData.plans.validation_rules)) return agencyData;
 		return {
 			...agencyData,
 			plans: {
 				...agencyData.plans,
-				validation_rules: getAgenciesDetailValidationRules(agencyData.plans.validation_rules),
+				validation_rules: getAgenciesDetailValidationRules(agencyData.plans.validation_rules ?? {}),
 			},
 		};
 	}, [agencyData]);
@@ -112,20 +111,12 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	const handleSave = useCallback(async () => {
 		if (!updateEnabled || isUpdating) return;
 		const values = form.getValues();
-		const result = UpdateAgencySchema.safeParse({
-			...values,
-			...(values.plans && {
-				plans: {
-					...values.plans,
-					validation_rules: getAgenciesDetailValidationRules(values.plans.validation_rules),
-				},
-			}),
-		});
+		const result = UpdateAgencySchema.safeParse(values);
 		if (!result.success) {
 			const severityIssues = result.error.issues.filter(issue => issue.path[0] === 'plans' && issue.path[1] === 'validation_rules' && issue.path.at(-1) === 'severity');
 			useToast.error({
 				message: severityIssues.length
-					? severityIssues.map(issue => String(issue.path[2])).join(', ')
+					? severityIssues.map(issue => values.plans?.validation_rules?.[Number(issue.path[2])]?.rule_id ?? String(issue.path[2])).join(', ')
 					: result.error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('\n'),
 				title: t(severityIssues.length ? 'default:agencies.detail.ValidationRules.invalidSeverities' : 'default:agencies.detail.validationError'),
 			});
