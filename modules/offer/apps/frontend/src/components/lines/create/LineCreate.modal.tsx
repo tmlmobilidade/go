@@ -2,6 +2,7 @@
 
 import { LineCreate } from '@/components/lines/create/LineCreate';
 import { LineCreateContextProvider } from '@/components/lines/create/LineCreate.context';
+import { TypologiesContextProvider } from '@/contexts/Typologies.context';
 import { closeModal, MeContextProvider, openModal } from '@tmlmobilidade/ui';
 
 /* * */
@@ -14,9 +15,11 @@ export const openCreateLineModal = () => {
 	openModal({
 		children: (
 			<MeContextProvider>
-				<LineCreateContextProvider>
-					<LineCreate />
-				</LineCreateContextProvider>
+				<TypologiesContextProvider>
+					<LineCreateContextProvider>
+						<LineCreate />
+					</LineCreateContextProvider>
+				</TypologiesContextProvider>
 			</MeContextProvider>
 		),
 		closeOnClickOutside: false,

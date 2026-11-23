@@ -6,6 +6,7 @@ import { encodePolylineFromGeoJson } from '@tmlmobilidade/geo';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PatternsDetail, type PatternsDetailPathItem, type PatternsImportGtfsRequest, PatternsImportGtfsRequestSchema } from '@tmlmobilidade/go-offer-pckg-types';
+import { withSimplifiedPatternShape } from '@tmlmobilidade/go-offer-pckg-utils';
 import { type Path, type StopsParameter } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
@@ -145,11 +146,11 @@ export async function importPatternGtfsHandler(request: FastifyRequest<{ Body: P
 		...patternData,
 		parameters: [defaultParameter],
 		path: populatedPath,
-		shape: {
+		shape: withSimplifiedPatternShape({
 			encoded_polyline: encodePolylineFromGeoJson(shapeGeoJson),
 			extension: Math.round(shapeExtension),
 			geojson: shapeGeoJson,
-		},
+		}),
 	};
 
 	//

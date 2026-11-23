@@ -1,10 +1,36 @@
 import { MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
-import { getBottomSheetSnapState, getMapInteractionCollapseTarget, shouldShowBottomSheetOverlay } from '@/utils/bottom-sheet/behavior';
+import { getBottomSheetSnapState, getInsetAdjustedSnapPoints, getMapInteractionCollapseTarget, shouldShowBottomSheetOverlay } from '@/utils/bottom-sheet/behavior';
 import { reduceBottomSheetNavigation } from '@/utils/bottom-sheet/navigation';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
 
 /* * */
+
+describe('bottom-sheet safe-area clearance', () => {
+	it('preserves the usable partial-sheet height above the native navbar', () => {
+		for (const sheetHeight of [400, 800]) {
+			const adjusted = getInsetAdjustedSnapPoints(MAP_BOTTOM_SHEET_SNAP_POINTS, 88, sheetHeight);
+			for (const index of [1, 2]) {
+				assert.ok(Math.abs(adjusted[index] * sheetHeight - 88 - MAP_BOTTOM_SHEET_SNAP_POINTS[index] * sheetHeight) < 0.001);
+			}
+			assert.equal(adjusted[0], 0);
+			assert.equal(adjusted.at(-1), 1);
+		}
+	});
+
+	it('keeps existing snap points when no bottom inset is present or the sheet is not measured', () => {
+		assert.deepEqual(getInsetAdjustedSnapPoints(MAP_BOTTOM_SHEET_SNAP_POINTS, 0, 800), MAP_BOTTOM_SHEET_SNAP_POINTS);
+		assert.deepEqual(getInsetAdjustedSnapPoints(MAP_BOTTOM_SHEET_SNAP_POINTS, 88, 0), MAP_BOTTOM_SHEET_SNAP_POINTS);
+		assert.deepEqual(getInsetAdjustedSnapPoints([0, 1], 88, 800), [0, 1]);
+	});
+
+	it('keeps partial snaps distinct and below full height when space is limited', () => {
+		const adjusted = getInsetAdjustedSnapPoints(MAP_BOTTOM_SHEET_SNAP_POINTS, 180, 200);
+		assert.ok(adjusted[1] < adjusted[2]);
+		assert.ok(adjusted[2] < 1);
+		assert.equal(adjusted.at(-1), 1);
+	});
+});
 
 describe('map-aware bottom-sheet collapse behavior', () => {
 	it('collapses an expanded sheet to its compact snap for a user map gesture', () => {
