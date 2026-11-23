@@ -23,11 +23,13 @@ export function LineDetailSectionTypology() {
 	const typologiesContext = useTypologiesContext();
 
 	const typologyOptions = useMemo(() => {
-		return typologiesContext.data.raw.map(typology => ({
-			label: typology.name,
-			value: typology._id,
-		}));
-	}, [typologiesContext.data.raw]);
+		return typologiesContext.data.raw
+			.filter(typology => !!lineDetailContextValues.agency_id && typology.agency_ids.includes(lineDetailContextValues.agency_id))
+			.map(typology => ({
+				label: typology.name,
+				value: typology._id,
+			}));
+	}, [typologiesContext.data.raw, lineDetailContextValues.agency_id]);
 
 	const prepaidFareOptions = useMemo(() => {
 		return faresContext.data.raw
@@ -81,15 +83,23 @@ export function LineDetailSectionTypology() {
 	return (
 		<Collapsible title={t('lines:detail.LineDetailSectionTypology.typology_fares')}>
 			<Section gap="sm">
-				<Select
-					clearable={false}
-					data={typologyOptions}
-					label={t('lines:detail.LineDetailSectionTypology.typology')}
-					onChange={handleTypologyChange}
-					readOnly={!lineDetailContext.capabilities.editEnabled}
-					required={!LineSchema.shape.typology.isOptional()}
-					value={lineDetailContextValues.typology}
-					w="100%"
+				<StandardFormController
+					control={lineDetailContext.form.control}
+					name="typology"
+					render={({ field, fieldState }) => (
+						<Select
+							clearable={false}
+							data={typologyOptions}
+							error={fieldState.error?.message}
+							label={t('lines:detail.LineDetailSectionTypology.typology')}
+							readOnly={!lineDetailContext.capabilities.editEnabled}
+							w="100%"
+							withAsterisk={!LineSchema.shape.typology.isOptional()}
+							{...field}
+							onChange={handleTypologyChange}
+							value={field.value || null}
+						/>
+					)}
 				/>
 
 				<StandardFormController
@@ -101,8 +111,8 @@ export function LineDetailSectionTypology() {
 							error={fieldState.error?.message}
 							label={t('lines:detail.LineDetailSectionTypology.apex_interchange')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
-							required={!LineSchema.shape.interchange.isOptional()}
 							w="100%"
+							withAsterisk={!LineSchema.shape.interchange.isOptional()}
 							{...field}
 							value={field.value ?? null}
 						/>
@@ -118,8 +128,8 @@ export function LineDetailSectionTypology() {
 							error={fieldState.error?.message}
 							label={t('lines:detail.LineDetailSectionTypology.prepaid_fare')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
-							required={!LineSchema.shape.prepaid_fare_id.isOptional()}
 							w="100%"
+							withAsterisk={!LineSchema.shape.prepaid_fare_id.isOptional()}
 							{...field}
 							value={field.value ?? null}
 						/>
@@ -135,8 +145,8 @@ export function LineDetailSectionTypology() {
 							error={fieldState.error?.message}
 							label={t('lines:detail.LineDetailSectionTypology.onboard_fares')}
 							readOnly={!lineDetailContext.capabilities.editEnabled}
-							required={!LineSchema.shape.onboard_fare_ids.isOptional()}
 							w="100%"
+							withAsterisk={!LineSchema.shape.onboard_fare_ids.isOptional()}
 							{...field}
 							value={field.value ?? []}
 						/>

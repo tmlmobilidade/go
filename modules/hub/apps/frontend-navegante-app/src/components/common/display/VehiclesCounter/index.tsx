@@ -33,7 +33,7 @@ export function VehiclesCounter({ count }: VehiclesCounterProps) {
 			className={styles.container}
 			data-layout={controlsLayout.layout}
 			data-zero-count={!count}
-			style={controlsLayout.layout === 'above-sheet' ? { bottom: `calc(var(--active-map-bottom-sheet-height, ${controlsLayout.bottomOffsetPx}px) + 20px)` } : undefined}
+			style={controlsLayout.layout === 'above-sheet' ? { bottom: `calc(var(--active-map-bottom-sheet-height, ${controlsLayout.bottomOffsetPx}px) + 20px)` } : controlsLayout.layout === 'above-live-bar' ? { bottom: `calc(var(--app-bottom-inset) + ${controlsLayout.bottomOffsetPx}px + 20px)` } : undefined}
 			aria-hidden
 		>
 			<LiveIcon color={!count ? 'var(--color-system-text-300)' : 'var(--color-status-live-primary)'} />

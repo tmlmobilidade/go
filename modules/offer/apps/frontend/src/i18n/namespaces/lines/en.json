@@ -5,7 +5,8 @@
 			"code": "Code",
 			"code_example": "E.g. 1001",
 			"line_example": "E.g. Alfragide - Reboleira",
-			"name": "Name"
+			"name": "Name",
+			"typology": "Typology"
 		},
 		"LineCreateHeader": {
 			"new_line": "New line"
@@ -104,6 +105,9 @@
 		"LinesListFilterAgencies": {
 			"agencies": "Operators"
 		},
+		"LinesListFilterOrganizations": {
+			"organizations": "Organizations"
+		},
 		"LinesListHeader": {
 			"actions": "Actions",
 			"export_gtfs": "Export GTFS",
@@ -117,6 +121,9 @@
 		"LinesOverviewMapHover": {
 			"line_count": "{count, plural, one {# line} other {# lines}}",
 			"pattern_line_count": "{count, plural, one {# pattern} other {# patterns}} on {line_count, plural, one {# line} other {# lines}}"
+		},
+		"LinesOverviewMapPopup": {
+			"no_organization": "No associated organization"
 		},
 		"LinesOverviewMapStatus": {
 			"count": "{count, plural, one {# pattern} other {# patterns}}",

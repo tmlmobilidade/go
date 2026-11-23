@@ -8,6 +8,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import { useOrganizationsListFilterSearch } from './OrganizationsListFilterSearch/use-organizations-list-filter-search';
+import { useOrganizationsListFilterType } from './OrganizationsListFilterType/use-organizations-list-filter-type';
 
 /* * */
 
@@ -29,13 +30,14 @@ export function useOrganizationsListData(): UseOrganizationsListDataReturnType {
 	// A. Setup variables
 
 	const filterSearch = useOrganizationsListFilterSearch();
+	const filterType = useOrganizationsListFilterType();
 
 	//
 	// B. Fetch data
 
 	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<OrganizationsListItem[]>>(API_ROUTES.core.ORGANIZATIONS_LIST, {
 		fetcher: async (url: string) => await fetchApiData<OrganizationsListItem[]>({ url }),
-		refreshInterval: 10_000, // 10 seconds
+		refreshInterval: 60_000, // Includes geographic boundaries.
 	});
 
 	//
@@ -46,16 +48,17 @@ export function useOrganizationsListData(): UseOrganizationsListDataReturnType {
 		data: data?.data,
 		query: filterSearch.value,
 	});
+	const filteredData = useMemo(() => (searchResultsData ?? []).filter(item => filterType.value.includes(item.organization_type)), [searchResultsData, filterType.value]);
 
 	//
 	// D. Return data
 
 	return useMemo(() => ({
-		data: searchResultsData,
+		data: filteredData,
 		error: error?.error,
 		isLoading,
 		isValidating,
 		mutate,
 		timestamp: data?.timestamp,
-	}), [searchResultsData, data?.timestamp, error, isLoading, isValidating, mutate]);
+	}), [filteredData, data?.timestamp, error, isLoading, isValidating, mutate]);
 };

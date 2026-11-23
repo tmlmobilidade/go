@@ -13,7 +13,9 @@ import { syncLabdbAgenciesTask } from './tasks/sync-labdb-agencies.js';
 async function main() {
 	//
 
+	//
 	// Only run in production environment
+
 	if (process.env.ENVIRONMENT !== 'prd') {
 		Logger.info({ message: 'Cleaner is disabled in non-prd environments' });
 		return;

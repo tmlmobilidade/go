@@ -61,12 +61,12 @@ export async function processRideAcceptanceChunk(chunk: PerformInTimeChunksItem)
 
 		//
 		// If the ride has an acceptance, update it.
-		await updateRideAcceptance(ride, acceptance);
+		const updatedAcceptance = await updateRideAcceptance(ride, acceptance);
 
 		//
 		// If justification is required, try to justify from a matching alert.
-		if (acceptance.acceptance_status === 'justification_required') {
-			await alertJustification(ride, acceptance);
+		if (updatedAcceptance?.acceptance_status === 'justification_required') {
+			await alertJustification(ride, updatedAcceptance);
 		}
 	}
 

@@ -11,7 +11,7 @@ export function manualRuleMatchesMonth(rule: ManualRule, month: number): boolean
  * Determines if a manual rule matches the given day context.
  *
  * Uses strict AND logic: the rule must include BOTH the specified weekday
- * AND the period ID to match. This is used for normal (non-replacement) days.
+ * AND at least one active period ID to match. This is used for normal (non-replacement) days.
  *
  * @param rule - The manual rule to check
  * @param ctx - The day context containing the weekday and period ID
@@ -25,6 +25,7 @@ export function manualRuleMatchesMonth(rule: ManualRule, month: number): boolean
  * ```
  */
 export function manualRuleMatchesContext(rule: ManualRule, ctx: DayContext): boolean {
+	const activePeriodIds = ctx.yearPeriodIds ?? [ctx.yearPeriodId];
 	if (rule.event_id) {
 		// Event-exception rules: date matching already done by filteredManualRules in computeActiveRules.
 		// If weekdays is non-empty, the user narrowed the event to specific days — check it.
@@ -32,12 +33,12 @@ export function manualRuleMatchesContext(rule: ManualRule, ctx: DayContext): boo
 		const yearPeriodIds = rule.year_period_ids ?? [];
 		if (weekdays.length > 0 && !weekdays.includes(ctx.weekday)) return false;
 		// If year_period_ids is non-empty, the user narrowed the event to specific periods — check it.
-		if (yearPeriodIds.length > 0 && !yearPeriodIds.includes(ctx.yearPeriodId)) return false;
+		if (yearPeriodIds.length > 0 && !yearPeriodIds.some(id => activePeriodIds.includes(id))) return false;
 		return true;
 	}
 
-	// Strict by design: rule must include the weekday and the yearPeriodId.
-	return Boolean(rule.weekdays?.includes(ctx.weekday)) && rule.year_period_ids.includes(ctx.yearPeriodId);
+	// Strict by design: rule must include the weekday and one of the active periods.
+	return Boolean(rule.weekdays?.includes(ctx.weekday)) && rule.year_period_ids.some(id => activePeriodIds.includes(id));
 }
 
 /**

@@ -5,7 +5,8 @@
 			"code": "Código",
 			"code_example": "Ex: 1001",
 			"line_example": "Ex: Alfragide (Estr Seminario) - Reboleira (Estação)",
-			"name": "Nome"
+			"name": "Nome",
+			"typology": "Tipologia"
 		},
 		"LineCreateHeader": {
 			"new_line": "Nova Linha"
@@ -104,6 +105,9 @@
 		"LinesListFilterAgencies": {
 			"agencies": "Operadores"
 		},
+		"LinesListFilterOrganizations": {
+			"organizations": "Organizações"
+		},
 		"LinesListHeader": {
 			"actions": "Ações",
 			"export_gtfs": "Exportar GTFS",
@@ -117,6 +121,9 @@
 		"LinesOverviewMapHover": {
 			"line_count": "{count, plural, one {# linha} other {# linhas}}",
 			"pattern_line_count": "{count, plural, one {# percurso} other {# percursos}} em {line_count, plural, one {# linha} other {# linhas}}"
+		},
+		"LinesOverviewMapPopup": {
+			"no_organization": "Sem organização associada"
 		},
 		"LinesOverviewMapStatus": {
 			"count": "{count, plural, one {# percurso} other {# percursos}}",
