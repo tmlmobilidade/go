@@ -1,23 +1,29 @@
 /* * */
 
-import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { TripDirectionReference, TripDirectionResolver } from '../types.js';
 
 /* * */
 
-type TripDirectionReference = Pick<GtfsStrictV29Trips, 'route_id' | 'shape_id' | 'trip_headsign'>;
-
 /** Keeps the first exported trip as the direction reference for each route. */
-export class TripDirectionRegistry {
-	private references = new Map<string, TripDirectionReference>();
+export function createTripDirectionResolver(): TripDirectionResolver {
+	//
 
-	resolve(trip: TripDirectionReference): GtfsStrictV29Trips['direction_id'] {
-		const reference = this.references.get(trip.route_id);
+	//
+	// A. Setup variables
+
+	const references = new Map<string, TripDirectionReference>();
+
+	//
+	// B. Return direction ID
+
+	return (trip) => {
+		const reference = references.get(trip.route_id);
 
 		if (!reference) {
-			this.references.set(trip.route_id, { ...trip });
+			references.set(trip.route_id, { ...trip });
 			return '0';
 		}
 
 		return trip.trip_headsign !== reference.trip_headsign && trip.shape_id !== reference.shape_id ? '1' : '0';
-	}
+	};
 }

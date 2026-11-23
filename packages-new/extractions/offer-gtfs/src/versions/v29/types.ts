@@ -171,3 +171,13 @@ export interface ExportedTripsRow extends GtfsStrictV29Trips {
 	pattern_short_name: string
 	calendar_desc: string
 }
+
+/**
+ * Trip direction reference
+ */
+export type TripDirectionReference = Pick<GtfsStrictV29Trips, 'route_id' | 'shape_id' | 'trip_headsign'>;
+
+/**
+ * Trip direction resolver
+ */
+export type TripDirectionResolver = (trip: TripDirectionReference) => GtfsStrictV29Trips['direction_id'];

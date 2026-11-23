@@ -1,4 +1,4 @@
-import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { type GtfsV29ExportConfig, TripDirectionResolver } from '@/versions/v29/types.js';
 import { createV29PeriodResolver } from '@/versions/v29/utils/period-mapping.js';
 import { type ServiceId, type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
@@ -7,8 +7,6 @@ import { DayPeriod, type Event, type HHMM, hhmm, type ManualRule, type Pattern, 
 import { type IsoWeekday, type OperationalDateInt, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
 import { buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, getActivePeriodIds, getTimepointsRemovedByEventRestriction, type OfferSchedulingTranslator, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap } from '@tmlmobilidade/go-utils-offer';
-
-import { TripDirectionRegistry } from '../utils/trip-direction-registry.js';
 
 /* * */
 
@@ -580,7 +578,7 @@ export async function exportTripsForPattern(
 	startDate: Dates,
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
-	tripDirectionRegistry: TripDirectionRegistry,
+	resolveTripDirection: TripDirectionResolver,
 	exportConfig: GtfsV29ExportConfig,
 	locale: string,
 	t: OfferSchedulingTranslator,
@@ -627,7 +625,8 @@ export async function exportTripsForPattern(
 
 		// Step 3: Export trips
 		const headsign = patternData.headsign.replaceAll(',', '').replace(/  +/g, ' ').trim();
-		const directionId = tripDirectionRegistry.resolve({
+
+		const directionId = resolveTripDirection({
 			route_id: routeData.code,
 			shape_id: shapeId,
 			trip_headsign: headsign,
