@@ -68,6 +68,12 @@ export interface DateGroup {
 
 // stop canvas targets types
 
+export interface StopCanvasGroup {
+	directions: Set<number>
+	routes: Set<string>
+	stopCount: number
+}
+
 export interface StopRouteDirection {
 	direction_id: number
 	route_id: string
@@ -84,14 +90,4 @@ export interface PosterWriterOptions<T> {
 	include_bom?: boolean
 	newline?: string
 	quotes?: Papa.UnparseConfig['quotes']
-}
-
-/* * */
-
-// stop route direction group types
-export interface StopRouteDirectionGroup {
-	direction_id: number
-	routes: Set<string>
-	stop_id: string
-	stopCount: number
 }

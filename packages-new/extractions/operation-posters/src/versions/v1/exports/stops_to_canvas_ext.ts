@@ -20,7 +20,7 @@ export async function exportStopsToCanvasExtFile(context: OperationPostersV1Cont
 	const canvasFilter = parameters.length ? `WHERE stop_times.stop_id ${exportConfig.filter_mode === 'exclude' ? 'NOT IN' : 'IN'} (${placeholders})` : '';
 
 	//
-	// B. Count stops per trip and choose one Canvas target per stop and direction
+	// B. Find the routes and longest trips serving each stop
 
 	const servingRoutes = sqlTables.stop_times.query<{ direction_id: number, route_id: string, stop_count: number, stop_id: string }>(
 		` WITH trip_stop_counts AS (

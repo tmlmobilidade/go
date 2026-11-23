@@ -3,45 +3,45 @@
 import { type StopToCanvasExt } from '@tmlmobilidade/go-types-gtfs-hitouch';
 
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
-import { type StopRouteDirection, StopRouteDirectionGroup } from '../types/interfaces.js';
+import { type StopCanvasGroup, type StopRouteDirection } from '../types/interfaces.js';
 import { getAutomaticCanvasProfile } from './get-canvas-profile.js';
 import { getPosterRouteId } from './get-poster-route-id.js';
 
 /* * */
 
-/** Choose one stop Canvas profile per direction, counting route variants as one route. */
+/** Choose a Canvas profile from all routes serving each stop. */
 export function buildStopCanvasTargets(rows: StopRouteDirection[], config: Pick<ExportHitouchConfig, 'canvas_profile' | 'content'>): StopToCanvasExt[] {
 	//
 
 	//
-	// A. Validate the configuration
+	// A. Collect each stop's directions and distinct routes across those directions
 
-	let group: StopRouteDirectionGroup | undefined;
-
-	//
-	// B. Collect the distinct poster routes serving each stop and direction
-
-	const groups = new Map<string, StopRouteDirectionGroup>();
+	const stops = new Map<string, StopCanvasGroup>();
 	for (const row of rows) {
-		const key = JSON.stringify([row.stop_id, row.direction_id]);
-
-		group = groups.get(key);
-
-		if (!group) {
-			group = { direction_id: row.direction_id, routes: new Set(), stop_id: row.stop_id, stopCount: 0 };
-			groups.set(key, group);
+		let stop = stops.get(row.stop_id);
+		if (!stop) {
+			stop = { directions: new Set(), routes: new Set(), stopCount: 0 };
+			stops.set(row.stop_id, stop);
 		}
 
-		group.routes.add(getPosterRouteId(row.route_id));
-		group.stopCount = Math.max(group.stopCount, row.stop_count);
+		stop.directions.add(row.direction_id);
+		stop.routes.add(getPosterRouteId(row.route_id));
+		stop.stopCount = Math.max(stop.stopCount, row.stop_count);
 	}
 
 	//
-	// C. Build the stop canvas targets
+	// B. Write the same profile for every direction serving the stop
 
-	return [...groups.values()].map(group => ({
-		canvas_profile: config.content === 'all' || config.canvas_profile === 'auto' ? getAutomaticCanvasProfile(group.routes.size, group.stopCount) : config.canvas_profile,
-		direction_id: group.direction_id,
-		stop_id: group.stop_id,
-	}));
+	const targets: StopToCanvasExt[] = [];
+	for (const [stopId, stop] of stops) {
+		const canvasProfile = config.content === 'all' || config.canvas_profile === 'auto'
+			? getAutomaticCanvasProfile(stop.routes.size, stop.stopCount)
+			: config.canvas_profile;
+
+		for (const directionId of stop.directions) {
+			targets.push({ canvas_profile: canvasProfile, direction_id: directionId, stop_id: stopId });
+		}
+	}
+
+	return targets;
 }
