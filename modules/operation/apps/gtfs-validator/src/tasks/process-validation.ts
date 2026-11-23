@@ -3,16 +3,18 @@
 import { SYSTEM_ERROR_MESSAGES } from '@/consts/system-errors.js';
 import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { getValidatorInfo, GtfsValidator } from '@tmlmobilidade/go-operation-validator';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
+import { type GtfsValidationOutputSummary, type GtfsValidatorCliRule, GtfsValidatorRuleIdSchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { getTmpWorkdirPath } from '@tmlmobilidade/go-utils-files';
-import { importGtfsToDatabase } from '@tmlmobilidade/go-utils-import-gtfs';
+import { validateGtfs } from '@tmlmobilidade/go-utils-gtfs-validator';
 import { Logger } from '@tmlmobilidade/logger';
-import fs from 'node:fs';
+import { createWriteStream } from 'node:fs';
+import { mkdtempDisposable } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { pipeline } from 'node:stream/promises';
 import pjson from 'pjson' with { type: 'json' };
 
 /* * */
@@ -43,18 +45,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		}
 
 		//
-		// Setup temporary directory paths for this validation process
-		// to avoid any conflicts with other concurrent validations.
-
-		const tempWorkdirPath = getTmpWorkdirPath(undefined, true);
-
-		const gtfsFilePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.zip`);
-		const gtfsValidationRulesPath = join(tempWorkdirPath, `rules_${gtfsValidation._id}.json`);
-		const gtfsValidationResultPath = join(tempWorkdirPath, `result_${gtfsValidation._id}.json`);
-
-		//
-		// Update the gtfs validation document to 'processing' status
-		// and save the paths for reference in case of errors
+		// Update the GTFS validation document to 'processing' status.
 
 		Logger.info({ message: 'Updating GTFS Validation document...' });
 
@@ -66,64 +57,43 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		});
 
 		//
-		// Get the associated file document from MongoDB
-		// and download the GTFS file to the temporary directory.
+		// Convert the agency's saved rule map to the validator's rules array.
 
-		Logger.info({ message: 'Downloading GTFS file...' });
+		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
+		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
+		const rules = Object.entries(foundAgency.plans?.validation_rules ?? {}).map(([id, rule]) => ({
+			...rule,
+			rule_id: GtfsValidatorRuleIdSchema.parse(id),
+		}));
+		if (!rules.length) throw new Error(`No GTFS validation rules configured for agency: ${gtfsValidation.agency_id}`);
+
+		//
+		// Resolve the attachment and let the Go validator import and validate the ZIP.
 
 		const gtfsFile = await storageProvider.findById(gtfsValidation.file_id);
 		if (!gtfsFile) throw new Error(`File not found: ${gtfsValidation.file_id}`);
 		if (!gtfsFile.url) throw new Error(`File URL not found: ${gtfsValidation.file_id}`);
+		const report = await validateAttachment(gtfsFile.url, rules);
 
-		const fileBuffer = await fetch(gtfsFile.url).then(res => res.arrayBuffer());
-
-		fs.writeFileSync(gtfsFilePath, Buffer.from(fileBuffer));
-
-		// Import all source tables without date filtering before validation.
-		Logger.info({ message: 'Importing GTFS into SQLite...' });
-		const gtfsSqlitePath = join(tempWorkdirPath, `${gtfsValidation.file_id}.sqlite`);
-		const importedGtfs = await importGtfsToDatabase({
-			source: { path: gtfsFilePath },
-			sqlite_config: { instancePath: gtfsSqlitePath },
-		});
-		// Close the connection while keeping the file for the Go validator.
-		importedGtfs._db.databaseInstance.close();
-
-		//
-		// Get the agency-specific validation rules, if they exist,
-		// and download them to the working directory. Throw an error
-		// if no agency is found or if the rules file is not accessible.
-
-		const foundAgency = await goDb.core.agencies.findById(gtfsValidation.agency_id);
-		if (!foundAgency) throw new Error(`Agency not found: ${gtfsValidation.agency_id}`);
-		// Pass the flat rule-ID map through; the Go decoder validates each rule's settings and dependencies.
-		const rulesContent = JSON.stringify(foundAgency.plans?.validation_rules ?? {});
-
-		fs.writeFileSync(gtfsValidationRulesPath, rulesContent, { encoding: 'utf-8' });
-
-		Logger.info({ message: `Custom validation rules saved to: ${gtfsValidationRulesPath}` });
-
-		//
-		// Perform the GTFS validation using the GtfsValidator library
-		// and update the GTFS validation document in MongoDB with the results.
-
-		const validatorInfo = await getValidatorInfo();
-		Logger.info({ message: `Performing GTFS validation with ${validatorInfo.binaryPath} (${validatorInfo.platform})...` });
-
-		const gtfsValidationResult = await GtfsValidator(gtfsSqlitePath, {
-			lang: 'pt',
-			log_level: 'debug',
-			out_file: gtfsValidationResultPath,
-			rules_path: gtfsValidationRulesPath,
-			timeout: 60 * 60 * 1000, // 1 hour timeout
-		});
+		// Operation reports expose the severity values supported by the result UI.
+		const summary: GtfsValidationOutputSummary = {
+			...report,
+			messages: report.messages.map(group => ({
+				...group,
+				messages: group.messages.map(message => ({
+					...message,
+					severity: message.severity === 'forbidden' ? 'error' : message.severity,
+				})),
+				severity: group.severity === 'forbidden' ? 'error' : group.severity,
+			})),
+		};
 
 		Logger.info({ message: 'Validation completed. Updating GTFS Validation document with results...' });
 
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
-			summary: gtfsValidationResult.summary,
-			validity_status: gtfsValidationResult.summary.total_errors === 0 ? 'valid' : 'invalid',
+			summary,
+			validity_status: summary.total_errors === 0 ? 'valid' : 'invalid',
 		});
 
 		//
@@ -147,7 +117,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
 						gtfsValidationUrl: PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalWarnings: gtfsValidationResult.summary.total_warnings,
+						totalWarnings: summary.total_warnings,
 					},
 					to: foundUser.email,
 				});
@@ -157,25 +127,14 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
 						gtfsValidationUrl: PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalErrors: gtfsValidationResult.summary.total_errors,
-						totalWarnings: gtfsValidationResult.summary.total_warnings,
+						totalErrors: summary.total_errors,
+						totalWarnings: summary.total_warnings,
 					},
 					to: foundUser.email,
 				});
 			}
 		} catch (error) {
 			Logger.error({ error, message: 'Error sending validation result email:' });
-		}
-
-		//
-		// Cleanup the working directory by removing
-		// the downloaded GTFS file, SQLite database, and validation result file.
-
-		try {
-			fs.rmSync(tempWorkdirPath, { force: true, recursive: true });
-			Logger.info({ message: 'Cleaned up temporary files.' });
-		} catch (error) {
-			Logger.error({ error, message: 'Error during cleanup of temporary files:' });
 		}
 
 		//
@@ -208,4 +167,22 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			to: SYSTEM_CONTACT_EMAIL,
 		});
 	}
+}
+
+/* * */
+
+async function validateAttachment(url: string, rules: readonly GtfsValidatorCliRule[]) {
+	await using directory = await mkdtempDisposable(join(tmpdir(), 'operation-gtfs-validator-'));
+	// Storage URLs grant temporary access. Pass only the local path to the CLI logger.
+	Logger.info({ message: 'Downloading GTFS file...' });
+	const response = await fetch(url);
+	if (!response.ok || !response.body) {
+		await response.body?.cancel();
+		throw new Error(`GTFS download failed with HTTP status ${response.status}`);
+	}
+
+	const path = join(directory.path, 'feed.zip');
+	await pipeline(response.body, createWriteStream(path));
+	Logger.info({ message: 'Validating GTFS file...' });
+	return await validateGtfs({ concurrency: 4, rules, signal: AbortSignal.timeout(60 * 60 * 1000), source: { path } });
 }

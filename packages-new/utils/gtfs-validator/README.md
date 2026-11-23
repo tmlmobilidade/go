@@ -22,6 +22,9 @@ Provide a nonempty array of rules and include every rule referenced in
 feeds. Set `concurrency` to a positive integer to run multiple rules in parallel.
 The default is `1`.
 
+Pass `signal: AbortSignal.timeout(milliseconds)` to stop the validator after a
+deadline. The promise rejects with the signal's reason after the process exits.
+
 The promise resolves with the report even when the feed has error findings.
 Findings with `forbidden` severity count toward `total_errors`. Invalid
 configuration, process failures, and missing or invalid reports reject the

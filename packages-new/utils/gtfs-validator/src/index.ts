@@ -15,12 +15,15 @@ export interface GtfsValidatorConfig {
 	/** Maximum concurrent rules. Defaults to 1. */
 	concurrency?: number
 	rules: readonly GtfsValidatorCliRule[]
+	/** Aborts the validator process and rejects with the signal's reason. */
+	signal?: AbortSignal
 	/** Local ZIP path relative to the caller's working directory, or an HTTP(S) URL. */
 	source: { path: string, url?: never } | { path?: never, url: string }
 }
 
 /** Runs the bundled Go validator and returns its report, including any error findings. */
-export async function validateGtfs({ concurrency, rules, source }: GtfsValidatorConfig): Promise<GtfsValidatorCliSummary> {
+export async function validateGtfs({ concurrency, rules, signal, source }: GtfsValidatorConfig): Promise<GtfsValidatorCliSummary> {
+	signal?.throwIfAborted();
 	const rulesJson = JSON.stringify(GtfsValidatorCliRuleSchema.array().parse(rules));
 	const directory = await mkdtemp(join(tmpdir(), 'validate-gtfs-'));
 
@@ -33,7 +36,7 @@ export async function validateGtfs({ concurrency, rules, source }: GtfsValidator
 		if (concurrency !== undefined) args.push('-concurrency', String(concurrency));
 
 		await writeFile(rulesPath, rulesJson);
-		await runValidator(args);
+		await runValidator(args, directory, signal);
 		return GtfsValidatorCliSummarySchema.parse(JSON.parse(await readFile(reportPath, 'utf8')));
 	} finally {
 		await rm(directory, { force: true, recursive: true });
@@ -42,19 +45,29 @@ export async function validateGtfs({ concurrency, rules, source }: GtfsValidator
 
 /* * */
 
-function runValidator(args: string[]): Promise<void> {
+function runValidator(args: string[], directory: string, signal?: AbortSignal): Promise<void> {
 	return new Promise((resolve, reject) => {
-		const child = spawn(executablePath, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+		const child = spawn(executablePath, args, {
+			// Keep Go's temporary files here so cleanup also covers a forced stop.
+			env: { ...process.env, TMPDIR: directory },
+			killSignal: 'SIGKILL',
+			signal,
+			stdio: ['ignore', 'ignore', 'pipe'],
+		});
+		let processError: Error | undefined;
 		let stderr = '';
 		child.stderr.setEncoding('utf8').on('data', (chunk: string) => {
 			stderr += chunk;
 			process.stderr.write(chunk);
 		});
-		child.once('error', reject);
-		child.once('close', (code, signal) => {
+		child.once('error', (error) => {
+			processError = error;
+		});
+		child.once('close', (code, exitSignal) => {
+			if (processError) return reject(processError.name === 'AbortError' ? signal?.reason ?? processError : processError);
 			// The CLI uses exit 1 for a completed run with error findings.
 			if (code === 0 || code === 1) return resolve();
-			reject(new Error(`GTFS validation failed (${signal ?? code}): ${stderr.trim()}`));
+			reject(new Error(`GTFS validation failed (${exitSignal ?? code}): ${stderr.trim()}`));
 		});
 	});
 }
