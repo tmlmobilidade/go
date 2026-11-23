@@ -1,6 +1,5 @@
 'use client';
 
-import { type PlanPostersContentMode, type PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { Divider, MultiSelect, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -91,7 +90,7 @@ export function PlanPostersExtractBody() {
 					<SegmentedControl
 						fullWidth={true}
 						label={t('default:posterExport.PlanPostersExtractBody.contentModeLabel')}
-						onChange={value => context.actions.setContentMode(value as PlanPostersContentMode)}
+						onChange={value => context.actions.setContent(value as typeof context.data.contentMode)}
 						value={context.data.contentMode}
 						data={[
 							{ label: t('default:posterExport.PlanPostersExtractBody.contentModeAll'), value: 'all' },
@@ -103,7 +102,7 @@ export function PlanPostersExtractBody() {
 						<SegmentedControl
 							fullWidth={true}
 							label={t('default:posterExport.PlanPostersExtractBody.stop_filter_label')}
-							onChange={value => context.actions.setFilterMode(value as PlanPostersFilterMode)}
+							onChange={value => context.actions.setFilterMode(value as typeof context.data.filterMode)}
 							value={context.data.filterMode}
 							data={[
 								{ label: t('default:posterExport.PlanPostersExtractBody.filterModeInclude'), value: 'include' },

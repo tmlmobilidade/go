@@ -4,26 +4,35 @@ import { z } from 'zod';
 
 /* * */
 
-export const OperationPostersV1ExtractionPropertiesSchema = z.object({
+const PosterPropertiesSchema = z.object({
 
 	agency_ids: z.array(z.string()),
 
 	canvas_profile: z.enum(['auto', '0Master.A', '0Master.B', '0Master.C', '0Master.F']),
 
-	content_mode: z.enum(['all', 'lines', 'stops']),
+	content: z.enum(['all', 'stops']),
 
 	download_url: z.string().optional().nullable(),
 
-	line_ids: z.array(z.string()).optional(),
-
-	lines_mode: z.enum(['include', 'exclude']).optional(),
+	filter_mode: z.enum(['include', 'exclude']).optional(),
 
 	plan_ids: z.array(z.string()),
 
 	stop_ids: z.array(z.string()).optional(),
 
-	stops_mode: z.enum(['include', 'exclude']).optional(),
-
 });
+
+// Normalize older extraction properties before validating the saved filter.
+export const OperationPostersV1ExtractionPropertiesSchema = z.preprocess((value) => {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+
+	const { filter_mode: filterMode, ...properties } = value as Record<string, unknown>;
+	const content = properties.content === undefined ? properties.content_mode : properties.content;
+	return {
+		...properties,
+		content,
+		...(content === 'stops' && { filter_mode: filterMode === undefined ? properties.stops_mode ?? 'include' : filterMode }),
+	};
+}, PosterPropertiesSchema);
 
 export type OperationPostersV1ExtractionProperties = z.infer<typeof OperationPostersV1ExtractionPropertiesSchema>;

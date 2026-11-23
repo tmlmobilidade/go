@@ -5,7 +5,6 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
 import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
-import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
@@ -17,7 +16,7 @@ export async function exportRoutesToCanvasExtFile(context: OperationPostersV1Con
 	// A. Skip route poster targets when exporting stop schedules
 	// All-content and stop exports use stopsToCanvasExt.txt instead.
 
-	if (exportConfig.content_mode === 'all' || exportConfig.content_mode === 'stops') {
+	if (exportConfig.content === 'all' || exportConfig.content === 'stops') {
 		Logger.info({ message: 'Skipped routesToCanvasExt.txt file for stop schedule export.' });
 		return;
 	}
@@ -25,15 +24,11 @@ export async function exportRoutesToCanvasExtFile(context: OperationPostersV1Con
 	//
 	// B. Select and deduplicate route targets by poster route and direction
 
-	const { clause, parameters } = getCanvasLineFilter([...routeIds.keys()], exportConfig);
-	const canvasFilter = clause ? `WHERE ${clause}` : '';
-
 	const directions = sqlTables.trips.query<{ direction_id: number, route_id: string }>(
 		` SELECT DISTINCT trips.route_id, trips.direction_id
 		FROM trips
-		${canvasFilter}
 		ORDER BY trips.route_id ASC, trips.direction_id ASC `,
-		parameters,
+		[],
 	);
 	const targets = new Map<string, RoutesToCanvasExt>();
 	for (const row of directions) {

@@ -29,11 +29,9 @@ export async function exportPostersFile(context: ExtractionTaskContext, plans: P
 
 	const downloadUrl = await generatePlanDownload(plans, extractionId, {
 		canvas_profile: properties.canvas_profile ?? 'auto',
-		content_mode: properties.content_mode,
-		line_codes: properties.line_ids ?? [],
-		lines_mode: properties.lines_mode,
+		content: properties.content,
+		filter_mode: properties.filter_mode,
 		stop_ids: properties.stop_ids ?? [],
-		stops_mode: properties.stops_mode,
 	});
 
 	//

@@ -4,13 +4,11 @@ import { StopTimesSchema } from '@tmlmobilidade/go-types-gtfs-hitouch';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { type OperationPostersV1Context, type OperationPostersV1Tables } from '../types/context.js';
-import { type ExportHitouchConfig } from '../types/export-hitouch-config.js';
-import { getCanvasLineFilter } from '../utils/get-canvas-line-filter.js';
 import { yieldToEventLoop } from '../utils/yield-to-event-loop.js';
 
 /* * */
 
-export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables, exportConfig: ExportHitouchConfig) {
+export async function exportStopTimesFile(context: OperationPostersV1Context, sqlTables: OperationPostersV1Tables) {
 	//
 
 	//
@@ -22,13 +20,11 @@ export async function exportStopTimesFile(context: OperationPostersV1Context, sq
 	// B. Prepare the stop times filter
 
 	let exportedRows = 0;
-	const { clause, parameters } = getCanvasLineFilter(sqlTables.trips.distinct('route_id'), exportConfig);
-	const tripFilter = clause ? `WHERE trip_id IN (SELECT trip_id FROM trips WHERE ${clause})` : '';
 
 	//
 	// C. Export the stop times
 
-	for (const stopTimeData of sqlTables.stop_times.all(`${tripFilter} ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC`, parameters)) {
+	for (const stopTimeData of sqlTables.stop_times.all(`ORDER BY trip_id ASC, CAST(stop_sequence AS INTEGER) ASC`, [])) {
 		const data = StopTimesSchema.parse({
 			arrival_time: stopTimeData.arrival_time,
 			departure_time: stopTimeData.departure_time,

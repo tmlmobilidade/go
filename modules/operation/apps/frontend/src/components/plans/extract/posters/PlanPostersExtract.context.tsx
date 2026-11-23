@@ -16,21 +16,19 @@ interface PlanPostersExtractFormContextState {
 	actions: {
 		exportPosters: () => Promise<void>
 		setAgencyIds: (value: string[]) => void
-		setCanvasProfile: (value: null | string) => void
-		setContentMode: (value: OperationPostersV1ExtractionProperties['content_mode']) => void
-		setFilterMode: (value: NonNullable<OperationPostersV1ExtractionProperties['lines_mode']>) => void
-		setLineIds: (value: string[]) => void
+		setCanvasProfile: (value: null | OperationPostersV1ExtractionProperties['canvas_profile']) => void
+		setContent: (value: OperationPostersV1ExtractionProperties['content']) => void
+		setFilterMode: (value: NonNullable<OperationPostersV1ExtractionProperties['filter_mode']>) => void
 		setPlanId: (agencyId: string, value: null | string) => void
 		setStopIds: (value: string[]) => void
 	}
 	data: {
 		agencyIds: string[]
 		agencyOptions: SelectDataItem[]
-		canvasProfile: string
-		contentMode: OperationPostersV1ExtractionProperties['content_mode']
-		filterMode: NonNullable<OperationPostersV1ExtractionProperties['lines_mode']>
+		canvasProfile: OperationPostersV1ExtractionProperties['canvas_profile']
+		contentMode: OperationPostersV1ExtractionProperties['content']
+		filterMode: NonNullable<OperationPostersV1ExtractionProperties['filter_mode']>
 		form: UseFormReturnType<OperationPostersV1ExtractionProperties>
-		lineIds: string[]
 		planIds: string[]
 		plans: PlansListItem[]
 		stopIds: string[]
@@ -68,13 +66,13 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		initialValues: {
 			agency_ids: [],
 			canvas_profile: 'auto',
-			content_mode: 'all',
+			content: 'all',
 			plan_ids: [],
 		},
 		mode: 'controlled',
 	});
 	const { setFieldValue, setValues } = form;
-	const { agency_ids: agencyIds, canvas_profile: canvasProfile, content_mode: contentMode, line_ids: lineIds = [], lines_mode: filterMode = 'include', plan_ids: planIds, stop_ids: stopIds = [] } = form.values;
+	const { agency_ids: agencyIds, canvas_profile: canvasProfile, content: contentMode, filter_mode: filterMode = 'include', plan_ids: planIds, stop_ids: stopIds = [] } = form.values;
 
 	//
 	// B. Fetch data
@@ -88,7 +86,6 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	const setAgencyIds = useCallback((value: string[]) => {
 		setValues(current => ({
 			agency_ids: value,
-			line_ids: [],
 			plan_ids: current.plan_ids.filter(id => plansData.data.some(plan => plan._id === id && value.includes(plan.agency_id))),
 			stop_ids: [],
 		}));
@@ -100,7 +97,6 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		if (!agencyIds.includes(agencyId)) return;
 		const selectedPlan = plansData.data.find(plan => plan._id === value && plan.agency_id === agencyId);
 		setValues(current => ({
-			line_ids: [],
 			plan_ids: [
 				...current.plan_ids.filter(id => plansData.data.some(plan => plan._id === id && plan.agency_id !== agencyId && agencyIds.includes(plan.agency_id))),
 				...(selectedPlan ? [selectedPlan._id] : []),
@@ -111,20 +107,19 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 
 	//
 
-	const setContentMode = useCallback((value: OperationPostersV1ExtractionProperties['content_mode']) => {
-		setValues({ content_mode: value, line_ids: [], lines_mode: 'include', stop_ids: [], stops_mode: 'include' });
+	const setContent = useCallback((value: OperationPostersV1ExtractionProperties['content']) => {
+		setValues({ content: value, filter_mode: value === 'all' ? undefined : 'include', stop_ids: [] });
 	}, [setValues]);
 
 	//
 
-	const setFilterMode = useCallback((value: NonNullable<OperationPostersV1ExtractionProperties['lines_mode']>) => {
-		setValues({ line_ids: [], lines_mode: value, stop_ids: [], stops_mode: value });
+	const setFilterMode = useCallback((value: NonNullable<OperationPostersV1ExtractionProperties['filter_mode']>) => {
+		setValues({ filter_mode: value, stop_ids: [] });
 	}, [setValues]);
 
 	//
 
 	const setCanvasProfile = useCallback((value: null | OperationPostersV1ExtractionProperties['canvas_profile']) => setFieldValue('canvas_profile', value ?? 'auto'), [setFieldValue]);
-	const setLineIds = useCallback((value: string[]) => setFieldValue('line_ids', value), [setFieldValue]);
 	const setStopIds = useCallback((value: string[]) => setFieldValue('stop_ids', value), [setFieldValue]);
 
 	//
@@ -144,9 +139,8 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	const selectedPlans = plansData.data.filter(plan => planIds.includes(plan._id) && agencyIds.includes(plan.agency_id));
 	const hasOnePlanPerAgency = new Set(selectedPlans.map(plan => plan.agency_id)).size === agencyIds.length && planIds.length === agencyIds.length;
 	const hasSelectedPlans = agencyIds.length > 0 && selectedPlans.length === planIds.length && hasOnePlanPerAgency && selectedPlans.every(plan => !!plan.attachments.operation_gtfs_normalized);
-	const hasSelectedLines = contentMode === 'lines' && lineIds.length > 0;
 	const hasSelectedStops = contentMode === 'stops' && stopIds.length > 0;
-	const hasSelectedContent = contentMode === 'all' || hasSelectedLines || hasSelectedStops;
+	const hasSelectedContent = contentMode === 'all' || hasSelectedStops;
 	const canSave = !plansData.isLoading && !plansData.error && hasSelectedPlans && hasSelectedContent && (contentMode === 'all' || !!canvasProfile);
 
 	//
@@ -161,16 +155,13 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		if (loading || !canSave) return;
 
 		const values = form.getValues();
-		const includesLines = values.content_mode === 'lines';
-		const includesStops = values.content_mode === 'stops';
+		const hasFilter = values.content !== 'all';
 		const extractionDto: OperationPostersV1ExtractionCreate = {
 			properties: {
 				...values,
-				canvas_profile: values.content_mode === 'all' ? 'auto' : values.canvas_profile,
-				line_ids: includesLines ? values.line_ids : undefined,
-				lines_mode: includesLines ? values.lines_mode : undefined,
-				stop_ids: includesStops ? values.stop_ids : undefined,
-				stops_mode: includesStops ? values.stops_mode : undefined,
+				canvas_profile: hasFilter ? values.canvas_profile : 'auto',
+				filter_mode: hasFilter ? values.filter_mode ?? 'include' : undefined,
+				stop_ids: hasFilter ? values.stop_ids : undefined,
 			},
 			send_email_notification: false,
 			version: 'operation-posters-v1',
@@ -202,7 +193,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	// F. Define context value
 
 	const contextValue: PlanPostersExtractFormContextState = useMemo(() => ({
-		actions: { exportPosters, setAgencyIds, setCanvasProfile, setContentMode, setFilterMode, setLineIds, setPlanId, setStopIds },
+		actions: { exportPosters, setAgencyIds, setCanvasProfile, setContent, setFilterMode, setPlanId, setStopIds },
 		data: {
 			agencyIds,
 			agencyOptions,
@@ -210,13 +201,12 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 			contentMode,
 			filterMode,
 			form,
-			lineIds,
 			planIds,
 			plans: plansData.data,
 			stopIds,
 		},
 		flags: { canSave, has_error: !!plansData.error, loading },
-	}), [agencyIds, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, form, lineIds, loading, planIds, plansData.data, plansData.error, setAgencyIds, setCanvasProfile, setContentMode, setFilterMode, setLineIds, setPlanId, setStopIds, stopIds]);
+	}), [agencyIds, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, form, loading, planIds, plansData.data, plansData.error, setAgencyIds, setCanvasProfile, setContent, setFilterMode, setPlanId, setStopIds, stopIds]);
 
 	//
 	// G. Render components

@@ -13,21 +13,14 @@ export async function exportStopsToCanvasExtFile(context: OperationPostersV1Cont
 	//
 
 	//
-	// A. Skip stop poster targets for line-only exports
+	// A. Prepare the selected stop filter
 
-	if (exportConfig.content_mode === 'lines') {
-		return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file for line poster export.' });
-	}
-
-	//
-	// B. Prepare the selected stop filter
-
-	const parameters = exportConfig.content_mode === 'stops' ? exportConfig.stop_ids : [];
+	const parameters = exportConfig.content === 'stops' ? exportConfig.stop_ids : [];
 	const placeholders = parameters.map(() => '?').join(', ');
-	const canvasFilter = parameters.length ? `WHERE stop_times.stop_id ${exportConfig.stops_mode === 'exclude' ? 'NOT IN' : 'IN'} (${placeholders})` : '';
+	const canvasFilter = parameters.length ? `WHERE stop_times.stop_id ${exportConfig.filter_mode === 'exclude' ? 'NOT IN' : 'IN'} (${placeholders})` : '';
 
 	//
-	// C. Count stops per trip and choose one Canvas target per stop and direction
+	// B. Count stops per trip and choose one Canvas target per stop and direction
 
 	const servingRoutes = sqlTables.stop_times.query<{ direction_id: number, route_id: string, stop_count: number, stop_id: string }>(
 		` WITH trip_stop_counts AS (
@@ -45,17 +38,17 @@ export async function exportStopsToCanvasExtFile(context: OperationPostersV1Cont
 	const targets = buildStopCanvasTargets(servingRoutes, exportConfig);
 
 	//
-	// D. Reject filters that leave no stop poster targets
+	// C. Reject filters that leave no stop poster targets
 
 	if (!targets.length) {
-		if (exportConfig.content_mode === 'stops') {
+		if (exportConfig.content === 'stops') {
 			throw new Error('The selected stop filter removes every stop poster target.');
 		}
 		return Logger.info({ message: 'Skipped stopsToCanvasExt.txt file because no stop directions were found.' });
 	}
 
 	//
-	// E. Write stop targets
+	// D. Write stop targets
 
 	let exportedRows = 0;
 
@@ -65,7 +58,7 @@ export async function exportStopsToCanvasExtFile(context: OperationPostersV1Cont
 	}
 
 	//
-	// F. Flush stopsToCanvasExt.txt
+	// E. Flush stopsToCanvasExt.txt
 
 	await context.writers.stops_to_canvas_ext.flush();
 
