@@ -8,9 +8,11 @@ export const OperationPostersV1ExtractionPropertiesSchema = z.object({
 
 	agency_ids: z.array(z.string()),
 
-	canvas_profile: z.string().optional().nullable(),
+	canvas_profile: z.enum(['auto', '0Master.A', '0Master.B', '0Master.C', '0Master.F']),
 
 	content_mode: z.enum(['all', 'lines', 'stops']),
+
+	download_url: z.string().optional().nullable(),
 
 	line_ids: z.array(z.string()).optional(),
 

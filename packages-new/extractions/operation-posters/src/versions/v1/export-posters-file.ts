@@ -1,8 +1,9 @@
 /* * */
 
-import { type PlanPostersCanvasProfile } from '@tmlmobilidade/go-types-downloads';
+import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext, type OperationPostersV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
 import { type Plan } from '@tmlmobilidade/go-types-operation';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
@@ -27,7 +28,7 @@ export async function exportPostersFile(context: ExtractionTaskContext, plans: P
 	// B. Generate the plan posters download
 
 	const downloadUrl = await generatePlanDownload(plans, extractionId, {
-		canvas_profile: properties.canvas_profile as PlanPostersCanvasProfile ?? 'auto',
+		canvas_profile: properties.canvas_profile ?? 'auto',
 		content_mode: properties.content_mode,
 		line_codes: properties.line_ids ?? [],
 		lines_mode: properties.lines_mode,
@@ -36,7 +37,19 @@ export async function exportPostersFile(context: ExtractionTaskContext, plans: P
 	});
 
 	//
-	// C. Download the plan posters
+	// C. Save the download URL to the extraction
+
+	await goDb.core.extractions.updateById(extractionId, {
+		properties: {
+			...properties,
+			download_url: downloadUrl,
+		},
+	});
+
+	Logger.info({ message: `Saved posters download URL: ${downloadUrl}` });
+
+	//
+	// D. Download the plan posters
 
 	const outputFile = path.join(context.output_path, `posters-${extractionId}.zip`);
 
@@ -46,12 +59,12 @@ export async function exportPostersFile(context: ExtractionTaskContext, plans: P
 	if (!response.body) throw new Error('Poster ZIP download returned no body.');
 
 	//
-	// D. Write the plan posters to the output file
+	// E. Write the plan posters to the output file
 
 	await pipeline(response.body, fs.createWriteStream(outputFile));
 
 	//
-	// E. Validate the output file
+	// F. Validate the output file
 
 	if (!fs.statSync(outputFile).size) throw new Error('Poster ZIP download returned an empty file.');
 }

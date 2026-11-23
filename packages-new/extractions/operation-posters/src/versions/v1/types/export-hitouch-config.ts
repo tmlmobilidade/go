@@ -1,14 +1,14 @@
 /* * */
 
-import { PlanPostersCanvasProfile, PlanPostersContentMode, PlanPostersFilterMode } from '@tmlmobilidade/go-types-downloads';
+import { type OperationPostersV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
 import { type LinesMode } from '@tmlmobilidade/go-types-offer';
 import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
 
 /* * */
 
 export interface ExportHitouchConfig {
-	canvas_profile: PlanPostersCanvasProfile
-	content_mode: PlanPostersContentMode
+	canvas_profile: OperationPostersV1ExtractionProperties['canvas_profile']
+	content_mode: OperationPostersV1ExtractionProperties['content_mode']
 	date_range: {
 		end: OperationalDate
 		start: OperationalDate
@@ -18,7 +18,7 @@ export interface ExportHitouchConfig {
 	output: string
 	source_has_calendar: boolean
 	stop_ids: string[]
-	stops_mode?: PlanPostersFilterMode
+	stops_mode?: OperationPostersV1ExtractionProperties['stops_mode']
 	workdir: string
 }
 

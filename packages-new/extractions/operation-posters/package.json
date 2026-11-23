@@ -19,7 +19,6 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-godb": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
-		"@tmlmobilidade/go-types-downloads": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-gtfs-hitouch": "*",
 		"@tmlmobilidade/go-types-offer": "*",

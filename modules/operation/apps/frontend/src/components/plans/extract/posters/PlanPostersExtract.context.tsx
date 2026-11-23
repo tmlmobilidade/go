@@ -123,7 +123,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 
 	//
 
-	const setCanvasProfile = useCallback((value: null | string) => setFieldValue('canvas_profile', value ?? ''), [setFieldValue]);
+	const setCanvasProfile = useCallback((value: null | OperationPostersV1ExtractionProperties['canvas_profile']) => setFieldValue('canvas_profile', value ?? 'auto'), [setFieldValue]);
 	const setLineIds = useCallback((value: string[]) => setFieldValue('line_ids', value), [setFieldValue]);
 	const setStopIds = useCallback((value: string[]) => setFieldValue('stop_ids', value), [setFieldValue]);
 
