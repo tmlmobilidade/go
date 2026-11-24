@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsValidatorCliRule, GtfsValidatorCliRuleSchema, type GtfsValidatorCliSummary, GtfsValidatorCliSummarySchema } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidationOutputSummary, GtfsValidationOutputSummarySchema, type GtfsValidationRule, GtfsValidatorRulesSchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { spawn } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -14,7 +14,7 @@ const executablePath = fileURLToPath(new URL('./bin/gtfs-validator', import.meta
 export interface GtfsValidatorConfig {
 	/** Maximum concurrent rules. Defaults to 1. */
 	concurrency?: number
-	rules: readonly GtfsValidatorCliRule[]
+	rules: readonly (Omit<GtfsValidationRule, 'depends_on'> & { depends_on?: GtfsValidationRule['depends_on'] })[]
 	/** Aborts the validator process and rejects with the signal's reason. */
 	signal?: AbortSignal
 	/** Local ZIP path relative to the caller's working directory, or an HTTP(S) URL. */
@@ -22,9 +22,9 @@ export interface GtfsValidatorConfig {
 }
 
 /** Runs the bundled Go validator and returns its report, including any error findings. */
-export async function validateGtfs({ concurrency, rules, signal, source }: GtfsValidatorConfig): Promise<GtfsValidatorCliSummary> {
+export async function validateGtfs({ concurrency, rules, signal, source }: GtfsValidatorConfig): Promise<GtfsValidationOutputSummary> {
 	signal?.throwIfAborted();
-	const rulesJson = JSON.stringify(GtfsValidatorCliRuleSchema.array().parse(rules));
+	const rulesJson = JSON.stringify(GtfsValidatorRulesSchema.parse(rules));
 	const directory = await mkdtemp(join(tmpdir(), 'validate-gtfs-'));
 
 	try {
@@ -37,7 +37,7 @@ export async function validateGtfs({ concurrency, rules, signal, source }: GtfsV
 
 		await writeFile(rulesPath, rulesJson);
 		await runValidator(args, directory, signal);
-		return GtfsValidatorCliSummarySchema.parse(JSON.parse(await readFile(reportPath, 'utf8')));
+		return GtfsValidationOutputSummarySchema.parse(JSON.parse(await readFile(reportPath, 'utf8')));
 	} finally {
 		await rm(directory, { force: true, recursive: true });
 	}

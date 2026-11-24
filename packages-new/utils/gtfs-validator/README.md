@@ -14,7 +14,7 @@ const summary = await validateGtfs({
     ],
 });
 
-console.log(summary.total_errors, summary.total_warnings);
+console.log(summary.totals.errors, summary.totals.warnings, summary.totals.infos);
 ```
 
 Provide a nonempty array of rules and include every rule referenced in
@@ -26,7 +26,7 @@ Pass `signal: AbortSignal.timeout(milliseconds)` to stop the validator after a
 deadline. The promise rejects with the signal's reason after the process exits.
 
 The promise resolves with the report even when the feed has error findings.
-Findings with `forbidden` severity count toward `total_errors`. Invalid
+Findings from rules configured as `forbidden` are reported as errors. Invalid
 configuration, process failures, and missing or invalid reports reject the
 promise. Progress is forwarded to stderr, and the wrapper removes its temporary
 rules and report files after each run.
