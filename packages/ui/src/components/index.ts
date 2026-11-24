@@ -6,7 +6,6 @@ export * from './datatable';
 export * from './dates';
 export * from './display';
 export * from './files';
-export * from './gtfs-validation';
 export * from './inputs';
 export * from './layout';
 export * from './map';
