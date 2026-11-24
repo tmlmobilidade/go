@@ -47,14 +47,13 @@ export function VehiclesDetailFlags({ index }) {
 					<StandardFormController
 						control={form.control}
 						name={`flags.${index}.agency_ids`}
-						render={({ field, fieldState }) => (
+						render={({ field }) => (
 							<Select
 								data={agenciesOptions}
 								disabled={field.disabled || !capabilities.editEnabled}
-								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailFlags.fields.agency_ids.label')}
 								onChange={values => field.onChange(values)}
-								value={field.value?.join(',') ?? ''}
+								value={field.value ?? ''}
 								w="100%"
 							/>
 						)}
