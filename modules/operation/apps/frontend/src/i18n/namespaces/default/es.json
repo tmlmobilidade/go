@@ -122,7 +122,7 @@
 			},
 			"PlansListHeaderMenu": {
 				"extract": "Exportar",
-				"extractPDFs": "Exportar PDFs"
+				"extractPDFs": "Exportar horarios"
 			}
 		}
 	},
@@ -145,8 +145,8 @@
 			"stop_filter_label": "Filtro de paradas"
 		},
 		"PlanPostersExtractHeader": {
-			"exportButtonLabel": "Generar PDFs",
-			"title": "Generar PDFs"
+			"exportButtonLabel": "Generar",
+			"title": "Generar horarios"
 		},
 		"agenciesDescription": "Seleccione los operadores y elija un plan por operador.",
 		"agenciesLabel": "Seleccionar operadores",
