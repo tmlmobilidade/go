@@ -1,6 +1,7 @@
 /* * */
 
 import { authorizationMiddleware, type FastifyInstance, FastifyService } from '@tmlmobilidade/go-clients-fastify';
+import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 import { addComment } from './handlers/add-comment.js';
 import { changeStatus } from './handlers/change-status.js';
@@ -21,7 +22,12 @@ server.register(
 
 		instance.get('/', { preHandler: authorizationMiddleware('rides', ['acceptance_read']) }, getRideAcceptance);
 
-		instance.put('/change-status', { preHandler: authorizationMiddleware('rides', ['acceptance_change_status']) }, changeStatus);
+		instance.put('/change-status', {
+			preHandler: authorizationMiddleware(PermissionCatalog.all.rides.scope, [
+				PermissionCatalog.all.rides.actions.acceptance_change_status,
+				PermissionCatalog.all.rides.actions.acceptance_justify,
+			]),
+		}, changeStatus);
 
 		instance.put('/justify', { preHandler: authorizationMiddleware('rides', ['acceptance_justify']) }, justifyRide);
 

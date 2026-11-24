@@ -1,6 +1,7 @@
 'use client';
 
 import { useLinesListData } from '@/components/lines/list/use-lines-list-data';
+import { TypologiesContextProvider } from '@/contexts/Typologies.context';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
@@ -174,8 +175,10 @@ export function LineDetailContextProvider({ children, lineId }: PropsWithChildre
 	}), [applyChanges, capabilities, handleDelete, handleLock, handleUpdate, line, lineId, error, meError, form, isDirty, isValid, isDeleting, isLoading, isLocking, isUpdating, unblock]);
 
 	return (
-		<LineDetailContext.Provider value={stateValue}>
-			{children}
-		</LineDetailContext.Provider>
+		<TypologiesContextProvider>
+			<LineDetailContext.Provider value={stateValue}>
+				{children}
+			</LineDetailContext.Provider>
+		</TypologiesContextProvider>
 	);
 }

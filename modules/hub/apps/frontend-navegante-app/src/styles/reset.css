@@ -1,7 +1,15 @@
 /* * */
 
 :root {
+	/* The host may override this when it can supply the measured native tab bar height. */
+	--native-tab-bar-height: 0px;
+	--app-bottom-inset: max(env(safe-area-inset-bottom, 0px), var(--native-tab-bar-height));
 	-webkit-tap-highlight-color: transparent;
+}
+
+:root[data-native-ios] {
+	/* Floating tab bar plus its gap to the bottom edge, in CSS pixels. */
+	--native-tab-bar-height: 88px;
 }
 
 button:focus-visible,

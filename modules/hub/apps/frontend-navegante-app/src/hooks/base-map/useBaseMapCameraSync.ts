@@ -53,7 +53,7 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams, { mapPa
 			const initialSnapIndex = restoredSnapIndex !== null && restoredSnapIndex > 0 && restoredSnapIndex < MAP_BOTTOM_SHEET_SNAP_POINTS.length
 				? restoredSnapIndex
 				: MAP_BOTTOM_SHEET_MIDDLE_SNAP;
-			if (activeBottomSheetSnap.snapPoint !== MAP_BOTTOM_SHEET_SNAP_POINTS[initialSnapIndex]) return;
+			if (activeBottomSheetSnap.snapIndex !== initialSnapIndex) return;
 		}
 
 		let coordinates: number[] | undefined;
@@ -75,7 +75,7 @@ export function useBaseMapCameraSync(params: UseBaseMapCameraSyncParams, { mapPa
 			offset: [0, Math.round((mapPadding.top - mapPadding.bottom) / 2)],
 			zoom: detailView === 'stops-detail' ? Math.max(baseMap.getZoom(), 15.5) : baseMap.getZoom(),
 		});
-	}, [activeBottomSheetSnap.snapPoint, baseMap, detailId, detailView, mapPadding, params.focusedAlert, params.focusedStop, params.focusedVehicle, restoredSnapIndex, shouldFitMap]);
+	}, [activeBottomSheetSnap.snapIndex, activeBottomSheetSnap.snapPoint, baseMap, detailId, detailView, mapPadding, params.focusedAlert, params.focusedStop, params.focusedVehicle, restoredSnapIndex, shouldFitMap]);
 
 	// Fit the selected line's complete shape when the available map area changes.
 	useEffect(() => {

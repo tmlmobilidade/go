@@ -54,7 +54,7 @@ export async function exportCalendarDates(
 					day_type: String(getDayType(date, holidaysArray)) as '1' | '2' | '3',
 					exception_type: '1', // Service added (all our dates are service additions)
 					holiday: isHoliday(dateObj, holidaysArray) ? '1' : '0',
-					period: resolvePeriod(date),
+					period: serviceInfo.periodOverrides.get(date) ?? resolvePeriod(date, serviceInfo.periodIds),
 					service_id: serviceInfo.serviceId,
 				};
 

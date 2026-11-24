@@ -116,20 +116,81 @@
 		"list": {
 			"PlansListCellFeedDates": {
 				"has_overlap": "Las fechas de validez de este plano están superpuestas con otros planes. Solo un plano debe estar activo para un período determinado."
+			},
+			"PlansListHeader": {
+				"title": "Planos"
+			},
+			"PlansListHeaderMenu": {
+				"extract": "Exportar",
+				"extractPDFs": "Exportar PDFs"
 			}
 		}
+	},
+	"posterExport": {
+		"PlanPostersExtractBody": {
+			"canvasProfileAutomatic": "Automático",
+			"canvasProfileDescription": "Elija Automático para seleccionar el modelo por parada, o aplique un modelo fijo a los PDFs exportados.",
+			"canvasProfileLabel": "Modelo del PDF",
+			"canvas_profiles": {
+				"a": "Modelo A",
+				"b": "Modelo B",
+				"c": "Modelo C",
+				"f": "Modelo F"
+			},
+			"contentModeAll": "Todos",
+			"contentModeLabel": "Contenido a exportar",
+			"contentModeStops": "Paradas",
+			"filterModeExclude": "Todas excepto seleccionadas",
+			"filterModeInclude": "Solo seleccionadas",
+			"stop_filter_label": "Filtro de paradas"
+		},
+		"PlanPostersExtractHeader": {
+			"exportButtonLabel": "Generar PDFs",
+			"title": "Generar PDFs"
+		},
+		"agenciesDescription": "Seleccione los operadores y elija un plan por operador.",
+		"agenciesLabel": "Seleccionar operadores",
+		"planDescription": "Seleccione un único plan para este operador.",
+		"planLabel": "Seleccionar plan"
 	},
 	"rides": {
 		"acceptance": {
 			"RideAcceptance": {
-				"title": "Actividad"
+				"line": "Línea",
+				"lock": "Bloquear aceptación",
+				"locked": "Bloqueada",
+				"title": "Aceptación del viaje",
+				"unlock": "Desbloquear aceptación",
+				"unlocked": "Desbloqueada"
+			},
+			"RideAcceptanceCheck": {
+				"grades": {
+					"error": "Error",
+					"fail": "Falló",
+					"pass": "Superada",
+					"skip": "Omitida"
+				},
+				"no_details": "No se registraron detalles.",
+				"required": "Obligatoria"
+			},
+			"RideAcceptanceChecks": {
+				"application": "Aplicación",
+				"check": "Comprobación",
+				"empty": "No se registraron comprobaciones.",
+				"result": "Resultado",
+				"title": "SLA y comprobaciones"
+			},
+			"RideAcceptanceCommentForm": {
+				"placeholder": "Escribir un comentario…",
+				"submit": "Comentar"
 			},
 			"RideAcceptanceCommentList": {
-				"acceptance_status": {
-					"accepted": "La aceptación está aceptada",
-					"justification_required": "Es necesario justificar la circulación",
-					"rejected": "La aceptación está rechazada",
-					"under_review": "La aceptación está en revisión"
+				"alert_linked": "Alerta asociada",
+				"check": {
+					"error": "Error en la comprobación",
+					"fail": "Comprobación fallida",
+					"pass": "Comprobación superada",
+					"skip": "Comprobación omitida"
 				},
 				"crud": {
 					"archive": "La aceptación fue archivada",
@@ -138,25 +199,29 @@
 					"restore": "La aceptación fue restaurada",
 					"update": "La aceptación fue actualizada"
 				},
+				"current_status": "Estado actual",
 				"justification": {
+					"details": "Ver detalles de la justificación",
 					"updated": "La justificación fue actualizada"
 				},
 				"lock": {
 					"lock": "La aceptación fue bloqueada",
 					"unlock": "La aceptación fue desbloqueada"
 				},
-				"note": {
-					"created": "La aceptación fue creada por el sistema"
-				},
+				"manual_submitted": "Justificación manual enviada",
+				"ride_ended": "Viaje completado",
 				"summary": {
 					"performed": "Se realizó un nuevo análisis del viaje"
 				},
-				"system": "Sistema"
+				"system": "Sistema",
+				"title": "Historial",
+				"updated": "Aceptación actualizada"
 			},
 			"RideAcceptanceJustification": {
-				"SubmitButton": {
-					"label": "Justificar"
-				},
+				"saved": "Justificación guardada",
+				"title": "Justificación"
+			},
+			"RideAcceptanceJustificationEditable": {
 				"fields": {
 					"cause": {
 						"label": "Motivo de la justificación",
@@ -169,18 +234,33 @@
 						"label": "Mensaje de justificación"
 					}
 				},
-				"readonly": {
-					"cause": {
-						"label": "Motivo de la justificación"
-					},
-					"manual_trip_id": {
-						"label": "ID del viaje manual"
-					},
-					"message": {
-						"label": "Mensaje de justificación"
-					}
+				"submit": "Justificar"
+			},
+			"RideAcceptanceJustificationReadOnly": {
+				"cause": "Causa",
+				"empty": "No se registró ninguna justificación.",
+				"manual_trip_id": "ID del viaje manual",
+				"message": "Mensaje",
+				"source": {
+					"alert": "Automática · Alerta",
+					"manual": "Manual"
 				},
-				"title": "Justificación"
+				"view_alert": "Ver alerta"
+			},
+			"RideAcceptanceSimpleThreeVehicleEvents": {
+				"criterion": "Al menos una parada detectada en cada tramo.",
+				"criterion_title": "Criterio",
+				"segment_results": {
+					"detected": "Detectada",
+					"missing": "Sin eventos",
+					"unevaluated": "Sin evaluar"
+				},
+				"segments": {
+					"first": "Inicio",
+					"last": "Final",
+					"middle": "Medio"
+				},
+				"title": "Eventos del vehículo en 3 momentos"
 			},
 			"RideAcceptanceStatus": {
 				"confirm": {

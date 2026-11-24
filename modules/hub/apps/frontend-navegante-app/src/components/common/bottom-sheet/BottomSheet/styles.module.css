@@ -135,7 +135,9 @@
 
 .content {
 	z-index: 0;
+	box-sizing: border-box;
 	min-height: 0;
+	padding-bottom: var(--app-bottom-inset);
 	background-color: var(--color-system-background-200);
 }
 

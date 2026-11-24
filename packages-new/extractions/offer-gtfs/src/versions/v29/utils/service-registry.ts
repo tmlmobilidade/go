@@ -1,15 +1,30 @@
 /* * */
 
+import { type GtfsStrictV29Period } from '@tmlmobilidade/go-types-gtfs-strict';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { createHash } from 'node:crypto';
 
 /* * */
 
 export type ServiceId = string;
+export type ServicePeriodOverrides = ReadonlyMap<OperationalDateInt, GtfsStrictV29Period>;
+
+function sortedPeriodOverrides(overrides: ServicePeriodOverrides) {
+	return [...overrides].sort(([a], [b]) => a - b);
+}
+
+function serviceIdentity(dates: Set<OperationalDateInt>, agencyId: string, periodIds: readonly string[], overrides: ServicePeriodOverrides): string {
+	const identity: unknown[] = [agencyId, Array.from(dates).sort(), [...new Set(periodIds)].sort()];
+	// Preserve existing identities for services without effective period changes.
+	if (overrides.size) identity.push(sortedPeriodOverrides(overrides));
+	return JSON.stringify(identity);
+}
 
 export interface ServiceIdInfo {
 	agencyId: string
 	dates: Set<OperationalDateInt>
+	periodIds: string[]
+	periodOverrides: ServicePeriodOverrides
 	serviceId: ServiceId
 }
 
@@ -26,10 +41,10 @@ export interface ServiceRuleMapInfo {
 
 /**
  * Global registry of service IDs and their corresponding date sets.
- * This ensures that patterns within one agency with identical schedules share the same serviceId.
+ * This ensures that patterns within one agency with identical schedules and selected periods share the same serviceId.
  */
 export class ServiceRegistry {
-	// Map: agency + dates -> serviceId (for quick lookup)
+	// Map: agency + dates + selected periods -> serviceId (for quick lookup)
 	private servicesByDateHash = new Map<string, ServiceId>();
 
 	// Map: serviceId -> date set
@@ -48,6 +63,11 @@ export class ServiceRegistry {
 
 	// A service belongs to one agency, whose periods classify its calendar dates.
 	private serviceAgencies = new Map<ServiceId, string>();
+
+	// Event-specific period codes apply only to dates with a replacement context.
+	private servicePeriodOverrides = new Map<ServiceId, ServicePeriodOverrides>();
+	// Selected periods come from the include rule, not from overlapping agency calendars.
+	private servicePeriods = new Map<ServiceId, string[]>();
 
 	/**
 	 * Resolves the final rule token name for a given (ruleToken, serviceId) pair.
@@ -81,11 +101,22 @@ export class ServiceRegistry {
 	 * This is what populates calendar_dates.txt — the hash-based internal serviceId is
 	 * never exposed outside the registry.
 	 */
-	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDateInt>, agencyId: string): void {
+	registerServiceId(serviceId: ServiceId, dates: Set<OperationalDateInt>, agencyId: string, periodIds: readonly string[] = [], periodOverrides: ServicePeriodOverrides = new Map()): void {
 		const existingAgency = this.serviceAgencies.get(serviceId);
 		if (existingAgency && existingAgency !== agencyId) {
 			throw new Error(`Service ID "${serviceId}" cannot be shared by agencies ${existingAgency} and ${agencyId}`);
 		}
+		const selectedPeriods = [...new Set(periodIds)].sort();
+		const existingPeriods = this.servicePeriods.get(serviceId);
+		if (existingPeriods && JSON.stringify(existingPeriods) !== JSON.stringify(selectedPeriods)) {
+			throw new Error(`Service ID "${serviceId}" already registered with different Periods`);
+		}
+		const existingOverrides = this.servicePeriodOverrides.get(serviceId);
+		if (existingOverrides && JSON.stringify(sortedPeriodOverrides(existingOverrides)) !== JSON.stringify(sortedPeriodOverrides(periodOverrides))) {
+			throw new Error(`Service ID "${serviceId}" already registered with different effective Periods`);
+		}
+		this.servicePeriodOverrides.set(serviceId, new Map(periodOverrides));
+		this.servicePeriods.set(serviceId, selectedPeriods);
 		this.serviceAgencies.set(serviceId, agencyId);
 		const existing = this.tokenServices.get(serviceId);
 
@@ -156,7 +187,7 @@ export class ServiceRegistry {
 		for (const [serviceId, dates] of this.tokenServices.entries()) {
 			const agencyId = this.serviceAgencies.get(serviceId);
 			if (!agencyId) throw new Error(`Service ID "${serviceId}" has no owning agency`);
-			result.set(serviceId, { agencyId, dates, serviceId });
+			result.set(serviceId, { agencyId, dates, periodIds: this.servicePeriods.get(serviceId) ?? [], periodOverrides: this.servicePeriodOverrides.get(serviceId) ?? new Map(), serviceId });
 		}
 		return result;
 	}
@@ -166,10 +197,9 @@ export class ServiceRegistry {
 	 * @param dates - Set of operational dates
 	 * @returns The serviceId for this date set
 	 */
-	getOrCreateServiceId(dates: Set<OperationalDateInt>, agencyId: string): ServiceId {
+	getOrCreateServiceId(dates: Set<OperationalDateInt>, agencyId: string, periodIds: readonly string[] = [], periodOverrides: ServicePeriodOverrides = new Map()): ServiceId {
 		// Create a hash of the sorted dates for lookup
-		const sortedDates = Array.from(dates).sort();
-		const dateHash = JSON.stringify([agencyId, sortedDates]);
+		const dateHash = serviceIdentity(dates, agencyId, periodIds, periodOverrides);
 
 		// Check if we already have a serviceId for this exact date set
 		const existingServiceId = this.servicesByDateHash.get(dateHash);
@@ -178,7 +208,7 @@ export class ServiceRegistry {
 		}
 
 		// Generate a new serviceId
-		const newServiceId = this.generateServiceId(dates, agencyId);
+		const newServiceId = this.generateServiceId(dates, agencyId, periodIds, periodOverrides);
 
 		// Store the mapping
 		this.servicesById.set(newServiceId, new Set(dates));
@@ -218,9 +248,8 @@ export class ServiceRegistry {
 	 * @param dates - Set of operational dates
 	 * @returns A stable serviceId
 	 */
-	private generateServiceId(dates: Set<OperationalDateInt>, agencyId: string): string {
-		const sortedDates = Array.from(dates).sort();
-		const dateString = JSON.stringify([agencyId, sortedDates]);
+	private generateServiceId(dates: Set<OperationalDateInt>, agencyId: string, periodIds: readonly string[], periodOverrides: ServicePeriodOverrides): string {
+		const dateString = serviceIdentity(dates, agencyId, periodIds, periodOverrides);
 		const hash = createHash('sha256').update(dateString).digest('hex').slice(0, 12);
 		return `SVC_${hash}`;
 	}

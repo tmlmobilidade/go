@@ -390,12 +390,16 @@ export const API_ROUTES = Object.freeze({
 		LINES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}/lock`,
 		LINES_LIST: `${getModuleConfig('offer', 'api_url')}/lines`,
 
+		// ORGANIZATIONS
+		ORGANIZATIONS_LIST: `${getModuleConfig('offer', 'api_url')}/organizations`,
+
 		// PATTERNS
 		PATTERNS_CREATE: `${getModuleConfig('offer', 'api_url')}/patterns/create`,
 		PATTERNS_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}`,
 		PATTERNS_DETAIL_COMMENT: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/comment`,
 		PATTERNS_DETAIL_IMPORT_GTFS: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/import-gtfs`,
 		PATTERNS_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/lock`,
+		PATTERNS_DETAIL_RESOLVE_ZONES: (id: string) => `${getModuleConfig('offer', 'api_url')}/patterns/${encodeURIComponent(id)}/resolve-zones`,
 		PATTERNS_SHAPES: `${getModuleConfig('offer', 'api_url')}/patterns/shapes`,
 		PATTERNS_STOPS: `${getModuleConfig('offer', 'api_url')}/patterns/stops`,
 		PATTERNS_STOPS_DETAIL: (stopId: string) => `${getModuleConfig('offer', 'api_url')}/patterns/stops/${encodeURIComponent(stopId)}`,

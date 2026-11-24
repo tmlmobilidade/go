@@ -22,6 +22,8 @@ export function TypologiesListFilterAgencies() {
 	return (
 		<ListFilter
 			active={filter.isActive}
+			disabled={filter.isLoading || !!filter.error}
+			isLoading={filter.isLoading}
 			label={t('default:typologies.fields.agency_ids.label')}
 			onChange={filter.set}
 			options={filter.options}

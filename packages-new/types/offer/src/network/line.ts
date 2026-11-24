@@ -32,7 +32,7 @@ export const LineSchema = BaseDocumentSchema.extend({
 	onboard_fare_ids: z.array(z.string()).nullable().default([]),
 	prepaid_fare_id: z.string().nullable().default(null),
 	transport_type: TransportTypeSchema.default('bus'),
-	typology: z.string().nullable().default(null),
+	typology: z.string().trim().min(1),
 });
 
 /* * */
