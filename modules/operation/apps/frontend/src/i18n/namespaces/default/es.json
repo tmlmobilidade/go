@@ -141,7 +141,7 @@
 			"contentModeLabel": "Contenido a exportar",
 			"contentModeStops": "Paradas",
 			"filterModeExclude": "Todas excepto seleccionadas",
-			"filterModeInclude": "Solo seleccionadas",
+			"filterModeInclude": "Solo las seleccionadas",
 			"stop_filter_label": "Filtro de paradas"
 		},
 		"PlanPostersExtractHeader": {
