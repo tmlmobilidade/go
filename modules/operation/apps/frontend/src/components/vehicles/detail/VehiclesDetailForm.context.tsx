@@ -13,7 +13,11 @@ import { useVehiclesDetailVehicleId } from './use-vehicles-detail-vehicle-id';
 
 /* * */
 
-const VehiclesDetailFormContext = createContext<StandardFormContextValue<UpdateVehicleDto> | undefined>(undefined);
+interface VehiclesDetailFormContextValue extends StandardFormContextValue<UpdateVehicleDto> {
+	agencyIds: string[]
+}
+
+const VehiclesDetailFormContext = createContext<undefined | VehiclesDetailFormContextValue>(undefined);
 
 export function useVehiclesDetailFormContext() {
 	const context = useContext(VehiclesDetailFormContext);
@@ -39,6 +43,8 @@ export function VehiclesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const { data: vehicleData, isLoading: vehicleDataLoading, mutate: vehiclesDetailMutate } = useVehiclesDetailData();
 
+	const agencyIds = useMemo(() => vehicleData?.flags?.flatMap(flag => flag.agency_ids) ?? [], [vehicleData?.flags]);
+
 	//
 	// B. Setup form
 
@@ -51,7 +57,7 @@ export function VehiclesDetailFormContextProvider({ children }: PropsWithChildre
 	// C. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Vehicle>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.operation.VEHICLES_DETAIL(vehicleId) }),
+		fetchFn: async (body: UpdateVehicleDto) => await fetchApiData<Vehicle>({ body, method: 'PUT', url: API_ROUTES.operation.VEHICLES_DETAIL(vehicleId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
 			vehiclesDetailMutate(response);
@@ -126,12 +132,13 @@ export function VehiclesDetailFormContextProvider({ children }: PropsWithChildre
 	//
 	// E. Return state
 
-	const stateValue: StandardFormContextValue<UpdateVehicleDto> = useMemo(() => ({
+	const stateValue: VehiclesDetailFormContextValue = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,
-			update: handleUpdate,
+			update: form.handleSubmit(handleUpdate),
 		},
+		agencyIds,
 		capabilities: {
 			deleteEnabled,
 			editEnabled,
@@ -149,7 +156,7 @@ export function VehiclesDetailFormContextProvider({ children }: PropsWithChildre
 			isUpdating,
 		},
 		unblock,
-	}), [deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isDirty, isLocking, isUpdating, isValid, lockEnabled, unblock, updateEnabled, vehicleData?.is_locked, vehicleDataLoading]);
+	}), [agencyIds, deleteEnabled, editEnabled, form, handleDelete, handleLock, handleUpdate, isDeleting, isDirty, isLocking, isUpdating, isValid, lockEnabled, unblock, updateEnabled, vehicleData?.is_locked, vehicleDataLoading]);
 
 	return (
 		<VehiclesDetailFormContext.Provider value={stateValue}>
