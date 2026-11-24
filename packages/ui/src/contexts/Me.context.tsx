@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type User, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
+import { type MeUser, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
 import { type ActionsOf, type GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions } from '@tmlmobilidade/go-types-permissions';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
@@ -22,7 +22,7 @@ interface MeContextState {
 		updatePreference: (scope: string, key: string, value: undefined | UserPreferenceValue) => Promise<void>
 	}
 	data: {
-		user: undefined | User
+		user: MeUser | undefined
 	}
 	flags: {
 		error?: HttpException
@@ -120,7 +120,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.ME_UPDATE_PREFERENCES });
+		await fetchApiData<MeUser>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.ME_UPDATE_PREFERENCES });
 	};
 
 	//
