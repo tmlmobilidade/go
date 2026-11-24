@@ -33,8 +33,6 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 
 	const passwordValidationResult = PasswordRequirementsSchema.safeParse(request.body.password);
 
-	console.log(passwordValidationResult.error);
-
 	if (!passwordValidationResult.success) {
 		Logger.error({ message: `Invalid password: ${passwordValidationResult.error.issues[0].message}` });
 		return sendErrorApiResponse(reply, {

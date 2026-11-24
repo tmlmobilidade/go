@@ -3,9 +3,8 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { AuthChangePasswordRequest, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
+import { type AuthChangePasswordRequest, passwordRequirementsConditions, passwordRequirementsKeys, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { translateValidationMessage } from '@tmlmobilidade/go-utils-validation';
 import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
@@ -15,7 +14,8 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface PasswordValidation {
+interface PasswordRequirement {
+	_id: string
 	message: string
 	valid: boolean
 }
@@ -28,8 +28,7 @@ export function ChangePasswordForm() {
 	//
 	// A. Setup variables
 
-	const { i18n, t } = useTranslation();
-	const locale = i18n.resolvedLanguage ?? i18n.language;
+	const { t } = useTranslation();
 
 	const [tokenValue] = useQueryState('token');
 	const [emailValue] = useQueryState('email');
@@ -40,22 +39,31 @@ export function ChangePasswordForm() {
 	//
 	// B. Transform data
 
-	const validationErrors: PasswordValidation[] = useMemo(() => {
-		const errors: PasswordValidation[] = [];
-		const result = PasswordRequirementsSchema.safeParse(passwordValue);
-		if (result.error) {
-			errors.push(...result.error.issues
-				.map(issue => Object.values(JSON.parse(issue.message)))
-				.flat() as PasswordValidation[]);
-		}
-		if (passwordValue !== confirmPasswordValue) {
-			errors.push({
-				message: translateValidationMessage('custom.password.mismatch', {}, locale),
+	const validationErrors: PasswordRequirement[] = useMemo(() => {
+		// Setup an array of requirements
+		const passwordRequirements: PasswordRequirement[] = passwordRequirementsKeys.map(key => ({
+			_id: key,
+			message: t(`unauthenticated:ChangePasswordForm.password_requirements.${key}`, '', { value: passwordRequirementsConditions[key] }),
+			valid: true,
+		}));
+		// Validate the password
+		const validationResult = PasswordRequirementsSchema.safeParse(passwordValue);
+		// Populate the requirements with the validation result
+		validationResult.error?.issues.forEach((issue) => {
+			const requirement = passwordRequirements.find(requirement => requirement._id === issue.message);
+			if (requirement) requirement.valid = false;
+		});
+		// Validate the confirm password
+		if (confirmPasswordValue !== passwordValue) {
+			passwordRequirements.push({
+				_id: 'mismatch',
+				message: t('unauthenticated:ChangePasswordForm.password_requirements.mismatch'),
 				valid: false,
 			});
 		}
-		return errors;
-	}, [passwordValue, confirmPasswordValue, locale]);
+		// Return the requirements
+		return passwordRequirements;
+	}, [t, passwordValue, confirmPasswordValue]);
 
 	const isDisabled = useMemo(() => {
 		return validationErrors.some(error => !error.valid);

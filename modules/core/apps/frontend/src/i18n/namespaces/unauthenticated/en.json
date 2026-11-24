@@ -16,6 +16,16 @@
 		"footer": {
 			"label": "Back to login"
 		},
+		"password_requirements": {
+			"excessive_bytes": "The password is too long",
+			"min_length": "The password must be at least {value} characters long",
+			"min_lower_case": "The password must contain at least {value} lowercase character(s)",
+			"min_number": "The password must contain at least {value} number(s)",
+			"min_special_char": "The password must contain at least {value} special character(s)",
+			"min_upper_case": "The password must contain at least {value} uppercase character(s)",
+			"mismatch": "The passwords do not match",
+			"not_common_passwords": "The password must not be a common password"
+		},
 		"submit": {
 			"label": "Confirm"
 		},

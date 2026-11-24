@@ -16,6 +16,16 @@
 		"footer": {
 			"label": "Volver al inicio de sesión"
 		},
+		"password_requirements": {
+			"excessive_bytes": "La contraseña es demasiado larga",
+			"min_length": "La contraseña debe tener al menos {value} caracteres",
+			"min_lower_case": "La contraseña debe contener al menos {value} carácter(es) minúsculo(s)",
+			"min_number": "La contraseña debe contener al menos {value} número(s)",
+			"min_special_char": "La contraseña debe contener al menos {value} carácter(es) especial(es)",
+			"min_upper_case": "La contraseña debe contener al menos {value} carácter(es) mayúsculo(s)",
+			"mismatch": "Las contraseñas no coinciden",
+			"not_common_passwords": "La contraseña no debe ser una contraseña común"
+		},
 		"submit": {
 			"label": "Confirmar"
 		},
