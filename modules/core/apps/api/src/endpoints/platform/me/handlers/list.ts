@@ -1,10 +1,8 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { authProvider } from '@tmlmobilidade/go-providers-auth';
-import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-types-core';
-import { type User } from '@tmlmobilidade/go-types-core';
+import { type SimplifiedUser, SimplifiedUserSchema } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 
 /**
@@ -12,14 +10,8 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * @param request The request object
  * @param reply The reply object
  */
-export async function listMeHandler(request: FastifyRequest, reply: FastifyReply<User>) {
+export async function listMeHandler(request: FastifyRequest, reply: FastifyReply<SimplifiedUser>) {
 	//
-
-	//
-	// Retrieve roles and permissions for the user
-	// and merge them into the user data.
-
-	userData.permissions = await authProvider.getPermissionsFromUserId(request.me._id);
 
 	//
 	// Add seen_last_at for this user asynchronously
@@ -30,7 +22,12 @@ export async function listMeHandler(request: FastifyRequest, reply: FastifyReply
 	);
 
 	//
+	// Strip the user data to the minimum information needed for the platform.
+
+	const simplifiedUserData = SimplifiedUserSchema.parse(request.me);
+
+	//
 	// Send the user data back in the response.
 
-	return sendSuccessApiResponse(reply, userData);
+	return sendSuccessApiResponse(reply, simplifiedUserData);
 }
