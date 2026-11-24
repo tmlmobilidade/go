@@ -1,0 +1,39 @@
+{
+	"detail": {
+		"AgenciesDetailValidationRuleDependencies": {
+			"label": "Dependencies",
+			"placeholder": "Select dependencies..."
+		},
+		"AgenciesDetailValidationRuleModifier": {
+			"choose": "Select modifier",
+			"compare": "Comparisons",
+			"expected_value": "Expected value",
+			"label": "Modifier",
+			"legacy_modifiers": "This rule has both options and comparisons. It can only use one of them.",
+			"none": "No modifier",
+			"options": "Options",
+			"options_placeholder": "Enter values separated by commas or spaces.",
+			"pending": "Enter values to replace the saved modifier."
+		},
+		"AgenciesDetailValidationRuleSeverity": {
+			"label": "Severity",
+			"levels": {
+				"error": "Error",
+				"forbidden": "Forbidden",
+				"ignore": "Ignore",
+				"info": "Info",
+				"unconfigured": "Unconfigured",
+				"warning": "Warning"
+			}
+		},
+		"AgenciesDetailValidationRulesFilters": {
+			"search": "Search rules...",
+			"severity": "Severity"
+		},
+		"AgenciesDetailValidationRulesTable": {
+			"empty": "No rules found.",
+			"rule": "Rule",
+			"severity": "Severity"
+		}
+	}
+}

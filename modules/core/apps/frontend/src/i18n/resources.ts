@@ -1,5 +1,8 @@
 'use client';
 
+import namespaceAgenciesEn from '@/i18n/namespaces/agencies/en.json' with { type: 'json' };
+import namespaceAgenciesEs from '@/i18n/namespaces/agencies/es.json' with { type: 'json' };
+import namespaceAgenciesPt from '@/i18n/namespaces/agencies/pt.json' with { type: 'json' };
 import namespaceDefaultEn from '@/i18n/namespaces/default/en.json' with { type: 'json' };
 import namespaceDefaultEs from '@/i18n/namespaces/default/es.json' with { type: 'json' };
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
@@ -20,6 +23,7 @@ import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtS
  */
 export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
+	agencies: namespaceAgenciesPt,
 	default: namespaceDefaultPt,
 	organizations: namespaceOrganizationsPt,
 	unauthenticated: namespaceUnauthenticatedPt,
@@ -30,6 +34,7 @@ export const i18nResourceKeysPt = {
  */
 export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
+	agencies: namespaceAgenciesEs,
 	default: namespaceDefaultEs,
 	organizations: namespaceOrganizationsEs,
 	unauthenticated: namespaceUnauthenticatedEs,
@@ -40,6 +45,7 @@ export const i18nResourceKeysEs = {
  */
 export const i18nResourceKeysEn = {
 	...i18nResourceKeysEnShared,
+	agencies: namespaceAgenciesEn,
 	default: namespaceDefaultEn,
 	organizations: namespaceOrganizationsEn,
 	unauthenticated: namespaceUnauthenticatedEn,

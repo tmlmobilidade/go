@@ -1,0 +1,27 @@
+.scroll {
+	display: block;
+	max-height: min(56vh, 520px);
+	overscroll-behavior: contain;
+	scroll-padding-top: 38px;
+}
+
+.table {
+	width: 100%;
+}
+
+.header {
+	position: sticky;
+	z-index: 1;
+	top: 0;
+	background-color: var(--color-system-background-200);
+}
+
+.header th:last-child {
+	width: 1%;
+}
+
+@container (width < 650px) {
+	.scroll {
+		max-height: 250px;
+	}
+}

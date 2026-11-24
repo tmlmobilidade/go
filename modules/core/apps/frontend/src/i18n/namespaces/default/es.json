@@ -152,7 +152,7 @@
 				"title": "Planos"
 			},
 			"ValidationRules": {
-				"description": "Lista de reglas que serán aplicadas a la validación del GTFS.",
+				"description": "Configure la severidad y los parámetros de cada regla.",
 				"invalid": "No se pueden guardar las reglas:",
 				"invalidSeverities": "Severidades no válidas en las reglas indicadas.",
 				"title": "Reglas de validación del GTFS"

@@ -79,41 +79,6 @@
 		"rows": "Row index(es)",
 		"showAll": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}"
 	},
-	"gtfsValidationRules": {
-		"allRules": "All rules",
-		"compare": {
-			"description": "Key / expected value pairs checked by the rule.",
-			"label": "Comparisons",
-			"value": "Expected value"
-		},
-		"dependencies": {
-			"description": "Rules in the same file that must pass before this rule. Leave empty for no dependencies.",
-			"label": "Dependencies",
-			"placeholder": "Select dependencies..."
-		},
-		"empty": "No rules found.",
-		"options": {
-			"description": "Values used by the rule. Leave empty to use the default options.",
-			"label": "Options",
-			"placeholder": "Enter values separated by commas or spaces."
-		},
-		"rule": "Rule",
-		"search": "Search rules...",
-		"settings": {
-			"remove": "Remove configuration"
-		},
-		"severities": {
-			"error": "Error",
-			"forbidden": "Forbidden",
-			"ignore": "Ignore",
-			"info": "Info",
-			"warning": "Warning"
-		},
-		"severity": "Severity",
-		"unconfigured": {
-			"description": "No severity configured"
-		}
-	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {

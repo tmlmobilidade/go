@@ -190,7 +190,9 @@
 				}
 			},
 			"ValidationRules": {
-				"invalidSeverities": "Invalid severities in the listed rules."
+				"description": "Set the severity and parameters for each rule.",
+				"invalidSeverities": "Invalid severities in the listed rules.",
+				"title": "GTFS validation rules"
 			},
 			"header": {
 				"save": "Save"

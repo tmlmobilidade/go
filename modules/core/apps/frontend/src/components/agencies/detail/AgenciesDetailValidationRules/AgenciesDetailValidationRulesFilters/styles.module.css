@@ -1,0 +1,13 @@
+.filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-sm);
+}
+
+.search {
+	flex: 2 1 200px;
+}
+
+.severity {
+	flex: 1 1 200px;
+}

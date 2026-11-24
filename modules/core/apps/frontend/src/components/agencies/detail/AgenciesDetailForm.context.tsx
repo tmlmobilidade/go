@@ -9,7 +9,8 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useMemo
 import { useTranslation } from 'react-i18next';
 
 import { useAgenciesListData } from '../list/use-agencies-list-data';
-import { type AgenciesDetailValidationRule, getAgenciesDetailValidationRules } from './get-agencies-detail-validation-rules';
+import { type AgenciesDetailValidationRule } from './AgenciesDetailValidationRules/types';
+import { getAgenciesDetailValidationRules } from './get-agencies-detail-validation-rules';
 import { useAgenciesDetailAgencyId } from './use-agencies-detail-agency-id';
 import { useAgenciesDetailData } from './use-agencies-detail-data';
 
@@ -51,12 +52,12 @@ export function AgenciesDetailFormContextProvider({ children }: PropsWithChildre
 	// B. Setup form
 
 	const agencyFormData = useMemo(() => {
-		if (!agencyData?.plans || Array.isArray(agencyData.plans.validation_rules)) return agencyData;
+		if (!agencyData?.plans) return agencyData;
 		return {
 			...agencyData,
 			plans: {
 				...agencyData.plans,
-				validation_rules: getAgenciesDetailValidationRules(agencyData.plans.validation_rules ?? {}),
+				validation_rules: getAgenciesDetailValidationRules(agencyData.plans.validation_rules),
 			},
 		};
 	}, [agencyData]);

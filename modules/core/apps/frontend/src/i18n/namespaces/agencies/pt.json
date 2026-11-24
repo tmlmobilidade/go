@@ -1,0 +1,39 @@
+{
+	"detail": {
+		"AgenciesDetailValidationRuleDependencies": {
+			"label": "Dependências",
+			"placeholder": "Selecionar dependências..."
+		},
+		"AgenciesDetailValidationRuleModifier": {
+			"choose": "Selecionar modificador",
+			"compare": "Comparações",
+			"expected_value": "Valor esperado",
+			"label": "Modificador",
+			"legacy_modifiers": "Esta regra tem opções e comparações. Só pode usar uma delas.",
+			"none": "Sem modificador",
+			"options": "Opções",
+			"options_placeholder": "Escreva e separe por vírgulas ou espaços.",
+			"pending": "Introduza valores para substituir o modificador guardado."
+		},
+		"AgenciesDetailValidationRuleSeverity": {
+			"label": "Severidade",
+			"levels": {
+				"error": "Erro",
+				"forbidden": "Proibido",
+				"ignore": "Ignorar",
+				"info": "Info",
+				"unconfigured": "Por configurar",
+				"warning": "Aviso"
+			}
+		},
+		"AgenciesDetailValidationRulesFilters": {
+			"search": "Pesquisar regra...",
+			"severity": "Severidade"
+		},
+		"AgenciesDetailValidationRulesTable": {
+			"empty": "Nenhuma regra encontrada.",
+			"rule": "Regra",
+			"severity": "Severidade"
+		}
+	}
+}
