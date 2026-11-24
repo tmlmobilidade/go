@@ -5,7 +5,7 @@ import { openVehiclesImportModal } from '@/components/vehicles/import/VehiclesIm
 import { openVehiclesListExportModal } from '@/components/vehicles/list/VehiclesListExport/VehiclesListExport.modal';
 import { IconFileDownload, IconPlus, IconUpload } from '@tabler/icons-react';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, useMeUser } from '@tmlmobilidade/ui';
+import { ToolbarActions, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,7 @@ export function VehiclesListHeaderMenu() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	//
 	// B. Transform data
@@ -27,7 +27,7 @@ export function VehiclesListHeaderMenu() {
 	const menuActions = useMemo(() => {
 		const actions = [];
 
-		if (hasPermission(meData?.permissions, {
+		if (hasPermission(mePermissions, {
 			action: PermissionCatalog.all.vehicles.actions.create,
 			scope: PermissionCatalog.all.vehicles.scope,
 		})) {
@@ -50,7 +50,7 @@ export function VehiclesListHeaderMenu() {
 		});
 
 		return actions;
-	}, [meData?.permissions, t]);
+	}, [mePermissions, t]);
 
 	//
 	// C. Render components

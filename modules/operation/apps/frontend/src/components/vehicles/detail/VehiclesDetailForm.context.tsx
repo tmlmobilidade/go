@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -33,7 +33,7 @@ export function VehiclesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const { vehicleId } = useVehiclesDetailVehicleId();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate: vehiclesListMutate } = useVehiclesListData();
 
@@ -80,25 +80,25 @@ export function VehiclesDetailFormContextProvider({ children }: PropsWithChildre
 	// D. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: PermissionCatalog.all.vehicles.actions.delete,
 			scope: PermissionCatalog.all.vehicles.scope,
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const hasUpdatePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: PermissionCatalog.all.vehicles.actions.update,
 			scope: PermissionCatalog.all.vehicles.scope,
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const hasLockPermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: PermissionCatalog.all.vehicles.actions.lock,
 			scope: PermissionCatalog.all.vehicles.scope,
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const { deleteEnabled, editEnabled, lockEnabled, updateEnabled } = useStandardFormCapabilities({
 		delete: {

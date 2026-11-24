@@ -2,7 +2,7 @@
 
 import { IconFileDownload } from '@tabler/icons-react';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, type ToolbarActionsItemType, useMeUser } from '@tmlmobilidade/ui';
+import { ToolbarActions, type ToolbarActionsItemType, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,7 @@ export function AlertsListHeaderMenu() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 	const { data, error, isLoading, isValidating } = useAlertsListData();
 
 	//
@@ -28,7 +28,7 @@ export function AlertsListHeaderMenu() {
 	const menuActions = useMemo(() => {
 		const actions: ToolbarActionsItemType[] = [];
 
-		if (hasPermission(meData?.permissions, { action: PermissionCatalog.all.alerts.actions.read, scope: PermissionCatalog.all.alerts.scope })) {
+		if (hasPermission(mePermissions, { action: PermissionCatalog.all.alerts.actions.read, scope: PermissionCatalog.all.alerts.scope })) {
 			actions.push({
 				disabled: isLoading || isValidating || !!error || !data?.length,
 				icon: <IconFileDownload />,
@@ -38,7 +38,7 @@ export function AlertsListHeaderMenu() {
 		}
 
 		return actions;
-	}, [data?.length, error, isLoading, isValidating, meData?.permissions, t]);
+	}, [data?.length, error, isLoading, isValidating, mePermissions, t]);
 
 	//
 	// C. Render components

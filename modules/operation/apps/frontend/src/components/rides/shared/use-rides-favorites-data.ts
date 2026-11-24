@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type User } from '@tmlmobilidade/go-types-core';
+import { type MeUser } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData, useMeUser } from '@tmlmobilidade/ui';
 import { useCallback, useMemo, useState } from 'react';
@@ -17,7 +17,7 @@ interface UseRidesFavoritesDataReturnType {
 
 /* * */
 
-function getFavoriteRideIds(meData: undefined | User): string[] {
+function getFavoriteRideIds(meData: MeUser | undefined): string[] {
 	const value = meData?.preferences?.controller?.favorite_rides;
 	if (!Array.isArray(value)) return [];
 	return value.filter((id): id is string => typeof id === 'string');
@@ -50,13 +50,13 @@ export function useRidesFavoritesData(): UseRidesFavoritesDataReturnType {
 		const nextMeResponse = {
 			data: { ...meData, preferences: { ...meData.preferences, controller: { ...meData.preferences?.controller, favorite_rides: nextFavorites } } },
 			error: null,
-		} as ApiResponse<User>;
+		} as ApiResponse<MeUser>;
 
 		try {
 			// Optimistic update shared across all consumers via the me SWR cache
 			await globalMutate(API_ROUTES.core.ME_LIST_ME_USER, nextMeResponse, { revalidate: false });
 
-			const response = await fetchApiData<User>({
+			const response = await fetchApiData<MeUser>({
 				body: { key: 'favorite_rides', scope: 'controller', value: nextFavorites },
 				method: 'PUT',
 				url: API_ROUTES.core.ME_UPDATE_PREFERENCES,
@@ -66,7 +66,7 @@ export function useRidesFavoritesData(): UseRidesFavoritesDataReturnType {
 				await globalMutate(API_ROUTES.core.ME_LIST_ME_USER, {
 					...nextMeResponse,
 					data: response.data,
-				} as ApiResponse<User>, { revalidate: false });
+				} as ApiResponse<MeUser>, { revalidate: false });
 			}
 		} finally {
 			setIsTogglingFavorite(false);

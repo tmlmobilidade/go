@@ -2,7 +2,7 @@
 
 import { type AlertsComposeRequest } from '@tmlmobilidade/go-operation-pckg-types';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useDebouncedValue, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useDebouncedValue, useMePermissions, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,7 @@ export function AlertCreateStepSummaryAi() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	const { form } = useAlertsCreateFormContext();
 
@@ -57,32 +57,32 @@ export function AlertCreateStepSummaryAi() {
 	// B. Transform data
 
 	const hasPermissionToCreate = useMemo(() => {
-		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
+		const permissionForAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'create', scope: 'alerts' },
 			requiredValue: agencyIdValue,
 			resourceKey: 'agency_ids',
 		});
-		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
+		const permissionForReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'create', scope: 'alerts' },
 			requiredValue: referenceTypeValue,
 			resourceKey: 'reference_types',
 		});
 		return permissionForAgencyId && permissionForReferenceType;
-	}, [agencyIdValue, meData?.permissions, referenceTypeValue]);
+	}, [agencyIdValue, mePermissions, referenceTypeValue]);
 
 	const hasPermissionToUpdateTexts = useMemo(() =>	{
-		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
+		const permissionForAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update_texts', scope: 'alerts' },
 			requiredValue: agencyIdValue,
 			resourceKey: 'agency_ids',
 		});
-		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
+		const permissionForReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update_texts', scope: 'alerts' },
 			requiredValue: referenceTypeValue,
 			resourceKey: 'reference_types',
 		});
 		return permissionForAgencyId && permissionForReferenceType;
-	}, [agencyIdValue, meData?.permissions, referenceTypeValue]);
+	}, [agencyIdValue, mePermissions, referenceTypeValue]);
 
 	const isProposalAccepted = useMemo(() => {
 		const isSameTitle = composeData?.pt?.title === titleValue;

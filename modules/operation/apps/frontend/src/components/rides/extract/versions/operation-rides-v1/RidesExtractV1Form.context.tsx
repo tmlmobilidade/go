@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OperationRidesV1ExtractionCreate, type OperationRidesV1ExtractionProperties, OperationRidesV1ExtractionPropertiesSchema, OperationRidesV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useRidesListFilterAgency } from '../../../list/filters/RidesListFilterAgency/use-rides-list-filter-agency';
@@ -28,7 +28,7 @@ export function RidesExtractV1FormContextProvider({ children }: PropsWithChildre
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate } = useExtractionsListData();
 
@@ -79,8 +79,8 @@ export function RidesExtractV1FormContextProvider({ children }: PropsWithChildre
 	// D. Setup flags
 
 	const hasExtractPermission = useMemo(() => {
-		return hasPermission(meData?.permissions, { action: 'analysis_read', scope: 'rides' });
-	}, [meData?.permissions]);
+		return hasPermission(mePermissions, { action: 'analysis_read', scope: 'rides' });
+	}, [mePermissions]);
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
 		create: {

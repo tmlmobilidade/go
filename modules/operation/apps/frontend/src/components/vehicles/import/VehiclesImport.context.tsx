@@ -7,7 +7,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type CreateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, useAgenciesData, useMeUser, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, useAgenciesData, useMePermissions, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 import { useVehiclesListData } from '../list/use-vehicles-list-data';
@@ -58,7 +58,7 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 	const [createdCount, setCreatedCount] = useState(0);
 	const [updatedCount, setUpdatedCount] = useState(0);
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 	const { data: agenciesData } = useAgenciesData();
 	const { mutate: vehiclesListMutate } = useVehiclesListData();
 
@@ -66,7 +66,7 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 	// B. Handle actions
 
 	const canUpdateAgency = useCallback((agencyId: string) => {
-		return hasPermissionResource(meData?.permissions ?? [], {
+		return hasPermissionResource(mePermissions ?? [], {
 			requiredPermission: {
 				action: PermissionCatalog.all.vehicles.actions.update,
 				scope: PermissionCatalog.all.vehicles.scope,
@@ -74,7 +74,7 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 			requiredValue: agencyId,
 			resourceKey: 'agency_ids',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const diffVehicle = useCallback((existing: VehiclesListItem, incoming: CreateVehicleDto) => {
 		const changes: VehicleImportPreview['changes'] = {};

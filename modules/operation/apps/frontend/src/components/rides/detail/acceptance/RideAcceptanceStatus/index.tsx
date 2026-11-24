@@ -6,7 +6,7 @@ import { IconCheck, IconClock, IconEdit } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, IconButton, Section, Select, Tag, useHandleAction, useMeUser } from '@tmlmobilidade/ui';
+import { fetchApiData, IconButton, Section, Select, Tag, useHandleAction, useMePermissions } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 	const { t } = useTranslation();
 	const { rideId } = useRidesDetailRideId();
 	const { mutate } = useRideAcceptanceData();
-	const { data: me } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [status, setStatus] = useState<RideAcceptance['acceptance_status']>(grade);
@@ -32,8 +32,8 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 	// B. Transform data
 
 	const { actions, scope } = PermissionCatalog.all.rides;
-	const canChangeStatus = PermissionCatalog.hasPermission(me?.permissions, scope, actions.acceptance_change_status);
-	const canReopen = grade === 'under_review' && PermissionCatalog.hasPermission(me?.permissions, scope, actions.acceptance_justify);
+	const canChangeStatus = PermissionCatalog.hasPermission(mePermissions, scope, actions.acceptance_change_status);
+	const canReopen = grade === 'under_review' && PermissionCatalog.hasPermission(mePermissions, scope, actions.acceptance_justify);
 	const canEdit = canChangeStatus || canReopen;
 	const statusOptions: readonly RideAcceptance['acceptance_status'][] = canChangeStatus ? RideAcceptanceStatusSchema.options : ['justification_required'];
 	const selectedStatus = canChangeStatus ? status : 'justification_required';

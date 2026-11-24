@@ -2,7 +2,7 @@
 
 import { IconFileDownload } from '@tabler/icons-react';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, useMeUser } from '@tmlmobilidade/ui';
+import { ToolbarActions, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,12 +13,12 @@ import { openPlanPostersExtractModal } from '../../extract/posters/PlanPostersEx
 export function PlansListHeaderMenu() {
 	//
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 	const { t } = useTranslation();
 
 	const menuActions = useMemo(() => {
 		const actions = [];
-		if (hasPermission(meData.permissions, { action: 'generate_pdf_posters', scope: 'plans' })) {
+		if (hasPermission(mePermissions, { action: 'generate_pdf_posters', scope: 'plans' })) {
 			actions.push({
 				icon: <IconFileDownload />,
 				label: t('default:plans.list.PlansListHeaderMenu.extractPDFs'),
@@ -26,7 +26,7 @@ export function PlansListHeaderMenu() {
 			});
 		}
 		return actions;
-	}, [meData.permissions, t]);
+	}, [mePermissions, t]);
 
 	return (
 		<ToolbarActions groups={[{ actions: menuActions }]} />

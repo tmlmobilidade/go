@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useMePermissions, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -20,7 +20,7 @@ export function AlertsDetailHeader() {
 
 	const router = useRouter();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	const { alertId } = useAlertsDetailAlertId();
 
@@ -34,18 +34,18 @@ export function AlertsDetailHeader() {
 	// B. Transform data
 
 	const hasPermissionToChangePublishStatus = useMemo(() => {
-		const hasPermissionForAgencyId = hasPermissionResource(meData?.permissions, {
+		const hasPermissionForAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: alertData?.agency_id,
 			resourceKey: 'agency_ids',
 		});
-		const hasPermissionForReferenceType = hasPermissionResource(meData?.permissions, {
+		const hasPermissionForReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: alertData?.reference_type,
 			resourceKey: 'reference_types',
 		});
 		return hasPermissionForAgencyId && hasPermissionForReferenceType;
-	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
+	}, [alertData?.agency_id, alertData?.reference_type, mePermissions]);
 
 	//
 	// C. Handle actions

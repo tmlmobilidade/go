@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Ride } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { ProcessingStatus } from '@tmlmobilidade/go-types-shared';
-import { CloseButton, fetchApiData, IconButton, IdTag, keepUrlParams, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar, useHandleAction, useMeUser } from '@tmlmobilidade/ui';
+import { CloseButton, fetchApiData, IconButton, IdTag, keepUrlParams, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar, useHandleAction, useMePermissions } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,7 @@ export function RidesDetailHeader() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	const { rideId } = useRidesDetailRideId();
 	const { availableViews, currentView, setCurrentView } = useRidesDetailCurrentView();
@@ -64,12 +64,12 @@ export function RidesDetailHeader() {
 	}, [favoriteRideIds, rideId]);
 
 	const hasPermissionToChangeProcessingStatus = useMemo(() => {
-		return hasPermissionResource(meData.permissions, {
+		return hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'analysis_reprocess', scope: 'rides' },
 			requiredValue: rideData?.agency_id,
 			resourceKey: 'agency_ids',
 		});
-	}, [meData.permissions, rideData?.agency_id]);
+	}, [mePermissions, rideData?.agency_id]);
 
 	//
 	// C. Handle actions

@@ -8,7 +8,7 @@ import { type PlanChangeItem, PlanChangeItemSchema, type ValidationListItem } fr
 import { type Plan } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -40,7 +40,7 @@ export function PlanChangeContextProvider({ children, planId }: PropsWithChildre
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 	const { mutate: plansListMutate } = usePlansListData();
 
 	//
@@ -129,12 +129,12 @@ export function PlanChangeContextProvider({ children, planId }: PropsWithChildre
 		if (!planData) return false;
 		return PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.plans.actions.update_gtfs_plan,
-			permissions: meData?.permissions ?? [],
+			permissions: mePermissions ?? [],
 			resource_key: 'agency_ids',
 			scope: PermissionCatalog.all.plans.scope,
 			value: planData.agency_id,
 		});
-	}, [meData?.permissions, planData]);
+	}, [mePermissions, planData]);
 
 	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
 		form: {

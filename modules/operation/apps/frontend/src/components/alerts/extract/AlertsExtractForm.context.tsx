@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OperationAlertsV1ExtractionCreate, OperationAlertsV1ExtractionCreateSchema, OperationAlertsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
 import { filterPermissionResourceValues, hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +37,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 	const { mutate } = useExtractionsListData();
 
 	const filterActivePeriod = useAlertsListFilterActivePeriod();
@@ -59,7 +59,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 				active_period_filter_start: filterActivePeriod.value_start ?? undefined,
 				agency_ids: filterPermissionResourceValues<string>({
 					action: PermissionCatalog.all.alerts.actions.read,
-					permissions: meData?.permissions,
+					permissions: mePermissions,
 					resourceKey: 'agency_ids',
 					scope: PermissionCatalog.all.alerts.scope,
 					values: filterAgency.value,
@@ -71,7 +71,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 				publish_status: filterPublishStatus.value,
 				reference_type: filterPermissionResourceValues<AlertReferenceType>({
 					action: PermissionCatalog.all.alerts.actions.read,
-					permissions: meData?.permissions,
+					permissions: mePermissions,
 					resourceKey: 'reference_types',
 					scope: PermissionCatalog.all.alerts.scope,
 					values: filterReferenceType.value,
@@ -117,7 +117,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 	// D. Setup flags from the current form values
 
 	const hasExtractPermission = useMemo(() => {
-		const hasReadAlertsPermission = hasPermission(meData?.permissions, {
+		const hasReadAlertsPermission = hasPermission(mePermissions, {
 			action: PermissionCatalog.all.alerts.actions.read,
 			scope: PermissionCatalog.all.alerts.scope,
 		});
@@ -126,7 +126,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 
 		const permittedAgencyIds = filterPermissionResourceValues<string>({
 			action: PermissionCatalog.all.alerts.actions.read,
-			permissions: meData.permissions,
+			permissions: mePermissions,
 			resourceKey: 'agency_ids',
 			scope: PermissionCatalog.all.alerts.scope,
 			values: propertiesValue?.agency_ids,
@@ -134,7 +134,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 
 		const permittedReferenceTypes = filterPermissionResourceValues<AlertReferenceType>({
 			action: PermissionCatalog.all.alerts.actions.read,
-			permissions: meData.permissions,
+			permissions: mePermissions,
 			resourceKey: 'reference_types',
 			scope: PermissionCatalog.all.alerts.scope,
 			values: propertiesValue?.reference_type,
@@ -144,7 +144,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 		const hasPermittedReferenceTypeSelection = permittedReferenceTypes.length > 0;
 
 		return hasPermittedAgencySelection && hasPermittedReferenceTypeSelection;
-	}, [meData?.permissions, propertiesValue?.agency_ids, propertiesValue?.reference_type]);
+	}, [mePermissions, propertiesValue?.agency_ids, propertiesValue?.reference_type]);
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
 		create: { hasPermission: hasExtractPermission, isCreating: isExtracting },
