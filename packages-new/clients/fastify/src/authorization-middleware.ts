@@ -2,10 +2,12 @@
 
 import { FastifyReply, type FastifyRequest } from '@/types.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { AUTH_SESSION_COOKIE_NAME, authProvider } from '@tmlmobilidade/go-providers-auth';
-import { type Organization, type User } from '@tmlmobilidade/go-types-core';
+import { authProvider } from '@tmlmobilidade/go-providers-auth';
+import { AUTH_SESSION_COOKIE_NAME, type MeUser, MeUserSchema, type Organization } from '@tmlmobilidade/go-types-core';
 import { type ActionsOf, type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+
+import { sendErrorApiResponse } from './response/send-error-response.js';
 
 /* * */
 
@@ -19,7 +21,7 @@ interface AuthorizationPermissionCheck<S extends Permission['scope'] = Permissio
 
 declare module 'fastify' {
 	export interface FastifyRequest {
-		me: User
+		me: MeUser
 		organization: Organization
 		permissions: Permission[]
 	}
@@ -27,7 +29,6 @@ declare module 'fastify' {
 
 function isPermissionCheckAllowed(permissionEntries: Permission[], check: AuthorizationPermissionCheck) {
 	const permissionChecks = check.actions.map(action => PermissionCatalog.hasPermission(permissionEntries, check.scope, action));
-
 	return check.requireAll
 		? permissionChecks.every(Boolean)
 		: permissionChecks.some(Boolean);
@@ -59,31 +60,64 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 		}
 
 		//
-		// Get user and permissions from cache or auth provider.
-		// Cache is per session token, and valid for 5 minutes.
-		// This reduces the number of calls to the auth provider.
+		// Get the user data from the database and simplify it
+		// to the minimum information needed for the platform.
+		// Add it to the request object.
 
 		try {
-			const userData = await authProvider.getUserFromSessionToken(sessionToken);
+			const foundUser = await authProvider.getUserFromSessionToken(sessionToken);
+			if (!foundUser) throw new Error('Authorization Middleware Error: User not found');
+			request.me = MeUserSchema.parse(foundUser);
+		} catch (error) {
+			// Log the error
+			Logger.error({ error, message: error.message || 'Authorization Middleware Error: Could not load user data' });
+			// Invalidate the session token requiring the user to login again.
+			reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true });
+			// Send the error response
+			return sendErrorApiResponse(reply, {
+				error: error.message || 'Authorization Middleware Error: Could not load user data',
+				status_code: '500',
+			});
+		}
+
+		//
+		// Get the permissions data from the database.
+		// Add it to the request object.
+
+		try {
 			const permissionsData = await authProvider.getPermissionsFromSessionToken(sessionToken);
-			const organizationData = await authProvider.getOrganizationFromSessionToken(sessionToken);
-
-			if (!userData || !permissionsData || !organizationData) {
-				return reply
-					.status(HTTP_STATUS.UNAUTHORIZED)
-					.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-					.send({ data: null, error: 'User, Permissions or Organization not found', statusCode: HTTP_STATUS.UNAUTHORIZED });
-			}
-
-			request.me = userData;
+			if (!permissionsData) throw new Error('Authorization Middleware Error: Permissions not found');
 			request.permissions = permissionsData;
+		} catch (error) {
+			// Log the error
+			Logger.error({ error, message: error.message || 'Authorization Middleware Error: Could not load permissions data' });
+			// Invalidate the session token requiring the user to login again.
+			reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true });
+			// Send the error response
+			return sendErrorApiResponse(reply, {
+				error: error.message || 'Authorization Middleware Error: Could not load permissions data',
+				status_code: '500',
+			});
+		}
+
+		//
+		// Get the organization data from the database.
+		// Add it to the request object.
+
+		try {
+			const organizationData = await authProvider.getOrganizationFromSessionToken(sessionToken);
+			if (!organizationData) throw new Error('Authorization Middleware Error: Organization not found');
 			request.organization = organizationData;
 		} catch (error) {
-			Logger.error({ error, message: 'Authorization Middleware Error' });
-			return reply
-				.status(HTTP_STATUS.UNAUTHORIZED)
-				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: null, error: 'Authorization Middleware Error', statusCode: HTTP_STATUS.UNAUTHORIZED });
+			// Log the error
+			Logger.error({ error, message: error.message || 'Authorization Middleware Error: Could not load organization data' });
+			// Invalidate the session token requiring the user to login again.
+			reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true });
+			// Send the error response
+			return sendErrorApiResponse(reply, {
+				error: error.message || 'Authorization Middleware Error: Could not load organization data',
+				status_code: '500',
+			});
 		}
 
 		//
@@ -92,11 +126,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 
 		if (Array.isArray(scopeOrChecks)) {
 			const isAllowed = scopeOrChecks.some(check => isPermissionCheckAllowed(request.permissions, check));
-
-			if (!isAllowed) {
-				throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id}`);
-			}
-
+			if (!isAllowed) throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id}`);
 			return;
 		}
 

@@ -18,7 +18,7 @@ export function PlanDetailSectionActiveDates() {
 	//
 	// B. Transform data
 
-	const canEdit = hasPermissionResource(meContext.data?.user?.permissions, {
+	const canEdit = hasPermissionResource(meContext.data?.permissions, {
 		requiredPermission: { action: 'update_feed_info_dates', scope: 'plans' },
 		requiredValue: planDetailContext.data.plan.agency_id ?? '',
 		resourceKey: 'agency_ids',

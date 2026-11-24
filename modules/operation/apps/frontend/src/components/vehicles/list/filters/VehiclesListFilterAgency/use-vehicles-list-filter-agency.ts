@@ -1,7 +1,7 @@
 'use client';
 
 import { filterPermissionResourceValues, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { useAgenciesData, useFilterStateList, type UseFilterStateListReturnType, useMeData } from '@tmlmobilidade/ui';
+import { useAgenciesData, useFilterStateList, type UseFilterStateListReturnType, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 /**
@@ -11,15 +11,15 @@ export function useVehiclesListFilterAgency(): UseFilterStateListReturnType {
 	//
 
 	const { ids, options } = useAgenciesData();
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const permittedIds = useMemo(() => filterPermissionResourceValues({
 		action: PermissionCatalog.all.vehicles.actions.read,
-		permissions: meData?.permissions ?? [],
+		permissions: mePermissions ?? [],
 		resourceKey: 'agency_ids',
 		scope: PermissionCatalog.all.vehicles.scope,
 		values: ids,
-	}), [ids, meData?.permissions]);
+	}), [ids, mePermissions]);
 
 	const permittedOptions = useMemo(() => {
 		const permittedIdSet = new Set(permittedIds);

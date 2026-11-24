@@ -26,7 +26,7 @@ export function SidebarNavigation() {
 
 	const enabledNavigationGroups: SidebarNavigationGroupType[] = useMemo(() => {
 		// Return empty array if user has no permissions
-		if (!meContext.data.user?.permissions) return [];
+		if (!meContext.data.permissions) return [];
 		// Filter groups to only include those with enabled items
 		return sidebarNavigationGroups
 			.map(group => ({
@@ -36,7 +36,7 @@ export function SidebarNavigation() {
 					if (!item.permissions.length) return true;
 					// Check if the user has the required permissions
 					return item.permissions.some((permissionObject) => {
-						return PermissionCatalog.hasPermission(meContext.data.user.permissions, permissionObject.scope, permissionObject.action);
+						return PermissionCatalog.hasPermission(meContext.data.permissions, permissionObject.scope, permissionObject.action);
 					});
 				}),
 			}))
@@ -45,7 +45,7 @@ export function SidebarNavigation() {
 				// with at least one enabled item
 				return group.items.length;
 			});
-	}, [meContext.data.user.permissions]);
+	}, [meContext.data.permissions]);
 
 	//
 	// B. Render components

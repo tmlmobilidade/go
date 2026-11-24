@@ -1,11 +1,11 @@
 'use client';
 
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type User, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
+import { type MeUser, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
 import { type ActionsOf, type GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions } from '@tmlmobilidade/go-types-permissions';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
-import { useMeData } from '../auth';
+import { useMePermissions, useMeUser } from '../auth';
 import { ErrorDisplay } from '../components/display/ErrorDisplay';
 import { fetchApiData } from '../fetch/fetch-api-data';
 import { LoadingOverlay } from '../loaders/LoadingOverlay';
@@ -22,14 +22,16 @@ interface MeContextState {
 		updatePreference: (scope: string, key: string, value: undefined | UserPreferenceValue) => Promise<void>
 	}
 	data: {
-		user: undefined | User
+		permissions: Permission[] | undefined
+		user: MeUser | undefined
 	}
 	flags: {
 		error?: HttpException
 		loading: boolean
 	}
 	mutate: {
-		me: () => void
+		permissions: () => void
+		user: () => void
 	}
 }
 
@@ -53,43 +55,44 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-	const { data: meData, error: meError, isLoading: meLoading, mutate: meMutate } = useMeData();
+	const { data: meUser, error: meError, isLoading: meLoading, mutate: meMutate } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading, mutate: mePermissionsMutate } = useMePermissions();
 
 	//
 	// C. Handle actions
 
-	const isUnauthorized = meError;
-	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meData);
+	const isUnauthorized = meError || mePermissionsError;
+	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meUser && !mePermissions);
 
 	useEffect(() => {
 		// Skip if data is still loading or logout is already redirecting
-		if (meLoading || isLoggingOut) return;
+		if (meLoading || mePermissionsLoading || isLoggingOut) return;
 		// Redirect to login when the session is missing or expired
-		if (!meData || isUnauthorized) {
+		if (!meUser || !mePermissions || isUnauthorized) {
 			const loginUrl = new URL(PAGE_ROUTES.core.LOGIN_LIST, window.location.origin);
 			loginUrl.searchParams.set('redirect', `${window.location.pathname}${window.location.search}`);
 			window.location.href = loginUrl.href;
 		}
-	}, [meLoading, meData, isUnauthorized, isLoggingOut]);
+	}, [meLoading, mePermissionsLoading, meUser, mePermissions, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
-		if (!meData?.permissions) return false;
-		return PermissionCatalog.hasPermission(meData.permissions, scope, action);
+		if (!mePermissions) return false;
+		return PermissionCatalog.hasPermission(mePermissions, scope, action);
 	};
 
 	const hasPermissionResource = (args: HasPermissionResourceArgs | HasPermissionResourceArgs[]) => {
 		// Skip if user or permissions are not available
-		if (!meData?.permissions) return false;
+		if (!mePermissions) return false;
 		// If args is an array, ensure all conditions are met to return true
-		if (Array.isArray(args)) return args.every(arg => PermissionCatalog.hasPermissionResource({ ...arg, permissions: meData.permissions }));
+		if (Array.isArray(args)) return args.every(arg => PermissionCatalog.hasPermissionResource({ ...arg, permissions: mePermissions }));
 		// Otherwise, check the single condition
-		else return PermissionCatalog.hasPermissionResource({ ...args, permissions: meData.permissions });
+		else return PermissionCatalog.hasPermissionResource({ ...args, permissions: mePermissions });
 	};
 
 	const getScopePermissions = <S extends Permission['scope']>(args: Omit<GetScopePermissionsArgs<S>, 'permissions'>): ScopePermissions<S> => {
 		return PermissionCatalog.getScopePermissions({
 			...args,
-			permissions: meData?.permissions || [],
+			permissions: mePermissions || [],
 		});
 	};
 
@@ -108,19 +111,19 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const getPreference = <T extends UserPreferenceValue>(scope: string, key: string): T | undefined => {
-		return meData?.preferences?.[scope]?.[key] as T | undefined;
+		return meUser?.preferences?.[scope]?.[key] as T | undefined;
 	};
 
 	const updatePreference = async (scope: string, key: string, value: undefined | UserPreferenceValue) => {
 		// Skip if user data is not available
-		if (!meData) return;
+		if (!meUser) return;
 		// Merge current with updated preferences
-		const currentPreferences = meData.preferences ?? {};
+		const currentPreferences = meUser.preferences ?? {};
 		const currentScope = currentPreferences[scope] ?? {};
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.ME_LIST });
+		await fetchApiData<MeUser>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.ME_UPDATE_PREFERENCES });
 	};
 
 	//
@@ -136,14 +139,16 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			updatePreference,
 		},
 		data: {
-			user: meData,
+			permissions: mePermissions,
+			user: meUser,
 		},
 		flags: {
 			error: null,
-			loading: meLoading || isLoggingOut,
+			loading: meLoading || mePermissionsLoading || isLoggingOut,
 		},
 		mutate: {
-			me: meMutate,
+			permissions: mePermissionsMutate,
+			user: meMutate,
 		},
 	};
 
