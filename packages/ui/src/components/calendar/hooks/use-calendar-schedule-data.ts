@@ -8,7 +8,7 @@ import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useMeUser } from '../../../auth';
+import { useMePermissions, useMeUser } from '../../../auth';
 import { fetchApiData } from '../../../fetch';
 import { toAgencySelectItem } from '../../../filters/list/to-agency-select-item';
 import { useAgenciesData } from '../../../hooks/use-data/use-agencies-data';
@@ -42,8 +42,9 @@ export function useCalendarScheduleData(selectedAgencyId: null | string): UseCal
 	// A. Setup variables
 
 	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 	const scopes = CALENDAR_SCOPES;
-	const canRead = (scope: Permission['scope']) => hasPermission(me?.permissions ?? [], { action: 'read', scope });
+	const canRead = (scope: Permission['scope']) => hasPermission(mePermissions ?? [], { action: 'read', scope });
 	const canReadPeriods = canRead(scopes.year_periods.scope);
 	const canReadAnnotations = !!me;
 	const canReadHolidays = canRead(scopes.holidays.scope);
@@ -64,15 +65,15 @@ export function useCalendarScheduleData(selectedAgencyId: null | string): UseCal
 	const transformed = useMemo(() => {
 		const availableAgencies = agencies.data;
 		const accessibleIds = (scope: Permission['scope']) => new Set(filterPermissionResourceValues({
-			action: 'read', permissions: me?.permissions ?? [], resourceKey: 'agency_ids', scope, values: availableAgencies.map(agency => agency._id),
+			action: 'read', permissions: mePermissions ?? [], resourceKey: 'agency_ids', scope, values: availableAgencies.map(agency => agency._id),
 		}));
 		const periodAgencyIds = new Set(filterPermissionResourceValues({
-			action: 'read', permissions: me?.permissions ?? [], resourceKey: 'agency_ids', scope: scopes.year_periods.scope, values: selectedAgencyId ? [selectedAgencyId] : [],
+			action: 'read', permissions: mePermissions ?? [], resourceKey: 'agency_ids', scope: scopes.year_periods.scope, values: selectedAgencyId ? [selectedAgencyId] : [],
 		}));
 		const filterRecords = <T extends { agency_ids?: string[] }>(records: T[] | undefined, scope: Permission['scope']): T[] => {
 			// Filtering must not depend on the optional agency-label lookup.
 			const allowed = new Set(filterPermissionResourceValues({
-				action: 'read', permissions: me?.permissions ?? [], resourceKey: 'agency_ids', scope, values: [...new Set((records ?? []).flatMap(record => record.agency_ids ?? []))],
+				action: 'read', permissions: mePermissions ?? [], resourceKey: 'agency_ids', scope, values: [...new Set((records ?? []).flatMap(record => record.agency_ids ?? []))],
 			}));
 			return (records ?? []).filter(record => selectedAgencyId
 				? allowed.has(selectedAgencyId) && record.agency_ids?.includes(selectedAgencyId)
@@ -99,7 +100,7 @@ export function useCalendarScheduleData(selectedAgencyId: null | string): UseCal
 		const agencyOptions = availableAgencies.filter(agency => readableIds.has(agency._id)).map(toAgencySelectItem);
 		const canShowPeriods = selectedAgencyId !== null && periodAgencyIds.has(selectedAgencyId) && !!yearPeriods.data?.data && !yearPeriods.error && !yearPeriods.data.error;
 		return { agencyOptions, canShowPeriods, counts, sources };
-	}, [agencies.data, annotations.data?.data, events.data?.data, holidays.data?.data, yearPeriods.data?.data, annotations.data?.error, events.data?.error, holidays.data?.error, yearPeriods.data?.error, annotations.error, events.error, holidays.error, yearPeriods.error, me?.permissions, selectedAgencyId, scopes]);
+	}, [agencies.data, annotations.data?.data, events.data?.data, holidays.data?.data, yearPeriods.data?.data, annotations.data?.error, events.data?.error, holidays.data?.error, yearPeriods.data?.error, annotations.error, events.error, holidays.error, yearPeriods.error, mePermissions, selectedAgencyId, scopes]);
 
 	// Calendar sources are optional: one unavailable module must not block the rest.
 	const error = meError ? new Error(meError) : null;
