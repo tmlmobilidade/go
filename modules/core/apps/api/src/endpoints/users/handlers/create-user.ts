@@ -35,6 +35,8 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 	const newUserData = await goDb.core.users.insertOne({
 		...validatedRequest.data,
 		created_by: request.me._id,
+		dismissed_banners: [],
+		seen_changelogs: [],
 		updated_by: request.me._id,
 	});
 
