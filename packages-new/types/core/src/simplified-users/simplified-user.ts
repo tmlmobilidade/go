@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 
-import { UserSchema } from './user.js';
+import { UserSchema } from '../users/user.js';
 
 /* * */
 
@@ -18,4 +18,8 @@ export const SimplifiedUserSchema = UserSchema
 		organization_name: z.string(),
 	});
 
+/**
+ * The simplified user contains the minimum information
+ * about a user that is needed for the platform.
+ */
 export type SimplifiedUser = z.infer<typeof SimplifiedUserSchema>;

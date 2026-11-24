@@ -16,48 +16,21 @@ export async function listMeHandler(request: FastifyRequest, reply: FastifyReply
 	//
 
 	//
-	// Extract the session token from authentication cookie
-
-	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
-
-	if (!sessionToken) {
-		return sendErrorApiResponse(reply, {
-			error: 'Session token not found',
-			status_code: '401',
-		});
-	}
-
-	//
-	// Retrieve user data using the session token.
-	// If the user is not found, log out the session token
-	// and return an error response. Do this to force the user
-	// to log in again and to avoid an infinite loop of trying
-	// to get user data with an invalid session token.
-
-	let userData: User;
-
-	try {
-		userData = await authProvider.getUserFromSessionToken(sessionToken);
-		if (!userData) throw new Error('User not found');
-	} catch {
-		await goDb.core.sessions.deleteOne({ token: { $eq: sessionToken } });
-		reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true });
-		return sendErrorApiResponse(reply, { error: 'User not found', status_code: '401' });
-	}
-
-	//
 	// Retrieve roles and permissions for the user
 	// and merge them into the user data.
 
-	userData.permissions = await authProvider.getPermissionsFromSessionToken(sessionToken);
+	userData.permissions = await authProvider.getPermissionsFromUserId(request.me._id);
+
 	//
 	// Add seen_last_at for this user asynchronously
 
-	await goDb.core.users.updateById(userData._id, { seen_last_at: Dates.now('utc').unix_milliseconds });
+	await goDb.core.users.updateOne(
+		{ _id: request.me._id },
+		{ seen_last_at: Dates.now('utc').unix_milliseconds },
+	);
+
 	//
 	// Send the user data back in the response.
 
 	return sendSuccessApiResponse(reply, userData);
-
-	//
 }
