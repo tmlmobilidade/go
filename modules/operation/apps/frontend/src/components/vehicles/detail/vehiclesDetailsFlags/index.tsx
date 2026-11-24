@@ -42,39 +42,43 @@ export function VehiclesDetailFlags({ index }) {
 
 	return (
 		<Surface variant="bordered">
-			<Section gap="md">
+			<Section alignItems="center" flexDirection="row" gap="sm">
+				<Section gap="sm" padding="none">
+					<StandardFormController
+						control={form.control}
+						name={`flags.${index}.agency_ids`}
+						render={({ field, fieldState }) => (
+							<Select
+								data={agenciesOptions}
+								disabled={field.disabled}
+								error={fieldState.error?.message}
+								label={t('default:vehicles.detail.VehiclesDetailFlags.fields.agency_ids.label')}
+								onChange={values => field.onChange(values)}
+								value={field.value?.join(',') ?? ''}
+								w="100%"
+							/>
+						)}
+					/>
+
+					<StandardFormController
+						control={form.control}
+						name={`flags.${index}.vehicle_id`}
+						render={({ field, fieldState }) => (
+							<TextInput
+								disabled={field.disabled}
+								error={fieldState.error?.message}
+								label={t('default:vehicles.detail.VehiclesDetailFlags.fields.vehicle_id.label')}
+								leftSection={flagIdMatchesVehicleId ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
+								onChange={event => field.onChange(event.target.value)}
+								placeholder={t('default:vehicles.detail.VehiclesDetailFlags.fields.vehicle_id.placeholder')}
+								value={field.value ?? ''}
+								w="100%"
+							/>
+						)}
+					/>
+				</Section>
+
 				<DeleteButton onDelete={handleDeleteFlagItem} />
-				<StandardFormController
-					control={form.control}
-					name={`flags.${index}.agency_ids`}
-					render={({ field, fieldState }) => (
-						<Select
-							data={agenciesOptions}
-							disabled={field.disabled}
-							error={fieldState.error?.message}
-							label={t('default:vehicles.detail.VehiclesDetailFlags.fields.agency_ids.label')}
-							onChange={values => field.onChange(values)}
-							value={field.value?.join(',') ?? ''}
-							w="100%"
-						/>
-					)}
-				/>
-				<StandardFormController
-					control={form.control}
-					name={`flags.${index}.vehicle_id`}
-					render={({ field, fieldState }) => (
-						<TextInput
-							disabled={field.disabled}
-							error={fieldState.error?.message}
-							label={t('default:vehicles.detail.VehiclesDetailFlags.fields.vehicle_id.label')}
-							leftSection={flagIdMatchesVehicleId ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
-							onChange={event => field.onChange(event.target.value)}
-							placeholder={t('default:vehicles.detail.VehiclesDetailFlags.fields.vehicle_id.placeholder')}
-							value={field.value ?? ''}
-							w="100%"
-						/>
-					)}
-				/>
 			</Section>
 		</Surface>
 	);
