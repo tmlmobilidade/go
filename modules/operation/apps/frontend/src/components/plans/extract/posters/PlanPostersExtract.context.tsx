@@ -15,6 +15,7 @@ import { closePlanPostersExtractModal } from './PlanPostersExtract.modal';
 interface PlanPostersExtractFormContextState {
 	actions: {
 		exportPosters: () => Promise<void>
+		setActiveDates: (value: string) => void
 		setAgencyIds: (value: string[]) => void
 		setCanvasProfile: (value: null | OperationPostersV1ExtractionProperties['canvas_profile']) => void
 		setContent: (value: OperationPostersV1ExtractionProperties['content']) => void
@@ -23,6 +24,7 @@ interface PlanPostersExtractFormContextState {
 		setStopIds: (value: string[]) => void
 	}
 	data: {
+		activeDates: string
 		agencyIds: string[]
 		agencyOptions: SelectDataItem[]
 		canvasProfile: OperationPostersV1ExtractionProperties['canvas_profile']
@@ -64,6 +66,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 
 	const form = useForm<OperationPostersV1ExtractionProperties>({
 		initialValues: {
+			active_dates: '',
 			agency_ids: [],
 			canvas_profile: 'auto',
 			content: 'all',
@@ -72,7 +75,14 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 		mode: 'controlled',
 	});
 	const { setFieldValue, setValues } = form;
-	const { agency_ids: agencyIds, canvas_profile: canvasProfile, content: contentMode, filter_mode: filterMode = 'include', plan_ids: planIds, stop_ids: stopIds = [] } = form.values;
+	const {
+		active_dates: activeDates,
+		agency_ids: agencyIds,
+		canvas_profile: canvasProfile,
+		content: contentMode,
+		filter_mode: filterMode = 'include',
+		plan_ids: planIds, stop_ids: stopIds = [],
+	} = form.values;
 
 	//
 	// B. Fetch data
@@ -82,6 +92,10 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 
 	//
 	// C. Handle selections
+
+	const setActiveDates = useCallback((value: string) => {
+		setValues({ active_dates: value });
+	}, [setValues]);
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		setValues(current => ({
@@ -194,8 +208,18 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	// F. Define context value
 
 	const contextValue: PlanPostersExtractFormContextState = useMemo(() => ({
-		actions: { exportPosters, setAgencyIds, setCanvasProfile, setContent, setFilterMode, setPlanId, setStopIds },
+		actions: {
+			exportPosters,
+			setActiveDates,
+			setAgencyIds,
+			setCanvasProfile,
+			setContent,
+			setFilterMode,
+			setPlanId,
+			setStopIds,
+		},
 		data: {
+			activeDates,
 			agencyIds,
 			agencyOptions,
 			canvasProfile,
@@ -207,7 +231,7 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 			stopIds,
 		},
 		flags: { canSave, has_error: !!plansData.error, loading },
-	}), [agencyIds, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, form, loading, planIds, plansData.data, plansData.error, setAgencyIds, setCanvasProfile, setContent, setFilterMode, setPlanId, setStopIds, stopIds]);
+	}), [activeDates, agencyIds, agencyOptions, canSave, canvasProfile, contentMode, exportPosters, filterMode, form, loading, planIds, plansData.data, plansData.error, setAgencyIds, setCanvasProfile, setContent, setFilterMode, setPlanId, setActiveDates, setStopIds, stopIds]);
 
 	//
 	// G. Render components

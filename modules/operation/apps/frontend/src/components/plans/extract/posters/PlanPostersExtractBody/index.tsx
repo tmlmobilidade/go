@@ -1,7 +1,7 @@
 'use client';
 
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Divider, MultiSelect, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
+import { DateInput, Divider, MultiSelect, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -87,6 +87,13 @@ export function PlanPostersExtractBody() {
 
 			{context.data.planIds.length > 0 && (
 				<Section gap="md">
+					<DateInput
+						fullWidth={true}
+						label={t('default:posterExport.PlanPostersExtractBody.activeDatesLabel')}
+						// onChange={value => context.actions.setActiveDates(value)}
+						// value={context.data.activeDates}
+					/>
+
 					<SegmentedControl
 						fullWidth={true}
 						label={t('default:posterExport.PlanPostersExtractBody.contentModeLabel')}
