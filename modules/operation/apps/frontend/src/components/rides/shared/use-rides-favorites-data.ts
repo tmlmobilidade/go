@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type User } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, useMeData } from '@tmlmobilidade/ui';
+import { fetchApiData, useMeUser } from '@tmlmobilidade/ui';
 import { useCallback, useMemo, useState } from 'react';
 import { mutate as globalMutate } from 'swr';
 
@@ -31,7 +31,7 @@ export function useRidesFavoritesData(): UseRidesFavoritesDataReturnType {
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 	const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
 
 	const favorites = useMemo(() => getFavoriteRideIds(meData), [meData]);

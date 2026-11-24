@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type UpdateVehicleDto, UpdateVehicleSchema, type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -33,7 +33,7 @@ export function VehiclesDetailFormContextProvider({ children }: PropsWithChildre
 
 	const { vehicleId } = useVehiclesDetailVehicleId();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { mutate: vehiclesListMutate } = useVehiclesListData();
 

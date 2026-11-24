@@ -7,7 +7,7 @@ import { createPeriodDatesDraft, getPeriodRangeDates, reducePeriodDatesDraft } f
 import { getPeriodsPermissions } from '@/components/year-periods/shared/periods-permissions';
 import { usePeriodsData } from '@/components/year-periods/shared/use-periods-data';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
-import { type CalendarScheduleDateRange, type CalendarScheduleSources, useCalendarScheduleData, useMeData } from '@tmlmobilidade/ui';
+import { type CalendarScheduleDateRange, type CalendarScheduleSources, useCalendarScheduleData, useMeUser } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
 
 /* * */
@@ -59,7 +59,7 @@ export function PeriodDatesEditorContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const { data: period, error: periodError, isLoading: periodLoading } = usePeriodsDetailData();
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 	const { data: allPeriods, error: listError, isLoading: listLoading } = usePeriodsData();
 	const calendarAgency = usePeriodsCalendarAgency();
 	const schedule = useCalendarScheduleData(null);

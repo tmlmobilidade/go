@@ -7,7 +7,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type CreateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, useAgenciesData, useMeData, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, useAgenciesData, useMeUser, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 import { useVehiclesListData } from '../list/use-vehicles-list-data';
@@ -58,7 +58,7 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 	const [createdCount, setCreatedCount] = useState(0);
 	const [updatedCount, setUpdatedCount] = useState(0);
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 	const { data: agenciesData } = useAgenciesData();
 	const { mutate: vehiclesListMutate } = useVehiclesListData();
 

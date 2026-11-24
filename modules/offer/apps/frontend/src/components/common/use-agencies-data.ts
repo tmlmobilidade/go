@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { filterPermissionResourceValues, type PermissionsRegistry } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type SelectDataItem, toAgencySelectItem, useMeData } from '@tmlmobilidade/ui';
+import { fetchApiData, type SelectDataItem, toAgencySelectItem, useMeUser } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -36,7 +36,7 @@ export function useAgenciesData({ permissions }: UseAgenciesDataProps = {}): Use
 	//
 	// A. Setup variables
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 
 	//
 	// B. Fetch data

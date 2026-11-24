@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, type StandardFormContextValue, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -46,7 +46,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 
 	const { alertId } = useAlertsDetailAlertId();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { mutate: alertsListMutate } = useAlertsListData();
 

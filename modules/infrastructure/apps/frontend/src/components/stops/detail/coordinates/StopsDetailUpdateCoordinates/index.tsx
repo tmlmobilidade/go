@@ -5,7 +5,7 @@ import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-d
 import { IconBrandGoogleMaps, IconMapPin, IconPencil } from '@tabler/icons-react';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { IconButton, Label, Section, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { IconButton, Label, Section, Surface, Text, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -25,7 +25,7 @@ export function StopsDetailUpdateCoordinates() {
 
 	const { data } = useStopsDetailData();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { capabilities, form } = useStopsDetailFormContext();
 

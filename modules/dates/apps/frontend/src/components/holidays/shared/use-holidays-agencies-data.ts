@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type HolidaysAgencyItem } from '@tmlmobilidade/go-dates-pckg-types';
 import { filterPermissionResourceValues, type PermissionsRegistry } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type SelectDataItem, toAgencySelectItem, useMeData } from '@tmlmobilidade/ui';
+import { fetchApiData, type SelectDataItem, toAgencySelectItem, useMeUser } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -40,7 +40,7 @@ export function useHolidaysAgenciesData({ permissions }: UseHolidaysAgenciesData
 	//
 	// A. Setup variables
 
-	const { data: meData, error: meError, isLoading: meLoading, isValidating: meValidating } = useMeData();
+	const { data: meData, error: meError, isLoading: meLoading, isValidating: meValidating } = useMeUser();
 
 	const actions = permissions?.actions;
 	const scope = permissions?.scope;

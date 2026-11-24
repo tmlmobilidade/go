@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -34,7 +34,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { roleId } = useRolesDetailRoleId();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { mutate: rolesListMutate } = useRolesListData();
 

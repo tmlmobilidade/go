@@ -2,7 +2,7 @@
 
 import { IconFileDownload, IconPlus } from '@tabler/icons-react';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, useMeData } from '@tmlmobilidade/ui';
+import { ToolbarActions, useMeUser } from '@tmlmobilidade/ui';
 import { type ComponentProps, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +22,7 @@ export function AnnotationsListHeaderMenu() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { data: me } = useMeData();
+	const { data: me } = useMeUser();
 
 	//
 	// B. Transform data

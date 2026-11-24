@@ -6,7 +6,7 @@ import { closeCreateRouteModal } from '@/components/routes/create/RouteCreate.mo
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateRouteDto, CreateRouteSchema, type Route } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
@@ -29,7 +29,7 @@ export function RouteCreateContextProvider({ children, lineId }: PropsWithChildr
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 	const accessRef = useRef(false);
 	const { mutate: listMutate } = useLinesListData();
 	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);

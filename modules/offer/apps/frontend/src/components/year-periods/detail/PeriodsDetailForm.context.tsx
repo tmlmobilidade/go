@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateYearPeriodSchema, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
@@ -43,7 +43,7 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 	const router = useRouter();
 	const editor = usePeriodDatesEditorContext();
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 
 	const { mutate: listMutate } = usePeriodsData();
 	const { yearPeriodId } = usePeriodsDetailYearPeriodId();

@@ -4,7 +4,7 @@ import { OperationAlertsV1ExtractionVersionValue } from '@tmlmobilidade/go-types
 import { AlertCauseValues, AlertEffectValues, type AlertReferenceType, AlertReferenceTypeValues } from '@tmlmobilidade/go-types-operation';
 import { filterPermissionResourceValues, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { PublishStatusValues } from '@tmlmobilidade/go-types-shared';
-import { DateTimeInput, Grid, MultiSelect, Section, Select, StandardFormController, TextInput, useMeData } from '@tmlmobilidade/ui';
+import { DateTimeInput, Grid, MultiSelect, Section, Select, StandardFormController, TextInput, useMeUser } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -22,7 +22,7 @@ export function AlertsExtractProperties() {
 
 	const { t } = useTranslation();
 	const { capabilities, form } = useAlertsExtractFormContext();
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 	const { isLoading: agenciesLoading, options: agenciesOptions } = useAlertsAgenciesData({
 		permissions: { actions: [PermissionCatalog.all.alerts.actions.read], scope: PermissionCatalog.all.alerts.scope },
 	});

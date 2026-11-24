@@ -2,7 +2,7 @@
 
 import { IconFileDownload } from '@tabler/icons-react';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, type ToolbarActionsItemType, useMeData } from '@tmlmobilidade/ui';
+import { ToolbarActions, type ToolbarActionsItemType, useMeUser } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,7 @@ export function AlertsListHeaderMenu() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 	const { data, error, isLoading, isValidating } = useAlertsListData();
 
 	//

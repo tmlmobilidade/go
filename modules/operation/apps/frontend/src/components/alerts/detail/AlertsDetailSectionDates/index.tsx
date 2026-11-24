@@ -1,7 +1,7 @@
 'use client';
 
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, DateTimeInput, Divider, Grid, Label, Section, StandardFormController, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, DateTimeInput, Divider, Grid, Label, Section, StandardFormController, Text, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
@@ -14,7 +14,7 @@ export function AlertsDetailSectionDates() {
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { form } = useAlertsDetailFormContext();
 

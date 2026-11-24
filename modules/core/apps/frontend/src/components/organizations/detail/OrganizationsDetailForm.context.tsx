@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, type StandardFormContextValue, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -52,7 +52,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 
 	const { organizationId } = useOrganizationsDetailOrganizationId();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { mutate: organizationsListMutate } = useOrganizationsListData();
 

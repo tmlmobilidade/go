@@ -2,7 +2,7 @@
 
 import { IconFileDownload } from '@tabler/icons-react';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, useMeData } from '@tmlmobilidade/ui';
+import { ToolbarActions, useMeUser } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { openRidesExtractModal } from '../../extract/RidesExtract.modal';
@@ -12,7 +12,7 @@ import { openRidesExtractModal } from '../../extract/RidesExtract.modal';
 export function RidesListHeaderMenu() {
 	//
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const menuActions = useMemo(() => {
 		const actions = [];

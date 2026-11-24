@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Changelog, ChangelogSchema, type UpdateChangelogDto, UpdateChangelogSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +46,7 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 	const { t } = useTranslation();
 	const router = useRouter();
 	const { id } = useChangelogDetailId();
-	const { data: me } = useMeData();
+	const { data: me } = useMeUser();
 	const { data, error, isLoading, mutate } = useChangelogDetailData();
 	const { mutate: mutateList } = useChangelogListData();
 	const catalog = PermissionCatalog.all.changelogs;

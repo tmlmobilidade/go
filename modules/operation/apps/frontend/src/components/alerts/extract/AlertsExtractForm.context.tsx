@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OperationAlertsV1ExtractionCreate, OperationAlertsV1ExtractionCreateSchema, OperationAlertsV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
 import { type AlertReferenceType } from '@tmlmobilidade/go-types-operation';
 import { filterPermissionResourceValues, hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -37,7 +37,7 @@ export function AlertsExtractFormContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 	const { mutate } = useExtractionsListData();
 
 	const filterActivePeriod = useAlertsListFilterActivePeriod();

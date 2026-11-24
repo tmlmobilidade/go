@@ -2,7 +2,7 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { CloseButton, DeleteButton, DuplicateButton, HasPermission, IdTag, keepUrlParams, LockButton, PublishStatusDisplay, Spacer, Toolbar, UpdateButton, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
@@ -20,7 +20,7 @@ export function AlertsDetailHeader() {
 
 	const router = useRouter();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { alertId } = useAlertsDetailAlertId();
 

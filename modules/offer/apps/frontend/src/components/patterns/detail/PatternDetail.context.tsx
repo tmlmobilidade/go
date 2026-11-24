@@ -14,7 +14,7 @@ import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { EventReplacementRule, EventRestrictionRule, ManualRule, Path, Pattern, ScheduleRule, StopsParameter, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
@@ -83,7 +83,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 
 	const router = useRouter();
 	const { lineId, patternId } = usePatternsDetailPatternId();
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 	// Dialogs and asynchronous callbacks must check the latest access, not the opening render.
 	const accessRef = useRef({ deleteEnabled: false, editEnabled: false, lockEnabled: false, patternId, updateEnabled: false });
 	const periodsContext = usePeriodsContext();

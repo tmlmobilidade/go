@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Ride } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
 import { ProcessingStatus } from '@tmlmobilidade/go-types-shared';
-import { CloseButton, fetchApiData, IconButton, IdTag, keepUrlParams, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar, useHandleAction, useMeData } from '@tmlmobilidade/ui';
+import { CloseButton, fetchApiData, IconButton, IdTag, keepUrlParams, LoadingActivity, OperationalStatusDisplay, ProcessingStatusDisplay, SegmentedControl, Spacer, Toolbar, useHandleAction, useMeUser } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,7 @@ export function RidesDetailHeader() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { rideId } = useRidesDetailRideId();
 	const { availableViews, currentView, setCurrentView } = useRidesDetailCurrentView();

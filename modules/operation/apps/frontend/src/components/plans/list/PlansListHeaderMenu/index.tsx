@@ -2,7 +2,7 @@
 
 import { IconFileDownload } from '@tabler/icons-react';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, useMeData } from '@tmlmobilidade/ui';
+import { ToolbarActions, useMeUser } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,7 +13,7 @@ import { openPlanPostersExtractModal } from '../../extract/posters/PlanPostersEx
 export function PlansListHeaderMenu() {
 	//
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 	const { t } = useTranslation();
 
 	const menuActions = useMemo(() => {

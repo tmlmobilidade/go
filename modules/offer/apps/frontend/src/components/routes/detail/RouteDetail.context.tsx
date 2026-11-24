@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine, type RoutesDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
@@ -43,7 +43,7 @@ export function RouteDetailContextProvider({ children, lineId, routeId }: PropsW
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 	const { mutate: listMutate } = useLinesListData();
 	const { data: route, error, isLoading: dataLoading, mutate } = useRoutesDetailData(routeId);
 	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);

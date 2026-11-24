@@ -8,7 +8,7 @@ import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
-import { useMeData } from '../../../auth';
+import { useMeUser } from '../../../auth';
 import { fetchApiData } from '../../../fetch';
 import { toAgencySelectItem } from '../../../filters/list/to-agency-select-item';
 import { useAgenciesData } from '../../../hooks/use-data/use-agencies-data';
@@ -41,7 +41,7 @@ export function useCalendarScheduleData(selectedAgencyId: null | string): UseCal
 	//
 	// A. Setup variables
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 	const scopes = CALENDAR_SCOPES;
 	const canRead = (scope: Permission['scope']) => hasPermission(me?.permissions ?? [], { action: 'read', scope });
 	const canReadPeriods = canRead(scopes.year_periods.scope);

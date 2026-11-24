@@ -1,7 +1,7 @@
 'use client';
 
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { useMeData, useMultiStep, type UseMultiStepReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { useMeUser, useMultiStep, type UseMultiStepReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useAlertsAgenciesData } from '../shared/use-alerts-agencies-data';
@@ -25,7 +25,7 @@ export function AlertsCreateFormStepsContextProvider({ children }: PropsWithChil
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { form: createAlertForm } = useAlertsCreateFormContext();
 

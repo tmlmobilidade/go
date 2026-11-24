@@ -2,7 +2,7 @@
 
 import { type AlertsComposeRequest } from '@tmlmobilidade/go-operation-pckg-types';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useDebouncedValue, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Divider, Inline, Label, LoadingThinking, Section, StandardFormController, Surface, Switch, Text, TextInput, useDebouncedValue, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,7 @@ export function AlertCreateStepSummaryAi() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { form } = useAlertsCreateFormContext();
 

@@ -2,7 +2,7 @@
 
 import { AlertCauseValues, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select, StandardFormController, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select, StandardFormController, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +18,7 @@ export function AlertsDetailSectionCauseEffect() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { form } = useAlertsDetailFormContext();
 

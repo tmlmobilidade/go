@@ -6,7 +6,7 @@ import { IconCheck, IconClock, IconEdit } from '@tabler/icons-react';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type RideAcceptance, RideAcceptanceStatusSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, IconButton, Section, Select, Tag, useHandleAction, useMeData } from '@tmlmobilidade/ui';
+import { fetchApiData, IconButton, Section, Select, Tag, useHandleAction, useMeUser } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ export function RideAcceptanceStatus({ grade }: { grade: RideAcceptance['accepta
 	const { t } = useTranslation();
 	const { rideId } = useRidesDetailRideId();
 	const { mutate } = useRideAcceptanceData();
-	const { data: me } = useMeData();
+	const { data: me } = useMeUser();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [status, setStatus] = useState<RideAcceptance['acceptance_status']>(grade);

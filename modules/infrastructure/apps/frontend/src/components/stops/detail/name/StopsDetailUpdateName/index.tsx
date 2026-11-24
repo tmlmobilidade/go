@@ -5,7 +5,7 @@ import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-d
 import { IconBus, IconPencil } from '@tabler/icons-react';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Divider, IconButton, Label, Section, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Divider, IconButton, Label, Section, Surface, Text, useMeUser, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -25,7 +25,7 @@ export function StopsDetailUpdateName() {
 
 	const { data } = useStopsDetailData();
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const { capabilities, form } = useStopsDetailFormContext();
 
