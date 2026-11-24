@@ -8,7 +8,7 @@ import { type MeUser } from '@tmlmobilidade/go-types-core';
  * @param request The request object
  * @param reply The reply object
  */
-export async function listMeHandler(request: FastifyRequest, reply: FastifyReply<MeUser>) {
+export async function listMeUserHandler(request: FastifyRequest, reply: FastifyReply<MeUser>) {
 	//
 
 	//

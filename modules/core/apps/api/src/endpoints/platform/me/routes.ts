@@ -2,7 +2,7 @@
 
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
-import { listMeHandler } from './handlers/list.js';
+import { listMeUserHandler } from './handlers/list-me-user.js';
 import { updateMePreferencesHandler } from './handlers/update-me-preferences.js';
 
 /* * */
@@ -17,7 +17,7 @@ server.register(
 	(instance, opts, next) => {
 		//
 
-		instance.get('/list', { preHandler: authorizationMiddleware() }, listMeHandler);
+		instance.get('/list-me-user', { preHandler: authorizationMiddleware() }, listMeUserHandler);
 
 		instance.put('/update-preferences', { preHandler: authorizationMiddleware() }, updateMePreferencesHandler);
 
