@@ -6,6 +6,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
 import { sendPasswordChangedEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import bcrypt from 'bcryptjs';
 
 /**
@@ -20,8 +21,9 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 	const validatedRequest = AuthChangePasswordRequestSchema.safeParse(request.body);
 
 	if (!validatedRequest.success) {
-		sendErrorApiResponse(reply, {
-			error: validatedRequest.error.message,
+		Logger.error({ message: `Invalid request body: ${validatedRequest.error.issues[0].message}` });
+		return sendErrorApiResponse(reply, {
+			error: validatedRequest.error.issues[0].message,
 			status_code: '400',
 		});
 	}
@@ -31,9 +33,12 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 
 	const passwordValidationResult = PasswordRequirementsSchema.safeParse(request.body.password);
 
+	console.log(passwordValidationResult.error);
+
 	if (!passwordValidationResult.success) {
-		sendErrorApiResponse(reply, {
-			error: passwordValidationResult.error.message,
+		Logger.error({ message: `Invalid password: ${passwordValidationResult.error.issues[0].message}` });
+		return sendErrorApiResponse(reply, {
+			error: passwordValidationResult.error.issues[0].message,
 			status_code: '400',
 		});
 	}
@@ -47,6 +52,7 @@ export async function changePasswordHandler(request: FastifyRequest<{ Body: Auth
 	});
 
 	if (!foundVerificationToken) {
+		Logger.error({ message: `Invalid or expired token` });
 		return sendErrorApiResponse(reply, {
 			error: 'Invalid or expired token',
 			status_code: '400',
