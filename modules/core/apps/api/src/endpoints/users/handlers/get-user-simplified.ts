@@ -25,7 +25,6 @@ export async function getUserSimplifiedHandler(request: FastifyRequest<{ Params:
 	// Simplify the user data by selecting only specific fields
 	const simplifiedUserData: SimplifiedUser = {
 		_id: userData._id,
-		email: userData.email,
 		first_name: userData.first_name,
 		last_name: userData.last_name,
 		organization_id: userData.organization_id,
