@@ -12,7 +12,7 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
  * @param request The request object
  * @param reply The reply object
  */
-export async function getMeHandler(request: FastifyRequest, reply: FastifyReply<User>) {
+export async function listMeHandler(request: FastifyRequest, reply: FastifyReply<User>) {
 	//
 
 	//
