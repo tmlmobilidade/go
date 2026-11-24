@@ -6,6 +6,7 @@ export * from './Highlight';
 export * from './Indicator';
 export * from './Inline';
 export * from './Label';
+export * from './LiveIcon';
 export * from './NoDataLabel';
 export * from './Stepper';
 export * from './Table';
