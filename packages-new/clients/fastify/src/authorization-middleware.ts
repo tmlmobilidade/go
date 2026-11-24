@@ -3,7 +3,7 @@
 import { FastifyReply, type FastifyRequest } from '@/types.js';
 import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
-import { AUTH_SESSION_COOKIE_NAME, type Organization, type SimplifiedUser, SimplifiedUserSchema } from '@tmlmobilidade/go-types-core';
+import { AUTH_SESSION_COOKIE_NAME, type MeUser, MeUserSchema, type Organization } from '@tmlmobilidade/go-types-core';
 import { type ActionsOf, type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
@@ -21,7 +21,7 @@ interface AuthorizationPermissionCheck<S extends Permission['scope'] = Permissio
 
 declare module 'fastify' {
 	export interface FastifyRequest {
-		me: SimplifiedUser
+		me: MeUser
 		organization: Organization
 		permissions: Permission[]
 	}
@@ -29,7 +29,6 @@ declare module 'fastify' {
 
 function isPermissionCheckAllowed(permissionEntries: Permission[], check: AuthorizationPermissionCheck) {
 	const permissionChecks = check.actions.map(action => PermissionCatalog.hasPermission(permissionEntries, check.scope, action));
-
 	return check.requireAll
 		? permissionChecks.every(Boolean)
 		: permissionChecks.some(Boolean);
@@ -68,7 +67,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 		try {
 			const foundUser = await authProvider.getUserFromSessionToken(sessionToken);
 			if (!foundUser) throw new Error('Authorization Middleware Error: User not found');
-			request.me = SimplifiedUserSchema.parse(foundUser);
+			request.me = MeUserSchema.parse(foundUser);
 		} catch (error) {
 			// Log the error
 			Logger.error({ error, message: error.message || 'Authorization Middleware Error: Could not load user data' });
