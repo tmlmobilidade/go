@@ -312,6 +312,7 @@ export const API_ROUTES = Object.freeze({
 
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
+		METRICS_VEHICLE_EVENTS_LAST_24H: `${getModuleConfig('hub', 'api_url')}/v1/metrics/vehicle-events/last-24h`,
 
 		// MOTIS
 		MOTIS_GEOCODE: `${getModuleConfig('hub', 'api_url')}/v1/motis/geocode`,
