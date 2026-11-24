@@ -54,13 +54,11 @@ export function ChangePasswordForm() {
 			if (requirement) requirement.valid = false;
 		});
 		// Validate the confirm password
-		if (confirmPasswordValue !== passwordValue) {
-			passwordRequirements.push({
-				_id: 'mismatch',
-				message: t('unauthenticated:ChangePasswordForm.password_requirements.mismatch'),
-				valid: false,
-			});
-		}
+		passwordRequirements.push({
+			_id: 'mismatch',
+			message: t('unauthenticated:ChangePasswordForm.password_requirements.mismatch'),
+			valid: confirmPasswordValue === passwordValue,
+		});
 		// Return the requirements
 		return passwordRequirements;
 	}, [t, passwordValue, confirmPasswordValue]);
