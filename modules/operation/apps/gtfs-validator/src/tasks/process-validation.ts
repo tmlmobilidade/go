@@ -5,7 +5,7 @@ import { PAGE_ROUTES, SYSTEM_CONTACT_EMAIL } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { sendSucessfulGtfsValidationEmail, sendSystemErrorEmail, sendUnsuccessfulGtfsValidationEmail } from '@tmlmobilidade/go-providers-emails';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
-import { type GtfsValidationOutputSummary, type GtfsValidatorCliRule, GtfsValidatorRulesSchema } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidationRule, GtfsValidatorRulesSchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { validateGtfs } from '@tmlmobilidade/go-utils-gtfs-validator';
@@ -32,13 +32,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 			await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 				processing_status: 'error',
 				summary: {
-					messages: [{
-						...SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED,
-						messages: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
-						total_rows: 0,
-					}],
-					total_errors: 1,
-					total_warnings: 0,
+					results: [SYSTEM_ERROR_MESSAGES.MAX_ATTEMPTS_REACHED],
+					totals: { errors: 1, infos: 0, warnings: 0 },
 				},
 			});
 			return;
@@ -70,27 +65,14 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		const gtfsFile = await storageProvider.findById(gtfsValidation.file_id);
 		if (!gtfsFile) throw new Error(`File not found: ${gtfsValidation.file_id}`);
 		if (!gtfsFile.url) throw new Error(`File URL not found: ${gtfsValidation.file_id}`);
-		const report = await validateAttachment(gtfsFile.url, rules);
-
-		// Operation reports expose the severity values supported by the result UI.
-		const summary: GtfsValidationOutputSummary = {
-			...report,
-			messages: report.messages.map(group => ({
-				...group,
-				messages: group.messages.map(message => ({
-					...message,
-					severity: message.severity === 'forbidden' ? 'error' : message.severity,
-				})),
-				severity: group.severity === 'forbidden' ? 'error' : group.severity,
-			})),
-		};
+		const summary = await validateAttachment(gtfsFile.url, rules);
 
 		Logger.info({ message: 'Validation completed. Updating GTFS Validation document with results...' });
 
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'complete',
 			summary,
-			validity_status: summary.total_errors === 0 ? 'valid' : 'invalid',
+			validity_status: summary.totals.errors === 0 ? 'valid' : 'invalid',
 		});
 
 		//
@@ -114,7 +96,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
 						gtfsValidationUrl: PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalWarnings: summary.total_warnings,
+						totalWarnings: summary.totals.warnings,
 					},
 					to: foundUser.email,
 				});
@@ -124,8 +106,8 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 						firstName: foundUser.first_name,
 						gtfsValidationId: gtfsValidation._id,
 						gtfsValidationUrl: PAGE_ROUTES.operation.GTFS_VALIDATIONS_DETAIL(gtfsValidation._id),
-						totalErrors: summary.total_errors,
-						totalWarnings: summary.total_warnings,
+						totalErrors: summary.totals.errors,
+						totalWarnings: summary.totals.warnings,
 					},
 					to: foundUser.email,
 				});
@@ -142,17 +124,14 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
 			processing_status: 'error',
 			summary: {
-				messages: [{
+				results: [{
 					...SYSTEM_ERROR_MESSAGES.GENERIC_ERROR,
 					messages: [{
-						...SYSTEM_ERROR_MESSAGES.GENERIC_ERROR,
-						// Keep the actual error as detail under the generic system error.
 						message: error instanceof Error ? error.message : String(error),
+						rows: [],
 					}],
-					total_rows: 0,
 				}],
-				total_errors: 1,
-				total_warnings: 0,
+				totals: { errors: 1, infos: 0, warnings: 0 },
 			},
 		});
 		await sendSystemErrorEmail({
@@ -168,7 +147,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 /* * */
 
-async function validateAttachment(url: string, rules: readonly GtfsValidatorCliRule[]) {
+async function validateAttachment(url: string, rules: readonly GtfsValidationRule[]) {
 	await using directory = await mkdtempDisposable(join(tmpdir(), 'operation-gtfs-validator-'));
 	// Storage URLs grant temporary access. Pass only the local path to the CLI logger.
 	Logger.info({ message: 'Downloading GTFS file...' });
