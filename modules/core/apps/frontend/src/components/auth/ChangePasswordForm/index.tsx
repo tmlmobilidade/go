@@ -5,9 +5,9 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AuthChangePasswordRequest, passwordRequirementsConditions, passwordRequirementsKeys, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { fetchApiData, Label, PasswordInput, Section, Surface, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
+import { fetchApiData, Label, PasswordInput, Section, Surface, TextInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -72,6 +72,13 @@ export function ChangePasswordForm() {
 	//
 	// C. Handle actions
 
+	useEffect(() => {
+		// Skip if the token is present
+		if (tokenValue) return;
+		// Otherwise, redirect to the login page
+		window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
+	}, [tokenValue]);
+
 	const { action: handleChangePassword, isLoading: isChangingPassword } = useHandleAction({
 		fetchFn: async () => await fetchApiData<Session, AuthChangePasswordRequest>({
 			body: { password: passwordValue, token: tokenValue },
@@ -118,7 +125,12 @@ export function ChangePasswordForm() {
 			submitLabel={t('unauthenticated:ChangePasswordForm.submit.label')}
 			title={t('unauthenticated:ChangePasswordForm.title')}
 		>
-			<input defaultValue={emailValue} name="email" type="email" hidden readOnly />
+			<TextInput
+				key="email"
+				value={emailValue}
+				disabled
+				readOnly
+			/>
 			<PasswordInput
 				key="password"
 				disabled={isChangingPassword}
