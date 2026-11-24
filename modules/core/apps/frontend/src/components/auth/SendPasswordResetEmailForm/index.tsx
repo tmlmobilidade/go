@@ -40,9 +40,6 @@ export function SendPasswordResetEmailForm() {
 		onSuccess: async () => {
 			// Show the success message
 			setIsFormSubmitted(true);
-			// Wait for a few seconds before redirecting to login page
-			await new Promise(resolve => setTimeout(resolve, 5_000));
-			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
 		},
 	});
 
