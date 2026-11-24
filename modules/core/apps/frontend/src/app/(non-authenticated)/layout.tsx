@@ -1,7 +1,7 @@
 /* * */
 
 import { AuthenticatedRedirect } from '@/components/auth/AuthenticatedRedirect';
-import { NonAuthenticatedWrapper } from '@/components/background/NonAuthenticatedWrapper';
+import { NonAuthenticatedWrapper } from '@/components/auth/NonAuthenticatedWrapper';
 import { cookies } from 'next/headers';
 import { type PropsWithChildren } from 'react';
 

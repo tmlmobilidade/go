@@ -4,7 +4,8 @@ import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { AuthSendPasswordResetEmailRequest } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { fetchApiData, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, Loader, Section, Surface, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -17,6 +18,7 @@ export function SendPasswordResetEmailForm() {
 
 	const { t } = useTranslation();
 
+	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 
 	//
@@ -35,16 +37,27 @@ export function SendPasswordResetEmailForm() {
 			});
 		},
 		onSuccess: async () => {
+			setIsFormSubmitted(true);
 			// Show success message and redirect to login page
 			useToast.success({ message: t('unauthenticated:SendPasswordResetEmailForm.success.description'), title: t('unauthenticated:SendPasswordResetEmailForm.success.title') });
 			// Wait for a few seconds before redirecting to login page
-			await new Promise(resolve => setTimeout(resolve, 3_000));
+			await new Promise(resolve => setTimeout(resolve, 5_000));
 			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
 		},
 	});
 
 	//
 	// C. Render components
+
+	if (!isFormSubmitted) {
+		return (
+			<Surface>
+				<Section>
+					<Loader />
+				</Section>
+			</Surface>
+		);
+	}
 
 	return (
 		<AuthenticationForm
