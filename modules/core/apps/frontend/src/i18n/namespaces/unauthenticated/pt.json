@@ -17,14 +17,14 @@
 			"label": "Voltar ao login"
 		},
 		"password_requirements": {
-			"excessive_bytes": "A password é demasiado longa",
-			"min_length": "A password deve ter pelo menos {value} caracteres",
-			"min_lower_case": "A password deve conter pelo menos {value} caractere(s) minúsculo(s)",
-			"min_number": "A password deve conter pelo menos {value} número(s)",
-			"min_special_char": "A password deve conter pelo menos {value} caractere(s) especial(es)",
-			"min_upper_case": "A password deve conter pelo menos {value} caractere(s) maiúsculo(s)",
-			"mismatch": "As passwords não coincidem",
-			"not_common_passwords": "A password não deve ser uma palavra-passe comum"
+			"excessive_bytes": "A password não é demasiado longa",
+			"min_length": "A password tem pelo menos {value} caracteres",
+			"min_lower_case": "A password tem pelo menos {value} caractere(s) minúsculo(s)",
+			"min_number": "A password tem pelo menos {value} número(s)",
+			"min_special_char": "A password tem pelo menos {value} caractere(s) especial(es)",
+			"min_upper_case": "A password tem pelo menos {value} caractere(s) maiúsculo(s)",
+			"mismatch": "As passwords coincidem",
+			"not_common_passwords": "A password não é uma palavra-passe comum"
 		},
 		"submit": {
 			"label": "Confirmar"

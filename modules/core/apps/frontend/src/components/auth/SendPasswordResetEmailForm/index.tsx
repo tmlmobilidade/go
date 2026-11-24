@@ -18,8 +18,9 @@ export function SendPasswordResetEmailForm() {
 
 	const { t } = useTranslation();
 
-	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
+
+	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
 	//
 	// B. Handle actions

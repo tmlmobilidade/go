@@ -5,7 +5,7 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type AuthChangePasswordRequest, passwordRequirementsConditions, passwordRequirementsKeys, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
+import { fetchApiData, Label, PasswordInput, Section, Surface, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +35,8 @@ export function ChangePasswordForm() {
 
 	const [passwordValue, setPasswordValue] = useState('');
 	const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
+
+	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
 	//
 	// B. Transform data
@@ -83,8 +85,8 @@ export function ChangePasswordForm() {
 			});
 		},
 		onSuccess: async () => {
-			// Show success message and redirect to login page
-			useToast.success({ message: t('unauthenticated:ChangePasswordForm.success.description'), title: t('unauthenticated:ChangePasswordForm.success.title') });
+			// Show the success message
+			setIsFormSubmitted(true);
 			// Wait for a few seconds before redirecting to login page
 			await new Promise(resolve => setTimeout(resolve, 3_000));
 			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
@@ -93,6 +95,17 @@ export function ChangePasswordForm() {
 
 	//
 	// D. Render components
+
+	if (isFormSubmitted) {
+		return (
+			<Surface style={{ maxWidth: 550 }}>
+				<Section gap="sm">
+					<Label size="lg">{t('unauthenticated:ChangePasswordForm.success.title')}</Label>
+					<Label>{t('unauthenticated:ChangePasswordForm.success.description')}</Label>
+				</Section>
+			</Surface>
+		);
+	}
 
 	return (
 		<AuthenticationForm
@@ -105,7 +118,7 @@ export function ChangePasswordForm() {
 			submitLabel={t('unauthenticated:ChangePasswordForm.submit.label')}
 			title={t('unauthenticated:ChangePasswordForm.title')}
 		>
-			<input defaultValue={emailValue} name="email" type="email" readOnly />
+			<input defaultValue={emailValue} name="email" type="email" hidden readOnly />
 			<PasswordInput
 				key="password"
 				disabled={isChangingPassword}
