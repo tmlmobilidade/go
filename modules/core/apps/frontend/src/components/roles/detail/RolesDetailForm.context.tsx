@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Role, type UpdateRoleDto, UpdateRoleSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -34,7 +34,7 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { roleId } = useRolesDetailRoleId();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate: rolesListMutate } = useRolesListData();
 
@@ -53,9 +53,6 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
 		fetchFn: async () => {
-			const values = form.getValues();
-			const parsed = UpdateRoleSchema.safeParse(form.getValues());
-			console.log(values.permissions[118]);
 			return await fetchApiData<Role>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.ROLES_UPDATE(roleId) });
 		},
 		onSuccess: (response) => {
@@ -86,18 +83,18 @@ export function RolesDetailFormContextProvider({ children }: PropsWithChildren) 
 	// C. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'delete',
 			scope: 'roles',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const hasUpdatePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'update',
 			scope: 'roles',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const { deleteEnabled, editEnabled, lockEnabled, updateEnabled } = useStandardFormCapabilities({
 		delete: {
