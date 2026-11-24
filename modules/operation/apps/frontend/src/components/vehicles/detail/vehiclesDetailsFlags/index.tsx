@@ -15,7 +15,7 @@ export function VehiclesDetailFlags({ index }) {
 
 	const { t } = useTranslation();
 
-	const { form } = useVehiclesDetailFormContext();
+	const { capabilities, form } = useVehiclesDetailFormContext();
 
 	const flagsValues = useStandardFormWatch({ control: form.control, name: 'flags' });
 
@@ -30,7 +30,7 @@ export function VehiclesDetailFlags({ index }) {
 	}, [flagsValues, index, form]);
 
 	//
-	//
+	// B. handle actions
 
 	const handleDeleteFlagItem = () => {
 		const latestValues = form.getValues('flags');
@@ -38,7 +38,7 @@ export function VehiclesDetailFlags({ index }) {
 	};
 
 	//
-	// B. Render components
+	// C. Render components
 
 	return (
 		<Surface variant="bordered">
@@ -50,7 +50,7 @@ export function VehiclesDetailFlags({ index }) {
 						render={({ field, fieldState }) => (
 							<Select
 								data={agenciesOptions}
-								disabled={field.disabled}
+								disabled={field.disabled || !capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailFlags.fields.agency_ids.label')}
 								onChange={values => field.onChange(values)}
@@ -65,7 +65,7 @@ export function VehiclesDetailFlags({ index }) {
 						name={`flags.${index}.vehicle_id`}
 						render={({ field, fieldState }) => (
 							<TextInput
-								disabled={field.disabled}
+								disabled={field.disabled || !capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailFlags.fields.vehicle_id.label')}
 								leftSection={flagIdMatchesVehicleId ? <IconEqual color="var(--color-status-success-primary)" /> : <IconEqualNot color="var(--color-status-danger-primary)" />}
