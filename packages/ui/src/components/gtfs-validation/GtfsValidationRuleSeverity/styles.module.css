@@ -1,0 +1,6 @@
+@media (width <= 768px) {
+	.root .option {
+		padding: var(--size-spacing-sm) var(--size-spacing-xs);
+		font-size: var(--font-size-xs);
+	}
+}
