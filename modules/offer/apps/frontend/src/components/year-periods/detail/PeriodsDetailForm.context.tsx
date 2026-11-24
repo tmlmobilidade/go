@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateYearPeriodSchema, type UpdateYearPeriodDto, type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
@@ -43,7 +43,7 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 	const router = useRouter();
 	const editor = usePeriodDatesEditorContext();
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 
 	const { mutate: listMutate } = usePeriodsData();
 	const { yearPeriodId } = usePeriodsDetailYearPeriodId();
@@ -100,18 +100,18 @@ export function PeriodsDetailFormContextProvider({ children }: PropsWithChildren
 	const permissions = getPeriodsPermissions({
 		currentAgencyIds: period?.agency_ids ?? [],
 		selectedAgencyIds: values.agency_ids ?? [],
-		userPermissions: me?.permissions,
+		userPermissions: mePermissions,
 	});
 
 	const reviewRequest = useMemo(() => permissions.update ? getPeriodsDetailReviewRequest(period, values.agency_ids ?? [], editor.data.addedDates, editor.data.previewDates) : null, [permissions.update, period, values.agency_ids, editor.data.addedDates, editor.data.previewDates]);
 
-	const assignmentReview = usePeriodsAssignmentReview({ request: reviewRequest, userPermissions: me?.permissions });
+	const assignmentReview = usePeriodsAssignmentReview({ request: reviewRequest, userPermissions: mePermissions });
 
 	//
 	// E. Setup capabilities and handlers
 
 	const busy = isUpdating || isLocking || isDeleting;
-	const loading = isLoading || meLoading || !period || !!error || !!meError;
+	const loading = isLoading || mePermissionsLoading || !period || !!error || !!mePermissionsError;
 
 	const standardCapabilities = useStandardFormCapabilities({
 		delete: {
