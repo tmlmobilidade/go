@@ -11,6 +11,8 @@ import { type KeyValueListInputRowProps } from '../types';
 
 /* * */
 
+const FIELD_CLASS_NAMES = { root: styles.field, wrapper: styles.field };
+
 export function KeyValueListInputRow({ ariaLabel, index, onChange, onRemove, readOnly, value, valueLabel }: KeyValueListInputRowProps) {
 	//
 
@@ -27,6 +29,7 @@ export function KeyValueListInputRow({ ariaLabel, index, onChange, onRemove, rea
 		<div className={styles.row} data-read-only={readOnly}>
 			<TextInput
 				aria-label={`${prefix}${t('shared:components.inputs.KeyValueListInput.key')} ${index + 1}`}
+				classNames={FIELD_CLASS_NAMES}
 				onChange={event => onChange({ ...value, key: event.currentTarget.value })}
 				placeholder={t('shared:components.inputs.KeyValueListInput.key')}
 				readOnly={readOnly}
@@ -36,6 +39,7 @@ export function KeyValueListInputRow({ ariaLabel, index, onChange, onRemove, rea
 			<span aria-hidden="true" className={styles.separator}>=</span>
 			<TextInput
 				aria-label={`${prefix}${valueLabel} ${index + 1}`}
+				classNames={FIELD_CLASS_NAMES}
 				onChange={event => onChange({ ...value, value: event.currentTarget.value })}
 				placeholder={valueLabel}
 				readOnly={readOnly}
