@@ -5,6 +5,7 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { AuthChangePasswordRequest, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
+import { translateValidationMessage } from '@tmlmobilidade/go-utils-validation';
 import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
 import { useMemo, useState } from 'react';
