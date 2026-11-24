@@ -1,7 +1,8 @@
 'use client';
 
 import { IconChevronRight, IconExternalLink } from '@tabler/icons-react';
-import { type GtfsValidationOutputRuleMessage } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidationOutputMessage, type GtfsValidationOutputResult } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type SeverityStatus } from '@tmlmobilidade/go-types-shared';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +16,12 @@ import { GtfsValidationResultRows } from '../GtfsValidationResultRows';
 
 export interface GtfsValidationResultGroupProps {
 	getRuleDocumentationUrl: (ruleId: string) => null | string
-	group: GtfsValidationOutputRuleMessage
+	group: Pick<GtfsValidationOutputResult, 'rule_id' | 'severity' | 'total_rows'> & {
+		file_name: string
+		message: string
+		messages: (GtfsValidationOutputMessage & { severity: SeverityStatus })[]
+		rows?: number[]
+	}
 }
 
 /* * */
@@ -49,7 +55,7 @@ export function GtfsValidationResultGroup({ getRuleDocumentationUrl, group }: Gt
 	// so the group itself stands in as the single occurrence
 	const occurrences = useMemo(() => {
 		if (group.messages.length > 0) return group.messages;
-		return [{ field: group.field, file_name: group.file_name, message: group.message, rows: group.rows ?? [], rule_id: group.rule_id, severity: group.severity }];
+		return [{ message: group.message, rows: group.rows ?? [], severity: group.severity }];
 	}, [group]);
 
 	const visibleOccurrences = showAllOccurrences ? occurrences : occurrences.slice(0, VISIBLE_OCCURRENCES_LIMIT);
