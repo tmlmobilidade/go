@@ -30,8 +30,8 @@
 			"label": "Confirm"
 		},
 		"success": {
-			"description": "Password changed successfully.",
-			"title": "Success"
+			"description": "You can now use it to log in to your account.",
+			"title": "Your password has been changed successfully"
 		},
 		"title": "Change password"
 	},
@@ -79,8 +79,8 @@
 			"label": "Send email"
 		},
 		"success": {
-			"description": "Password recovery email sent successfully",
-			"title": "Success"
+			"description": "Use the link sent to your email to define a new password.",
+			"title": "Check your inbox"
 		},
 		"title": "Recover Password"
 	}

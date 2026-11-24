@@ -4,7 +4,7 @@ import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { AuthSendPasswordResetEmailRequest } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { fetchApiData, Loader, Section, Surface, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, Label, Section, Surface, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -37,9 +37,8 @@ export function SendPasswordResetEmailForm() {
 			});
 		},
 		onSuccess: async () => {
+			// Show the success message
 			setIsFormSubmitted(true);
-			// Show success message and redirect to login page
-			useToast.success({ message: t('unauthenticated:SendPasswordResetEmailForm.success.description'), title: t('unauthenticated:SendPasswordResetEmailForm.success.title') });
 			// Wait for a few seconds before redirecting to login page
 			await new Promise(resolve => setTimeout(resolve, 5_000));
 			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
@@ -49,11 +48,12 @@ export function SendPasswordResetEmailForm() {
 	//
 	// C. Render components
 
-	if (!isFormSubmitted) {
+	if (isFormSubmitted) {
 		return (
-			<Surface>
-				<Section>
-					<Loader />
+			<Surface style={{ maxWidth: 550 }}>
+				<Section gap="sm">
+					<Label size="lg">{t('unauthenticated:SendPasswordResetEmailForm.success.title')}</Label>
+					<Label>{t('unauthenticated:SendPasswordResetEmailForm.success.description')}</Label>
 				</Section>
 			</Surface>
 		);

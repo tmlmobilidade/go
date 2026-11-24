@@ -30,8 +30,8 @@
 			"label": "Confirmar"
 		},
 		"success": {
-			"description": "Password alterada com sucesso.",
-			"title": "Sucesso"
+			"description": "Já a pode utilizar para entrar na sua conta.",
+			"title": "A sua password foi alterada com sucesso"
 		},
 		"title": "Alterar password"
 	},
@@ -79,8 +79,8 @@
 			"label": "Enviar email"
 		},
 		"success": {
-			"description": "Email de recuperação enviado com sucesso",
-			"title": "Sucesso"
+			"description": "Utilize o link que foi enviado para o seu email para definir uma nova password.",
+			"title": "Verifique o seu email"
 		},
 		"title": "Recuperar Password"
 	}

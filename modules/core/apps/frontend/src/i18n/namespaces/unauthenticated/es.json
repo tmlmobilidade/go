@@ -30,8 +30,8 @@
 			"label": "Confirmar"
 		},
 		"success": {
-			"description": "Contraseña cambiada correctamente.",
-			"title": "Éxito"
+			"description": "Ya puede utilizarla para iniciar sesión en su cuenta.",
+			"title": "La contraseña ha sido cambiada correctamente"
 		},
 		"title": "Cambiar contraseña"
 	},
@@ -79,8 +79,8 @@
 			"label": "Enviar email"
 		},
 		"success": {
-			"description": "Email de recuperación enviado correctamente",
-			"title": "Éxito"
+			"description": "Utilice el enlace que se ha enviado a su email para definir una nueva contraseña.",
+			"title": "Verifique su email"
 		},
 		"title": "Recuperar contraseña"
 	}
