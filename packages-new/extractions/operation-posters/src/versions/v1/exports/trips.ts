@@ -30,7 +30,7 @@ export async function exportTripsFile(context: OperationPostersV1Context, sqlTab
 		// 2. Validate and write the trip
 
 		const data = TripsSchema.parse({
-			direction_id: tripData.direction_id,
+			direction_id: '0',
 			route_id: routeId,
 			service_id: tripData.service_id,
 			shape_id: tripData.shape_id,
