@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Extraction, type ExtractionCreate, ExtractionCreateSchema } from '@tmlmobilidade/go-types-extractions';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
@@ -19,14 +19,19 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 	// Validate the request body
 
 	const validatedRequestBodyResult = ExtractionCreateSchema.safeParse(request.body);
-	if (!validatedRequestBodyResult.success) return sendErrorApiResponse(reply, { error: validatedRequestBodyResult.error, status_code: '400' });
-	const validatedRequestBody = validatedRequestBodyResult.data;
+
+	if (!validatedRequestBodyResult.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedRequestBodyResult.error,
+			status_code: '400',
+		});
+	}
 
 	//
 	// Insert a new extraction into the database
 
 	await goDb.core.extractions.insertOne({
-		...validatedRequestBody,
+		...validatedRequestBodyResult.data,
 		attachment_id: null,
 		created_by: request.me._id,
 		downloaded_at: null,
