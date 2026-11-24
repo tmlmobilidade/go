@@ -1,2 +1,2 @@
-export * from './hash-auth-token.js';
 export * from './provider.js';
+export * from './utils/index.js';
