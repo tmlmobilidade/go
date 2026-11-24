@@ -4,13 +4,11 @@ import { useVehiclesDetailVehicleId } from '@/components/vehicles/detail/use-veh
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, OperationalDateDisplay, Pane } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, ErrorDisplay, IdTag, keepUrlParams, Label, OperationalDateDisplay, Pane } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
 import { VehiclesListFiltersBar } from '../filters/VehiclesListFiltersBar';
-import { VehiclesListCellAgency } from '../table/VehiclesListCellAgency';
-import { VehiclesListCellLicensePlate } from '../table/VehiclesListCellLicensePlate';
 import { useVehiclesListData } from '../use-vehicles-list-data';
 import { VehiclesListHeader } from '../VehiclesListHeader';
 
@@ -33,27 +31,33 @@ export function VehiclesList() {
 	const columns: DataTableColumn<VehiclesListItem>[] = [
 		{
 			accessor: '_id',
-			render: item => <IdTag id={item._id} />,
+			render: item => <IdTag id={item._id} copyOnClick />,
 			title: t('default:vehicles.list.VehiclesList.columns.id.label'),
-			width: 100,
-		},
-		{
-			accessor: 'agency_id',
-			render: item => <VehiclesListCellAgency value={item.agency_id} />,
-			title: t('default:vehicles.list.VehiclesList.columns.agency_id.label'),
-			width: 350,
-		},
-		{
-			accessor: 'license_plate',
-			render: item => <VehiclesListCellLicensePlate value={item.license_plate} />,
-			title: t('default:vehicles.list.VehiclesList.columns.license_plate.label'),
-			width: 200,
+			width: 150,
 		},
 		{
 			accessor: 'registration_date',
 			render: item => <OperationalDateDisplay value={Number(item.registration_date) as OperationalDateInt} />,
 			title: t('default:vehicles.list.VehiclesList.columns.registration_date.label'),
-			width: 300,
+			width: 200,
+		},
+		{
+			accessor: 'vehicle_type',
+			render: item => <Label>{t(`vehicle-enums:vehicle_type.${item.vehicle_type}`)}</Label>,
+			title: t('default:vehicles.list.VehiclesList.columns.vehicle_type.label'),
+			width: 200,
+		},
+		{
+			accessor: 'emission',
+			render: item => <Label>{t(`vehicle-enums:emission.${item.emission}`)}</Label>,
+			title: t('default:vehicles.list.VehiclesList.columns.emission.label'),
+			width: 200,
+		},
+		{
+			accessor: 'propulsion',
+			render: item => <Label>{t(`vehicle-enums:propulsion.${item.propulsion}`)}</Label>,
+			title: t('default:vehicles.list.VehiclesList.columns.propulsion.label'),
+			width: 250,
 		},
 	];
 

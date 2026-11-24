@@ -2,12 +2,13 @@
 
 import { closeVehiclesImportModal } from '@/components/vehicles/import/VehiclesImport.modal';
 import { type VehicleImportPreview } from '@/types/preview';
+import { getVehicleImportPreview } from '@/utils/get-vehicle-import-preview';
 import { parseTxtFile } from '@/utils/parseTxtFile';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type VehiclesListItem } from '@tmlmobilidade/go-operation-pckg-types';
-import { type CreateVehicleDto, type Vehicle } from '@tmlmobilidade/go-types-operation';
+import { type Vehicle } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, useAgenciesData, useMeData, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, useAgenciesData, useHandleAction, useMeData } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
 import { useVehiclesListData } from '../list/use-vehicles-list-data';
@@ -16,13 +17,12 @@ import { useVehiclesListData } from '../list/use-vehicles-list-data';
 
 interface VehiclesImportContextState {
 	actions: {
-		createVehicle: () => Promise<void>
+		saveVehicles: () => Promise<void>
 		setImportFile: (file: File | null) => Promise<void>
 	}
 	data: {
 		counters: {
 			created: number
-			updated: number
 		}
 		importPreview: VehicleImportPreview[]
 	}
@@ -52,23 +52,20 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 	// A. Setup variables
 
 	const [error, setError] = useState<Error | null>(null);
-	const [isSaving, setIsSaving] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [importPreview, setImportPreview] = useState<VehicleImportPreview[]>([]);
-	const [createdCount, setCreatedCount] = useState(0);
-	const [updatedCount, setUpdatedCount] = useState(0);
 
 	const { data: meData } = useMeData();
-	const { data: agenciesData } = useAgenciesData();
+	const { data: agenciesData, error: agenciesError, isLoading: agenciesLoading } = useAgenciesData();
 	const { mutate: vehiclesListMutate } = useVehiclesListData();
 
 	//
 	// B. Handle actions
 
-	const canUpdateAgency = useCallback((agencyId: string) => {
+	const canCreateAgency = useCallback((agencyId: string) => {
 		return hasPermissionResource(meData?.permissions ?? [], {
 			requiredPermission: {
-				action: PermissionCatalog.all.vehicles.actions.update,
+				action: PermissionCatalog.all.vehicles.actions.create,
 				scope: PermissionCatalog.all.vehicles.scope,
 			},
 			requiredValue: agencyId,
@@ -76,173 +73,89 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 		});
 	}, [meData?.permissions]);
 
-	const diffVehicle = useCallback((existing: VehiclesListItem, incoming: CreateVehicleDto) => {
-		const changes: VehicleImportPreview['changes'] = {};
-		for (const key of Object.keys(incoming) as (keyof CreateVehicleDto)[]) {
-			if (key in existing && incoming[key] !== existing[key as keyof VehiclesListItem]) {
-				changes[key] = {
-					newValue: incoming[key],
-					oldValue: existing[key as keyof VehiclesListItem],
-				};
-			}
-		}
-		return Object.keys(changes).length ? changes : undefined;
-	}, []);
-
 	const handleSetImportFile = useCallback(async (file: File | null) => {
+		setImportPreview([]);
+		setError(null);
+
 		if (!file) {
 			setError(new Error('Invalid or empty file'));
 			return;
 		}
 
 		setIsLoading(true);
-		setError(null);
 
 		try {
+			if (agenciesLoading) throw new Error('Agencies are still loading. Try again shortly.');
+			if (agenciesError) throw new Error(agenciesError);
+
 			const vehiclesFromFile = await parseTxtFile(file);
+			if (vehiclesFromFile.length === 0) throw new Error('Invalid or empty file');
+
 			const existingResponse = await fetchApiData<VehiclesListItem[]>({
 				body: { agency_ids: agenciesData?.map(agency => agency._id) ?? [] },
 				method: 'POST',
 				url: API_ROUTES.operation.VEHICLES_LIST,
 			});
 
-			if (vehiclesFromFile.length === 0) {
-				setError(new Error('Invalid or empty file'));
-			}
+			if (existingResponse.error) throw new Error(existingResponse.error);
+			if (!existingResponse.data) throw new Error('Unable to check existing vehicles');
 
-			const preview: VehicleImportPreview[] = [];
-			let createCounter = 0;
-			let updateCounter = 0;
+			const preview = getVehicleImportPreview(vehiclesFromFile, existingResponse.data);
+			const vehiclesToCreate = preview.filter(item => item.mode === 'CREATE');
 
-			for (const vehicle of vehiclesFromFile) {
-				if (!agenciesData?.some(agency => agency._id === vehicle.agency_id)) {
-					setError(new Error(`Invalid agency for vehicle ${vehicle._id}`));
-				}
-
-				const existing = existingResponse.data?.find(item => item._id === vehicle._id);
-
-				if (!existing) {
-					if (!canUpdateAgency(vehicle.agency_id)) {
-						setError(new Error(`No permission to create vehicle for agency ${vehicle.agency_id}`));
-					}
-
-					createCounter++;
-					preview.push({ mode: 'CREATE', vehicle });
-					continue;
-				}
-
-				if (existing.agency_id !== vehicle.agency_id) {
-					setError(new Error(`Vehicle ${vehicle._id} belongs to another agency`));
-				}
-
-				if (!canUpdateAgency(vehicle.agency_id)) {
-					setError(new Error(`No permission to update vehicle ${vehicle._id}`));
-				}
-
-				if (existing.is_locked) {
-					setError(new Error(`vehicle ${vehicle._id} is locked to change`));
-				}
-
-				const changes = diffVehicle(existing, vehicle);
-				if (changes) {
-					updateCounter++;
-					preview.push({
-						changes,
-						mode: 'UPDATE',
-						vehicle,
+			for (const { vehicle } of vehiclesToCreate) {
+				for (const flag of vehicle.flags) {
+					flag.agency_ids = flag.agency_ids.map((agencyCode) => {
+						const agency = agenciesData.find(agency => agency.code === agencyCode);
+						if (!agency) throw new Error(`Invalid agency ${agencyCode} for vehicle ${vehicle._id}`);
+						if (!canCreateAgency(agency._id)) throw new Error(`No permission to create vehicles for agency ${agencyCode}`);
+						return agency._id;
 					});
 				}
 			}
 
 			setImportPreview(preview);
-			setCreatedCount(createCounter);
-			setUpdatedCount(updateCounter);
-
-			if (createCounter === 0 && updateCounter === 0) {
-				setError(new Error(`Don't have vehicles to create or update in your file`));
-			}
-
-			useToast.success({
-				message: `${createCounter} to create · ${updateCounter} to update`,
-				title: 'File imported',
-			});
 		} catch (err) {
 			setError(err as Error);
 		} finally {
 			setIsLoading(false);
 		}
-	}, [agenciesData, canUpdateAgency, diffVehicle]);
+	}, [agenciesData, agenciesError, agenciesLoading, canCreateAgency]);
 
-	const handleCreateOrUpdateAll = useCallback(async () => {
-		setIsSaving(true);
-		setError(null);
+	const { action: handleSaveAll, isLoading: isSaving } = useHandleAction<Vehicle[]>({
+		fetchFn: async () => {
+			setError(null);
 
-		try {
-			const vehiclesToCreate = importPreview
-				.filter(item => item.mode === 'CREATE')
-				.map(item => item.vehicle);
+			const vehicles = importPreview.filter(item => item.mode === 'CREATE').map(item => item.vehicle);
+			if (vehicles.length === 0) throw new Error('No new vehicles to create in this file');
 
-			const vehiclesToUpdate = importPreview
-				.filter(item => item.mode === 'UPDATE')
-				.map(item => item.vehicle);
-
-			for (const vehicle of vehiclesToCreate) {
-				const response = await fetchApiData<Vehicle>({ body: vehicle, method: 'POST', url: API_ROUTES.operation.VEHICLES_CREATE });
-				if (response.error) {
-					setError(new Error(response.error));
-					return;
-				}
-			}
-
-			if (vehiclesToCreate.length > 0) {
-				useToast.success({
-					message: `${vehiclesToCreate.length} created`,
-					title: 'Success',
-				});
-			}
-
-			for (const vehicle of vehiclesToUpdate) {
-				const response = await fetchApiData<Vehicle>({ body: vehicle, method: 'PUT', url: API_ROUTES.operation.VEHICLES_DETAIL(vehicle._id) });
-				if (response.error) {
-					setError(new Error(response.error));
-					return;
-				}
-			}
-
-			if (vehiclesToUpdate.length > 0) {
-				useToast.success({
-					message: `${vehiclesToUpdate.length} updated`,
-					title: 'Success',
-				});
-			}
-
-			vehiclesListMutate();
-
-			useToast.success({
-				message: `${createdCount} created · ${updatedCount} updated`,
-				title: 'Success',
+			return fetchApiData<Vehicle[]>({
+				body: vehicles,
+				method: 'POST',
+				url: API_ROUTES.operation.VEHICLES_CREATE,
 			});
-
+		},
+		labels: {
+			success_message: `${importPreview.filter(item => item.mode === 'CREATE').length} vehicles created`,
+		},
+		onError: setError,
+		onSuccess: () => {
+			vehiclesListMutate();
 			closeVehiclesImportModal();
-		} catch (err) {
-			setError(err as Error);
-		} finally {
-			setIsSaving(false);
-		}
-	}, [createdCount, importPreview, updatedCount, vehiclesListMutate]);
+		},
+	});
 
 	//
 	// C. Define context value
 
 	const contextValue = useMemo((): VehiclesImportContextState => ({
 		actions: {
-			createVehicle: handleCreateOrUpdateAll,
+			saveVehicles: handleSaveAll,
 			setImportFile: handleSetImportFile,
 		},
 		data: {
 			counters: {
-				created: createdCount,
-				updated: updatedCount,
+				created: importPreview.filter(item => item.mode === 'CREATE').length,
 			},
 			importPreview,
 		},
@@ -251,7 +164,7 @@ export function VehiclesImportContextProvider({ children }: PropsWithChildren) {
 			isLoading,
 			isSaving,
 		},
-	}), [createdCount, error, handleCreateOrUpdateAll, handleSetImportFile, importPreview, isLoading, isSaving, updatedCount]);
+	}), [error, handleSaveAll, handleSetImportFile, importPreview, isLoading, isSaving]);
 
 	//
 	// D. Render components

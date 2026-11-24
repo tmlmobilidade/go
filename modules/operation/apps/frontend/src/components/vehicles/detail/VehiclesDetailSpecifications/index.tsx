@@ -1,7 +1,7 @@
 'use client';
 
 import { CreateVehicleSchema, VehicleEmissionValues, VehiclePropulsionValues, VehicleTypeValues } from '@tmlmobilidade/go-types-operation';
-import { Collapsible, Grid, NumberInput, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Collapsible, Grid, Section, Select, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useVehiclesDetailFormContext } from '../VehiclesDetailForm.context';
@@ -33,6 +33,7 @@ export function VehiclesDetailSpecifications() {
 						name="make"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.make.label')}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -47,6 +48,7 @@ export function VehiclesDetailSpecifications() {
 						name="model"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.model.label')}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -58,42 +60,17 @@ export function VehiclesDetailSpecifications() {
 					/>
 					<StandardFormController
 						control={form.control}
-						name="available_seats"
-						render={({ field, fieldState }) => (
-							<NumberInput
-								error={fieldState.error?.message}
-								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.available_seats.label')}
-								onChange={field.onChange}
-								readOnly={!capabilities.editEnabled}
-								value={field.value ?? undefined}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="available_standing"
-						render={({ field, fieldState }) => (
-							<NumberInput
-								error={fieldState.error?.message}
-								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.available_standing.label')}
-								onChange={field.onChange}
-								readOnly={!capabilities.editEnabled}
-								value={field.value ?? undefined}
-							/>
-						)}
-					/>
-					<StandardFormController
-						control={form.control}
-						name="typology"
+						name="vehicle_type"
 						render={({ field, fieldState }) => (
 							<Select
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
-								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.typology.label')}
+								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.vehicle_type.label')}
 								onChange={field.onChange}
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
 								data={VehicleTypeValues.map(value => ({
-									label: t(`default:vehicles.shared.typology.${value}`),
+									label: t(`vehicle-enums:vehicle_type.${value}`),
 									value,
 								}))}
 							/>
@@ -104,13 +81,14 @@ export function VehiclesDetailSpecifications() {
 						name="propulsion"
 						render={({ field, fieldState }) => (
 							<Select
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.propulsion.label')}
 								onChange={field.onChange}
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
 								data={VehiclePropulsionValues.map(value => ({
-									label: t(`default:vehicles.shared.propulsion.${value}`),
+									label: t(`vehicle-enums:propulsion.${value}`),
 									value,
 								}))}
 							/>
@@ -121,13 +99,14 @@ export function VehiclesDetailSpecifications() {
 						name="emission"
 						render={({ field, fieldState }) => (
 							<Select
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.emission.label')}
 								onChange={field.onChange}
 								readOnly={!capabilities.editEnabled}
 								value={field.value}
 								data={VehicleEmissionValues.map(value => ({
-									label: t(`default:vehicles.shared.emission.${value}`),
+									label: t(`vehicle-enums:emission.${value}`),
 									value,
 								}))}
 							/>

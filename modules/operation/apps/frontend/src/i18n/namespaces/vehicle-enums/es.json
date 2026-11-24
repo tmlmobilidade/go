@@ -1,0 +1,43 @@
+{
+	"emission": {
+		"EURO_I": "Euro I",
+		"EURO_II": "Euro II",
+		"EURO_III": "Euro III",
+		"EURO_IV": "Euro IV",
+		"EURO_V": "Euro V",
+		"EURO_VI": "Euro VI",
+		"EURO_VII": "Euro VII",
+		"N/A": "No aplicable"
+	},
+	"propulsion": {
+		"0": "No aplicable",
+		"1": "Gasolina",
+		"10": "Biocombustible / Biodiésel",
+		"101": "Gas natural",
+		"102": "Gas natural - GNC",
+		"103": "Gas natural - GNL",
+		"104": "Combustible de aviación",
+		"105": "Combustible marítimo",
+		"106": "Otro",
+		"2": "Gasóleo",
+		"3": "GLP de automoción",
+		"4": "Mezcla",
+		"5": "Electricidad",
+		"6": "Eléctrico de batería",
+		"7": "Híbrido",
+		"8": "Hidrógeno",
+		"9": "Biocombustible"
+	},
+	"vehicle_type": {
+		"0": "Tranvía",
+		"1": "Metro",
+		"11": "Trolebús",
+		"12": "Monorraíl",
+		"2": "Tren",
+		"3": "Autobús",
+		"4": "Transbordador",
+		"5": "Tranvía por cable",
+		"6": "Teleférico",
+		"7": "Funicular"
+	}
+}
