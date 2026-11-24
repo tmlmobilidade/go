@@ -33,6 +33,7 @@ export function VehiclesDetailSpecifications() {
 						name="make"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.make.label')}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -47,6 +48,7 @@ export function VehiclesDetailSpecifications() {
 						name="model"
 						render={({ field, fieldState }) => (
 							<TextInput
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.model.label')}
 								onChange={e => field.onChange(e.currentTarget.value)}
@@ -61,6 +63,7 @@ export function VehiclesDetailSpecifications() {
 						name="vehicle_type"
 						render={({ field, fieldState }) => (
 							<Select
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.vehicle_type.label')}
 								onChange={field.onChange}
@@ -78,6 +81,7 @@ export function VehiclesDetailSpecifications() {
 						name="propulsion"
 						render={({ field, fieldState }) => (
 							<Select
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.propulsion.label')}
 								onChange={field.onChange}
@@ -95,6 +99,7 @@ export function VehiclesDetailSpecifications() {
 						name="emission"
 						render={({ field, fieldState }) => (
 							<Select
+								disabled={!capabilities.editEnabled}
 								error={fieldState.error?.message}
 								label={t('default:vehicles.detail.VehiclesDetailSpecifications.fields.emission.label')}
 								onChange={field.onChange}
