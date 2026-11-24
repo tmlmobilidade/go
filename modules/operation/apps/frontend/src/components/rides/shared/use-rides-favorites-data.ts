@@ -54,7 +54,7 @@ export function useRidesFavoritesData(): UseRidesFavoritesDataReturnType {
 
 		try {
 			// Optimistic update shared across all consumers via the me SWR cache
-			await globalMutate(API_ROUTES.core.ME_LIST, nextMeResponse, { revalidate: false });
+			await globalMutate(API_ROUTES.core.ME_LIST_ME_USER, nextMeResponse, { revalidate: false });
 
 			const response = await fetchApiData<User>({
 				body: { key: 'favorite_rides', scope: 'controller', value: nextFavorites },
@@ -63,7 +63,7 @@ export function useRidesFavoritesData(): UseRidesFavoritesDataReturnType {
 			});
 
 			if (response.data) {
-				await globalMutate(API_ROUTES.core.ME_LIST, {
+				await globalMutate(API_ROUTES.core.ME_LIST_ME_USER, {
 					...nextMeResponse,
 					data: response.data,
 				} as ApiResponse<User>, { revalidate: false });

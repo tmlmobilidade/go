@@ -120,7 +120,7 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 		const updatedScope = { ...currentScope, [key]: value };
 		const updatedPreferences = { ...currentPreferences, [scope]: updatedScope };
 		// Call the update endpoint
-		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.ME_LIST });
+		await fetchApiData<User>({ body: { preferences: updatedPreferences }, method: 'PUT', url: API_ROUTES.core.ME_UPDATE_PREFERENCES });
 	};
 
 	//

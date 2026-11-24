@@ -217,7 +217,7 @@ export const API_ROUTES = Object.freeze({
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
 
 		// ME
-		ME_LIST: `${getModuleConfig('core', 'api_url')}/platform/me/list`,
+		ME_LIST_ME_USER: `${getModuleConfig('core', 'api_url')}/platform/me/list-me-user`,
 		ME_UPDATE_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/me/update-preferences`,
 
 		// NOTIFICATIONS
