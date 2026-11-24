@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Annotation, type CreateAnnotationDto, CreateAnnotationSchema } from '@tmlmobilidade/go-types-dates';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
@@ -32,7 +32,7 @@ export function AnnotationsCreateFormContextProvider({ children }: PropsWithChil
 
 	const router = useRouter();
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 
 	const { mutate: listMutate } = useAnnotationsData();
 
@@ -76,7 +76,7 @@ export function AnnotationsCreateFormContextProvider({ children }: PropsWithChil
 
 	const permissions = getAnnotationsPermissions({
 		selectedAgencyIds: values.agency_ids ?? [],
-		userPermissions: me?.permissions,
+		userPermissions: mePermissions,
 	});
 
 	//
@@ -84,8 +84,8 @@ export function AnnotationsCreateFormContextProvider({ children }: PropsWithChil
 
 	const { createEnabled, editEnabled: formEditEnabled } = useStandardFormCapabilities({
 		create: {
-			hasPermission: permissions.create && !meError,
-			isCreating: isCreating || meLoading,
+			hasPermission: permissions.create && !mePermissionsError,
+			isCreating: isCreating || mePermissionsLoading,
 		},
 		form: {
 			isDirty,
@@ -93,7 +93,7 @@ export function AnnotationsCreateFormContextProvider({ children }: PropsWithChil
 		},
 	});
 
-	const editEnabled = formEditEnabled && permissions.create && !meLoading && !meError;
+	const editEnabled = formEditEnabled && permissions.create && !mePermissionsLoading && !mePermissionsError;
 
 	const handleCreate = useCallback(async () => {
 		if (!createEnabled) return;

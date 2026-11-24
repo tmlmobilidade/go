@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Holiday, type UpdateHolidayDto, UpdateHolidaySchema } from '@tmlmobilidade/go-types-dates';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
@@ -33,7 +33,7 @@ export function HolidaysDetailFormContextProvider({ children }: PropsWithChildre
 
 	const router = useRouter();
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 
 	const { mutate: listMutate } = useHolidaysData();
 	const { holidayId } = useHolidaysDetailHolidayId();
@@ -85,14 +85,14 @@ export function HolidaysDetailFormContextProvider({ children }: PropsWithChildre
 	const permissions = getHolidaysPermissions({
 		currentAgencyIds: holiday?.agency_ids ?? [],
 		selectedAgencyIds: values.agency_ids ?? [],
-		userPermissions: me?.permissions,
+		userPermissions: mePermissions,
 	});
 
 	//
 	// E. Setup capabilities and handlers
 
 	const busy = isUpdating || isLocking || isDeleting;
-	const loading = isLoading || meLoading || !holiday || !!error || !!meError;
+	const loading = isLoading || mePermissionsLoading || !holiday || !!error || !!mePermissionsError;
 
 	const standardCapabilities = useStandardFormCapabilities({
 		delete: {

@@ -2,7 +2,7 @@
 
 import { IconFileDownload, IconPlus } from '@tabler/icons-react';
 import { hasPermission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { ToolbarActions, useMeUser } from '@tmlmobilidade/ui';
+import { ToolbarActions, useMePermissions } from '@tmlmobilidade/ui';
 import { type ComponentProps, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,21 +24,21 @@ export function StopsListHeaderMenu() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 
 	//
 	// B. Transform data
 
 	const menuActions = useMemo(() => {
 		const actions: ToolbarActionItem[] = [];
-		if (hasPermission(meData?.permissions, { action: PermissionCatalog.all.stops.actions.create, scope: PermissionCatalog.all.stops.scope })) {
+		if (hasPermission(mePermissions, { action: PermissionCatalog.all.stops.actions.create, scope: PermissionCatalog.all.stops.scope })) {
 			actions.push({
 				icon: <IconPlus />,
 				label: t('stops:list.StopsListHeaderMenu.new_stop_button.label'),
 				onClick: openStopsCreateModal,
 			});
 		}
-		if (hasPermission(meData?.permissions, { action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope })) {
+		if (hasPermission(mePermissions, { action: PermissionCatalog.all.stops.actions.export, scope: PermissionCatalog.all.stops.scope })) {
 			actions.push({
 				icon: <IconFileDownload />,
 				label: t('stops:list.StopsListHeaderMenu.extract_stops_button.label'),
@@ -51,7 +51,7 @@ export function StopsListHeaderMenu() {
 			});
 		}
 		return actions;
-	}, [meData?.permissions, t]);
+	}, [mePermissions, t]);
 
 	//
 	// C. Render components
