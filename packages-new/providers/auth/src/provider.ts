@@ -8,6 +8,8 @@ import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { asyncSingletonProxy } from '@tmlmobilidade/go-utils-exec';
 import { mergeObjects } from '@tmlmobilidade/utils';
 
+import { hashAuthToken } from './hash-auth-token.js';
+
 /* * */
 
 class AuthProviderClass {
@@ -92,7 +94,7 @@ class AuthProviderClass {
 		// Get the session data
 		const sessionData = await goDb.core.sessions.findOne({
 			expires_at: { $gt: Dates.now('utc').unix_milliseconds },
-			token: { $eq: sessionToken },
+			token: { $eq: hashAuthToken(sessionToken) },
 		});
 		if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
 		// Get the user data
