@@ -1,12 +1,14 @@
 'use client';
 
+import { RuleEventEffect } from '@/components/shared/rules/RuleEventEffect';
 import { usePeriodsContext } from '@/contexts/Periods.context';
-import { IconCalendarCancel, IconCalendarRepeat, IconEye } from '@tabler/icons-react';
+import { IconCalendar, IconCalendarCancel, IconCalendarRepeat, IconPencil } from '@tabler/icons-react';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { Dates, FORMATS } from '@tmlmobilidade/dates';
-import { EventReplacementRule, EventRestrictionRule, WEEKDAY_OPTIONS } from '@tmlmobilidade/go-types-offer';
-import { IconButton, Section, Text } from '@tmlmobilidade/ui';
-import { useRouter } from 'next/navigation';
+import { EventReplacementRule, EventRestrictionRule } from '@tmlmobilidade/go-types-offer';
+import { buildRuleSummary, formatRuleDates } from '@tmlmobilidade/go-utils-offer';
+import { IconButton, Text, useLocaleContext } from '@tmlmobilidade/ui';
+import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -24,47 +26,21 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 	//
 	// A. Setup variables
 
-	const router = useRouter();
+	const { t } = useTranslation();
+	const { data: { locale } } = useLocaleContext();
 	const periodsContext = usePeriodsContext();
 
 	const isRestriction = rule.kind === 'event_restriction';
-	const isReplacement = rule.kind === 'event_replacement';
-	const name = rule?.name || 'Regra sem nome';
+	const name = rule.event.title || t('default:scheduling.copy.unnamedRule');
+	const eventUrl = PAGE_ROUTES.offer.EVENTS_DETAIL(rule.event.id);
 
-	const eventDates
-		= rule?.dates?.map(d =>
-			Dates.fromOperationalDate(d, 'Europe/Lisbon')
-				.toLocaleString(FORMATS.DATE_SHORT, 'pt-PT'),
-		).join(', ') ?? '';
-
-	const eventDatesSuffix
-		= rule && eventDates
-			? (rule.dates.length > 1 ? `(nos dias ${eventDates})` : `(no dia ${eventDates})`)
-			: '';
-
-	// For replacement rules, build description of what they replace with
-	let replacementDescription = '';
-	if (isReplacement && rule.kind === 'event_replacement') {
-		const weekdayLabels = rule.weekdays?.map(wd =>
-			WEEKDAY_OPTIONS.find(opt => opt.value === wd)?.label,
-		).filter(Boolean).join(', ') ?? '';
-
-		const periodNames = rule.year_period_ids?.map((yearPeriodId) => {
-			const period = periodsContext.data.raw.find(p => p._id === yearPeriodId);
-			return period?.name || yearPeriodId;
-		}).join(', ') || '';
-
-		const parts: string[] = [];
-		if (weekdayLabels) parts.push(weekdayLabels);
-		if (periodNames) parts.push(periodNames);
-		replacementDescription = parts.join(' · ');
-	}
+	const summary = buildRuleSummary(rule, { locale, periods: periodsContext.data.raw, t });
 
 	//
 	// B. Handle actions
 
 	const handleClickEventRule = () => {
-		router.push(PAGE_ROUTES.offer.EVENTS_DETAIL(rule?.event.id ?? ''));
+		window.open(eventUrl, '_blank', 'noopener,noreferrer');
 	};
 
 	//
@@ -72,55 +48,29 @@ export default function RulesListViewEventCard({ rule }: RulesListViewEventCardP
 
 	return (
 		<div className={styles.container}>
-			<Section gap="md" justifyContent="space-between" padding="none">
+			<div className={styles.header}>
+				<div className={styles.title}>
+					{isRestriction
+						? <IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
+						: <IconCalendarRepeat color="var(--color-primary)" size={20} />}
+					<Link className={styles.eventName} href={eventUrl} rel="noopener noreferrer" target="_blank">
+						<Text weight="semibold">{name}</Text>
+					</Link>
+				</div>
+				<IconButton
+					icon={<IconPencil size={20} />}
+					onClick={handleClickEventRule}
+					tooltip={t('default:scheduling.copy.eventDetails')}
+				/>
+			</div>
 
-				<Section alignItems="center" flexDirection="row" gap="sm" padding="none">
-					{isRestriction && (
-						<IconCalendarCancel color="var(--color-status-danger-primary)" size={20} />
-					)}
-					{isReplacement && (
-						<IconCalendarRepeat color="var(--color-primary)" size={20} />
-					)}
-					<Text size="lg">{name} ·</Text>
-					{(isRestriction || isReplacement) && (
-						<Text className={styles.timesCount}>
-							{rule.dates.length} {rule.dates.length > 1 ? 'dias' : 'dia'}
-						</Text>
-					)}
-				</Section>
-
-				{/* Restriction event */}
-				{rule.kind === 'event_restriction' && (
-					<>
-						<Text>
-							Oferta será excluída {eventDates && !rule.all_day
-								? `das ${rule.start_time} às ${rule.end_time}`
-								: `todo o dia`}
-						</Text>
-						<Text size="sm" style={{ fontFamily: 'monospace' }}>
-							{eventDatesSuffix}
-						</Text>
-					</>
-				)}
-
-				{/* Replacement event */}
-				{isReplacement && (
-					<>
-						<Text>Funcionará como {replacementDescription}</Text>
-						<Text size="sm" style={{ fontFamily: 'monospace' }}>
-							{eventDatesSuffix}
-						</Text>
-					</>
-
-				)}
-
-			</Section>
-
-			<IconButton
-				icon={<IconEye size={20} />}
-				onClick={handleClickEventRule}
-				tooltip="Ir para detalhes do evento"
-			/>
+			<div className={styles.content}>
+				<RuleEventEffect conditions={summary.conditions} rule={rule} />
+				<div className={styles.dates}>
+					<IconCalendar size={16} />
+					<Text c="var(--color-system-text-100)" size="sm">{formatRuleDates(rule.dates, locale)}</Text>
+				</div>
+			</div>
 		</div>
 	);
 }

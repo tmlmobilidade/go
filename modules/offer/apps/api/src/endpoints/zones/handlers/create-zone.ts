@@ -20,7 +20,7 @@ export async function createZoneHandler(request: FastifyRequest<{ Body: CreateZo
 
 	if (!validatedZone.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedZone.error.message,
+			error: validatedZone.error,
 			status_code: '400',
 		});
 	}

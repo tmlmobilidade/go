@@ -4,7 +4,8 @@ import { generateComments } from '@/utils/comments.js';
 import { authorizePatternAccess } from '@/utils/pattern-access.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Pattern, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
+import { withSimplifiedPatternShape } from '@tmlmobilidade/go-offer-pckg-utils';
+import { type Pattern, PatternPathParametersSchema, type UpdatePatternDto, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 
 /**
  * Updates an existing pattern by ID
@@ -17,7 +18,7 @@ export async function updatePatternHandler(request: FastifyRequest<{ Body: Updat
 
 	const validatedPattern = UpdatePatternSchema.safeParse(request.body);
 	if (!validatedPattern.success) {
-		return sendErrorApiResponse(reply, { error: validatedPattern.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedPattern.error, status_code: '400' });
 	}
 
 	//
@@ -44,7 +45,16 @@ export async function updatePatternHandler(request: FastifyRequest<{ Body: Updat
 		return sendErrorApiResponse(reply, { error: 'Pattern parent changes require a dedicated move operation', status_code: '409' });
 	}
 
-	const sanitizedBody = validatedPattern.data;
+	// Path edits and their positional travel-time entries must be saved together.
+	if (validatedPattern.data.path !== undefined || validatedPattern.data.parameters !== undefined) {
+		const pathParameters = PatternPathParametersSchema.safeParse({ ...patternData, ...validatedPattern.data });
+		if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error, status_code: '400' });
+	}
+
+	const sanitizedBody = {
+		...validatedPattern.data,
+		...(validatedPattern.data.shape ? { shape: withSimplifiedPatternShape(validatedPattern.data.shape) } : {}),
+	};
 
 	//
 	// Generate activity comments

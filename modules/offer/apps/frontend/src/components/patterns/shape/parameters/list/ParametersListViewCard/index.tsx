@@ -5,6 +5,7 @@ import { StopsParameterExtended } from '@/utils/stops-parameters';
 import { IconArrowRight } from '@tabler/icons-react';
 import { StopsParameter } from '@tmlmobilidade/go-types-offer';
 import { IconButton, Section, Text } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
@@ -22,12 +23,14 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const patternDetailContext = usePatternDetailContext();
 
 	//
 	// B. Handle actions
 
 	const handleEdit = () => {
+		if (!patternDetailContext.capabilities.editEnabled) return;
 		patternDetailContext.actions.openStopsParameterModal(parameter as StopsParameter);
 	};
 
@@ -35,7 +38,7 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 	// C. Render components
 
 	return (
-		<div className={styles.container} onClick={handleEdit}>
+		<div className={styles.container} data-read-only={!patternDetailContext.capabilities.editEnabled || undefined} onClick={!patternDetailContext.capabilities.editEnabled ? undefined : handleEdit}>
 			<Section gap="md" padding="none">
 
 				{/* Summary:
@@ -52,17 +55,18 @@ export default function ParametersListViewCard({ parameter }: ParametersListView
 				( ) Aplicar fator de ajuste */}
 
 				<Section gap="xs" padding="none">
-					<Text size="lg">{parameter?.name || 'Regra sem nome'}</Text>
-					{parameter?.kind === 'default' && <Text c="var(--color-system-text-200)">Usada por defeito quando nenhuma configuração específica se aplica.</Text>}
+					<Text size="lg">{parameter?.name || t('default:scheduling.copy.unnamedRule')}</Text>
+					{parameter?.kind === 'default' && <Text c="var(--color-system-text-200)">{t('default:scheduling.copy.defaultConfigurationHint')}</Text>}
 				</Section>
 
 				<Section gap="xs" padding="none">
-					{parameter?.travelTimes && <Text size="sm" style={{ fontFamily: 'monospace' }}>Duração total: {parameter?.travelTimes?.totalTripSecondsWithStops?.formatted}</Text>}
+					{parameter?.travelTimes && <Text className={styles.duration} size="sm">{t('default:scheduling.copy.totalDurationLabel')}{parameter?.travelTimes?.totalTripSecondsWithStops?.formatted}</Text>}
 				</Section>
 			</Section>
 
 			<IconButton
 				icon={<IconArrowRight size={20} />}
+				isDisabled={!patternDetailContext.capabilities.editEnabled}
 				onClick={handleEdit}
 			/>
 

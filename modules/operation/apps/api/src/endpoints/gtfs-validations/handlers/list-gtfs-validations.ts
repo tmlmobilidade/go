@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type AggregationPipeline } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { ValidationListFilters, ValidationListFiltersSchema, ValidationListItem, ValidationListItemSchema } from '@tmlmobilidade/go-operation-pckg-types';
@@ -29,7 +29,9 @@ export async function listGtfsValidationsHandler(request: FastifyRequest<{ Body:
 	//
 	// Validate the filters
 
-	const validatedFilters = ValidationListFiltersSchema.parse(request.body); ;
+	const validatedFiltersResult = ValidationListFiltersSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Build aggregation pipeline

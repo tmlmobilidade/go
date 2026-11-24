@@ -27,7 +27,7 @@ export function useLinesData(): UseLinesDataReturnType {
 	//
 	// A. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiLine[]>>(API_ROUTES.hub.NETWORK_LINES, {
+	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<HubV1ApiLine[]>>(API_ROUTES.hub.NETWORK_LINES('0XJC9'), {
 		fetcher: async url => await fetchApiData<HubV1ApiLine[]>({ options: { credentials: 'omit' }, url }),
 	});
 

@@ -1,0 +1,46 @@
+{
+	"dayPeriods": {
+		"afternoon_peak": {
+			"long": "Período de ponta da tarde",
+			"short": "PPT"
+		},
+		"daytime": {
+			"long": "Corpo do Dia",
+			"short": "CD"
+		},
+		"early_morning": {
+			"long": "Madrugada",
+			"short": "M"
+		},
+		"morning_peak": {
+			"long": "Período de ponta da manhã",
+			"short": "PPM"
+		},
+		"night": {
+			"long": "Noite",
+			"short": "N"
+		}
+	},
+	"gtfs": {
+		"businessDays": "DU"
+	},
+	"summaries": {
+		"allDay": "Todo o dia",
+		"allDays": "Todos os dias",
+		"allMonths": "Todos os meses",
+		"allPeriods": "Todos os períodos",
+		"applicable": "Aplicável {dates}",
+		"businessDays": "Dias úteis",
+		"defaultConfiguration": "Configuração padrão",
+		"duringDayPeriods": "Durante {names}",
+		"excluded": "Oferta excluída {dates}",
+		"moreDates": "{dates} e mais {count}",
+		"onDates": "nos dias {dates}",
+		"replacement": "Funcionará como {replacement}, {dates}",
+		"sameWeekday": "mesmo dia da semana",
+		"sundayAndHolidays": "{day} e feriados",
+		"timeWindow": "entre as {start} e as {end}",
+		"unknownPeriod": "período desconhecido",
+		"weekend": "Fim de semana"
+	}
+}

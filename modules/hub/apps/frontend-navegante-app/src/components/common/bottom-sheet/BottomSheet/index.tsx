@@ -7,8 +7,9 @@ import { BottomSheetBack } from '@/components/common/bottom-sheet/BottomSheetBac
 import { BottomSheetClose } from '@/components/common/bottom-sheet/BottomSheetClose';
 import { ACTIVE_MAP_BOTTOM_SHEET_HEIGHT_CSS_PROPERTY, MAP_BOTTOM_SHEET_INITIAL_SNAP, MAP_BOTTOM_SHEET_SNAP_POINTS } from '@/constants/bottom-sheet';
 import { registerActiveBottomSheetSnapController, useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
+import { useBottomSheetSnapPoints } from '@/hooks/bottom-sheet/useBottomSheetSnapPoints';
 import { getBottomSheetSnapState, shouldShowBottomSheetOverlay } from '@/utils/bottom-sheet/behavior';
-import { type FocusEvent, type PropsWithChildren, type RefObject, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { type FocusEvent, type PropsWithChildren, type RefObject, useEffect, useId, useRef, useState } from 'react';
 import { ModalProvider } from 'react-aria';
 import { useTranslation } from 'react-i18next';
 import { Sheet, type SheetRef } from 'react-modal-sheet';
@@ -107,8 +108,11 @@ export function BottomSheet({
 	const sheetRef = useRef<SheetRef>(null);
 	const dialogRef = useRef<HTMLDivElement>(null);
 	const { restoredSnapIndex, setActiveBottomSheetSnap } = useBottomSheet();
-	const snapPoints = customSnapPoints ?? (mapAware ? MAP_BOTTOM_SHEET_SNAP_POINTS : SHEET_SNAP_POINTS_BY_SIZE[size]);
-	const snapPointsKey = useMemo(() => snapPoints.join('|'), [snapPoints]);
+	const { contentRef, snapPoints } = useBottomSheetSnapPoints({
+		containerRef: dialogRef,
+		opened,
+		snapPoints: customSnapPoints ?? (mapAware ? MAP_BOTTOM_SHEET_SNAP_POINTS : SHEET_SNAP_POINTS_BY_SIZE[size]),
+	});
 	const detent = customSnapPoints || mapAware || size !== 'fit' ? 'full' : 'content';
 	const defaultInitialSnap = initialSnap ?? (mapAware
 		? MAP_BOTTOM_SHEET_INITIAL_SNAP
@@ -118,9 +122,10 @@ export function BottomSheet({
 	const selectedInitialSnap = opened && restoredSnapIndex !== null && restoredSnapIndex > 0 && restoredSnapIndex < snapPoints.length
 		? restoredSnapIndex
 		: defaultInitialSnap;
-	const selectedInitialSnapPoint = snapPoints[selectedInitialSnap] ?? null;
 	const selectedHeaderMode = headerMode ?? (title ? 'default' : 'handle');
 	const [activeSnapIndex, setActiveSnapIndex] = useState(selectedInitialSnap);
+	const activeSnapIndexRef = useRef(selectedInitialSnap);
+	const previousInitialSnapRef = useRef(selectedInitialSnap);
 	const [isOpenAnimationComplete, setIsOpenAnimationComplete] = useState(false);
 	const [snapAnnouncement, setSnapAnnouncement] = useState('');
 	const fullSnapIndex = snapPoints.length - 1;
@@ -143,29 +148,35 @@ export function BottomSheet({
 			return;
 		}
 
+		// Resizing or changing the safe area should keep the current expansion state.
+		const targetSnapIndex = wasOpenedRef.current && previousInitialSnapRef.current === selectedInitialSnap
+			? activeSnapIndexRef.current
+			: selectedInitialSnap;
 		wasOpenedRef.current = true;
-		setActiveSnapIndex(selectedInitialSnap);
+		previousInitialSnapRef.current = selectedInitialSnap;
+		activeSnapIndexRef.current = targetSnapIndex;
+		setActiveSnapIndex(targetSnapIndex);
 
 		let animationFrameId: number | undefined;
 		if (isOpenAnimationComplete) {
 			animationFrameId = window.requestAnimationFrame(() => {
 				const sheet = sheetRef.current;
-				if (!sheet || sheet.snapPoints.length <= selectedInitialSnap) return;
-				void sheet.snapTo(selectedInitialSnap);
+				if (!sheet || sheet.snapPoints.length <= targetSnapIndex) return;
+				void sheet.snapTo(targetSnapIndex);
 			});
 		}
 
 		if (syncSnapState) {
 			setActiveBottomSheetSnap({
-				snapIndex: selectedInitialSnap,
-				snapPoint: selectedInitialSnapPoint,
+				snapIndex: targetSnapIndex,
+				snapPoint: snapPoints[targetSnapIndex] ?? null,
 			}, contentId);
 		}
 
 		return () => {
 			if (animationFrameId !== undefined) window.cancelAnimationFrame(animationFrameId);
 		};
-	}, [contentId, isOpenAnimationComplete, opened, selectedInitialSnap, selectedInitialSnapPoint, setActiveBottomSheetSnap, snapPointsKey, syncSnapState]);
+	}, [contentId, isOpenAnimationComplete, opened, selectedInitialSnap, setActiveBottomSheetSnap, snapPoints, syncSnapState]);
 
 	useEffect(() => {
 		if (!syncSnapState || !mapAware || !opened) return;
@@ -175,7 +186,7 @@ export function BottomSheet({
 			if (!sheet || sheet.snapPoints.length <= snapIndex) return;
 			void sheet.snapTo(snapIndex);
 		});
-	}, [contentId, mapAware, opened, setActiveBottomSheetSnap, snapPoints, snapPointsKey, syncSnapState]);
+	}, [contentId, mapAware, opened, setActiveBottomSheetSnap, snapPoints, syncSnapState]);
 
 	useEffect(() => {
 		if (!mapAware || !opened || typeof document === 'undefined') return;
@@ -200,6 +211,7 @@ export function BottomSheet({
 	}, [mapAware, opened]);
 
 	const handleSnap = (snapIndex: number) => {
+		activeSnapIndexRef.current = snapIndex;
 		setActiveSnapIndex(snapIndex);
 		onSnap?.(snapIndex);
 		if (isSheetOpenRef.current && snapIndex > 0) {
@@ -327,6 +339,7 @@ export function BottomSheet({
 								</Sheet.Header>
 
 								<Sheet.Content
+									ref={contentRef}
 									className={styles.content}
 									disableScroll={({ currentSnap }) => mapAware && currentSnap !== snapPoints.length - 1}
 									id={contentId}

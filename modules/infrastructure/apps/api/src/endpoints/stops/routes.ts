@@ -11,6 +11,7 @@ import { getTtsHandler } from './handlers/get-tts.js';
 import { getValidIdHandler } from './handlers/get-valid-id.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { listLocationsHandler } from './handlers/list-locations.js';
+import { listStopPatternsHandler } from './handlers/list-stop-patterns.js';
 import { listStopsHandler } from './handlers/list-stops.js';
 import { lockStopHandler } from './handlers/lock-stop.js';
 import { updateStopCoordinatesHandler } from './handlers/update-stop-coordinates.js';
@@ -63,6 +64,12 @@ server.register(
 			'/get/:id',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
 			getStopHandler,
+		);
+
+		instance.get(
+			'/:id/patterns',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.stops.scope, [PermissionCatalog.all.stops.actions.read]) },
+			listStopPatternsHandler,
 		);
 
 		instance.get(

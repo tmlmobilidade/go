@@ -1,7 +1,7 @@
 /* * */
 
 import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 /* * */
@@ -12,7 +12,7 @@ export const RoleSchema = BaseDocumentSchema.extend({
 });
 
 export const CreateRoleSchema = RoleSchema.omit({ _id: true, created_at: true, updated_at: true });
-export const UpdateRoleSchema = CreateRoleSchema.omit({ created_by: true }).partial();
+export const UpdateRoleSchema = partialWithoutDefaults(CreateRoleSchema.omit({ created_by: true }));
 
 export type Role = z.infer<typeof RoleSchema>;
 export type CreateRoleDto = z.infer<typeof CreateRoleSchema>;

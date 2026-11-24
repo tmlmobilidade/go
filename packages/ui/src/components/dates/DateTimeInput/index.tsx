@@ -99,7 +99,33 @@ export function DateTimeInput(props: DateTimeInputProps) {
 	const timezone = props.timezone ?? 'Europe/Lisbon';
 
 	//
-	// B. Transform data
+	// B. Handle input changes
+
+	const handleInputChange = (dateValue: null | string | undefined, timeValue: string | undefined) => {
+		setDateInputValue(dateValue ?? undefined);
+		setTimePickerValue(timeValue);
+
+		if (!props.onChange) return;
+
+		if (!dateValue || !timeValue) {
+			props.onChange(null);
+			return;
+		}
+
+		try {
+			const formattedTimeValue = timeValue.length === 5 ? `${timeValue}:00` : timeValue;
+			const unixMilliseconds = Dates
+				.fromFormat(`${dateValue} ${formattedTimeValue}`, 'yyyy-MM-dd HH:mm:ss', timezone)
+				.unix_milliseconds;
+			const validatedUnixMilliseconds = validateUnixMilliseconds(unixMilliseconds);
+			props.onChange(validatedUnixMilliseconds);
+		} catch (error) {
+			console.log('DateTimeInput: Invalid date format', error);
+		}
+	};
+
+	//
+	// C. Transform data
 
 	useEffect(() => {
 		// Combine value and defaultValue props
@@ -132,31 +158,8 @@ export function DateTimeInput(props: DateTimeInputProps) {
 		}
 	}, [props.value, props.defaultValue, timezone]);
 
-	useEffect(() => {
-		// Skip if onChange is not provided
-		if (!props.onChange) return;
-		// If input values are null or undefined, call onChange with null
-		if (!dateInputValue || typeof dateInputValue !== 'string') return;
-		if (!timePickerValue || typeof timePickerValue !== 'string') return;
-		// Try to transform the value into a valid unix milliseconds
-		// If it succeeds, call onChange with the validated timestamp
-		// If it fails, call onChange with null
-		try {
-			const formattedTimeValue = timePickerValue.length === 5 ? `${timePickerValue}:00` : timePickerValue;
-			const unixMilliseconds = Dates
-				.fromFormat(`${dateInputValue} ${formattedTimeValue}`, 'yyyy-MM-dd HH:mm:ss', timezone)
-				.unix_milliseconds;
-			const validatedUnixMilliseconds = validateUnixMilliseconds(unixMilliseconds);
-			props.onChange(validatedUnixMilliseconds);
-			return;
-		} catch (error) {
-			console.log('DateTimeInput: Invalid date format', error);
-			return;
-		}
-	}, [dateInputValue, timePickerValue, props.onChange, timezone, props.value, props]);
-
 	//
-	// C. Render components
+	// D. Render components
 
 	return (
 		<Fieldset className={styles.fieldset} variant="unstyled">
@@ -168,12 +171,12 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				error={props.error}
 				label={props.label}
 				leftSection={<IconCalendar size={20} />}
-				onChange={setDateInputValue}
+				onChange={value => handleInputChange(value, timePickerValue)}
 				placeholder={props.placeholder ?? 'Selecione uma data...'}
 				popoverProps={{ withinPortal: false }}
 				readOnly={props.readOnly}
 				type="default"
-				value={dateInputValue}
+				value={dateInputValue ?? null}
 			/>
 			<MantineTimePicker
 				classNames={{ dropdown: styles.timePicker_dropdown, root: styles.timePicker_root, wrapper: styles.timePicker_wrapper }}
@@ -182,10 +185,10 @@ export function DateTimeInput(props: DateTimeInputProps) {
 				format="24h"
 				label={props.label ? ' ' : undefined}
 				leftSection={<IconClock size={20} />}
-				onChange={setTimePickerValue}
+				onChange={value => handleInputChange(dateInputValue, value)}
 				popoverProps={{ withinPortal: false }}
 				readOnly={props.readOnly}
-				value={timePickerValue}
+				value={timePickerValue ?? ''}
 				withSeconds={props.withSeconds}
 				presets={[
 					{ label: 'Manhã', values: ['04:00:00', '09:00:00', '12:00:00'] },
@@ -199,7 +202,7 @@ export function DateTimeInput(props: DateTimeInputProps) {
 					// Therefore, we replace the TimePicker's rightSection
 					// with the Input.ClearButton to ensure consistency across all inputs.
 					props.clearable && timePickerValue !== ''
-						? <Input.ClearButton onClick={() => setTimePickerValue('')} />
+						? <Input.ClearButton onClick={() => handleInputChange(dateInputValue, '')} />
 						: undefined
 				}
 				withDropdown

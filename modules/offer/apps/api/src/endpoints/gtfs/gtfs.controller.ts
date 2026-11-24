@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import AdmZip from 'adm-zip';
 import Papa from 'papaparse';
 
@@ -307,17 +306,9 @@ export class GtfsController {
 				};
 			});
 
-			return reply.send({
-				data: gtfsFinal,
-				error: null,
-				statusCode: HTTP_STATUS.OK,
-			});
+			return sendSuccessApiResponse(reply, gtfsFinal);
 		} catch (error) {
-			return reply.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).send({
-				data: null,
-				error: error instanceof Error ? error.message : 'Failed to parse GTFS file',
-				statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-			});
+			return sendErrorApiResponse(reply, { error: error instanceof Error ? error.message : 'Failed to parse GTFS file', status_code: '500' });
 		}
 
 		//

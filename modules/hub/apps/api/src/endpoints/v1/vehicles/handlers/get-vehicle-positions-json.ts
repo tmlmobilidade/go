@@ -1,39 +1,23 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
-import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
+import { oldestCacheTimestamp, readAgencyCache } from '@/utils/agency-cache.js';
+import { getOrganization } from '@/utils/organization.js';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
-import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
-/**
- * Retrieves the vehicle positions JSON data from the cache.
- * @param request The request object.
- * @param reply The reply object.
- */
+/** Return organization-scoped published data. */
 export async function getVehiclePositionsJsonHandler(request: FastifyRequest, reply: FastifyReply<HubV1ApiVehiclePosition[]>) {
 	//
 
 	//
-	// Get the published positions from the cache
+	// Retrieve the published data
 
-	const cachedData = await cacheDb.getNew<HubV1ApiVehiclePosition[]>('hub:v1:realtime:vehicles:positions:json');
-
-	reply.header('access-control-allow-origin', '*');
-
-	if (!cachedData?.data) {
-		Logger.error({ message: '[hub/v1/realtime:getVehiclePositionsJsonHandler()] No cached data found for vehicles positions' });
-		return sendErrorApiResponse(reply, {
-			error: 'No cached data found for vehicles positions',
-			max_age: '30s',
-			status_code: '404',
-		});
-	}
+	const { agency_ids: agencyIds } = getOrganization(request);
+	const entries = await readAgencyCache<HubV1ApiVehiclePosition[]>(agencyIds, `realtime:vehicles:positions:json`);
+	const data = entries.flatMap(entry => entry.data);
 
 	//
-	// Return the cached positions with their generation timestamp
+	// Return the merged data
 
-	return sendSuccessApiResponse(reply, cachedData.data, {
-		generated_at: cachedData.timestamp,
-		max_age: '3s',
-	});
+	return sendSuccessApiResponse(reply, data, { generated_at: oldestCacheTimestamp(entries), max_age: '3s' });
 }

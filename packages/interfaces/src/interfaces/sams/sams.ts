@@ -4,15 +4,14 @@ import { MongoCollectionClass } from '@/common/mongo-collection.js';
 import { type CreateSamDto, CreateSamSchema, type Sam, type UpdateSamDto, UpdateSamSchema } from '@tmlmobilidade/go-types-operation';
 import { asyncSingletonProxy } from '@tmlmobilidade/utils';
 import { IndexDescription } from 'mongodb';
-import { z } from 'zod';
 
 /* * */
 
 class SamsClass extends MongoCollectionClass<Sam, CreateSamDto, UpdateSamDto> {
 	private static _instance: SamsClass;
 
-	protected override createSchema: z.ZodSchema = CreateSamSchema;
-	protected override updateSchema: z.ZodSchema = UpdateSamSchema;
+	protected override createSchema = CreateSamSchema;
+	protected override updateSchema = UpdateSamSchema;
 
 	private constructor() {
 		super();

@@ -5,7 +5,6 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { useSearch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
-import { useTypologiesAgenciesData } from '../shared/use-typologies-agencies-data';
 import { useTypologiesData } from '../shared/use-typologies-data';
 import { useTypologiesListFilterAgencies } from './filters/TypologiesListFilterAgencies/use-typologies-list-filter-agencies';
 import { useTypologiesListFilterSearch } from './filters/TypologiesListFilterSearch/use-typologies-list-filter-search';
@@ -35,10 +34,8 @@ export function useTypologiesListData(): UseTypologiesListDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error: typologiesError, isLoading: typologiesLoading, isValidating, mutate, timestamp } = useTypologiesData();
-	const { error: agenciesError, isLoading: agenciesLoading } = useTypologiesAgenciesData();
-	const error = typologiesError ?? agenciesError;
-	const isLoading = typologiesLoading || agenciesLoading;
+	const { data, error, isLoading, isValidating, mutate, timestamp } = useTypologiesData();
+	const agenciesAvailable = !agencyFilter.error && !agencyFilter.isLoading;
 
 	//
 	// C. Transform data
@@ -47,11 +44,11 @@ export function useTypologiesListData(): UseTypologiesListDataReturnType {
 	const filtered = useMemo(() => {
 		return matches
 			.filter((item) => {
-				const matchesAgencies = item.agency_ids.some(id => agencyFilter.value.includes(id));
-				return matchesAgencies;
+				if (!agenciesAvailable || !agencyFilter.isActive) return true;
+				return item.agency_ids.some(id => agencyFilter.value.includes(id));
 			})
 			.sort((a, b) => b.created_at - a.created_at);
-	}, [matches, agencyFilter.value]);
+	}, [matches, agenciesAvailable, agencyFilter.isActive, agencyFilter.value]);
 
 	//
 	// D. Return data

@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/go-types-core';
 
@@ -16,7 +15,7 @@ export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUs
 	// Validate the request body against the UpdateUserDto schema
 	const validatedUserData = UpdateUserSchema.safeParse(request.body);
 	if (!validatedUserData.success) {
-		throw new HttpException(HTTP_STATUS.BAD_REQUEST, 'Invalid user data', validatedUserData.error.errors);
+		return sendErrorApiResponse(reply, { error: validatedUserData.error, status_code: '400' });
 	}
 
 	// Remove password field if not provided to avoid
@@ -25,5 +24,5 @@ export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUs
 	// Update the user in the database
 	const updateResult = await goDb.core.users.updateById(request.params.id, validatedUserData.data);
 	// Send the updated user data back in the response
-	reply.send({ data: updateResult, error: null, statusCode: HTTP_STATUS.OK });
+	return sendSuccessApiResponse(reply, updateResult);
 }

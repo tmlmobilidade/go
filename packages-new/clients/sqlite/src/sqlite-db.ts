@@ -125,6 +125,10 @@ export class SQLiteTableInstance<T> {
 		//
 		// Prepare insert statement
 
+		this.prepareInsertStatement();
+	}
+
+	private prepareInsertStatement(): void {
 		const placeholders = this.columns.map(() => '?').join(', ');
 		const insertSQL = `INSERT INTO ${this.tableName} (${this.columns.map(c => `"${c.name.replaceAll('"', '""')}"`).join(', ')}) VALUES (${placeholders})`;
 		this.insertStatement = this.databaseInstance.prepare(insertSQL);
@@ -222,6 +226,16 @@ export class SQLiteTableInstance<T> {
 	}
 
 	/**
+	 * Refresh the writer after columns are added to the existing SQLite table.
+	 */
+	refreshColumns(): void {
+		this.flush();
+		const tableName = this.tableName.replaceAll('"', '""');
+		this.columns = this.databaseInstance.prepare(`PRAGMA table_info("${tableName}")`).all() as SQLiteColumn<T>[];
+		this.prepareInsertStatement();
+	}
+
+	/**
 	 * Iterator to go through all rows in the table.
 	 */
 	stream(whereClause = '', params: (boolean | number | string)[] = []): Readable {
@@ -229,15 +243,9 @@ export class SQLiteTableInstance<T> {
 		const iterator = this.databaseInstance
 			.prepare(`SELECT * FROM ${this.tableName} ${whereClause}`)
 			.iterate(...params);
-		// Return a Readable stream in object mode
-		return new Readable({
-			objectMode: true,
-			read() {
-				const next = iterator.next();
-				if (next.done) this.push(null); // end of stream
-				else this.push(next.value as T);
-			},
-		});
+		// Readable.from closes the iterator when a consumer exits early,
+		// releasing the active SQLite query before database cleanup.
+		return Readable.from(iterator, { objectMode: true });
 	}
 
 	/**

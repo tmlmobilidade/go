@@ -4,7 +4,7 @@ import { populateLine } from '@/utils/lines.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
-import { type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
+import { LineSchema, type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
 /**
@@ -19,7 +19,7 @@ export async function updateLineHandler(request: FastifyRequest<{ Body: UpdateLi
 	const validatedLine = UpdateLineSchema.safeParse(request.body);
 
 	if (!validatedLine.success) {
-		return sendErrorApiResponse(reply, { error: validatedLine.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedLine.error, status_code: '400' });
 	}
 
 	//
@@ -78,6 +78,22 @@ export async function updateLineHandler(request: FastifyRequest<{ Body: UpdateLi
 
 	if (lineData.is_locked) {
 		return sendErrorApiResponse(reply, { error: 'Cannot update a locked line. Unlock it first.', status_code: '409' });
+	}
+
+	//
+	// Validate the resulting typology, including when agency ownership changes.
+
+	const typologyId = LineSchema.shape.typology.safeParse(validatedLine.data.typology ?? lineData.typology);
+
+	if (!typologyId.success) {
+		return sendErrorApiResponse(reply, { error: typologyId.error, status_code: '400' });
+	}
+
+	const typology = await goDb.offer.typologies.findById(typologyId.data);
+	const agencyId = validatedLine.data.agency_id ?? lineData.agency_id;
+
+	if (!typology?.agency_ids.includes(agencyId)) {
+		return sendErrorApiResponse(reply, { error: 'Select an existing typology for this agency', status_code: '400' });
 	}
 
 	//

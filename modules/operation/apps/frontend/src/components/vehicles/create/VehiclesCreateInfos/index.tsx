@@ -1,9 +1,8 @@
 'use client';
 
-import { useVehiclesAgenciesData } from '@/components/vehicles/shared/use-vehicles-agencies-data';
 import { CreateVehicleSchema, VehicleEmissionValues, VehiclePropulsionValues, VehicleTypeValues } from '@tmlmobilidade/go-types-operation';
 import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
-import { Checkbox, DateInput, NumberInput, Section, Select, Spacer, StandardFormController, TextInput } from '@tmlmobilidade/ui';
+import { Checkbox, DateInput, NumberInput, Section, Select, Spacer, StandardFormController, TextInput, useAgenciesData } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useVehiclesCreateFormContext } from '../VehiclesCreateForm.context';
@@ -43,7 +42,7 @@ export function VehiclesCreateInfos() {
 
 	const { capabilities, form } = useVehiclesCreateFormContext();
 
-	const { options: agencyOptions } = useVehiclesAgenciesData();
+	const { options: agencyOptions } = useAgenciesData();
 
 	//
 	// B. Render components

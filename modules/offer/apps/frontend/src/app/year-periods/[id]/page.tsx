@@ -1,5 +1,4 @@
-/* * */
-
+import { PeriodDatesEditorContextProvider } from '@/components/year-periods/date-management/PeriodDatesEditor.context';
 import { PeriodsDetail } from '@/components/year-periods/detail/PeriodsDetail';
 import { PeriodsDetailFormContextProvider } from '@/components/year-periods/detail/PeriodsDetailForm.context';
 
@@ -7,8 +6,10 @@ import { PeriodsDetailFormContextProvider } from '@/components/year-periods/deta
 
 export default async function Page() {
 	return (
-		<PeriodsDetailFormContextProvider>
-			<PeriodsDetail />
-		</PeriodsDetailFormContextProvider>
+		<PeriodDatesEditorContextProvider>
+			<PeriodsDetailFormContextProvider>
+				<PeriodsDetail />
+			</PeriodsDetailFormContextProvider>
+		</PeriodDatesEditorContextProvider>
 	);
 }

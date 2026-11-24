@@ -6,6 +6,7 @@ import { filterPermissionResourceValues } from '@tmlmobilidade/go-types-permissi
 import { CsvWriter } from '@tmlmobilidade/writers';
 
 import { exportGtfsV29 } from './main.js';
+import { getStopsLocationFilter } from './utils/get-stops-location-filter.js';
 
 /**
  * Exports a GTFS feed.
@@ -53,6 +54,7 @@ export async function extractOfferGtfsV29(context: ExtractionTaskContext, extrac
 		numeric_calendar_codes: validatedProperties.numeric_calendar_codes,
 		stop_sequence_start: validatedProperties.stop_sequence_start,
 		stops_export_all: validatedProperties.stops_export_all,
+		stops_location_filter: getStopsLocationFilter(userPermissions),
 		version: new Date().toISOString().replace(/[-:T]/g, '').slice(0, 13),
 		workdir: context.output_path,
 		writers: {

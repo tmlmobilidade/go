@@ -53,3 +53,13 @@ test('global access applies to current and replacement agencies for each action'
 	const userPermissions = (['create', 'update', 'lock', 'delete'] as const).map(action => permission(action, [PermissionCatalog.ALLOW_ALL_FLAG]));
 	assert.deepEqual(getPeriodsPermissions({ currentAgencyIds: ['A', 'B'], selectedAgencyIds: ['C'], userPermissions }), { create: true, delete: true, edit: true, lock: true, update: true });
 });
+
+test('a shared four-operator period is read-only until the user can update every operator', () => {
+	const agencies = ['A1', 'A2', 'A3', 'A4'];
+	const partial = getPeriodsPermissions({ currentAgencyIds: agencies, selectedAgencyIds: agencies, userPermissions: [permission('update', ['A1'])] });
+	assert.equal(partial.edit, false);
+	assert.equal(partial.update, false);
+	const complete = getPeriodsPermissions({ currentAgencyIds: agencies, selectedAgencyIds: agencies, userPermissions: [permission('update', agencies)] });
+	assert.equal(complete.edit, true);
+	assert.equal(complete.update, true);
+});

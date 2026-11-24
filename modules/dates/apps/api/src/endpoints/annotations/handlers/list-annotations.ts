@@ -1,6 +1,6 @@
 /* * */
 
-import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { type Filter } from '@tmlmobilidade/go-clients-mongo';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type Annotation } from '@tmlmobilidade/go-types-dates';
@@ -15,39 +15,23 @@ export async function listAnnotationsHandler(request: FastifyRequest, reply: Fas
 	//
 
 	//
-	// Get the resource permissions for annotations for the current user.
+	// Unassigned annotations are visible to every authenticated user. For assigned
+	// annotations, exclude any record containing an agency the user cannot read.
 
-	const userAnnotationPermissions = PermissionCatalog.get(request.permissions, PermissionCatalog.all.annotations.scope, PermissionCatalog.all.annotations.actions.read);
+	const access = PermissionCatalog.getPermissionResourceAccess<string>({
+		checks: [{ action: PermissionCatalog.all.annotations.actions.read, scope: PermissionCatalog.all.annotations.scope }],
+		permissions: request.permissions,
+		resource_key: 'agency_ids',
+	});
 
-	//
-	// If no permission found, deny access
-
-	if (!userAnnotationPermissions) {
-		return sendErrorApiResponse(reply, {
-			error: 'You are not authorized to read annotations',
-			status_code: '403',
-		});
-	}
-
-	//
-	// Build database query filters based on user permissions
-
-	const queryFilters: Filter<Annotation> = {};
-
-	//
-	// If agency IDs are specified in resources and do not include the ALLOW_ALL_FLAG,
-	// filter annotations by those agency IDs.
-
-	if ('resources' in userAnnotationPermissions && 'agency_ids' in userAnnotationPermissions.resources) {
-		if (!userAnnotationPermissions.resources['agency_ids'].includes(PermissionCatalog.ALLOW_ALL_FLAG)) {
-			queryFilters.agency_ids = { $in: userAnnotationPermissions.resources['agency_ids'] };
-		}
-	}
+	const queryFilters: Filter<Annotation> = access.allowAll ? {} : {
+		agency_ids: { $not: { $elemMatch: { $nin: access.values } } },
+	};
 
 	//
 	// Fetch annotations based on query filters
 
-	const allAnnotations = await goDb.dates.annotations.findMany(queryFilters);
+	const allAnnotations = await goDb.dates.annotations.findMany(queryFilters, { sort: [['dates', -1], ['created_at', -1], ['_id', 1]] });
 
 	return sendSuccessApiResponse(reply, allAnnotations);
 

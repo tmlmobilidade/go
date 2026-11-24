@@ -27,7 +27,8 @@ export function ChangePasswordForm() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
+	const locale = i18n.resolvedLanguage ?? i18n.language;
 
 	const [tokenValue] = useQueryState('token');
 	const [emailValue] = useQueryState('email');
@@ -48,12 +49,12 @@ export function ChangePasswordForm() {
 		}
 		if (passwordValue !== confirmPasswordValue) {
 			errors.push({
-				message: 'Passwords do not match',
+				message: translateValidationMessage('custom.password.mismatch', {}, locale),
 				valid: false,
 			});
 		}
 		return errors;
-	}, [passwordValue, confirmPasswordValue]);
+	}, [passwordValue, confirmPasswordValue, locale]);
 
 	const isDisabled = useMemo(() => {
 		return validationErrors.some(error => !error.valid);

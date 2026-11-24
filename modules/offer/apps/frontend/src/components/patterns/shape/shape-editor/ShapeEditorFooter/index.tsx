@@ -4,10 +4,11 @@
 
 import { IconArrowBackUp, IconArrowForwardUp, IconDeviceFloppy, IconRoute } from '@tabler/icons-react';
 import { Button, IconButton, Spacer, Toolbar } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
-import { useStopsEditorContext } from '../ShapeEditor.context';
+import { useShapeEditorContext } from '../ShapeEditor.context';
 
 /* * */
 
@@ -17,7 +18,8 @@ export function ShapeEditorFooter() {
 	//
 	// A. Setup variables
 
-	const stopsEditorContext = useStopsEditorContext();
+	const shapeEditorContext = useShapeEditorContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -29,39 +31,41 @@ export function ShapeEditorFooter() {
 		<div className={styles.container}>
 			<Toolbar>
 				<Button
+					disabled={!shapeEditorContext.flags.canRecalculate}
 					icon={<IconRoute />}
-					label="Recalcular percurso"
-					onClick={() => void stopsEditorContext.actions.convertShapeToEditable()}
+					label={t('default:patterns.shapeEditor.recalculate')}
+					onClick={shapeEditorContext.actions.requestRecalculation}
 				/>
 
 				<IconButton
 					icon={<IconArrowBackUp size={18} />}
-					isDisabled={!stopsEditorContext.flags.canUndo}
-					onClick={() => stopsEditorContext.actions.undo()}
-					tooltip="Desfazer"
+					isDisabled={!shapeEditorContext.flags.canUndo}
+					onClick={() => shapeEditorContext.actions.undo()}
+					tooltip={t('default:patterns.shapeEditor.undo')}
 					variant="primary"
 				/>
 
 				<IconButton
 					icon={<IconArrowForwardUp size={18} />}
-					isDisabled={!stopsEditorContext.flags.canRedo}
-					onClick={() => stopsEditorContext.actions.redo()}
-					tooltip="Refazer"
+					isDisabled={!shapeEditorContext.flags.canRedo}
+					onClick={() => shapeEditorContext.actions.redo()}
+					tooltip={t('default:patterns.shapeEditor.redo')}
 					variant="primary"
 				/>
 
 				<Spacer />
 
 				<Button
-					label="Cancelar"
-					onClick={() => stopsEditorContext.actions.cancel()}
+					label={t('default:patterns.shapeEditor.cancel')}
+					onClick={() => shapeEditorContext.actions.cancel()}
 					variant="danger"
 				/>
 
 				<Button
+					disabled={!shapeEditorContext.flags.canSubmit}
 					icon={<IconDeviceFloppy />}
-					label="Guardar"
-					onClick={() => stopsEditorContext.actions.submit()}
+					label={t('default:patterns.shapeEditor.apply')}
+					onClick={() => shapeEditorContext.actions.submit()}
 				/>
 			</Toolbar>
 		</div>

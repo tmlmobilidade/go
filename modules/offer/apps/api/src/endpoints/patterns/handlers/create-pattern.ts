@@ -3,7 +3,8 @@
 import { authorizePatternAccess } from '@/utils/pattern-access.js';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type CreatePatternDto, CreatePatternSchema, type Pattern, type StopsParameter } from '@tmlmobilidade/go-types-offer';
+import { withSimplifiedPatternShape } from '@tmlmobilidade/go-offer-pckg-utils';
+import { type CreatePatternDto, CreatePatternSchema, type Pattern, PatternPathParametersSchema, type StopsParameter } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 /**
@@ -17,7 +18,7 @@ export async function createPatternHandler(request: FastifyRequest<{ Body: Creat
 
 	const validatedPattern = CreatePatternSchema.safeParse(request.body);
 	if (!validatedPattern.success) {
-		return sendErrorApiResponse(reply, { error: validatedPattern.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: validatedPattern.error, status_code: '400' });
 	}
 
 	//
@@ -31,13 +32,16 @@ export async function createPatternHandler(request: FastifyRequest<{ Body: Creat
 	}
 
 	//
-	// Create the new pattern, always seeding an empty default parameters entry
+	// Create the new pattern, seeding default parameters for each supplied path occurrence
 
 	const defaultParameter: StopsParameter = {
 		_id: generateRandomString({ length: 5 }),
 		kind: 'default',
-		path: [],
+		path: (validatedPattern.data.path ?? []).map(item => ({ avg_speed: 0, dwell_time: 30, stop_id: item.stop_id })),
 	};
+
+	const pathParameters = PatternPathParametersSchema.safeParse({ parameters: [defaultParameter], path: validatedPattern.data.path });
+	if (!pathParameters.success) return sendErrorApiResponse(reply, { error: pathParameters.error, status_code: '400' });
 
 	const newPattern = await goDb.offer.patterns.insertOne({
 		...validatedPattern.data,
@@ -45,6 +49,7 @@ export async function createPatternHandler(request: FastifyRequest<{ Body: Creat
 		created_by: request.me._id,
 		is_locked: false,
 		parameters: [defaultParameter],
+		shape: validatedPattern.data.shape ? withSimplifiedPatternShape(validatedPattern.data.shape) : validatedPattern.data.shape,
 		updated_by: request.me._id,
 	});
 

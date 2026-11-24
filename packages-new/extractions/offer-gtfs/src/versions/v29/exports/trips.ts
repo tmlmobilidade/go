@@ -1,9 +1,12 @@
 import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { createV29PeriodResolver } from '@/versions/v29/utils/period-mapping.js';
 import { type ServiceId, type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
-import { buildOperationalDateRange, buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, Dates, getActivePeriodId, getTimepointsRemovedByEventRestriction, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap, yyyymmddToKey } from '@tmlmobilidade/dates';
-import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { DayPeriod, type Event, type HHMM, hhmm, type Holiday, type IsoWeekday, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
-import { type OperationalDate } from '@tmlmobilidade/go-types-shared';
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
+import { type GtfsStrictV29Period, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { DayPeriod, type Event, type HHMM, hhmm, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type IsoWeekday, type OperationalDateInt, toCalendarDate } from '@tmlmobilidade/go-types-shared';
+import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
+import { buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, getActivePeriodIds, getTimepointsRemovedByEventRestriction, type OfferSchedulingTranslator, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap } from '@tmlmobilidade/go-utils-offer';
 
 /* * */
 
@@ -14,14 +17,15 @@ function isEventSpecificManual(rule: ScheduleRule): rule is ManualRule {
 type ScheduleContributionMode = 'exclude' | 'include';
 
 interface RuleTimepointSchedule {
-	dates: Set<OperationalDate>
+	dates: Set<OperationalDateInt>
+	effectivePeriodsByDate?: Map<OperationalDateInt, readonly string[]>
 	mode: ScheduleContributionMode
 	rule: ScheduleRule
 	timepoint: HHMM
 }
 
 interface ResolvedTripRow {
-	dates: Set<OperationalDate>
+	dates: Set<OperationalDateInt>
 	ruleToken: string
 	serviceId: ServiceId
 	timepoint: HHMM
@@ -41,7 +45,8 @@ export interface TripSchedule {
 function addScheduleDate(
 	schedules: Map<string, RuleTimepointSchedule>,
 	args: {
-		date: OperationalDate
+		date: OperationalDateInt
+		effectivePeriodIds?: readonly string[]
 		mode: ScheduleContributionMode
 		rule: ScheduleRule
 		timepoint: HHMM
@@ -51,14 +56,19 @@ function addScheduleDate(
 
 	if (!schedules.has(scheduleKey)) {
 		schedules.set(scheduleKey, {
-			dates: new Set<OperationalDate>(),
+			dates: new Set<OperationalDateInt>(),
 			mode: args.mode,
 			rule: args.rule,
 			timepoint: args.timepoint,
 		});
 	}
 
-	schedules.get(scheduleKey)?.dates.add(args.date);
+	const schedule = schedules.get(scheduleKey);
+	schedule?.dates.add(args.date);
+	if (schedule && args.effectivePeriodIds?.length) {
+		schedule.effectivePeriodsByDate ??= new Map();
+		schedule.effectivePeriodsByDate.set(args.date, args.effectivePeriodIds);
+	}
 }
 
 function buildTimepointSchedules(
@@ -72,11 +82,7 @@ function buildTimepointSchedules(
 	const schedules = new Map<string, RuleTimepointSchedule>();
 	const rulesById = new Map(allRules.map(rule => [rule._id, rule]));
 
-	let currentDate = startDate;
-
-	while (currentDate.unix_milliseconds <= endDate.unix_milliseconds) {
-		const operationalDate = currentDate.operational_date;
-
+	for (const operationalDate of buildOperationalDateRange(startDate.js_date, endDate.js_date)) {
 		// 1) Resolve which rules are active on this date.
 		const appliedRules = getAppliedRulesForDate(
 			operationalDate,
@@ -106,15 +112,13 @@ function buildTimepointSchedules(
 			appliedRules,
 			activeIncludeTimepoints,
 		);
-
-		currentDate = currentDate.plus({ days: 1 });
 	}
 
 	return schedules;
 }
 
 function getAppliedRulesForDate(
-	operationalDate: OperationalDate,
+	operationalDate: OperationalDateInt,
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
@@ -136,7 +140,7 @@ function getAppliedRulesForDate(
 
 function collectIncludeTimepointsForDate(
 	schedules: Map<string, RuleTimepointSchedule>,
-	operationalDate: OperationalDate,
+	operationalDate: OperationalDateInt,
 	allRules: ScheduleRule[],
 	periods: YearPeriod[],
 	holidays: Holiday[],
@@ -158,6 +162,7 @@ function collectIncludeTimepointsForDate(
 
 			addScheduleDate(schedules, {
 				date: operationalDate,
+				effectivePeriodIds: contribution.effectivePeriodIds,
 				mode: 'include',
 				rule: contribution.rule,
 				timepoint: contribution.timepoint,
@@ -187,7 +192,7 @@ function collectIncludeTimepointsForDate(
 
 function collectExcludeTimepointsForDate(
 	schedules: Map<string, RuleTimepointSchedule>,
-	operationalDate: OperationalDate,
+	operationalDate: OperationalDateInt,
 	appliedRules: ScheduleRule[],
 	activeIncludeTimepoints: Set<HHMM>,
 ) {
@@ -317,7 +322,7 @@ export function mergeSubsetIncludeSchedules(schedules: Map<string, RuleTimepoint
 }
 
 interface PendingTripRow {
-	dates: Set<OperationalDate>
+	dates: Set<OperationalDateInt>
 	includeSchedule: RuleTimepointSchedule
 	isOffRow: boolean
 	overlappingExcludeSchedules: RuleTimepointSchedule[]
@@ -335,7 +340,7 @@ function dedupePlainRowsOneTripPerDate(plainRows: PendingTripRow[]): PendingTrip
 		return (aManual._id ?? '').localeCompare(bManual._id ?? '');
 	});
 
-	const datesClaimed = new Set<OperationalDate>();
+	const datesClaimed = new Set<OperationalDateInt>();
 	const deduped: PendingTripRow[] = [];
 
 	for (const row of sorted) {
@@ -365,19 +370,26 @@ function resolveTripRows(
 	schedules: Map<string, RuleTimepointSchedule>,
 	serviceRegistry: ServiceRegistry,
 	{
+		agencyId,
 		events,
 		exportDates,
 		holidays,
+		locale,
 		periods,
+		t,
 	}: {
+		agencyId: string
 		events: Event[]
-		exportDates: readonly OperationalDate[]
+		exportDates: readonly OperationalDateInt[]
 		holidays: Holiday[]
+		locale: string
 		periods: YearPeriod[]
+		t: OfferSchedulingTranslator
 	},
 ): ResolvedTripRow[] {
 	const canonicalCache: CanonicalDateCache = new Map();
 	const registryOptions = { events, holidays, periods };
+	const resolvePeriod = createV29PeriodResolver(agencyId, periods);
 	const groupedByTimepoint = groupSchedulesByTimepoint(schedules);
 	const resolvedRows: ResolvedTripRow[] = [];
 
@@ -439,7 +451,7 @@ function resolveTripRows(
 		// timepoint (e.g. ESC_DU + ALL_DU-OFF-DIA_CARN on school weekdays).
 		const plainRows = dedupePlainRowsOneTripPerDate(pendingRows.filter(row => !row.isOffRow));
 		const offRows = pendingRows.filter(row => row.isOffRow);
-		const datesClaimedByPlainRows = new Set<OperationalDate>();
+		const datesClaimedByPlainRows = new Set<OperationalDateInt>();
 
 		for (const row of plainRows) {
 			for (const date of row.dates) {
@@ -454,18 +466,31 @@ function resolveTripRows(
 
 			if (resultingDates.size === 0) continue;
 
-			const includeRuleName = buildRuleSummaryGtfs(row.includeSchedule.rule, { events, periods });
+			const includeRuleName = buildRuleSummaryGtfs(row.includeSchedule.rule, { events, locale, periods, t });
 			const excludeRuleNames = [...new Set(
-				row.overlappingExcludeSchedules.map(s => buildRuleSummaryGtfs(s.rule, { events, periods })),
+				row.overlappingExcludeSchedules.map(s => buildRuleSummaryGtfs(s.rule, { events, locale, periods, t })),
 			)].sort();
 
 			const ruleToken = excludeRuleNames.length > 0
 				? `${includeRuleName}-OFF-${excludeRuleNames.join('-')}`
 				: includeRuleName;
 
-			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates);
+			const periodIds = 'year_period_ids' in row.includeSchedule.rule ? row.includeSchedule.rule.year_period_ids : [];
+			const periodOverrides = new Map<OperationalDateInt, GtfsStrictV29Period>();
+			for (const [date, effectivePeriodIds] of row.includeSchedule.effectivePeriodsByDate ?? []) {
+				if (!resultingDates.has(date)) continue;
+				const effectivePeriod = resolvePeriod(date, effectivePeriodIds);
+				let ordinaryPeriod: GtfsStrictV29Period | undefined;
+				try {
+					ordinaryPeriod = resolvePeriod(date, periodIds);
+				} catch {
+					// An explicit replacement can select a period outside the date's ordinary calendar.
+				}
+				if (effectivePeriod !== ordinaryPeriod) periodOverrides.set(date, effectivePeriod);
+			}
+			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates, agencyId, periodIds, periodOverrides);
 			const resolvedRuleToken = serviceRegistry.resolveRuleToken(ruleToken, hashServiceId);
-			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates);
+			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates, agencyId, periodIds, periodOverrides);
 
 			resolvedRows.push({
 				dates: resultingDates,
@@ -483,7 +508,7 @@ function resolveTripRows(
  * Collect weekdays and active year periods from a date set.
  */
 function collectDateMetadata(
-	dates: Set<OperationalDate>,
+	dates: Set<OperationalDateInt>,
 	periods: YearPeriod[],
 	holidays: Holiday[],
 ): {
@@ -494,10 +519,9 @@ function collectDateMetadata(
 	const periodIdsSet = new Set<string>();
 
 	for (const date of dates) {
-		weekdaysSet.add(calendarWeekday(yyyymmddToKey(date), holidays));
+		weekdaysSet.add(calendarWeekday(toCalendarDate(date), holidays));
 
-		const yearPeriodId = getActivePeriodId(date, periods);
-		if (yearPeriodId) {
+		for (const yearPeriodId of getActivePeriodIds(date, periods)) {
 			periodIdsSet.add(yearPeriodId);
 		}
 	}
@@ -519,6 +543,9 @@ export function debugResolvePatternTripRows(
 	startDate: Dates,
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
+	locale: string,
+	t: OfferSchedulingTranslator,
+	agencyId: string,
 ): ResolvedTripRow[] {
 	const allRules = resolvePatternRules(patternData, events);
 	const schedules = buildTimepointSchedules(allRules, periods, holidays, events, startDate, endDate);
@@ -528,10 +555,13 @@ export function debugResolvePatternTripRows(
 
 	const exportDates = buildOperationalDateRange(startDate.js_date, endDate.js_date);
 	return resolveTripRows(schedules, serviceRegistry, {
+		agencyId,
 		events,
 		exportDates,
 		holidays,
+		locale,
 		periods,
+		t,
 	});
 }
 
@@ -549,6 +579,9 @@ export async function exportTripsForPattern(
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
 	exportConfig: GtfsV29ExportConfig,
+	locale: string,
+	t: OfferSchedulingTranslator,
+	agencyId: string,
 ): Promise<TripSchedule[]> {
 	try {
 		const allRules = resolvePatternRules(patternData, events);
@@ -576,10 +609,13 @@ export async function exportTripsForPattern(
 
 		// Step 2: Resolve final trip rows from canonical calendars + OFF excludes.
 		const resolvedTripRows = resolveTripRows(schedules, serviceRegistry, {
+			agencyId,
 			events,
 			exportDates,
 			holidays,
+			locale,
 			periods,
+			t,
 		});
 
 		if (resolvedTripRows.length === 0) {

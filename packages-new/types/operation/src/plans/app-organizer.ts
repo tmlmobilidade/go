@@ -11,6 +11,6 @@ export const PlanAppOrganizerSchema = z.object({
 	metadata_hash: z.string().nullable().default(null),
 	status: ProcessingStatusSchema.default('waiting'),
 	timestamp: UnixMillisecondsSchema.nullable().default(null),
-}).default({});
+}).prefault({});
 
 export type PlanAppOrganizer = z.infer<typeof PlanAppOrganizerSchema>;

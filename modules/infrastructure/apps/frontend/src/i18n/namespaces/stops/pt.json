@@ -118,6 +118,13 @@
 			},
 			"not_available": "N/A"
 		},
+		"StopsDetailPatternsMenu": {
+			"error": "Não foi possível carregar os percursos associados.",
+			"loading": "A carregar percursos associados…",
+			"no_patterns": "Sem percursos associados",
+			"patterns": "Percursos associados",
+			"view_patterns": "Ver percursos associados"
+		},
 		"StopsDetailSectionFlagItem": {
 			"fields": {
 				"agency_ids": {
@@ -257,6 +264,10 @@
 					"label": "Operador",
 					"placeholder": "Selecione um ou mais operadores"
 				},
+				"coordinates": {
+					"description": "Latitude, longitude herdadas do filtro da lista. Raio fixo de 100 m.",
+					"label": "Coordenadas"
+				},
 				"lifecycle_statuses": {
 					"label": "Estado",
 					"placeholder": "Selecione um ou mais estados"
@@ -295,6 +306,10 @@
 				"agency_ids": {
 					"label": "Operador",
 					"placeholder": "Todos os operadores"
+				},
+				"coordinates": {
+					"description": "Latitude, longitude herdadas do filtro da lista. Raio fixo de 100 m.",
+					"label": "Coordenadas"
 				},
 				"lifecycle_statuses": {
 					"label": "Estado",
@@ -348,6 +363,12 @@
 				"subway": "Metro",
 				"train": "Comboio"
 			}
+		},
+		"StopsListFilterCoordinates": {
+			"description": "Latitude, longitude em graus decimais. Raio fixo de 100 m.",
+			"invalid": "Coordenadas inválidas. Use latitude (-90 a 90), longitude (-180 a 180), separadas por vírgula.",
+			"label": "Coordenadas",
+			"placeholder": "Ex.: 38.7223, -9.1393"
 		},
 		"StopsListFilterFacilities": {
 			"label": "Serviços",

@@ -23,7 +23,7 @@ export async function createYearPeriodHandler(request: FastifyRequest<{ Body: Cr
 
 	if (!validatedYearPeriod.success) {
 		return sendErrorApiResponse(reply, {
-			error: validatedYearPeriod.error.message,
+			error: validatedYearPeriod.error,
 			status_code: '400',
 		});
 	}

@@ -17,7 +17,9 @@ export async function listAgenciesHandler(request: FastifyRequest<{ Body: GtfsVa
 	//
 	// Validate the filters
 
-	const validatedFilters = GtfsValidationsAgencyRequestSchema.parse(request.body);
+	const validatedFiltersResult = GtfsValidationsAgencyRequestSchema.safeParse(request.body);
+	if (!validatedFiltersResult.success) return sendErrorApiResponse(reply, { error: validatedFiltersResult.error, status_code: '400' });
+	const validatedFilters = validatedFiltersResult.data;
 
 	//
 	// Get the agency IDs from the permissions

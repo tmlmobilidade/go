@@ -2,23 +2,30 @@
 /* CONTAINER */
 
 .container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  overflow: hidden;
-  padding: var(--size-spacing-md);
-  background-color: var(--color-system-background-100);
-  border: 1px solid var(--color-system-border-100);
-  border-radius: var(--size-spacing-xs);
-  transition: box-shadow 200ms ease, background-color 200ms ease;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	overflow: hidden;
+	background-color: var(--color-system-background-100);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--size-spacing-xs);
 }
 
-/* * */
-/* TIMES COUNT */
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+	width: 100%;
+	padding: var(--size-spacing-md);
+	background-color: var(--color-system-background-200);
+	border-bottom: 1px solid var(--color-system-border-100);
+}
 
-.timesCount {
-  color: var(--color-system-text-200);
-  font-size: var(--size-spacing-md);
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-sm);
+	width: 100%;
+	padding: var(--size-spacing-sm) var(--size-spacing-md);
 }

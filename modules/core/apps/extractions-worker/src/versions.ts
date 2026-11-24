@@ -1,16 +1,22 @@
 /* * */
 
+import { extractDatesAnnotationsV1 } from '@tmlmobilidade/go-extractions-dates-annotations';
 import { extractInfrastructureNodesV1, extractInfrastructureStopsV1 } from '@tmlmobilidade/go-extractions-infrastructure-stops';
 import { extractOfferGtfsV29 } from '@tmlmobilidade/go-extractions-offer-gtfs';
+import { extractOperationAlertsV1 } from '@tmlmobilidade/go-extractions-operation-alerts';
+import { operationPostersV1Extraction } from '@tmlmobilidade/go-extractions-operation-posters';
 import { operationRidesV1Extraction, operationRidesV2Extraction, operationRidesV3Extraction } from '@tmlmobilidade/go-extractions-operation-rides';
 import { type Extraction, type ExtractionTaskContext, type ExtractionTaskResult } from '@tmlmobilidade/go-types-extractions';
 
 /* * */
 
 export const VERSIONS_MAP: Record<Extraction['version'], (context: ExtractionTaskContext, extraction: Extraction) => Promise<ExtractionTaskResult>> = {
+	'dates-annotations-v1': extractDatesAnnotationsV1,
 	'infrastructure-nodes-v1': extractInfrastructureNodesV1,
 	'infrastructure-stops-v1': extractInfrastructureStopsV1,
 	'offer-gtfs-v29': extractOfferGtfsV29,
+	'operation-alerts-v1': extractOperationAlertsV1,
+	'operation-posters-v1': operationPostersV1Extraction,
 	'operation-rides-v1': operationRidesV1Extraction,
 	'operation-rides-v2': operationRidesV2Extraction,
 	'operation-rides-v3': operationRidesV3Extraction,

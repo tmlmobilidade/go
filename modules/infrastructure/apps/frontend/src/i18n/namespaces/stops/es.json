@@ -118,6 +118,13 @@
 			},
 			"not_available": "N/A"
 		},
+		"StopsDetailPatternsMenu": {
+			"error": "No se pudieron cargar los recorridos asociados.",
+			"loading": "Cargando recorridos asociados…",
+			"no_patterns": "Sin recorridos asociados",
+			"patterns": "Recorridos asociados",
+			"view_patterns": "Ver recorridos asociados"
+		},
 		"StopsDetailSectionFlagItem": {
 			"fields": {
 				"agency_ids": {
@@ -257,6 +264,10 @@
 					"label": "Operador",
 					"placeholder": "Sin filtro"
 				},
+				"coordinates": {
+					"description": "Latitud, longitud heredadas del filtro de la lista. Radio fijo de 100 m.",
+					"label": "Coordenadas"
+				},
 				"location_neighbourhood_ids": {
 					"label": "Localidad",
 					"placeholder": "Sin filtro"
@@ -291,6 +302,10 @@
 				"agency_ids": {
 					"label": "Operador",
 					"placeholder": "Sin filtro"
+				},
+				"coordinates": {
+					"description": "Latitud, longitud heredadas del filtro de la lista. Radio fijo de 100 m.",
+					"label": "Coordenadas"
 				},
 				"location_neighbourhood_ids": {
 					"label": "Localidad",
@@ -340,6 +355,12 @@
 				"subway": "Metro",
 				"train": "Tren"
 			}
+		},
+		"StopsListFilterCoordinates": {
+			"description": "Latitud, longitud en grados decimales. Radio fijo de 100 m.",
+			"invalid": "Coordenadas no válidas. Use latitud (-90 a 90), longitud (-180 a 180), separadas por coma.",
+			"label": "Coordenadas",
+			"placeholder": "Ej.: 38.7223, -9.1393"
 		},
 		"StopsListFilterFacilities": {
 			"label": "Servicios",

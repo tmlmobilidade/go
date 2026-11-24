@@ -1,7 +1,6 @@
 'use client';
 
 import { MantineProvider, MantineProviderProps } from '@mantine/core';
-import { DatesProvider, type DatesProviderSettings } from '@mantine/dates';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -12,6 +11,7 @@ import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/L
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { LoadingSection } from '../../loaders';
 import { themeData } from '../../styles/theme';
+import { LocalizedDatesProvider } from '../LocalizedDatesProvider';
 
 /* * */
 
@@ -49,12 +49,6 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 		revalidateOnFocus: true,
 	};
 
-	const mantineDatesSettings: Partial<DatesProviderSettings> = {
-		firstDayOfWeek: 1,
-		locale: 'pt',
-		weekendDays: [6, 0],
-	};
-
 	//
 	// B. Render components
 
@@ -72,12 +66,12 @@ export function BaseProvider({ children, i18n, theme, version }: PropsWithChildr
 							<SWRConfig value={swrSettings}>
 								<LocaleContextProvider i18n={i18n}>
 									<MantineProvider defaultColorScheme="auto" theme={theme ?? themeData}>
-										<DatesProvider settings={mantineDatesSettings}>
+										<LocalizedDatesProvider>
 											<ModalsProvider>
 												<Notifications position="bottom-right" />
 												{children}
 											</ModalsProvider>
-										</DatesProvider>
+										</LocalizedDatesProvider>
 									</MantineProvider>
 								</LocaleContextProvider>
 							</SWRConfig>

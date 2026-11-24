@@ -22,9 +22,12 @@ export function PeriodsListFilterAgency() {
 	return (
 		<ListFilter
 			active={filter.isActive}
-			label={t('default:periods.fields.agency_ids.label')}
+			disabled={filter.isLoading || !!filter.error}
+			isLoading={filter.isLoading}
+			label={t('shared:components.calendar.agencies')}
 			onChange={filter.set}
 			options={filter.options}
+			isMultiple
 			withToggleAll
 		/>
 	);

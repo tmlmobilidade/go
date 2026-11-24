@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type RideAcceptance } from '@tmlmobilidade/go-types-operation';
 
@@ -14,12 +13,8 @@ export async function getRideAcceptance(request: FastifyRequest<{ Params: { id: 
 	const rideAcceptanceData = await goDb.operation.rideAcceptances.findById(request.params.id);
 
 	if (!rideAcceptanceData) {
-		throw new HttpException(HTTP_STATUS.NOT_FOUND, 'Ride acceptance not found.');
+		return sendErrorApiResponse(reply, { error: 'Ride acceptance not found.', status_code: '404' });
 	}
 
-	return reply.send({
-		data: rideAcceptanceData,
-		error: null,
-		statusCode: HTTP_STATUS.OK,
-	});
+	return sendSuccessApiResponse(reply, rideAcceptanceData);
 }

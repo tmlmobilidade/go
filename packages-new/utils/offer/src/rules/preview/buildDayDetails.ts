@@ -1,0 +1,138 @@
+import { type Holiday } from '@tmlmobilidade/go-types-dates';
+import { type Event, HHMM, type ScheduleRule, timeToMinutes, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { type CalendarDate } from '@tmlmobilidade/go-types-shared';
+import { calendarKey, Dates, datesFromCalendarKey, eachCalendarDay } from '@tmlmobilidade/go-utils-dates';
+
+import { computeActiveRules } from '../calculation/index.js';
+import { DayRuleDetail, DayScheduleDetail } from './types.js';
+
+function buildDayScheduleDetail(
+	key: CalendarDate,
+	allRules: ScheduleRule[],
+	periods: YearPeriod[],
+	holidays: Holiday[],
+	events?: Event[],
+): DayScheduleDetail {
+	const date = datesFromCalendarKey(key);
+	const { appliedRuleIds, timepoints: finalTimePoints } = computeActiveRules(date.operational_date_int, allRules, periods, holidays, { events });
+
+	const appliedRules = appliedRuleIds
+		.map(id => allRules.find(r => r._id === id))
+		.filter((r): r is ScheduleRule => !!r);
+
+	const includeRules: DayRuleDetail[] = [];
+	const excludeRules: DayRuleDetail[] = [];
+	const replacementRules: DayRuleDetail[] = [];
+	const excludedTimePoints = new Map<HHMM, ScheduleRule>();
+
+	// Collect all timepoints from include rules (before exclusions)
+	const allIncludeTimePoints = new Set<HHMM>();
+
+	for (const rule of appliedRules) {
+		const isReplacement = rule.kind === 'event_replacement';
+		const isExclude = (rule.kind === 'manual' && rule.operating_mode === 'exclude') || rule.kind === 'event_restriction';
+
+		const detail: DayRuleDetail = {
+			allTimePoints: rule.timepoints || [],
+			rule,
+			type: isReplacement ? 'replacement' : isExclude ? 'exclude' : 'include',
+		};
+
+		if (isReplacement) {
+			replacementRules.push(detail);
+		} else if (isExclude) {
+			excludeRules.push(detail);
+
+			// For manual exclude rules, add their timepoints to excludedTimePoints
+			if (rule.kind === 'manual' && rule.operating_mode === 'exclude') {
+				for (const tp of rule?.timepoints ?? []) {
+					excludedTimePoints.set(tp, rule);
+				}
+			}
+		} else {
+			includeRules.push(detail);
+			// Collect all include timepoints for later comparison
+			for (const tp of rule.timepoints || []) {
+				allIncludeTimePoints.add(tp);
+			}
+		}
+	}
+
+	// For event restrictions, find which timepoints were actually removed
+	const finalTimePointsSet = new Set(finalTimePoints);
+	for (const rule of excludeRules) {
+		if (rule.rule.kind === 'event_restriction') {
+			const restriction = rule.rule;
+
+			// Find timepoints that were in includes but not in final (i.e., were removed)
+			for (const tp of allIncludeTimePoints) {
+				if (!finalTimePointsSet.has(tp)) {
+					// This timepoint was removed - check if it's due to this restriction
+					if (restriction.all_day) {
+						// All day restriction removes everything
+						excludedTimePoints.set(tp, rule.rule);
+					} else if (restriction.start_time && restriction.end_time) {
+						// Check if timepoint falls within the restriction window
+						if (isTimeInRange(tp, restriction.start_time, restriction.end_time)) {
+							excludedTimePoints.set(tp, rule.rule);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return {
+		excludedTimePoints,
+		excludeRules,
+		finalTimePoints,
+		includeRules,
+		replacementRules,
+	};
+}
+
+/**
+ * Helper to check if a time falls within a range (inclusive start, exclusive end)
+ */
+function isTimeInRange(time: HHMM, start: HHMM, end: HHMM): boolean {
+	const timeMinutes = timeToMinutes(time);
+	const startMinutes = timeToMinutes(start);
+	const endMinutes = timeToMinutes(end);
+
+	return timeMinutes >= startMinutes && timeMinutes < endMinutes;
+}
+
+/**
+ * Build display details for an inclusive range of civil service dates.
+ * Date keys remain stable across daylight-saving changes; UI language does not
+ * change membership. Callers supply agency-scoped rules, Periods, Holidays and Events.
+ * Only days with active timepoints or applied rules are included.
+ */
+export function buildAffectedDaysDetails(
+	startDate: Dates,
+	endDate: Dates,
+	allRules: ScheduleRule[],
+	periods: YearPeriod[],
+	holidays: Holiday[],
+	options?: {
+		events?: Event[]
+	},
+): Map<CalendarDate, DayScheduleDetail> {
+	const affectedDays = new Map<CalendarDate, DayScheduleDetail>();
+
+	for (const key of eachCalendarDay(calendarKey(startDate), calendarKey(endDate))) {
+		const dayDetails = buildDayScheduleDetail(key, allRules, periods, holidays, options?.events);
+
+		// Only include days that are "affected" (have active timepoints or applied rules)
+		if (
+			dayDetails.finalTimePoints.length > 0
+			|| dayDetails.includeRules.length > 0
+			|| dayDetails.excludeRules.length > 0
+			|| dayDetails.replacementRules.length > 0
+		) {
+			affectedDays.set(key, dayDetails);
+		}
+	}
+
+	return affectedDays;
+}

@@ -1,0 +1,11 @@
+{
+	"detail": {
+		"EventsDetailPatternsMenu": {
+			"error": "Não foi possível carregar os percursos associados.",
+			"loading": "A carregar percursos associados…",
+			"no_patterns": "Sem patterns associados",
+			"patterns": "Patterns associados",
+			"view_patterns": "Ver patterns associados"
+		}
+	}
+}

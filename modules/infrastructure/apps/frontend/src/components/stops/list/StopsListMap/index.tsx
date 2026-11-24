@@ -2,10 +2,14 @@
 
 import { useStopsListData } from '@/components/stops/list/use-stops-list-data';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { keepUrlParams, MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapView, Pane } from '@tmlmobilidade/ui';
+import { keepUrlParams, MapOverlayMultipleStops, type MapOverlayMultipleStopsDataProps, MapOverlayPolygon, MapView, Pane } from '@tmlmobilidade/ui';
+import { circle, featureCollection } from '@turf/turf';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+
+import { STOPS_COORDINATES_RADIUS_METERS } from '../filters/StopsListFilterCoordinates/coordinates';
+import { useStopsListFilterCoordinates } from '../filters/StopsListFilterCoordinates/use-stops-list-filter-coordinates';
 
 /* * */
 
@@ -18,9 +22,17 @@ export function StopsListMap() {
 	const router = useRouter();
 
 	const { data } = useStopsListData();
+	const { coordinates } = useStopsListFilterCoordinates();
 
 	//
 	// B. Transform data
+
+	// The boundary depends on the centre, so it also appears when no stops match.
+	const coordinateBoundaryData = useMemo(() => {
+		if (!coordinates) return null;
+		const coordinateBoundary = circle(coordinates, STOPS_COORDINATES_RADIUS_METERS, { steps: 128, units: 'meters' });
+		return featureCollection([{ ...coordinateBoundary, properties: { id: 'coordinate-boundary' } }]);
+	}, [coordinates]);
 
 	const mapData = useMemo<FeatureCollection<Point, MapOverlayMultipleStopsDataProps>>(() => {
 		const baseFeatureCollection: FeatureCollection<Point, MapOverlayMultipleStopsDataProps> = {
@@ -56,6 +68,14 @@ export function StopsListMap() {
 	return (
 		<Pane>
 			<MapView id="stops-list">
+				{coordinateBoundaryData && (
+					<MapOverlayPolygon
+						color="#1971c2"
+						data={coordinateBoundaryData}
+						fillOpacity={0.05}
+						id="stops-coordinate-boundary"
+					/>
+				)}
 				<MapOverlayMultipleStops
 					data={mapData}
 					id="stops-list"

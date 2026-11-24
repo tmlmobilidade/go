@@ -1,6 +1,7 @@
 'use client';
 
 import { useStopsListFilterAgency } from '@/components/stops/list/filters/StopsListFilterAgency/use-stops-list-filter-agency';
+import { useStopsListFilterCoordinates } from '@/components/stops/list/filters/StopsListFilterCoordinates/use-stops-list-filter-coordinates';
 import { useStopsListFilterLifecycleStatus } from '@/components/stops/list/filters/StopsListFilterLifecycleStatus/use-stops-list-filter-lifecycle-status';
 import { useStopsListFilterLocationPrimary } from '@/components/stops/list/filters/StopsListFilterLocationPrimary/use-stops-list-filter-location-primary';
 import { useStopsListFilterLocationSecondary } from '@/components/stops/list/filters/StopsListFilterLocationSecondary/use-stops-list-filter-location-secondary';
@@ -35,6 +36,7 @@ export function StopsExtractV1FormContextProvider({ children }: PropsWithChildre
 	const { mutate } = useExtractionsListData();
 
 	const filterAgency = useStopsListFilterAgency();
+	const { coordinates } = useStopsListFilterCoordinates();
 	const filterLifecycleStatus = useStopsListFilterLifecycleStatus();
 	const filterLocationPrimary = useStopsListFilterLocationPrimary();
 	const filterLocationSecondary = useStopsListFilterLocationSecondary();
@@ -46,12 +48,13 @@ export function StopsExtractV1FormContextProvider({ children }: PropsWithChildre
 	const initialProperties = useMemo((): InfrastructureStopsV1ExtractionProperties | null => {
 		return {
 			agency_ids: filterAgency.value,
+			coordinates: coordinates ?? undefined,
 			lifecycle_statuses: filterLifecycleStatus.value,
 			location_primary_ids: filterLocationPrimary.isActive ? filterLocationPrimary.value : undefined,
 			location_secondary_ids: filterLocationSecondary.isActive ? filterLocationSecondary.value : undefined,
 			location_tertiary_ids: filterLocationTertiary.isActive ? filterLocationTertiary.value : undefined,
 		};
-	}, [filterAgency.value, filterLifecycleStatus.value, filterLocationPrimary.isActive, filterLocationPrimary.value, filterLocationSecondary.isActive, filterLocationSecondary.value, filterLocationTertiary.isActive, filterLocationTertiary.value]);
+	}, [coordinates, filterAgency.value, filterLifecycleStatus.value, filterLocationPrimary.isActive, filterLocationPrimary.value, filterLocationSecondary.isActive, filterLocationSecondary.value, filterLocationTertiary.isActive, filterLocationTertiary.value]);
 
 	const { form, isDirty, isValid, unblock } = useStandardForm<InfrastructureStopsV1ExtractionProperties, typeof InfrastructureStopsV1ExtractionPropertiesSchema>({
 		apiData: initialProperties,

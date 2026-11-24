@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { TransportTypeSchema } from './transport-type.js';
@@ -24,7 +24,7 @@ export const interchangeModeOptions = [
 export const LineSchema = BaseDocumentSchema.extend({
 	agency_id: z.string().min(1),
 	code: z.string().trim().min(1).max(10),
-	interchange: z.nativeEnum(INTERCHANGE_MODE).default(INTERCHANGE_MODE.NONE),
+	interchange: z.enum(INTERCHANGE_MODE).default(INTERCHANGE_MODE.NONE),
 	is_circular_line: z.boolean().default(false),
 	is_locked: z.boolean().default(false),
 	is_school_line: z.boolean().default(false),
@@ -32,7 +32,7 @@ export const LineSchema = BaseDocumentSchema.extend({
 	onboard_fare_ids: z.array(z.string()).nullable().default([]),
 	prepaid_fare_id: z.string().nullable().default(null),
 	transport_type: TransportTypeSchema.default('bus'),
-	typology: z.string().nullable().default(null),
+	typology: z.string().trim().min(1),
 });
 
 /* * */
@@ -46,7 +46,7 @@ export const CreateLineSchema = LineSchema.omit({
 	updated_by: true,
 });
 
-export const UpdateLineSchema = CreateLineSchema.partial();
+export const UpdateLineSchema = partialWithoutDefaults(CreateLineSchema);
 
 /* * */
 

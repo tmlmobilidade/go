@@ -9,7 +9,11 @@ import { z } from 'zod';
 export const OrganizationsListItemSchema = OrganizationSchema
 	.pick({
 		_id: true,
+		agency_ids: true,
+		geojson: true,
 		long_name: true,
+		open_data: true,
+		organization_type: true,
 		short_name: true,
 	})
 	.transform(item => ({

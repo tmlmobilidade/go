@@ -1,0 +1,20 @@
+.meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	font-size: 13px;
+	color: var(--color-system-text-200);
+}
+
+.scope {
+	padding: 3px 8px;
+	color: var(--color-primary);
+	background-color: var(--color-background);
+	border-radius: var(--border-radius-sm);
+}
+
+.meta[data-muted='true'] .scope {
+	color: var(--color-system-text-200);
+	background-color: var(--color-system-background-300);
+}

@@ -24,6 +24,8 @@ export function EventsListFilterAgencies() {
 	return (
 		<ListFilter
 			active={agency.isActive}
+			disabled={agency.isLoading || !!agency.error}
+			isLoading={agency.isLoading}
 			label={t('default:events.list.columns.agency_ids')}
 			onChange={agency.set}
 			options={agency.options}

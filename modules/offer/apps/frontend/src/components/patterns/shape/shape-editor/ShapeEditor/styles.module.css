@@ -35,3 +35,6 @@
     flex-shrink: 0;
     border-top: 1px solid var(--color-system-background-200);
 }
+.migrationModalInner {
+	align-items: center;
+}

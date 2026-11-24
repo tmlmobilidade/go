@@ -15,7 +15,7 @@ export async function listPatternsStopsHandler(request: FastifyRequest<{ Queryst
 
 	const parsedQuery = PatternsStopSearchQuerySchema.safeParse(request.query);
 	if (!parsedQuery.success) {
-		return sendErrorApiResponse(reply, { error: parsedQuery.error.message, status_code: '400' });
+		return sendErrorApiResponse(reply, { error: parsedQuery.error, status_code: '400' });
 	}
 
 	const foundStops = await goDb.infrastructure.stops.findMany(

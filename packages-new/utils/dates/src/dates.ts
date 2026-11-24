@@ -3,7 +3,7 @@
 import { CALENDAR_DATE_FORMAT, type CalendarDate, DateFormat, OPERATIONAL_DATE_FORMAT, type OperationalDateInt, OperationalDateIntSchema, type TimezoneIdentified, type UnixMilliseconds, type UnixSeconds } from '@tmlmobilidade/go-types-shared';
 import { type DateObjectUnits, DateTime, type DateTimeUnit, type DurationObjectUnits } from 'luxon';
 
-import { DateFormatConfigMap } from './date-format.js';
+import { type DateFormatConfig, DateFormatConfigMap } from './date-format.js';
 
 /* * */
 
@@ -368,11 +368,11 @@ export class Dates {
 	 * @param format The format string (see Luxon tokens documentation)
 	 * @returns The date as a string in the specified format
 	 */
-	toLocaleString(format: DateFormat, locale?: string): string {
+	toLocaleString(format: DateFormat | DateFormatConfig, locale?: string): string {
 		if (!this.iso) throw new Error('ISO date is not set.');
 		const dateTime = DateTime.fromISO(this.iso, { setZone: true });
 		if (locale) dateTime.setLocale(locale);
-		const dateFormatConfig = DateFormatConfigMap[format];
+		const dateFormatConfig = typeof format === 'string' ? DateFormatConfigMap[format] : format;
 		if (!dateFormatConfig) throw new Error(`Invalid date format: ${format}`);
 		return dateTime.toLocaleString(dateFormatConfig, { locale: locale });
 	}

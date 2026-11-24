@@ -1,9 +1,10 @@
 'use client';
 
-import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
+import { type ApiResponse, type ApiResponseError } from '@tmlmobilidade/go-types-shared';
 import { useCallback, useRef, useState } from 'react';
 
 import { useToast } from '../hooks/toast';
+import { ApiError } from './api-error';
 
 /* * */
 
@@ -15,13 +16,13 @@ interface UseHandleActionProps<T, A = void> {
 		success_message?: string
 		success_title?: string
 	}
-	onError?: (error: Error) => void
+	onError?: (error: ApiError) => void
 	onSuccess: (response: ApiResponse<T>) => void
 }
 
 interface UseHandleActionReturnType<A> {
 	action: (requestData: A) => Promise<void>
-	isError: Error | undefined
+	isError: ApiError | undefined
 	isLoading: boolean
 }
 
@@ -36,7 +37,7 @@ export function useHandleAction<T, A = void>({ fetchFn, labels, onError, onSucce
 	// A. Setup variables
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [isError, setIsError] = useState<Error | undefined>(undefined);
+	const [isError, setIsError] = useState<ApiError | undefined>(undefined);
 
 	// Keep latest versions of all callbacks/options in refs so that `action`
 	// can be memoized without becoming stale.
@@ -58,9 +59,20 @@ export function useHandleAction<T, A = void>({ fetchFn, labels, onError, onSucce
 
 	const action = useCallback(async (requestData: A) => {
 		setIsLoading(true);
-		const response = await fetchFnRef.current(requestData);
+		setIsError(undefined);
+		let response: ApiResponse<T>;
+		try {
+			response = await fetchFnRef.current(requestData);
+		} catch (cause) {
+			const error = cause instanceof ApiError ? cause : new ApiError(cause instanceof Error ? cause.message : 'Unknown error');
+			setIsLoading(false);
+			setIsError(error);
+			useToast.error({ message: error.message, title: labelsRef.current?.error_title ?? 'Erro' });
+			onErrorRef.current?.(error);
+			return;
+		}
 		if (!response) {
-			const error = new Error('No response from server');
+			const error = new ApiError('No response from server');
 			useToast.error({ message: error.message, title: labelsRef.current?.error_title ?? 'Erro' });
 			setIsLoading(false);
 			setIsError(error);
@@ -68,16 +80,11 @@ export function useHandleAction<T, A = void>({ fetchFn, labels, onError, onSucce
 			return;
 		}
 		if (response.error) {
-			if (typeof response.error === 'string') {
-				useToast.error({ message: response.error, title: labelsRef.current?.error_title ?? 'Erro' });
-				setIsLoading(false);
-				setIsError(new Error(response.error));
-				onErrorRef.current?.(new Error(response.error));
-				return;
-			}
+			const error = new ApiError(response.error, response as ApiResponseError);
+			useToast.error({ message: error.message, title: labelsRef.current?.error_title ?? 'Erro' });
 			setIsLoading(false);
-			setIsError(new Error('Erro ao processar pedido'));
-			onErrorRef.current?.(new Error('Erro ao processar pedido'));
+			setIsError(error);
+			onErrorRef.current?.(error);
 			return;
 		}
 		setIsLoading(false);

@@ -28,7 +28,7 @@ server.register(
 			'/',
 			{ preHandler: authorizationMiddleware([
 				{ actions: [PermissionCatalog.all.typologies.actions.nav], scope: PermissionCatalog.all.typologies.scope },
-				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
+				{ actions: [PermissionCatalog.all.lines.actions.read, PermissionCatalog.all.lines.actions.create, PermissionCatalog.all.lines.actions.update], scope: PermissionCatalog.all.lines.scope },
 			]) },
 			listTypologiesHandler,
 		);

@@ -7,6 +7,7 @@ import { type PatternsStopSearchItem } from '@tmlmobilidade/go-offer-pckg-types'
 import { type Stop, type StopId } from '@tmlmobilidade/go-types-infrastructure';
 import { fetchApiData, Select, useToast } from '@tmlmobilidade/ui';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { createStopOptions } from './stop-options';
 
@@ -31,6 +32,7 @@ export function ShapeEditorStopSelect({ disabled, excludeStopIds = [], label, on
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
 	const [isLoading, setIsLoading] = useState(false);
 	const [results, setResults] = useState<PatternsStopSearchItem[]>([]);
 	const [searchValue, setSearchValue] = useState('');
@@ -86,7 +88,7 @@ export function ShapeEditorStopSelect({ disabled, excludeStopIds = [], label, on
 		setIsLoading(false);
 
 		if (response.error || !response.data) {
-			useToast.error({ message: response.error ?? 'Erro ao carregar paragem', title: 'Erro ao carregar paragem' });
+			useToast.error({ message: response.error ?? t('patterns:shape.ShapeEditorStopSelect.load_stop_error'), title: t('patterns:shape.ShapeEditorStopSelect.load_stop_error') });
 			return;
 		}
 
@@ -105,7 +107,7 @@ export function ShapeEditorStopSelect({ disabled, excludeStopIds = [], label, on
 			nothingFoundMessage={searchValue.trim().length < MIN_SEARCH_LENGTH ? 'Escreva pelo menos 2 caracteres' : 'Nenhuma paragem encontrada'}
 			onChange={stopId => void handleChange(stopId)}
 			onSearchChange={setSearchValue}
-			placeholder="Pesquisar paragem..."
+			placeholder={t('patterns:shape.ShapeEditorStopSelect.search_stop')}
 			searchValue={searchValue}
 			value={value ? String(value._id) : null}
 			w="100%"

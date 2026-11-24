@@ -1,4 +1,3 @@
-
 name: Update Project Progress
 
 on:
@@ -42,6 +41,39 @@ jobs:
           if [[ -z "$FIELD_ID" || -z "$OPTION_ID" ]]; then
             echo "Error: Progress field ID or option ID is missing."
             exit 1
+          fi
+
+          # On create only: leave Progress alone when it already has a value.
+          if [[ "$ACTION" == "opened" ]]; then
+            progress=$(gh api graphql \
+              -H "GraphQL-Features: issue_fields" \
+              -f query='
+                query($issueId: ID!) {
+                  node(id: $issueId) {
+                    ... on Issue {
+                      issueFieldValues(first: 20) {
+                        nodes {
+                          ... on IssueFieldSingleSelectValue {
+                            name
+                            field { ... on IssueFieldSingleSelect { id } }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }' \
+              -f issueId="$ISSUE_NODE_ID" \
+              | jq -r --arg fieldId "$FIELD_ID" '
+                [ .data.node.issueFieldValues.nodes[]?
+                  | select(.field.id == $fieldId)
+                  | .name ]
+                | first // ""
+              ')
+
+            if [[ -n "$progress" ]]; then
+              echo "Progress already set to ${progress}; leaving it unchanged."
+              exit 0
+            fi
           fi
 
           gh api graphql \

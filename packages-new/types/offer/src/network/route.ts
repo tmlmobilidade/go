@@ -1,6 +1,6 @@
 /* * */
 
-import { BaseDocumentSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, partialWithoutDefaults } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { RoutePathType, RoutePathTypeSchema } from './route-path-type.js';
@@ -32,7 +32,7 @@ export const RouteSimplifiedSchema = z.object({
 
 export const CreateRouteSchema = RouteSchema.omit({ _id: true, created_at: true, created_by: true, is_locked: true, updated_at: true, updated_by: true });
 
-export const UpdateRouteSchema = CreateRouteSchema.partial();
+export const UpdateRouteSchema = partialWithoutDefaults(CreateRouteSchema);
 
 /* * */
 

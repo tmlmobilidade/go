@@ -1,5 +1,6 @@
 /* * */
 
+import { validationParams } from '@tmlmobilidade/go-utils-validation';
 import { z } from 'zod';
 
 import { GeoJsonPositionSchema } from './position.js';
@@ -17,6 +18,6 @@ export const GeoJsonLinearRingSchema = z.array(GeoJsonPositionSchema)
 		const firstPoint = points[0];
 		const lastPoint = points[points.length - 1];
 		return firstPoint.every((value, index) => value === lastPoint[index]);
-	});
+	}, validationParams('custom.geo.linear_ring'));
 
 export type GeoJsonLinearRing = z.infer<typeof GeoJsonLinearRingSchema>;

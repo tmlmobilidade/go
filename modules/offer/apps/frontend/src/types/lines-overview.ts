@@ -1,4 +1,4 @@
-import { type PatternsShapeMapItem } from '@tmlmobilidade/go-offer-pckg-types';
+import { type OrganizationFilter, type PatternsShapeMapItem } from '@tmlmobilidade/go-offer-pckg-types';
 
 export interface PatternShapeMapFeatureProperties extends Omit<PatternsShapeMapItem, 'encoded_polyline'> {
 	id: string
@@ -17,4 +17,10 @@ export interface PatternShapeMapLineGroup {
 	line_name: string
 	line_text_color: string
 	patterns: PatternShapeMapFeatureProperties[]
+}
+
+export interface PatternShapeMapOrganizationGroup {
+	id: string
+	lines: PatternShapeMapLineGroup[]
+	organizations: OrganizationFilter[]
 }

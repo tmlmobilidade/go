@@ -1,7 +1,6 @@
+import { AnnotationSchema, CreateAnnotationSchema, UpdateAnnotationSchema } from '@tmlmobilidade/go-types-dates';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-
-import { AnnotationSchema, CreateAnnotationSchema, UpdateAnnotationSchema } from '../src/dates/annotation.js';
 
 /* * */
 

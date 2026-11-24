@@ -47,6 +47,7 @@ export function PeriodsCreateFormContextProvider({ children }: PropsWithChildren
 			dates: [],
 			is_locked: false,
 			name: '',
+			short_name: '',
 		},
 		schema: CreateYearPeriodSchema,
 	});

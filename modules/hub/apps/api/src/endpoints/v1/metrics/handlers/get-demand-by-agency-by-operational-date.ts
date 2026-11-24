@@ -1,7 +1,6 @@
 /* * */
 
-import { HTTP_STATUS } from '@tmlmobilidade/consts';
-import { type FastifyReply, type FastifyRequest } from '@tmlmobilidade/go-clients-fastify';
+import { type FastifyReply, type FastifyRequest, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { cacheDb } from '@tmlmobilidade/go-interfaces-cachedb';
 import { type DemandByAgencyByOperationalDate } from '@tmlmobilidade/go-types-performance';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
@@ -11,37 +10,24 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function getDemandByAgencyByOperationalDateHandler(request: FastifyRequest, reply: FastifyReply<DemandByAgencyByOperationalDate>) {
+export async function getDemandByAgencyByOperationalDateHandler(request: FastifyRequest, reply: FastifyReply<DemandByAgencyByOperationalDate | null>) {
 	//
 
 	//
 	// Get the published data from the cache
 
+	reply.header('access-control-allow-origin', '*');
+	reply.header('cache-control', 'public, max-age=15');
+
 	const cachedData = await cacheDb.get('hub:v1:metrics:demand:by-agency:by-operational-date:json');
 
 	if (!cachedData) {
 		Logger.error({ message: '[hub/v1/metrics:getDemandByAgencyByOperationalDateHandler()] No data in cache.' });
-		return reply
-			.header('access-control-allow-origin', '*')
-			.header('cache-control', 'public, max-age=15')
-			.code(HTTP_STATUS.NO_CONTENT)
-			.send({
-				data: [],
-				error: null,
-				status_code: HTTP_STATUS.NO_CONTENT,
-			});
+		return sendSuccessApiResponse(reply, null, { status_code: '204' });
 	}
 
 	//
 	// Return the parsed data
 
-	return reply
-		.header('access-control-allow-origin', '*')
-		.header('cache-control', 'public, max-age=15')
-		.code(HTTP_STATUS.OK)
-		.send({
-			data: JSON.parse(cachedData),
-			error: null,
-			status_code: HTTP_STATUS.OK,
-		});
+	return sendSuccessApiResponse(reply, JSON.parse(cachedData));
 }
