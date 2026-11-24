@@ -43,6 +43,7 @@ func (TripsChecks) TripWheelchairAccessibleValid(ctx context.Context, db *sql.DB
 	}
 
 	// 2. Validate supplied enum values and configured options
+	options := config.Options()
 	return fields.CheckValues(ctx, db, config, "trips", "wheelchair_accessible", description, func(value string) bool {
 		if config.Severity == types.SEVERITY_FORBIDDEN {
 			return false
@@ -53,7 +54,7 @@ func (TripsChecks) TripWheelchairAccessibleValid(ctx context.Context, db *sql.DB
 			return false
 		}
 
-		return config.Options == nil || slices.Contains(config.Options, "all_options") ||
-			slices.Contains(config.Options, strconv.Itoa(enumValue))
+		return options == nil || slices.Contains(options, "all_options") ||
+			slices.Contains(options, strconv.Itoa(enumValue))
 	})
 }

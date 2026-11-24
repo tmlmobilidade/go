@@ -80,6 +80,9 @@ func TestCLI(t *testing.T) {
 		{"null rules", []string{"-path", feed, "-rules", write("null.json", []byte("null"))}, 2, false},
 		{"empty rules", []string{"-path", feed, "-rules", write("empty.json", []byte("[]"))}, 2, false},
 		{"object rules", []string{"-path", feed, "-rules", write("object.json", []byte("{}"))}, 2, false},
+		{"legacy options", []string{"-path", feed, "-rules", write("legacy-options.json", []byte(`[{"rule_id":"agency_name_valid","severity":"error","options":["Example"]}]`))}, 2, false},
+		{"legacy compare", []string{"-path", feed, "-rules", write("legacy-compare.json", []byte(`[{"rule_id":"agency_name_valid","severity":"error","compare":[]}]`))}, 2, false},
+		{"modifier shape mismatch", []string{"-path", feed, "-rules", write("wrong-values.json", []byte(`[{"rule_id":"agency_name_valid","severity":"error","modifiers":{"type":"compare","values":["Example"]}}]`))}, 2, false},
 		{"invalid JSON", []string{"-path", feed, "-rules", write("invalid.json", []byte("["))}, 2, false},
 		{"trailing JSON", []string{"-path", feed, "-rules", write("trailing.json", append(data, []byte(" []")...))}, 2, false},
 		{"notice ID", []string{"-path", feed, "-rules", write("notice.json", []byte(`[{"rule_id":"file_validation","severity":"error"}]`))}, 2, false},
@@ -107,11 +110,11 @@ func TestCLI(t *testing.T) {
 					t.Fatalf("result file is not a JSON report: %s", data)
 				}
 				if code == 1 {
-					if report.TotalErrors != 1 || report.TotalWarnings != 0 ||
-						len(report.Messages) != 1 || report.Messages[0].RuleID != "agency_file_exists" {
+					if report.Totals.Errors != 1 || report.Totals.Warnings != 0 ||
+						len(report.Results) != 1 || report.Results[0].RuleID != "agency_file_exists" {
 						t.Fatal("expected a missing agency finding", string(data))
 					}
-				} else if report.Messages == nil || len(report.Messages) != 0 || report.TotalErrors != 0 || report.TotalWarnings != 0 {
+				} else if report.Results == nil || len(report.Results) != 0 || report.Totals.Errors != 0 || report.Totals.Warnings != 0 {
 					t.Fatal("unexpected report", string(data))
 				}
 				wantLogs := []string{"Starting GTFS validation", "Importing GTFS feed", "Saved validation result"}
@@ -240,8 +243,8 @@ func TestCLI(t *testing.T) {
 		if err := json.Unmarshal(read(t, path), &report); err != nil {
 			t.Fatal(err)
 		}
-		if report.TotalErrors != 0 || report.TotalWarnings != 1 || len(report.Messages) != 1 ||
-			report.Messages[0].RuleID != "test_rule" || report.Messages[0].Severity != types.SEVERITY_WARNING {
+		if report.Totals.Errors != 0 || report.Totals.Warnings != 1 || len(report.Results) != 1 ||
+			report.Results[0].RuleID != "test_rule" || report.Results[0].Severity != types.SEVERITY_WARNING {
 			t.Fatalf("expected one warning for the missing rule: %+v", report)
 		}
 	})

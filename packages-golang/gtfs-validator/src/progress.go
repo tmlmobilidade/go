@@ -109,11 +109,12 @@ func (p *validationProgress) finish(summary types.Summary, err error) {
 		telemetry.Logger.Error(entry)
 		return
 	}
-	entry.Message = fmt.Sprintf("Validation completed in %s (%s). Report totals: errors %d, warnings %d",
-		duration.Round(time.Microsecond), counts, summary.TotalErrors, summary.TotalWarnings)
-	entry.Attributes["total_errors"] = summary.TotalErrors
-	entry.Attributes["total_warnings"] = summary.TotalWarnings
-	if summary.TotalErrors > 0 || summary.TotalWarnings > 0 {
+	entry.Message = fmt.Sprintf("Validation completed in %s (%s). Report totals: errors %d, warnings %d, infos %d",
+		duration.Round(time.Microsecond), counts, summary.Totals.Errors, summary.Totals.Warnings, summary.Totals.Infos)
+	entry.Attributes["total_errors"] = summary.Totals.Errors
+	entry.Attributes["total_warnings"] = summary.Totals.Warnings
+	entry.Attributes["total_infos"] = summary.Totals.Infos
+	if summary.Totals.Errors > 0 || summary.Totals.Warnings > 0 {
 		telemetry.Logger.Warning(entry)
 	} else {
 		telemetry.Logger.Success(entry)

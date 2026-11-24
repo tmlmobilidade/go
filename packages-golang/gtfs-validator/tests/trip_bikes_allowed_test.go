@@ -16,13 +16,13 @@ func TestTripBikesAllowedValid(t *testing.T) {
 		name     string
 		setup    string
 		severity types.Severities
-		options  []string
+		modifier types.RuleModifier
 		wantRows []int
 	}{
 		{"enum", values, types.SEVERITY_WARNING, nil, []int{6, 7, 8, 9}},
-		{"restricted options", values, types.SEVERITY_ERROR, []string{"2"}, []int{0, 1, 6, 7, 8, 9, 10, 11}},
-		{"all options still checks enum", values, types.SEVERITY_WARNING, []string{"all_options"}, []int{6, 7, 8, 9}},
-		{"empty options", values, types.SEVERITY_WARNING, []string{}, []int{0, 1, 2, 6, 7, 8, 9, 10, 11}},
+		{"restricted options", values, types.SEVERITY_ERROR, types.RuleOptionsModifier{"2"}, []int{0, 1, 6, 7, 8, 9, 10, 11}},
+		{"all options still checks enum", values, types.SEVERITY_WARNING, types.RuleOptionsModifier{"all_options"}, []int{6, 7, 8, 9}},
+		{"empty options", values, types.SEVERITY_WARNING, types.RuleOptionsModifier{}, []int{0, 1, 2, 6, 7, 8, 9, 10, 11}},
 		{"forbidden", values, types.SEVERITY_FORBIDDEN, nil, []int{0, 1, 2, 6, 7, 8, 9, 10, 11}},
 		{"valid and blank", "CREATE TABLE trips (bikes_allowed TEXT); INSERT INTO trips VALUES ('0'), ('1'), ('2'), (NULL), ('');", types.SEVERITY_ERROR, nil, nil},
 		{"missing column", "CREATE TABLE trips (trip_id TEXT); INSERT INTO trips VALUES ('one');", types.SEVERITY_ERROR, nil, nil},
@@ -30,7 +30,7 @@ func TestTripBikesAllowedValid(t *testing.T) {
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			db := openSQLTestDatabase(t, test.setup)
-			config := types.Rule{RuleID: "trip_bikes_allowed_valid", Severity: test.severity, Options: test.options}
+			config := types.Rule{RuleID: "trip_bikes_allowed_valid", Severity: test.severity, Modifiers: test.modifier}
 			graph, err := rules.NewValidationGraph([]types.Rule{config})
 			if err != nil {
 				t.Fatal(err)

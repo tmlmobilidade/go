@@ -15,7 +15,8 @@ func (AgencyChecks) AgencyIDMatchedWithAgencyName(ctx context.Context, db *sql.D
 
 	//
 	// 1. Skip comparison when no agency ID and name pairs are configured
-	if config.Compare == nil {
+	comparisons := config.Compare()
+	if comparisons == nil {
 		return true, nil, nil
 	}
 
@@ -30,7 +31,7 @@ func (AgencyChecks) AgencyIDMatchedWithAgencyName(ctx context.Context, db *sql.D
 	err = sqlutils.ForEachRow(ctx, db, agencyTable, []string{idColumn, nameColumn}, func(row int, values map[string]string) error {
 		id := values[idColumn]
 		name := values[nameColumn]
-		if !slices.Contains(config.Compare, types.RuleComparison{Key: id, Value: name}) {
+		if !slices.Contains(comparisons, types.RuleComparison{Key: id, Value: name}) {
 			findings = append(findings, types.Finding{
 				Description: "An agency ID and name pair is outside the configured pairs.",
 				Severity:    config.Severity,

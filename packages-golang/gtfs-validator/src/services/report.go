@@ -3,102 +3,100 @@ package services
 import (
 	"encoding/json"
 	"slices"
-	"sort"
+	"strings"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
 )
 
-// MaxDetails limits sampled messages and rows per sampled message in each group.
+// MaxDetails limits sampled messages per rule and rows per sampled message.
 const MaxDetails = 100
 
-type groupKey struct {
-	rule, file, field string
-	severity          types.Severities
+type diagnosticKey struct {
+	rule, file, field, message, rows string
+	severity                         types.Severities
+}
+
+type sourceRow struct {
+	file string
+	line int
 }
 
 type group struct {
-	message types.RuleMessage
-	rows    map[int]struct{}
+	result types.RuleResult
+	rows   map[sourceRow]struct{}
 }
 
 // ReportService collects diagnostics for one validation run. Use it from one goroutine.
 type ReportService struct {
-	groups           map[groupKey]*group
-	seen             map[string]struct{}
-	errors, warnings int
+	groups map[string]*group
+	seen   map[diagnosticKey]struct{}
+	totals types.Totals
 }
 
 func NewReport() *ReportService {
-	return &ReportService{groups: make(map[groupKey]*group), seen: make(map[string]struct{})}
+	return &ReportService{groups: make(map[string]*group), seen: make(map[diagnosticKey]struct{})}
 }
 
 // Add retains distinct diagnostics, omits ignored findings, and converts row
 // indexes to CSV line numbers (the header occupies line one).
-func (s *ReportService) Add(message types.Message, description string) {
-	if message.Severity == types.SEVERITY_IGNORE {
+func (s *ReportService) Add(ruleID string, finding types.Finding) {
+	if finding.Severity == types.SEVERITY_IGNORE {
 		return
 	}
-	message.Rows = append([]int{}, message.Rows...)
-	slices.Sort(message.Rows)
-	message.Rows = slices.Compact(message.Rows)
-	for i := range message.Rows {
-		message.Rows[i] += 2
-	}
-	// SeverityResolved is deliberately excluded by the JSON tag.
-	encoded, _ := json.Marshal(message)
-	key := string(encoded)
+	rows := append([]int{}, finding.Rows...)
+	slices.Sort(rows)
+	rows = slices.Compact(rows)
+	encodedRows, _ := json.Marshal(rows)
+	key := diagnosticKey{ruleID, finding.FileName, finding.Field, finding.Message, string(encodedRows), finding.Severity}
 	if _, exists := s.seen[key]; exists {
 		return
 	}
 	s.seen[key] = struct{}{}
-	switch message.Severity {
+	severity := finding.Severity
+	switch severity {
 	case types.SEVERITY_ERROR, types.SEVERITY_FORBIDDEN:
-		s.errors++
+		s.totals.Errors++
+		severity = types.SEVERITY_ERROR
 	case types.SEVERITY_WARNING:
-		s.warnings++
+		s.totals.Warnings++
+	case types.SEVERITY_INFO:
+		s.totals.Infos++
 	}
-	k := groupKey{message.RuleID, message.FileName, message.Field, message.Severity}
-	g := s.groups[k]
+
+	g := s.groups[ruleID]
 	if g == nil {
-		g = &group{message: types.RuleMessage{
-			Messages: []types.Message{}, Field: message.Field, FileName: message.FileName,
-			Message: description, RuleID: message.RuleID, Severity: message.Severity,
-		}, rows: make(map[int]struct{})}
-		s.groups[k] = g
+		g = &group{result: types.RuleResult{
+			Description: finding.Description, Messages: []types.Message{}, RuleID: ruleID, Severity: severity,
+		}, rows: make(map[sourceRow]struct{})}
+		s.groups[ruleID] = g
 	}
-	for _, row := range message.Rows {
-		g.rows[row] = struct{}{}
+	if severity == types.SEVERITY_ERROR || (severity == types.SEVERITY_WARNING && g.result.Severity == types.SEVERITY_INFO) {
+		g.result.Severity = severity
 	}
-	if len(g.message.Messages) < MaxDetails {
-		message.Rows = message.Rows[:min(len(message.Rows), MaxDetails)]
-		g.message.Messages = append(g.message.Messages, message)
+	for i := range rows {
+		rows[i] += 2
+		g.rows[sourceRow{finding.FileName, rows[i]}] = struct{}{}
+	}
+	if len(g.result.Messages) < MaxDetails {
+		g.result.Messages = append(g.result.Messages, types.Message{
+			Message: finding.Message,
+			Rows:    rows[:min(len(rows), MaxDetails)],
+		})
 	}
 }
 
-// Summary returns an independent snapshot in stable rule/file/field/severity order.
+// Summary returns an independent snapshot in stable rule ID order.
 func (s *ReportService) Summary() types.Summary {
-	result := types.Summary{Messages: []types.RuleMessage{}, TotalErrors: s.errors, TotalWarnings: s.warnings}
+	summary := types.Summary{Results: make([]types.RuleResult, 0, len(s.groups)), Totals: s.totals}
 	for _, g := range s.groups {
-		message := g.message
-		message.TotalRows = len(g.rows)
-		message.Messages = slices.Clone(message.Messages)
-		for i := range message.Messages {
-			message.Messages[i].Rows = slices.Clone(message.Messages[i].Rows)
+		result := g.result
+		result.TotalRows = len(g.rows)
+		result.Messages = slices.Clone(result.Messages)
+		for i := range result.Messages {
+			result.Messages[i].Rows = slices.Clone(result.Messages[i].Rows)
 		}
-		result.Messages = append(result.Messages, message)
+		summary.Results = append(summary.Results, result)
 	}
-	sort.Slice(result.Messages, func(i, j int) bool {
-		a, b := result.Messages[i], result.Messages[j]
-		if a.RuleID != b.RuleID {
-			return a.RuleID < b.RuleID
-		}
-		if a.FileName != b.FileName {
-			return a.FileName < b.FileName
-		}
-		if a.Field != b.Field {
-			return a.Field < b.Field
-		}
-		return a.Severity < b.Severity
-	})
-	return result
+	slices.SortFunc(summary.Results, func(a, b types.RuleResult) int { return strings.Compare(a.RuleID, b.RuleID) })
+	return summary
 }

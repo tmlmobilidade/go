@@ -68,14 +68,14 @@ func TestIntegrationMockGTFS(t *testing.T) {
 						t.Fatalf("validation did not complete: %v", err)
 					}
 					if wantRule == "" {
-						if len(report.Messages) != 0 {
+						if len(report.Results) != 0 {
 							t.Fatalf("unexpected findings: %+v", report)
 						}
 					} else {
-						if report.TotalErrors != 1 || len(report.Messages) != 1 || report.Messages[0].RuleID != wantRule {
+						if report.Totals.Errors != 1 || len(report.Results) != 1 || report.Results[0].RuleID != wantRule {
 							t.Fatalf("expected one %s finding, got %+v", wantRule, report)
 						}
-						details := report.Messages[0].Messages
+						details := report.Results[0].Messages
 						if len(details) != 1 || !slices.Equal(details[0].Rows, wantLines) {
 							t.Fatalf("expected one finding at lines %v, got %+v", wantLines, details)
 						}

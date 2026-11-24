@@ -61,17 +61,17 @@ func TestAgencyConfiguredValuesAndDuplicateIDs(t *testing.T) {
 		RuleID: "agency_id_unique", Severity: types.SEVERITY_ERROR,
 	}, [][]int{{0, 1}})
 	checkAgencyRule(t, setup, types.Rule{
-		RuleID: "agency_id_valid", Severity: types.SEVERITY_WARNING, Options: []string{"01"},
+		RuleID: "agency_id_valid", Severity: types.SEVERITY_WARNING, Modifiers: types.RuleOptionsModifier{"01"},
 	}, [][]int{{2}})
 	checkAgencyRule(t, setup, types.Rule{
-		RuleID: "agency_name_valid", Severity: types.SEVERITY_WARNING, Options: []string{"One", "Alias for One", "No ID"},
+		RuleID: "agency_name_valid", Severity: types.SEVERITY_WARNING, Modifiers: types.RuleOptionsModifier{"One", "Alias for One", "No ID"},
 	}, [][]int{{2}})
 	checkAgencyRule(t, setup, types.Rule{
-		RuleID: "agency_name_valid", Severity: types.SEVERITY_WARNING, Options: []string{"all_options"},
+		RuleID: "agency_name_valid", Severity: types.SEVERITY_WARNING, Modifiers: types.RuleOptionsModifier{"all_options"},
 	}, nil)
 	checkAgencyRule(t, setup, types.Rule{
 		RuleID: "agency_id_matched_with_agency_name", Severity: types.SEVERITY_WARNING,
-		Compare: []types.RuleComparison{{Key: "01", Value: "One"}, {Key: "01", Value: "Alias for One"}, {Key: "", Value: "No ID"}},
+		Modifiers: types.RuleCompareModifier{{Key: "01", Value: "One"}, {Key: "01", Value: "Alias for One"}, {Key: "", Value: "No ID"}},
 	}, [][]int{{2}})
 }
 

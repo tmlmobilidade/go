@@ -43,11 +43,11 @@ func TestTripEnumRules(t *testing.T) {
 				want = append([][]int{{2}}, want...)
 			}
 			checkTripRule(t, setup, config, field, want)
-			config.Options = []string{"all_options"}
+			config.Modifiers = types.RuleOptionsModifier{"all_options"}
 			checkTripRule(t, setup, config, field, want)
-			config.Options = []string{"1"}
+			config.Modifiers = types.RuleOptionsModifier{"1"}
 			checkTripRule(t, setup, config, field, [][]int{{0}, {2}, {3}, {4}, {5}, {6}})
-			config.Options = []string{}
+			config.Modifiers = types.RuleOptionsModifier{}
 			checkTripRule(t, setup, config, field, [][]int{{0}, {1}, {2}, {3}, {4}, {5}, {6}, {9}})
 			config.Severity = types.SEVERITY_FORBIDDEN
 			checkTripRule(t, setup, config, field, [][]int{{0}, {1}, {2}, {3}, {4}, {5}, {6}, {9}})

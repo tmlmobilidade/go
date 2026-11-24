@@ -17,15 +17,16 @@ go build -ldflags=-w -o dist/gtfs-validator ./src/cli.go
 ```
 
 Provide exactly one of `-path` or `-url`. The required `-rules` file holds a nonempty
-JSON array. Each entry has a `rule_id` and `severity`. It can also supply
-`depends_on` and `options` arrays of strings and a `compare` array of
-`{"key":"…","value":"…"}` objects.
+JSON array. Each entry has a `rule_id` and `severity`, with optional
+`depends_on` and `modifiers`. A modifier has a `type` and a `values` array.
+Use `options` for strings or `compare` for `{"key":"…","value":"…"}` pairs.
 
 ```json
 [
   {"rule_id": "agency_file_exists", "severity": "error"},
   {"rule_id": "agency_email_exists", "severity": "error", "depends_on": ["agency_file_exists"]},
-  {"rule_id": "agency_email_valid", "severity": "warning", "depends_on": ["agency_file_exists"]}
+  {"rule_id": "agency_name_valid", "severity": "warning", "depends_on": ["agency_file_exists"],
+   "modifiers": {"type": "options", "values": ["Example Transit"]}}
 ]
 ```
 
@@ -36,9 +37,10 @@ multiple agencies. Configure agency field rules with `agency_file_exists` in
 `depends_on`.
 
 `agency_id_valid` and `agency_name_valid` accept all supplied values by default.
-Set `options` to allow specific values or use `all_options` to allow all values.
-`agency_id_matched_with_agency_name` uses `compare` entries whose `key` is the
-agency ID and whose `value` is the agency name.
+Use an `options` modifier to allow specific values or include `all_options` to
+allow all values. An empty options list allows no values for these rules.
+`agency_id_matched_with_agency_name` uses a `compare` modifier whose `key` is
+the agency ID and whose `value` is the agency name.
 
 `-concurrency` defaults to 1 and must be positive. SQLite uses one connection,
 so concurrent rules still serialize database queries.
@@ -53,20 +55,18 @@ include the reason and any blocking prerequisites. The CLI creates no log files.
 - `1` for a run with error findings.
 - `2` for invalid arguments or rules, or for a failure importing, validating, or writing output.
 
-The `Summary` report contains grouped `RuleMessage` objects in `messages`, plus
-`total_errors` and `total_warnings`. Each group contains detail `Message` objects,
-field, filename, description, rule ID, severity, and distinct affected row count.
-The report service in `src/services/report.go` retains at most 100 detail messages
-per group and 100 rows per detail. Totals count distinct diagnostics before sampling;
-row counts include all distinct collected rows. Zero-based input rows become CSV
-line numbers (index + 2 for the header). Findings without source rows use `rows: []`.
-A run without findings produces `messages: []`. Argument and rule configuration
-errors are written to stderr before any report is emitted.
+The report contains `results` and `totals`. Each result represents one rule and
+includes its ID, severity, description, affected row count, and diagnostic
+`messages` with text and CSV line numbers. A result retains up to 100 messages and
+100 lines per message. `total_rows` counts distinct affected rows across files
+before sampling. Zero-based input rows become CSV line numbers (index + 2 for the
+header). Findings without source rows use `rows: []`.
 
-Severities are `ignore`, `info`, `warning`, `error`, and `forbidden`. Ignored findings
-are omitted. Info findings are retained without increasing totals. Error and
-forbidden findings contribute to `total_errors`. Warnings contribute to
-`total_warnings`.
+`totals.errors`, `totals.warnings`, and `totals.infos` count distinct diagnostics
+before sampling. Configured `forbidden` findings are reported as errors, and
+ignored findings are omitted. A run without findings produces `results: []` with
+zero totals. Argument and rule configuration errors are written to stderr before
+any report is emitted.
 
 ### Execution visualization
 
@@ -115,7 +115,7 @@ report, err := validator.GtfsValidator(context.Background(), validator.Options{
     },
 })
 // A non-nil err indicates invalid inputs or an operational failure.
-// A nonzero report.TotalErrors means the rules reported error findings.
+// A nonzero report.Totals.Errors means the rules reported error findings.
 ```
 
 A zero library concurrency uses 1. The CLI configures the shared telemetry logger
@@ -156,8 +156,8 @@ lowercase. A configured rule with no implementation produces a warning when
 scheduled, regardless of its configured severity. Independent checks continue,
 and checks depending on that rule are skipped. The validator rejects invalid
 severities, duplicate rules or dependencies, missing prerequisites, and cycles
-before importing the feed. `options` and `compare` are passed through to the rule
-functions.
+before importing the feed. Rules can read typed modifier values with
+`config.Options()` or `config.Compare()`.
 
 A finding at any reported severity fails the rule and skips dependent rules.
 Independent branches continue. Ignored ordinary rules are skipped and block their

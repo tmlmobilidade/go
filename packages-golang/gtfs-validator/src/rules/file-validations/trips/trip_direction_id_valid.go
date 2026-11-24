@@ -53,6 +53,7 @@ func (TripsChecks) TripDirectionIDValid(ctx context.Context, db *sql.DB, config 
 	}
 
 	// 2. Validate supplied enum values and configured options
+	options := config.Options()
 	return fields.CheckValues(ctx, db, config, "trips", "direction_id", description, func(value string) bool {
 		if config.Severity == types.SEVERITY_FORBIDDEN {
 			return false
@@ -63,7 +64,7 @@ func (TripsChecks) TripDirectionIDValid(ctx context.Context, db *sql.DB, config 
 			return false
 		}
 
-		return config.Options == nil || slices.Contains(config.Options, "all_options") ||
-			slices.Contains(config.Options, strconv.Itoa(enumValue))
+		return options == nil || slices.Contains(options, "all_options") ||
+			slices.Contains(options, strconv.Itoa(enumValue))
 	})
 }

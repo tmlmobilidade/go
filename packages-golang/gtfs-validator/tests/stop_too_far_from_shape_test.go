@@ -32,7 +32,7 @@ func TestStopTooFarFromShape(t *testing.T) {
 	check := func(t *testing.T, setup, limit string, want []violation) {
 		t.Helper()
 		db := openSQLTestDatabase(t, schema+setup)
-		config := types.Rule{RuleID: "stop_too_far_from_shape", Severity: types.SEVERITY_WARNING, Options: []string{limit}}
+		config := types.Rule{RuleID: "stop_too_far_from_shape", Severity: types.SEVERITY_WARNING, Modifiers: types.RuleOptionsModifier{limit}}
 		graph, err := rules.NewValidationGraph([]types.Rule{config})
 		if err != nil {
 			t.Fatal(err)
@@ -128,7 +128,7 @@ func TestStopTooFarFromShape(t *testing.T) {
 
 func TestStopTooFarFromShapeInvalidDistance(t *testing.T) {
 	for _, options := range [][]string{nil, {}, {""}, {"-1"}, {"twenty"}, {"NaN"}, {"+Inf"}, {"20", "30"}} {
-		passed, findings, err := (geometry.GeometryChecks{}).StopTooFarFromShape(t.Context(), nil, types.Rule{Options: options})
+		passed, findings, err := (geometry.GeometryChecks{}).StopTooFarFromShape(t.Context(), nil, types.Rule{Modifiers: types.RuleOptionsModifier(options)})
 		if passed || len(findings) != 0 || err == nil || !strings.Contains(err.Error(), "distance") {
 			t.Errorf("options %q gave passed=%t, findings=%v, error=%v", options, passed, findings, err)
 		}

@@ -88,7 +88,7 @@ func run() int {
 		return 2
 	}
 	if err := json.Unmarshal(data, &options.Rules); err != nil {
-		telemetry.Logger.Error(fmt.Errorf("rules file must contain a JSON array: %w", err))
+		telemetry.Logger.Error(fmt.Errorf("decode rules file: %w", err))
 		return 2
 	}
 
@@ -127,7 +127,7 @@ func run() int {
 		return 2
 	}
 
-	if report.TotalErrors > 0 {
+	if report.Totals.Errors > 0 {
 		return 1
 	}
 

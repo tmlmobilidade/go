@@ -16,19 +16,23 @@ func TestReportCollection(t *testing.T) {
 		rules.SEVERITY_IGNORE, rules.SEVERITY_INFO, rules.SEVERITY_WARNING,
 		rules.SEVERITY_ERROR, rules.SEVERITY_FORBIDDEN,
 	} {
-		message := types.Message{RuleID: "rule", FileName: "agency.txt", Severity: severity, Rows: []int{2, 0, 2}, Message: "Invalid name."}
-		service.Add(message, "Invalid names.")
-		message.Rows = []int{0, 2}
-		message.SeverityResolved = true
-		service.Add(message, "Invalid names.")
+		ruleID := string(severity) + "_rule"
+		finding := types.Finding{FileName: "agency.txt", Severity: severity, Rows: []int{2, 0, 2}, Message: "Invalid name.", Description: "Invalid names."}
+		service.Add(ruleID, finding)
+		finding.Rows = []int{0, 2}
+		service.Add(ruleID, finding)
 	}
 	summary := service.Summary()
-	if summary.TotalErrors != 2 || summary.TotalWarnings != 1 || len(summary.Messages) != 4 {
+	if summary.Totals != (types.Totals{Errors: 2, Warnings: 1, Infos: 1}) || len(summary.Results) != 4 {
 		t.Fatal(summary)
 	}
-	for _, group := range summary.Messages {
-		if group.TotalRows != 2 || len(group.Messages) != 1 || !reflect.DeepEqual(group.Messages[0].Rows, []int{2, 4}) {
-			t.Fatal(group)
+	for _, result := range summary.Results {
+		if result.TotalRows != 2 || result.Description != "Invalid names." || len(result.Messages) != 1 ||
+			!reflect.DeepEqual(result.Messages[0], types.Message{Message: "Invalid name.", Rows: []int{2, 4}}) {
+			t.Fatal(result)
+		}
+		if result.RuleID == "forbidden_rule" && result.Severity != types.SEVERITY_ERROR {
+			t.Fatal(result)
 		}
 	}
 	encoded, err := json.Marshal(summary)
@@ -39,7 +43,7 @@ func TestReportCollection(t *testing.T) {
 	if err := json.Unmarshal(encoded, &fields); err != nil {
 		t.Fatal(err)
 	}
-	if len(fields) != 3 || fields["messages"] == nil || fields["total_errors"] == nil || fields["total_warnings"] == nil {
+	if len(fields) != 2 || fields["results"] == nil || fields["totals"] == nil {
 		t.Fatal(string(encoded))
 	}
 }
@@ -47,16 +51,31 @@ func TestReportCollection(t *testing.T) {
 func TestReportDetailCap(t *testing.T) {
 	service := services.NewReport()
 	for i := 0; i < services.MaxDetails+1; i++ {
-		service.Add(types.Message{RuleID: "rule", Severity: rules.SEVERITY_ERROR, Rows: []int{i}}, "Invalid names.")
+		service.Add("rule", types.Finding{Severity: rules.SEVERITY_INFO, Rows: []int{i}, Description: "Invalid names."})
 	}
 	summary := service.Summary()
-	group := summary.Messages[0]
-	if summary.TotalErrors != services.MaxDetails+1 || group.TotalRows != services.MaxDetails+1 || len(group.Messages) != services.MaxDetails {
+	result := summary.Results[0]
+	if summary.Totals.Infos != services.MaxDetails+1 || result.TotalRows != services.MaxDetails+1 || len(result.Messages) != services.MaxDetails {
 		t.Fatal(summary)
 	}
 	// Snapshots cannot mutate retained diagnostics.
-	summary.Messages[0].Messages[0].Rows[0] = 999
-	if service.Summary().Messages[0].Messages[0].Rows[0] != 2 {
+	summary.Results[0].Messages[0].Rows[0] = 999
+	if service.Summary().Results[0].Messages[0].Rows[0] != 2 {
 		t.Fatal("snapshot aliases service rows")
+	}
+}
+
+func TestReportGroupsRowsAcrossFiles(t *testing.T) {
+	service := services.NewReport()
+	finding := types.Finding{FileName: "agency.txt", Field: "agency_id", Severity: rules.SEVERITY_ERROR, Rows: []int{0}, Message: "Invalid ID."}
+	service.Add("rule", finding)
+	finding.Field = "agency_name"
+	service.Add("rule", finding)
+	finding.FileName = "routes.txt"
+	service.Add("rule", finding)
+
+	summary := service.Summary()
+	if len(summary.Results) != 1 || summary.Results[0].TotalRows != 2 || summary.Totals.Errors != 3 {
+		t.Fatal(summary)
 	}
 }

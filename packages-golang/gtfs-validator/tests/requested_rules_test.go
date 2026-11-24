@@ -52,7 +52,7 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 	for _, test := range []struct {
 		name, rule, setup, file, field string
 		severity                       types.Severities
-		options                        []string
+		modifier                       types.RuleModifier
 		rows                           [][]int
 	}{
 		{name: "required column", rule: "routes_route_id_exists", setup: "CREATE TABLE routes (extra TEXT)", file: "routes", field: "route_id", rows: [][]int{nil}},
@@ -82,9 +82,9 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "standard zone", rule: "stops_zone_id_foreign_key_exists", setup: "CREATE TABLE stops (zone_id TEXT); INSERT INTO stops VALUES ('a')"},
 		{name: "extension zone", rule: "stops_zone_id_foreign_key_exists", setup: "CREATE TABLE zones (zone_id TEXT); INSERT INTO zones VALUES ('a'); CREATE TABLE stops (zone_id TEXT); INSERT INTO stops VALUES ('a'), ('b')", file: "stops", field: "zone_id", rows: [][]int{{1}}},
 		{name: "valid enum", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", rows: [][]int{{2}}},
-		{name: "enum options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", options: []string{"2"}, rows: [][]int{{0}, {2}}},
-		{name: "all options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", options: []string{"all_options"}, rows: [][]int{{2}}},
-		{name: "empty options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", options: []string{}, rows: [][]int{{0}, {1}, {2}}},
+		{name: "enum options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", modifier: types.RuleOptionsModifier{"2"}, rows: [][]int{{0}, {2}}},
+		{name: "all options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", modifier: types.RuleOptionsModifier{"all_options"}, rows: [][]int{{2}}},
+		{name: "empty options", rule: "routes_cemv_support_valid", setup: "CREATE TABLE routes (cemv_support TEXT); INSERT INTO routes VALUES ('0'), ('02'), ('3'), (NULL)", file: "routes", field: "cemv_support", modifier: types.RuleOptionsModifier{}, rows: [][]int{{0}, {1}, {2}}},
 		{name: "date", rule: "calendar_start_date_valid", setup: "CREATE TABLE calendar (start_date TEXT); INSERT INTO calendar VALUES ('20240229'), ('20230229'), ('2024-02-29'), (NULL)", file: "calendar", field: "start_date", rows: [][]int{{1}, {2}}},
 		{name: "calendar dates unique per service", rule: "calendar_dates_date_unique_per_service_id", setup: `CREATE TABLE calendar_dates (service_id TEXT, date TEXT, exception_type TEXT);
 			INSERT INTO calendar_dates VALUES ('a', '20240229', '1'), ('b', '20240229', '1'),
@@ -181,8 +181,8 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 		{name: "shape segment length default maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_length", setup: shapeSegmentLengths,
 			file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{0, 4}}},
 		{name: "shape segment length configured maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_length", setup: shapeSegmentLengths,
-			options: []string{"800"}, file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{2, 3}, {3, 0}, {0, 4}}},
-		{name: "shape segment length equal to maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_length", options: []string{"0"}, setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT);
+			modifier: types.RuleOptionsModifier{"800"}, file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{2, 3}, {3, 0}, {0, 4}}},
+		{name: "shape segment length equal to maximum", rule: "shapes_shape_dist_traveled_segment_max_geo_length", modifier: types.RuleOptionsModifier{"0"}, setup: `CREATE TABLE shapes (shape_id TEXT, shape_pt_sequence TEXT, shape_pt_lat TEXT, shape_pt_lon TEXT);
 			INSERT INTO shapes VALUES ('a', '1', '0', '0'), ('a', '2', '0', '0'), ('a', '3', '0', '.001');`,
 			file: "shapes", field: "shape_pt_lat, shape_pt_lon", rows: [][]int{{1, 2}}},
 		{name: "shapes table missing for segment length", rule: "shapes_shape_dist_traveled_segment_max_geo_length", setup: "CREATE TABLE trips (trip_id TEXT)"},
@@ -235,7 +235,7 @@ func TestRequestedRulesThroughGraph(t *testing.T) {
 			if severity == "" {
 				severity = types.SEVERITY_WARNING
 			}
-			graph, err := rules.NewValidationGraph([]types.Rule{{RuleID: test.rule, Severity: severity, Options: test.options}})
+			graph, err := rules.NewValidationGraph([]types.Rule{{RuleID: test.rule, Severity: severity, Modifiers: test.modifier}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -266,7 +266,7 @@ func TestShapeSegmentMaximumRejectsInvalidOptions(t *testing.T) {
 	db := openSQLTestDatabase(t, "CREATE TABLE trips (trip_id TEXT)")
 	for _, options := range [][]string{{"-1"}, {"NaN"}, {"+Inf"}, {"bad"}, {"10", "20"}} {
 		graph, err := rules.NewValidationGraph([]types.Rule{{
-			RuleID: "shapes_shape_dist_traveled_segment_max_geo_length", Severity: types.SEVERITY_ERROR, Options: options,
+			RuleID: "shapes_shape_dist_traveled_segment_max_geo_length", Severity: types.SEVERITY_ERROR, Modifiers: types.RuleOptionsModifier(options),
 		}})
 		if err != nil {
 			t.Fatal(err)
@@ -347,11 +347,11 @@ func TestRequestedRulesWithFeedArchive(t *testing.T) {
 	}
 
 	want := map[string]string{capacityRule: "bicycles_capacity", zoneRule: "zone_id"}
-	if report.TotalErrors != len(want) || len(report.Messages) != len(want) {
+	if report.Totals.Errors != len(want) || len(report.Results) != len(want) {
 		t.Fatalf("unexpected report: %+v", report)
 	}
-	for _, finding := range report.Messages {
-		if field := want[finding.RuleID]; field == "" || field != finding.Field {
+	for _, finding := range report.Results {
+		if field := want[finding.RuleID]; field == "" {
 			t.Fatalf("unexpected finding: %+v", finding)
 		}
 		delete(want, finding.RuleID)

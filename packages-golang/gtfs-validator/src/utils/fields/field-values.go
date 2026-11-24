@@ -49,10 +49,11 @@ func CheckValues(ctx context.Context, db *sql.DB, config types.Rule, table, colu
 
 // CheckOptions checks supplied values against the configured options.
 func CheckOptions(ctx context.Context, db *sql.DB, config types.Rule, table, column string) (bool, []types.Finding, error) {
-	if config.Options == nil || slices.Contains(config.Options, "all_options") {
+	options := config.Options()
+	if options == nil || slices.Contains(options, "all_options") {
 		return true, nil, nil
 	}
 	return CheckValues(ctx, db, config, table, column, fmt.Sprintf("The %s field contains a value outside the configured options.", column), func(value string) bool {
-		return slices.Contains(config.Options, value)
+		return slices.Contains(options, value)
 	})
 }

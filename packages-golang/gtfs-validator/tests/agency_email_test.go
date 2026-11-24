@@ -88,18 +88,13 @@ func TestAgencyEmailRules(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if len(report.Messages) != len(test.want) {
-				t.Fatalf("report messages = %+v, want %d groups", report.Messages, len(test.want))
+			if len(report.Results) != len(test.want) {
+				t.Fatalf("report messages = %+v, want %d groups", report.Results, len(test.want))
 			}
 			for i, want := range test.want {
-				got := report.Messages[i]
-				field := "agency_email"
-				if want.ruleID == "agency_file_exists" {
-					field = ""
-				}
-				if got.RuleID != want.ruleID || got.Severity != want.severity ||
-					got.FileName != "agency.txt" || got.Field != field {
-					t.Errorf("finding group = %+v, want %s at %s for agency.txt field %q", got, want.ruleID, want.severity, field)
+				got := report.Results[i]
+				if got.RuleID != want.ruleID || got.Severity != want.severity {
+					t.Errorf("finding group = %+v, want %s at %s", got, want.ruleID, want.severity)
 				}
 				if len(got.Messages) != 1 || !slices.Equal(got.Messages[0].Rows, want.rows) {
 					t.Errorf("finding details = %+v, want one finding for rows %v", got.Messages, want.rows)

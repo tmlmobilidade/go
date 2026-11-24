@@ -13,7 +13,7 @@ func TestFieldHelpersUseRequestedTable(t *testing.T) {
 		CREATE TABLE stops (stop_name TEXT);
 		INSERT INTO stops VALUES ('Terminal'), ('Park'), (NULL);
 	`)
-	config := types.Rule{Severity: types.SEVERITY_WARNING, Options: []string{"Terminal"}}
+	config := types.Rule{Severity: types.SEVERITY_WARNING, Modifiers: types.RuleOptionsModifier{"Terminal"}}
 
 	for _, check := range []struct {
 		name string

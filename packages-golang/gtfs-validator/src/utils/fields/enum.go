@@ -13,6 +13,7 @@ import (
 
 // CheckEnum checks supplied values against the spec and configured options.
 func CheckEnum(ctx context.Context, db *sql.DB, config types.Rule, table, column string, allowed ...string) (bool, []types.Finding, error) {
+	options := config.Options()
 	description := fmt.Sprintf("The %s field must be one of %s and match the configured options.", column, strings.Join(allowed, ", "))
 	if config.Severity == types.SEVERITY_FORBIDDEN {
 		description = fmt.Sprintf("The %s field must be empty.", column)
@@ -26,6 +27,6 @@ func CheckEnum(ctx context.Context, db *sql.DB, config types.Rule, table, column
 			value = strconv.Itoa(number)
 		}
 		return slices.Contains(allowed, value) &&
-			(config.Options == nil || slices.Contains(config.Options, "all_options") || slices.Contains(config.Options, value))
+			(options == nil || slices.Contains(options, "all_options") || slices.Contains(options, value))
 	})
 }

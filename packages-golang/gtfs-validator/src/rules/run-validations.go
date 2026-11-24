@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"slices"
 	"strings"
 
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/services"
@@ -55,12 +54,10 @@ func NewValidationGraph(configs []types.Rule) (*services.DAG[*sql.DB, []Finding]
 
 		// Clone slices so later mutation of this config cannot affect the caller's
 		// original Rule (and so we can safely lowercase DependsOn in place).
-		config.DependsOn = slices.Clone(config.DependsOn)
+		config = config.Clone()
 		for i, dependency := range config.DependsOn {
 			config.DependsOn[i] = strings.ToLower(dependency)
 		}
-		config.Options = slices.Clone(config.Options)
-		config.Compare = slices.Clone(config.Compare)
 
 		// Each Task wraps one rule: ID for the graph node, Dependencies for ordering,
 		// and Run as a closure that captures this rule's config + validate function.

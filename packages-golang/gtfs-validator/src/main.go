@@ -153,14 +153,7 @@ func validate(ctx context.Context, options Options, trace *traceRecorder) (summa
 	trace.startPhase("report")
 	for _, result := range results {
 		for _, finding := range result.Value {
-			collector.Add(types.Message{
-				Rows:     finding.Rows,
-				Field:    finding.Field,
-				FileName: finding.FileName,
-				Message:  finding.Message,
-				RuleID:   result.ID,
-				Severity: finding.Severity,
-			}, finding.Description)
+			collector.Add(result.ID, finding)
 		}
 	}
 

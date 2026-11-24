@@ -40,15 +40,16 @@ func (ShapesChecks) ShapesShapeDistTraveledSegmentMaxGeoLength(ctx context.Conte
 
 	//
 	// 1. Read the maximum segment length in meters
+	options := config.Options()
 	limitMeters := 1000.0
-	if len(config.Options) > 1 {
+	if len(options) > 1 {
 		return false, nil, fmt.Errorf("shapes_shape_dist_traveled_segment_max_geo_length accepts at most one distance in meters in options")
 	}
-	if len(config.Options) == 1 {
+	if len(options) == 1 {
 		var err error
-		limitMeters, err = strconv.ParseFloat(strings.TrimSpace(config.Options[0]), 64)
+		limitMeters, err = strconv.ParseFloat(strings.TrimSpace(options[0]), 64)
 		if err != nil || math.IsNaN(limitMeters) || math.IsInf(limitMeters, 0) || limitMeters < 0 {
-			return false, nil, fmt.Errorf("maximum segment length must be finite and non-negative, got %q", config.Options[0])
+			return false, nil, fmt.Errorf("maximum segment length must be finite and non-negative, got %q", options[0])
 		}
 	}
 

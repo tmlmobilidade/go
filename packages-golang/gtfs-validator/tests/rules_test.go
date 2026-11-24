@@ -72,7 +72,7 @@ func TestConfiguredRulesAndDependencies(t *testing.T) {
 		{RuleID: "agency_name_exists", Severity: types.SEVERITY_ERROR, DependsOn: []string{"agency_file_exists"}},
 		{RuleID: "agency_file_exists", Severity: types.SEVERITY_IGNORE},
 		{RuleID: "AGENCY_EMAIL_VALID", Severity: "IGNORE"},
-		{RuleID: "trips_trip_id_unique", Severity: types.SEVERITY_INFO},
+		{RuleID: "trip_id_unique", Severity: types.SEVERITY_INFO},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -85,7 +85,7 @@ func TestConfiguredRulesAndDependencies(t *testing.T) {
 		{ID: "agency_file_exists", Status: types.Passed},
 		{ID: "agency_name_exists", Status: types.Passed},
 		{ID: "agency_name_valid", Status: types.Skipped, Reason: "prerequisite unsuccessful", BlockedBy: []string{"agency_email_valid"}},
-		{ID: "trips_trip_id_unique", Status: types.Passed},
+		{ID: "trip_id_unique", Status: types.Passed},
 	}
 	if err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("results = %+v, error = %v", got, err)

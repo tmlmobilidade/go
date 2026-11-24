@@ -43,12 +43,13 @@ func (GeometryChecks) StopTooFarFromShape(ctx context.Context, db *sql.DB, confi
 
 	//
 	// 1. Read the configured distance in meters
-	if len(config.Options) != 1 {
+	options := config.Options()
+	if len(options) != 1 {
 		return false, nil, fmt.Errorf("stop_too_far_from_shape requires exactly one distance in meters in options")
 	}
-	limitMeters, err := strconv.ParseFloat(strings.TrimSpace(config.Options[0]), 64)
+	limitMeters, err := strconv.ParseFloat(strings.TrimSpace(options[0]), 64)
 	if err != nil || math.IsNaN(limitMeters) || math.IsInf(limitMeters, 0) || limitMeters < 0 {
-		return false, nil, fmt.Errorf("stop_too_far_from_shape distance must be finite and non-negative, got %q", config.Options[0])
+		return false, nil, fmt.Errorf("stop_too_far_from_shape distance must be finite and non-negative, got %q", options[0])
 	}
 
 	// 2. Check if the tables needed to link stops to shapes exist

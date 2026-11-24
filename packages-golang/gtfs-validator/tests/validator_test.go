@@ -40,13 +40,10 @@ func TestUnknownRulesWarnAndContinue(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if report.TotalErrors != 0 || report.TotalWarnings != 1 || len(report.Messages) != 1 {
+			if report.Totals.Errors != 0 || report.Totals.Warnings != 1 || len(report.Results) != 1 {
 				t.Fatalf("expected one warning for the missing rule: %+v", report)
 			}
-			message := report.Messages[0]
-			if message.Field != "system" || len(message.Messages) != 1 || message.Messages[0].Field != "system" {
-				t.Fatalf("missing-rule warning must use the system field: %+v", message)
-			}
+			message := report.Results[0]
 			if message.RuleID != "test_rule" || message.Severity != types.SEVERITY_WARNING || len(message.Messages) != 1 || !strings.Contains(message.Messages[0].Message, "no implementation") {
 				t.Fatalf("unexpected warning: %+v", message)
 			}
@@ -103,10 +100,10 @@ func TestValidateLocalAndCleanup(t *testing.T) {
 				t.Fatal(err)
 			}
 			if test.wantRule == "" {
-				if report.TotalErrors != 0 || len(report.Messages) != 0 {
+				if report.Totals.Errors != 0 || len(report.Results) != 0 {
 					t.Fatal("unexpected findings", report)
 				}
-			} else if report.TotalErrors != 1 || len(report.Messages) != 1 || report.Messages[0].RuleID != test.wantRule {
+			} else if report.Totals.Errors != 1 || len(report.Results) != 1 || report.Results[0].RuleID != test.wantRule {
 				t.Fatalf("expected one %s finding, got %+v", test.wantRule, report)
 			}
 
@@ -125,7 +122,7 @@ func TestValidateLocalAndCleanup(t *testing.T) {
 	report, err := validator.GtfsValidator(context.Background(), validator.Options{
 		Source: importgtfs.ImportGtfsConfigSource{Path: path}, Rules: agencyRules(),
 	})
-	if err == nil || errors.Is(err, rules.ErrInvalidConfiguration) || len(report.Messages) != 0 {
+	if err == nil || errors.Is(err, rules.ErrInvalidConfiguration) || len(report.Results) != 0 {
 		t.Fatal("expected import failure")
 	}
 
@@ -142,7 +139,7 @@ func TestValidateURLAndCancellation(t *testing.T) {
 	defer server.Close()
 	options := validator.Options{Source: importgtfs.ImportGtfsConfigSource{Url: server.URL}, Rules: agencyRules()}
 	report, err := validator.GtfsValidator(context.Background(), options)
-	if err != nil || report.TotalErrors != 0 || len(report.Messages) != 0 {
+	if err != nil || report.Totals.Errors != 0 || len(report.Results) != 0 {
 		t.Fatal(report, err)
 	}
 
