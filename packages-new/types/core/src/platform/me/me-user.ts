@@ -18,6 +18,7 @@ export const MeUserSchema = UserSchema
 		preferences: true,
 		seen_changelogs: true,
 		seen_last_at: true,
+		updated_at: true,
 	});
 
 /**
