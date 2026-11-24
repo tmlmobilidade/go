@@ -31,6 +31,7 @@
 		},
 		"success": {
 			"description": "You can now use it to log in to your account.",
+			"footnote": "You will be automatically redirected to the login page within moments...",
 			"title": "Your password has been changed successfully"
 		},
 		"title": "Change password"

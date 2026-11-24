@@ -109,6 +109,7 @@ export function ChangePasswordForm() {
 				<Section gap="sm">
 					<Label size="lg">{t('unauthenticated:ChangePasswordForm.success.title')}</Label>
 					<Label>{t('unauthenticated:ChangePasswordForm.success.description')}</Label>
+					<Label variant="muted">{t('unauthenticated:ChangePasswordForm.success.footnote')}</Label>
 				</Section>
 			</Surface>
 		);

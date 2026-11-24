@@ -31,7 +31,8 @@
 		},
 		"success": {
 			"description": "Ya puede utilizarla para iniciar sesión en su cuenta.",
-			"title": "La contraseña ha sido cambiada correctamente"
+			"footnote": "Será automaticamente redirecionado para la página de inicio de sesión dentro de momentos...",
+			"title": "La contraseña ha sido cambiada con éxito"
 		},
 		"title": "Cambiar contraseña"
 	},
