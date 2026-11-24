@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { filterPermissionResourceValues, type PermissionsRegistry } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, type SelectDataItem, toAgencySelectItem, useMeUser } from '@tmlmobilidade/ui';
+import { fetchApiData, type SelectDataItem, toAgencySelectItem, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -36,7 +36,7 @@ export function useAgenciesData({ permissions }: UseAgenciesDataProps = {}): Use
 	//
 	// A. Setup variables
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 
 	//
 	// B. Fetch data
@@ -54,13 +54,13 @@ export function useAgenciesData({ permissions }: UseAgenciesDataProps = {}): Use
 		if (!permissions) return items;
 		const allowedIds = new Set(permissions.actions.flatMap(action => filterPermissionResourceValues({
 			action,
-			permissions: me?.permissions ?? [],
+			permissions: mePermissions ?? [],
 			resourceKey: 'agency_ids',
 			scope: permissions.scope,
 			values: items.map(item => item._id),
 		})));
 		return items.filter(item => allowedIds.has(item._id));
-	}, [data, error, me?.permissions, permissions]);
+	}, [data, error, mePermissions, permissions]);
 	const ids = useMemo(() => agencies.map(agency => agency._id), [agencies]);
 	const options = useMemo(() => agencies.map(toAgencySelectItem), [agencies]);
 
@@ -69,12 +69,12 @@ export function useAgenciesData({ permissions }: UseAgenciesDataProps = {}): Use
 
 	return useMemo(() => ({
 		data: agencies,
-		error: data?.error ?? error?.message ?? (permissions ? meError : null) ?? null,
+		error: data?.error ?? error?.message ?? (permissions ? mePermissionsError : null) ?? null,
 		ids,
-		isLoading: isLoading || (!!permissions && meLoading),
+		isLoading: isLoading || (!!permissions && mePermissionsLoading),
 		isValidating,
 		mutate,
 		options,
 		timestamp: data?.timestamp,
-	}), [agencies, data?.error, data?.timestamp, error, ids, isLoading, isValidating, meError, meLoading, mutate, options, permissions]);
+	}), [agencies, data?.error, data?.timestamp, error, ids, isLoading, isValidating, mePermissionsError, mePermissionsLoading, mutate, options, permissions]);
 };

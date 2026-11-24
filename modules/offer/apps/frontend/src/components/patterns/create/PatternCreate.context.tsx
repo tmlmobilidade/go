@@ -7,7 +7,7 @@ import { useRoutesDetailData } from '@/components/routes/detail/use-routes-detai
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreatePatternDto, CreatePatternSchema, type Pattern } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
@@ -30,7 +30,7 @@ export function PatternCreateContextProvider({ children, lineId, routeId }: Prop
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 	const accessRef = useRef(false);
 	const { mutate: listMutate } = useLinesListData();
 	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);
@@ -66,12 +66,12 @@ export function PatternCreateContextProvider({ children, lineId, routeId }: Prop
 	const agencyIds = line?.agency_id ? [line.agency_id] : [];
 	const hasCreatePermission = agencyIds.length > 0 && PermissionCatalog.hasPermissionResourceAll({
 		action: PermissionCatalog.all.lines.actions.create,
-		permissions: me?.permissions ?? [],
+		permissions: mePermissions ?? [],
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.lines.scope,
 		value: agencyIds,
 	});
-	const isReady = !meLoading && !meError && !lineLoading && !lineError && !!line && !line.is_locked && !routeLoading && !routeError && !!route && route.line_id === lineId && !route.is_locked;
+	const isReady = !mePermissionsLoading && !mePermissionsError && !lineLoading && !lineError && !!line && !line.is_locked && !routeLoading && !routeError && !!route && route.line_id === lineId && !route.is_locked;
 	const standardCapabilities = useStandardFormCapabilities({
 		create: { hasPermission: hasCreatePermission, isCreating },
 		form: { isDirty, isValid },

@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Fare, type UpdateFareDto, UpdateFareSchema } from '@tmlmobilidade/go-types-offer';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
@@ -33,7 +33,7 @@ export function FaresDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const router = useRouter();
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 
 	const { mutate: listMutate } = useFaresData();
 	const { fareId } = useFaresDetailFareId();
@@ -85,14 +85,14 @@ export function FaresDetailFormContextProvider({ children }: PropsWithChildren) 
 	const permissions = getFaresPermissions({
 		currentAgencyIds: fare?.agency_ids ?? [],
 		selectedAgencyIds: values.agency_ids ?? [],
-		userPermissions: me?.permissions,
+		userPermissions: mePermissions,
 	});
 
 	//
 	// E. Setup capabilities and handlers
 
 	const busy = isUpdating || isLocking || isDeleting;
-	const loading = isLoading || meLoading || !fare || !!error || !!meError;
+	const loading = isLoading || mePermissionsLoading || !fare || !!error || !!mePermissionsError;
 
 	const standardCapabilities = useStandardFormCapabilities({
 		delete: {

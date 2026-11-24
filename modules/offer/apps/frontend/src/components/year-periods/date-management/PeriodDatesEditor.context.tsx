@@ -7,7 +7,7 @@ import { createPeriodDatesDraft, getPeriodRangeDates, reducePeriodDatesDraft } f
 import { getPeriodsPermissions } from '@/components/year-periods/shared/periods-permissions';
 import { usePeriodsData } from '@/components/year-periods/shared/use-periods-data';
 import { type CalendarDate, toCalendarDate } from '@tmlmobilidade/go-types-shared';
-import { type CalendarScheduleDateRange, type CalendarScheduleSources, useCalendarScheduleData, useMeUser } from '@tmlmobilidade/ui';
+import { type CalendarScheduleDateRange, type CalendarScheduleSources, useCalendarScheduleData, useMePermissions } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
 
 /* * */
@@ -59,7 +59,7 @@ export function PeriodDatesEditorContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const { data: period, error: periodError, isLoading: periodLoading } = usePeriodsDetailData();
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 	const { data: allPeriods, error: listError, isLoading: listLoading } = usePeriodsData();
 	const calendarAgency = usePeriodsCalendarAgency();
 	const schedule = useCalendarScheduleData(null);
@@ -96,9 +96,9 @@ export function PeriodDatesEditorContextProvider({ children }: PropsWithChildren
 		};
 	}, [allPeriods, calendarAgencyIds, period?._id, schedule.sources]);
 
-	const permissions = getPeriodsPermissions({ currentAgencyIds: period?.agency_ids, selectedAgencyIds: period?.agency_ids ?? [], userPermissions: me?.permissions });
-	const isLoading = periodLoading || listLoading || meLoading || schedule.isLoading || calendarAgency.isLoading;
-	const error = periodError ?? listError ?? meError ?? calendarAgency.error ?? schedule.error?.message;
+	const permissions = getPeriodsPermissions({ currentAgencyIds: period?.agency_ids, selectedAgencyIds: period?.agency_ids ?? [], userPermissions: mePermissions });
+	const isLoading = periodLoading || listLoading || mePermissionsLoading || schedule.isLoading || calendarAgency.isLoading;
+	const error = periodError ?? listError ?? mePermissionsError ?? calendarAgency.error ?? schedule.error?.message;
 	const canEdit = !!period && !period.is_locked && permissions.edit && !isLoading && !error;
 
 	//
@@ -142,9 +142,9 @@ export function PeriodDatesEditorContextProvider({ children }: PropsWithChildren
 			has_changes: addedDates.length > 0 || removedDates.length > 0,
 			is_loading: isLoading,
 			is_locked: !!period?.is_locked,
-			is_permission_restricted: !!period && !meLoading && !meError && !permissions.edit,
+			is_permission_restricted: !!period && !mePermissionsLoading && !mePermissionsError && !permissions.edit,
 		},
-	}), [period, meLoading, meError, permissions.edit, addedDates, calendar.actions.setDate, calendar.data.date, calendarAgencyIds, canEdit, cancelSelection, draft.selectedRange, draft.selectionAction, error, isLoading, previewDates, removedDates, resetChanges, setSelectedRange, sources]);
+	}), [period, mePermissionsLoading, mePermissionsError, permissions.edit, addedDates, calendar.actions.setDate, calendar.data.date, calendarAgencyIds, canEdit, cancelSelection, draft.selectedRange, draft.selectionAction, error, isLoading, previewDates, removedDates, resetChanges, setSelectedRange, sources]);
 
 	return (
 		<PeriodDatesEditorContext.Provider value={value}>

@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine, type RoutesDetail } from '@tmlmobilidade/go-offer-pckg-types';
 import { type UpdateRouteDto, UpdateRouteSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
@@ -43,7 +43,7 @@ export function RouteDetailContextProvider({ children, lineId, routeId }: PropsW
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 	const { mutate: listMutate } = useLinesListData();
 	const { data: route, error, isLoading: dataLoading, mutate } = useRoutesDetailData(routeId);
 	const { data: line, error: lineError, isLoading: lineLoading, mutate: lineMutate } = useLinesDetailData(lineId);
@@ -96,14 +96,14 @@ export function RouteDetailContextProvider({ children, lineId, routeId }: PropsW
 
 	const permissions = PermissionCatalog.getScopePermissions({
 		actions: PermissionCatalog.all.lines.actions,
-		permissions: me?.permissions ?? [],
+		permissions: mePermissions ?? [],
 		resource: { key: 'agency_ids', requireAll: true, value: line?.agency_id ? [line.agency_id] : [] },
 		scope: PermissionCatalog.all.lines.scope,
 	});
 	const hasData = !!line && !!route && route.line_id === lineId;
 	const isLockedByLine = !!line?.is_locked;
-	const isLoading = dataLoading || meLoading || lineLoading;
-	const hasError = !!(error || meError || lineError);
+	const isLoading = dataLoading || mePermissionsLoading || lineLoading;
+	const hasError = !!(error || mePermissionsError || lineError);
 	const standardCapabilities = useStandardFormCapabilities({
 		delete: { hasPermission: permissions.delete, isDeleting },
 		form: { isDirty, isValid },
@@ -157,7 +157,7 @@ export function RouteDetailContextProvider({ children, lineId, routeId }: PropsW
 			line,
 			route,
 		},
-		error: error || meError || lineError,
+		error: error || mePermissionsError || lineError,
 		form,
 		isDirty,
 		isLockedByLine,
@@ -170,7 +170,7 @@ export function RouteDetailContextProvider({ children, lineId, routeId }: PropsW
 			isUpdating,
 		},
 		unblock,
-	}), [capabilities, handleDelete, handleLock, handleUpdate, line, route, routeId, lineError, error, meError, form, isDirty, isLockedByLine, isValid, isDeleting, isLoading, isLocking, isUpdating, unblock]);
+	}), [capabilities, handleDelete, handleLock, handleUpdate, line, route, routeId, lineError, error, mePermissionsError, form, isDirty, isLockedByLine, isValid, isDeleting, isLoading, isLocking, isUpdating, unblock]);
 
 	return (
 		<RouteDetailContext.Provider value={stateValue}>

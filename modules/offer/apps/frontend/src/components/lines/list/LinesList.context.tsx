@@ -4,7 +4,7 @@ import { useAgenciesData } from '@/components/common/use-agencies-data';
 import { type OrganizationFilter, type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type Agency } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMeUser, useSearch } from '@tmlmobilidade/ui';
+import { type SelectDataItem, useFilterStateList, type UseFilterStateListReturnType, useFilterStateText, type UseFilterStateTextReturnType, useMePermissions, useSearch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useLinesOrganizationsData } from '../shared/use-lines-organizations-data';
@@ -56,7 +56,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// A. Setup variables
 
-	const { data: me } = useMeUser();
+	const { data: mePermissions } = useMePermissions();
 	const { data: agenciesData, ids: agenciesIds, isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData();
 	const { data: organizationsData, error: organizationsError, isLoading: organizationsLoading, options: organizationsOptions } = useLinesOrganizationsData();
 
@@ -112,7 +112,7 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 			});
 	}, [searchResultsData, filteredAgencyIds]);
 
-	const canCreatePermission = PermissionCatalog.hasPermission(me?.permissions ?? [], PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.create);
+	const canCreatePermission = PermissionCatalog.hasPermission(mePermissions ?? [], PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.create);
 
 	//
 	// E. Define context value
