@@ -58,13 +58,13 @@ export const LinesListContextProvider = ({ children }: PropsWithChildren) => {
 
 	const { data: mePermissions } = useMePermissions();
 	const { data: agenciesData, ids: agenciesIds, isLoading: agenciesLoading, options: agenciesOptions } = useAgenciesData();
-	const { data: organizationsData, error: organizationsError, isLoading: organizationsLoading, options: organizationsOptions } = useLinesOrganizationsData();
+	const { data: organizationsData, error: organizationsError, ids: organizationsIds, isLoading: organizationsLoading, options: organizationsOptions } = useLinesOrganizationsData();
 
 	//
 	// B. Setup filters
 
 	const filterSearch = useFilterStateText('search');
-	const filterOrganizations = useFilterStateList('organization', [], organizationsOptions, organizationsLoading);
+	const filterOrganizations = useFilterStateList('organization', organizationsIds, organizationsOptions, organizationsLoading);
 
 	const organizationAgencyIds = useMemo(() => getLinesFilterAgencyIds(agenciesIds, organizationsData, filterOrganizations.value), [agenciesIds, organizationsData, filterOrganizations.value]);
 	const organizationAgencyOptions = useMemo(() => {
