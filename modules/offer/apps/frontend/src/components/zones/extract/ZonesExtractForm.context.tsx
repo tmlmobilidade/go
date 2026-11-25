@@ -107,5 +107,9 @@ export function ZonesExtractFormContextProvider({ children }: PropsWithChildren)
 		unblock,
 	}), [createEnabled, editEnabled, form, handleExtract, isDirty, isExtracting, isLoading, isValid, unblock]);
 
-	return <ZonesExtractFormContext.Provider value={stateValue}>{children}</ZonesExtractFormContext.Provider>;
+	return (
+		<ZonesExtractFormContext.Provider value={stateValue}>
+			{children}
+		</ZonesExtractFormContext.Provider>
+	);
 }
