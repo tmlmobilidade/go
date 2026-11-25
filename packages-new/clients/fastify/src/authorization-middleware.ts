@@ -1,7 +1,6 @@
 /* * */
 
 import { FastifyReply, type FastifyRequest } from '@/types.js';
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { authProvider } from '@tmlmobilidade/go-providers-auth';
 import { AUTH_SESSION_COOKIE_NAME, type MeUser, MeUserSchema, type Organization } from '@tmlmobilidade/go-types-core';
 import { type ActionsOf, type Permission, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
@@ -53,10 +52,11 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 		const sessionToken = request.cookies.session_token;
 
 		if (!sessionToken) {
-			return reply
-				.status(HTTP_STATUS.UNAUTHORIZED)
-				.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true })
-				.send({ data: null, error: 'Session token is missing', statusCode: HTTP_STATUS.UNAUTHORIZED });
+			reply.setCookie(AUTH_SESSION_COOKIE_NAME, '', { httpOnly: true, maxAge: 0, path: '/', sameSite: 'lax', secure: true });
+			return sendErrorApiResponse(reply, {
+				error: 'Session token is missing',
+				status_code: '401',
+			});
 		}
 
 		//
@@ -126,7 +126,10 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 
 		if (Array.isArray(scopeOrChecks)) {
 			const isAllowed = scopeOrChecks.some(check => isPermissionCheckAllowed(request.permissions, check));
-			if (!isAllowed) throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id}`);
+			if (!isAllowed) return sendErrorApiResponse(reply, {
+				error: `Insufficient permissions | User: ${request.me._id}`,
+				status_code: '403',
+			});
 			return;
 		}
 
@@ -139,7 +142,10 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 			: permissionChecks.some(Boolean); // at least one must be true
 
 		if (!isAllowed) {
-			throw new HttpException(HTTP_STATUS.FORBIDDEN, `Insufficient permissions | User: ${request.me._id} | Scope: "${scopeOrChecks}" | Actions: [${actions.join(',')}]`);
+			return sendErrorApiResponse(reply, {
+				error: `Insufficient permissions | User: ${request.me._id} | Scope: "${scopeOrChecks}" | Actions: [${actions.join(',')}]`,
+				status_code: '403',
+			});
 		}
 
 		//

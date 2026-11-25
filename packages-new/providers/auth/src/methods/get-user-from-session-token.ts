@@ -1,6 +1,5 @@
 /* * */
 
-import { HTTP_STATUS, HttpException } from '@tmlmobilidade/consts';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type User } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
@@ -11,7 +10,7 @@ import { hashAuthToken } from '../utils/hash-auth-token.js';
  * Get a user object from their session token.
  * @param sessionToken The session token to look up.
  * @returns The user associated with the session token.
- * @throws An HTTP UNAUTHORIZED error code if user or session not found.
+ * @throws An error if user or session not found.
  */
 export async function getUserFromSessionToken(sessionToken: string): Promise<User> {
 	//
@@ -24,7 +23,7 @@ export async function getUserFromSessionToken(sessionToken: string): Promise<Use
 		token: { $eq: hashAuthToken(sessionToken) },
 	});
 
-	if (!sessionData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'Session not found');
+	if (!sessionData) throw new Error('Session not found');
 
 	//
 	// Update the seen_last_at field to the current timestamp
@@ -34,7 +33,7 @@ export async function getUserFromSessionToken(sessionToken: string): Promise<Use
 		{ seen_last_at: Dates.now('utc').unix_milliseconds },
 	);
 
-	if (!updatedUserData) throw new HttpException(HTTP_STATUS.UNAUTHORIZED, 'User not found');
+	if (!updatedUserData) throw new Error('User not found');
 
 	//
 	// Remove the password hash from the returned user data
