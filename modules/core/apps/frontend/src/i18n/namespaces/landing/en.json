@@ -8,12 +8,16 @@
 		}
 	},
 	"LandingMap": {
+		"close": "Close map",
+		"explore": "Explore live map",
 		"popup": {
-			"agency": "Agency: {{value}}",
-			"route": "Line {{value}}",
-			"speed": "Speed: {{value}} km/h",
-			"status": "Status: {{value}}",
-			"vehicle": "Vehicle: {{value}}"
+			"last_position": "Last position at {value, time, medium}",
+			"speed": "{value} km/h",
+			"status": {
+				"INCOMING_AT": "Arriving at stop",
+				"IN_TRANSIT_TO": "In transit",
+				"STOPPED_AT": "At stop"
+			}
 		}
 	},
 	"LandingModules": {

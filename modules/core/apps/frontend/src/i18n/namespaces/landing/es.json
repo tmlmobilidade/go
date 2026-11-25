@@ -8,12 +8,16 @@
 		}
 	},
 	"LandingMap": {
+		"close": "Cerrar mapa",
+		"explore": "Explorar mapa en tiempo real",
 		"popup": {
-			"agency": "Operador: {{value}}",
-			"route": "Línea {{value}}",
-			"speed": "Velocidad: {{value}} km/h",
-			"status": "Estado: {{value}}",
-			"vehicle": "Vehículo: {{value}}"
+			"last_position": "Última posición a las {value, time, medium}",
+			"speed": "{value} km/h",
+			"status": {
+				"INCOMING_AT": "Llegando a la parada",
+				"IN_TRANSIT_TO": "En circulación",
+				"STOPPED_AT": "En la parada"
+			}
 		}
 	},
 	"LandingModules": {
