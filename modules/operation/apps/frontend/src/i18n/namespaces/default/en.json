@@ -125,7 +125,6 @@
 	},
 	"posterExport": {
 		"PlanPostersExtractBody": {
-			"activeDatesLabel": "Valid from",
 			"canvasProfileAutomatic": "Automatic",
 			"canvasProfileDescription": "Choose Automatic to select the model per stop, or apply a fixed model to the exported PDFs.",
 			"canvasProfileLabel": "PDF model",
