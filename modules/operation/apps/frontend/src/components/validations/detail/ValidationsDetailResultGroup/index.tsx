@@ -1,5 +1,6 @@
 'use client';
 
+import { translateValidationResult } from '@/components/validations/detail/translate-validation-result';
 import { ValidationsDetailResultMessages } from '@/components/validations/detail/ValidationsDetailResultMessages';
 import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
 import { IconChevronRight, IconExternalLink } from '@tabler/icons-react';
@@ -24,7 +25,7 @@ export function ValidationsDetailResultGroup({ result }: ValidationsDetailResult
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const [isOpen, setIsOpen] = useState(false);
 	const [showAllMessages, setShowAllMessages] = useState(false);
 
@@ -33,6 +34,7 @@ export function ValidationsDetailResultGroup({ result }: ValidationsDetailResult
 
 	const documentationUrl = getGtfsScheduleDocUrl(result.rule_id);
 	const rowsLabel = t('validations:detail.ValidationsDetailResultGroup.affected_rows', '', { count: result.total_rows });
+	const description = translateValidationResult(i18n, 'description', result.rule_id, result.description_translation, result.description);
 
 	//
 	// C. Render components
@@ -48,7 +50,7 @@ export function ValidationsDetailResultGroup({ result }: ValidationsDetailResult
 				<IconChevronRight className={styles.chevron} data-open={isOpen} size={16} />
 				<span className={styles.severity}><SeverityTag severity={result.severity} /></span>
 				<span className={styles.ruleId}>{result.rule_id}</span>
-				<span className={styles.headline}>{result.description}</span>
+				<span className={styles.headline}>{description}</span>
 				<span className={styles.affectedRows}>{rowsLabel}</span>
 			</button>
 			{isOpen && (
@@ -62,9 +64,10 @@ export function ValidationsDetailResultGroup({ result }: ValidationsDetailResult
 					</div>
 					{result.messages.length > 0 && (
 						<ValidationsDetailResultMessages
-							description={result.description}
+							description={description}
 							messages={result.messages}
 							onShowAll={() => setShowAllMessages(true)}
+							ruleId={result.rule_id}
 							showAll={showAllMessages}
 						/>
 					)}

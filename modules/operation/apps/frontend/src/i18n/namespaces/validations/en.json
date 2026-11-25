@@ -2,11 +2,378 @@
 	"detail": {
 		"ValidationsDetailResultGroup": {
 			"affected_rows": "{count, plural, =1 {# affected row} other {# affected rows}}",
-			"documentation": "Documentation"
+			"documentation": "Documentation",
+			"rule_descriptions": {
+				"agency_email_valid": {
+					"default": "The agency_email field contains an invalid email address."
+				},
+				"agency_fare_url_valid": {
+					"default": "The agency_fare_url field contains an invalid HTTP or HTTPS URL."
+				},
+				"agency_id_matched_with_agency_name": {
+					"default": "An agency ID and name pair is outside the configured pairs."
+				},
+				"agency_lang_valid": {
+					"default": "The agency_lang field contains an invalid BCP 47 language tag."
+				},
+				"agency_phone_valid": {
+					"default": "The agency_phone field contains an invalid phone number."
+				},
+				"agency_timezone_valid": {
+					"default": "Agency timezones must be valid and consistent across the feed."
+				},
+				"agency_url_valid": {
+					"default": "The agency_url field contains an invalid HTTP or HTTPS URL."
+				},
+				"calendar_dates_date_unique_per_service_id": {
+					"default": "The date must be unique within each service_id."
+				},
+				"calendar_dates_date_valid": {
+					"default": "The date field must be a real calendar date in YYYYMMDD format."
+				},
+				"calendar_end_date_valid": {
+					"default": "The end_date field must be a real calendar date in YYYYMMDD format."
+				},
+				"calendar_start_date_before_end_date": {
+					"default": "The start_date must be on or before the end_date."
+				},
+				"calendar_start_date_valid": {
+					"default": "The start_date field must be a real calendar date in YYYYMMDD format."
+				},
+				"fare_attributes_currency_type_valid": {
+					"default": "The currency_type field must be an ISO 4217 currency code."
+				},
+				"fare_attributes_price_valid": {
+					"default": "The price field must be a finite non-negative fare price."
+				},
+				"fare_attributes_transfer_duration_valid": {
+					"default": "The transfer_duration field must be a non-negative base-ten integer."
+				},
+				"feed_info_default_lang_valid": {
+					"default": "The default_lang field must be a valid BCP 47 language tag."
+				},
+				"feed_info_feed_contact_email_valid": {
+					"default": "The feed_contact_email field must be a valid email address."
+				},
+				"feed_info_feed_contact_url_valid": {
+					"default": "The feed_contact_url field must be a fully qualified HTTP or HTTPS URL."
+				},
+				"feed_info_feed_end_date_valid": {
+					"default": "The feed_end_date field must be a real calendar date in YYYYMMDD format."
+				},
+				"feed_info_feed_lang_valid": {
+					"default": "The feed_lang field must be a valid BCP 47 language tag."
+				},
+				"feed_info_feed_publisher_url_valid": {
+					"default": "The feed_publisher_url field must be a fully qualified HTTP or HTTPS URL."
+				},
+				"feed_info_feed_start_date_valid": {
+					"default": "The feed_start_date field must be a real calendar date in YYYYMMDD format."
+				},
+				"feed_info_start_date_before_end_date": {
+					"default": "The feed_start_date must be on or before the feed_end_date."
+				},
+				"pattern_same_shape_id": {
+					"default": "Trips with the same route_id and direction_id must share a shape_id."
+				},
+				"pattern_same_stop_dist_traveled": {
+					"default": "Trips with the same route_id and direction_id must have the same shape_dist_traveled list."
+				},
+				"pattern_same_stop_sequence": {
+					"default": "Trips with the same route_id and direction_id must have the same stop sequence."
+				},
+				"pattern_same_trip_headsign": {
+					"default": "Trips with the same route_id and direction_id must share a trip_headsign."
+				},
+				"routes_route_color_route_text_color_contrast": {
+					"default": "The route text and background colors must have a contrast ratio of at least 4.5:1."
+				},
+				"routes_route_color_valid": {
+					"default": "The route_color field must be a six-digit hexadecimal color without a leading #."
+				},
+				"routes_route_desc_different_from_route_long_name": {
+					"default": "The route description must differ from the route long name."
+				},
+				"routes_route_desc_different_from_route_short_name": {
+					"default": "The route description must differ from the route short name."
+				},
+				"routes_route_sort_order_valid": {
+					"default": "The route_sort_order field must be a non-negative base-ten integer."
+				},
+				"routes_route_text_color_valid": {
+					"default": "The route_text_color field must be a six-digit hexadecimal color without a leading #."
+				},
+				"routes_route_url_different_from_agency_url": {
+					"default": "The route URL must differ from the agency URL."
+				},
+				"routes_route_url_valid": {
+					"default": "The route_url field must be a fully qualified HTTP or HTTPS URL."
+				},
+				"shapes_shape_dist_traveled_equals_geo_length": {
+					"default": "The maximum shape_dist_traveled must be within 10 m of the geographic shape length."
+				},
+				"shapes_shape_dist_traveled_segment_max_geo_length": {
+					"default": "The distance between consecutive shape points exceeds the configured maximum."
+				},
+				"shapes_shape_dist_traveled_strictly_increasing": {
+					"default": "The shape_dist_traveled must increase strictly within each shape."
+				},
+				"shapes_shape_dist_traveled_valid": {
+					"default": "The shape_dist_traveled field must be a finite non-negative decimal."
+				},
+				"shapes_shape_pt_lat_valid": {
+					"default": "The shape_pt_lat field must be a latitude between -90 and 90 degrees."
+				},
+				"shapes_shape_pt_lon_valid": {
+					"default": "The shape_pt_lon field must be a longitude between -180 and 180 degrees."
+				},
+				"shapes_shape_pt_sequence_strictly_increasing": {
+					"default": "The shape_pt_sequence must increase strictly within each shape."
+				},
+				"shapes_shape_pt_sequence_valid": {
+					"default": "The shape_pt_sequence field must be a non-negative base-ten integer."
+				},
+				"stop_times_arrival_time_before_departure_time": {
+					"default": "The arrival_time must be on or before the departure_time."
+				},
+				"stop_times_arrival_time_valid": {
+					"default": "The arrival_time field must be an H:MM:SS or HH:MM:SS service-day time, including hours beyond midnight."
+				},
+				"stop_times_departure_time_valid": {
+					"default": "The departure_time field must be an H:MM:SS or HH:MM:SS service-day time, including hours beyond midnight."
+				},
+				"stop_times_end_pickup_drop_off_window_valid": {
+					"default": "The end_pickup_drop_off_window field must be an H:MM:SS or HH:MM:SS service-day time, including hours beyond midnight."
+				},
+				"stop_times_increasing_arrival_time": {
+					"default": "The arrival_time must not decrease within a trip."
+				},
+				"stop_times_increasing_departure_time": {
+					"default": "The departure_time must not decrease within a trip."
+				},
+				"stop_times_increasing_shape_dist_traveled": {
+					"default": "The shape_dist_traveled must increase strictly within each trip."
+				},
+				"stop_times_increasing_stop_sequence": {
+					"default": "The stop_sequence must increase strictly within each trip."
+				},
+				"stop_times_location_group_id_forbidden": {
+					"default": "The location_group_id is forbidden when stop_id or location_id is supplied."
+				},
+				"stop_times_location_id_forbidden": {
+					"default": "The location_id is forbidden when stop_id or location_group_id is supplied."
+				},
+				"stop_times_shape_dist_traveled_valid": {
+					"default": "The shape_dist_traveled field must be a finite non-negative decimal."
+				},
+				"stop_times_start_pickup_drop_off_window_valid": {
+					"default": "The start_pickup_drop_off_window field must be an H:MM:SS or HH:MM:SS service-day time, including hours beyond midnight."
+				},
+				"stop_too_far_from_shape": {
+					"default": "Stops must be within {limit} m of the shapes of the trips that serve them."
+				},
+				"stops_parent_station_forbidden": {
+					"default": "A station must have an empty parent_station."
+				},
+				"stops_parent_station_required": {
+					"default": "A parent_station is required for location types 2, 3, and 4."
+				},
+				"stops_platform_code_forbidden": {
+					"default": "A platform_code is allowed only for location_type 0."
+				},
+				"stops_stop_code_equals_stop_id": {
+					"default": "The stop_code must match the stop_id."
+				},
+				"stops_stop_lat_valid": {
+					"default": "The stop_lat field must be a latitude between -90 and 90 degrees."
+				},
+				"stops_stop_lon_valid": {
+					"default": "The stop_lon field must be a longitude between -180 and 180 degrees."
+				},
+				"stops_stop_timezone_valid": {
+					"default": "The stop_timezone field must be a valid IANA time zone."
+				},
+				"stops_stop_url_valid": {
+					"default": "The stop_url field must be a fully qualified HTTP or HTTPS URL."
+				},
+				"system_error_generic": {
+					"default": "An unexpected error occurred during validation. Try again or contact us."
+				},
+				"system_error_max_attempts_reached": {
+					"default": "The maximum number of validation attempts was reached. Check the file and try again."
+				},
+				"trip_headsign_max_two_per_route": {
+					"default": "A route must have at most two distinct {field} values."
+				},
+				"trip_id_max_length": {
+					"default": "The trip_id must be at most 36 bytes long."
+				},
+				"trip_shape_id_exists": {
+					"default": "A shape_id is required for trips with continuous pickup or drop-off."
+				},
+				"trip_shape_id_max_two_per_route": {
+					"default": "A route must have at most two distinct {field} values."
+				},
+				"trip_shape_id_uses_direction_id": {
+					"default": "The shape_id suffix must match direction_id."
+				},
+				"trips_shape_no_reuse_per_route_direction": {
+					"default": "A shape must not be reused across route and direction pairs."
+				},
+				"vehicles_vehicle_bicycle_capacity_valid": {
+					"default": "The bicycles_capacity field must be a non-negative base-ten integer."
+				},
+				"vehicles_vehicle_car_capacity_valid": {
+					"default": "The car_capacity field must be a non-negative base-ten integer."
+				},
+				"vehicles_vehicle_registration_date_valid": {
+					"default": "The registration_date field must be a real calendar date in YYYYMMDD format."
+				},
+				"vehicles_vehicle_seating_capacity_valid": {
+					"default": "The seating_capacity field must be a non-negative base-ten integer."
+				},
+				"vehicles_vehicle_standing_capacity_valid": {
+					"default": "The standing_capacity field must be a non-negative base-ten integer."
+				}
+			},
+			"shared_descriptions": {
+				"duplicate_field": "The {field} field contains duplicate values.",
+				"field_enum": "The {field} field must be one of {allowed} and match the configured options.",
+				"field_forbidden": "The {field} field must be empty.",
+				"field_options": "The {field} field contains a value outside the configured options.",
+				"forbidden_file": "The forbidden {file} file is present.",
+				"foreign_key": "The {field} references a missing {target_table}.{target_field} value.",
+				"missing_column": "The required {field} column is missing.",
+				"missing_file": "The required {file} file is missing.",
+				"missing_reference_value": "The {field} references a missing {target_field} value.",
+				"required_field": "The required {field} is missing.",
+				"unimplemented_rule": "The configured rule has no implementation."
+			}
 		},
 		"ValidationsDetailResultMessages": {
 			"message": "Message",
 			"rows": "Row index(es)",
+			"rule_messages": {
+				"agency_email_valid": {
+					"default": "Invalid email address “{value}”."
+				},
+				"agency_id_matched_with_agency_name": {
+					"default": "Agency ID “{id}” has an unexpected name “{name}”."
+				},
+				"agency_timezone_valid": {
+					"inconsistent_timezones": "All agencies in the feed must use the same timezone.",
+					"invalid_timezone": "Invalid IANA timezone “{value}”."
+				},
+				"calendar_dates_date_unique_per_service_id": {
+					"default": "The date “{date}” occurs multiple times for service_id “{service_id}”."
+				},
+				"calendar_start_date_before_end_date": {
+					"default": "The start_date “{start}” is after the end_date “{end}”."
+				},
+				"feed_info_start_date_before_end_date": {
+					"default": "The feed_start_date “{start}” is after the feed_end_date “{end}”."
+				},
+				"pattern_same_shape_id": {
+					"default": "Route “{route_id}” with direction_id “{direction_id}” has conflicting shape IDs {values}."
+				},
+				"pattern_same_stop_dist_traveled": {
+					"different_count": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have {first} and {second} distances, respectively.",
+					"different_value": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have shape_dist_traveled values {first} and {second} at position {position}."
+				},
+				"pattern_same_stop_sequence": {
+					"different_count": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have {first} and {second} stop times, respectively.",
+					"different_value": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have stop_sequence values {first} and {second} at sorted position {position}."
+				},
+				"pattern_same_trip_headsign": {
+					"default": "Route “{route_id}” with direction_id “{direction_id}” has conflicting trip headsigns {values}."
+				},
+				"routes_route_color_route_text_color_contrast": {
+					"default": "The route_text_color “{text}” and route_color “{background}” have a contrast ratio of {contrast}:1."
+				},
+				"routes_route_desc_different_from_route_long_name": {
+					"default": "The route_desc value “{value}” duplicates route_long_name."
+				},
+				"routes_route_desc_different_from_route_short_name": {
+					"default": "The route_desc value “{value}” duplicates route_short_name."
+				},
+				"routes_route_url_different_from_agency_url": {
+					"default": "The route_url value “{value}” matches its agency_url."
+				},
+				"shapes_shape_dist_traveled_equals_geo_length": {
+					"default": "Shape “{shape_id}” declares {declared} m, measures {measured} m, and differs by {difference} m."
+				},
+				"shapes_shape_dist_traveled_segment_max_geo_length": {
+					"default": "Shape “{shape_id}” has a {distance} m segment from sequence {previous} to {current}. The maximum is {limit} m."
+				},
+				"shapes_shape_dist_traveled_strictly_increasing": {
+					"default": "Shape “{shape_id}” has distance {current_distance} at sequence {current_sequence} after distance {previous_distance} at sequence {previous_sequence}."
+				},
+				"shapes_shape_pt_sequence_strictly_increasing": {
+					"default": "Shape “{shape_id}” uses shape_pt_sequence {sequence} more than once."
+				},
+				"stop_times_arrival_time_before_departure_time": {
+					"default": "The arrival_time “{arrival}” is after the departure_time “{departure}”."
+				},
+				"stop_times_increasing_arrival_time": {
+					"default": "Trip “{trip_id}” has arrival_time “{current}” at stop_sequence {current_sequence} after “{previous}” at stop_sequence {previous_sequence}."
+				},
+				"stop_times_increasing_departure_time": {
+					"default": "Trip “{trip_id}” has departure_time “{current}” at stop_sequence {current_sequence} after “{previous}” at stop_sequence {previous_sequence}."
+				},
+				"stop_times_increasing_shape_dist_traveled": {
+					"default": "Trip “{trip_id}” has distance {current_distance} at sequence {current_sequence} after distance {previous_distance} at sequence {previous_sequence}."
+				},
+				"stop_times_increasing_stop_sequence": {
+					"default": "Trip “{trip_id}” uses stop_sequence {sequence} more than once."
+				},
+				"stop_times_location_group_id_forbidden": {
+					"default": "The location_group_id “{group_id}” conflicts with stop_id “{stop_id}” or location_id “{location_id}”."
+				},
+				"stop_times_location_id_forbidden": {
+					"default": "The location_id “{location_id}” conflicts with stop_id “{stop_id}” or location_group_id “{group_id}”."
+				},
+				"stop_too_far_from_shape": {
+					"default": "Stop “{stop_id}” is {distance} m from shape “{shape_id}” on route “{route_id}” with direction_id {direction_id}."
+				},
+				"stops_parent_station_forbidden": {
+					"default": "The parent_station “{value}” is forbidden for location_type {location_type}."
+				},
+				"stops_parent_station_required": {
+					"default": "The parent_station is missing for location_type {location_type}."
+				},
+				"stops_platform_code_forbidden": {
+					"default": "The platform_code “{value}” is forbidden for location_type {location_type}."
+				},
+				"stops_stop_code_equals_stop_id": {
+					"default": "The stop_code “{code}” differs from the stop_id “{id}”."
+				},
+				"trip_headsign_max_two_per_route": {
+					"default": "Route “{route_id}” has {count} distinct {field} values."
+				},
+				"trip_shape_id_exists": {
+					"default": "The shape_id is missing for a trip with continuous service."
+				},
+				"trip_shape_id_max_two_per_route": {
+					"default": "Route “{route_id}” has {count} distinct {field} values."
+				},
+				"trip_shape_id_uses_direction_id": {
+					"default": "Shape ID “{shape_id}” must end in “{suffix}” for direction_id {direction_id}."
+				},
+				"trips_shape_no_reuse_per_route_direction": {
+					"default": "Shape “{shape_id}” is used by {count} route and direction pairs."
+				}
+			},
+			"shared_messages": {
+				"blank_value": "The required {field} value is blank.",
+				"duplicate_value": "The {field} value “{value}” is used on multiple rows.",
+				"forbidden_file": "The forbidden {file} file is present.",
+				"invalid_field_value": "Invalid {field} value “{value}”.",
+				"missing_column": "The required {field} column is missing.",
+				"missing_file": "The required {file} file is missing.",
+				"missing_reference_value": "Unknown {target_field} “{value}”.",
+				"unimplemented_rule": "Rule “{rule_id}” has no implementation and could not be executed.",
+				"unknown_reference": "Unknown {target_field} “{value}” in {file}."
+			},
 			"show_all": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}"
 		},
 		"ValidationsDetailResultRows": {

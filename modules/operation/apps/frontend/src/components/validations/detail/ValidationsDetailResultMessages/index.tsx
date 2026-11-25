@@ -1,5 +1,6 @@
 'use client';
 
+import { translateValidationResult } from '@/components/validations/detail/translate-validation-result';
 import { ValidationsDetailResultRows } from '@/components/validations/detail/ValidationsDetailResultRows';
 import { type GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-validator';
 import { Surface, Table } from '@tmlmobilidade/ui';
@@ -13,6 +14,7 @@ interface ValidationsDetailResultMessagesProps {
 	description: string
 	messages: GtfsValidationOutputMessage[]
 	onShowAll: () => void
+	ruleId: string
 	showAll: boolean
 }
 
@@ -20,13 +22,13 @@ const VISIBLE_MESSAGES_LIMIT = 10;
 
 /* * */
 
-export function ValidationsDetailResultMessages({ description, messages, onShowAll, showAll }: ValidationsDetailResultMessagesProps) {
+export function ValidationsDetailResultMessages({ description, messages, onShowAll, ruleId, showAll }: ValidationsDetailResultMessagesProps) {
 	//
 
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 
 	//
 	// B. Transform data
@@ -50,7 +52,7 @@ export function ValidationsDetailResultMessages({ description, messages, onShowA
 					<Table.Tbody>
 						{visibleMessages.map((message, index) => (
 							<Table.Tr key={index}>
-								<Table.Td className={styles.message}>{message.message}</Table.Td>
+								<Table.Td className={styles.message}>{translateValidationResult(i18n, 'message', ruleId, message.translation, message.message)}</Table.Td>
 								<Table.Td><ValidationsDetailResultRows rows={message.rows} /></Table.Td>
 							</Table.Tr>
 						))}

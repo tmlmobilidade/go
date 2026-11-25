@@ -12,6 +12,7 @@ export const SYSTEM_ERROR_MESSAGES = {
 
 	GENERIC_ERROR: {
 		description: 'Ocorreu um erro inesperado durante a validação. Tenta novamente ou entra em contacto connosco.',
+		description_translation: { variant: 'default' },
 		messages: [],
 		rule_id: 'system_error_generic',
 		severity: 'error',
@@ -20,6 +21,7 @@ export const SYSTEM_ERROR_MESSAGES = {
 
 	MAX_ATTEMPTS_REACHED: {
 		description: 'Número máximo de tentativas de validação atingido. Verifique o arquivo e tente novamente.',
+		description_translation: { variant: 'default' },
 		messages: [],
 		rule_id: 'system_error_max_attempts_reached',
 		severity: 'error',
