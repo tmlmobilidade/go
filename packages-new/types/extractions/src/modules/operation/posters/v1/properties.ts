@@ -6,6 +6,8 @@ import { z } from 'zod';
 
 const PosterPropertiesSchema = z.object({
 
+	active_dates: z.string(),
+
 	agency_ids: z.array(z.string()),
 
 	canvas_profile: z.enum(['auto', '0Master.A', '0Master.B', '0Master.C', '0Master.F']),
