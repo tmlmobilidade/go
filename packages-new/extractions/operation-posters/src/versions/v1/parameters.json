@@ -3,10 +3,13 @@
 	"canvasId": "0Master.0",
 
 	"dateParameters": [
-		"01.12.2026"
+
 	],
 
 	"textParameters": [
-
+		{
+			"id": "Text.Validity.Date",
+			"default": "01.12.2026"
+		}
 	]
 }
