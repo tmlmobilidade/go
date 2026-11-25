@@ -11,7 +11,7 @@ import { type NormalizePlansTaskContext } from '../context/init-context.js';
 /**
  * Builds the contents of the feed_info.txt file from the given Plan and Agency documents.
  */
-export function updateFeedInfoTxtContents(context: NormalizePlansTaskContext) {
+export function replaceFeedInfoTxtContents(context: NormalizePlansTaskContext) {
 	//
 
 	//

@@ -17,7 +17,7 @@ interface GtfsStopsRow extends Record<string, string | undefined> {
 
 /* * */
 
-export async function updateStopsMunicipalityIds(context: NormalizePlansTaskContext): Promise<void> {
+export async function addMunicipalityIdsToStopsTxt(context: NormalizePlansTaskContext): Promise<void> {
 	//
 
 	const timer = new Timer();

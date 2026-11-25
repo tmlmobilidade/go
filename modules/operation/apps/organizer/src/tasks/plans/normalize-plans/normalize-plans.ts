@@ -10,10 +10,10 @@ import path from 'node:path';
 import { ZipFile } from 'yazl';
 
 import { initNormalizePlansTaskContext } from './context/init-context.js';
-import { updateAgencyTxtContents } from './steps/agency.js';
-import { updateFeedInfoTxtContents } from './steps/feed-info.js';
-import { rewriteShapeIdsToPatternIds } from './steps/shapes.js';
-import { updateStopsMunicipalityIds } from './steps/stops.js';
+import { addMunicipalityIdsToStopsTxt } from './steps/add-municipality-ids.js';
+import { replaceAgencyTxtContents } from './steps/replace-agency.js';
+import { replaceFeedInfoTxtContents } from './steps/replace-feed-info.js';
+import { rewriteShapeIdsToPatternIds } from './steps/rewrite-shape-ids.js';
 
 /**
  * This task makes sure the associated GTFS files of plan documents have the correct
@@ -87,14 +87,14 @@ export async function normalizePlansTask() {
 			// Update the agency.txt and feed_info.txt files
 			// in the extracted directory with normalized data.
 
-			updateAgencyTxtContents(context);
+			replaceAgencyTxtContents(context);
 
-			updateFeedInfoTxtContents(context);
+			replaceFeedInfoTxtContents(context);
 
 			//
 			// Add municipality IDs to stops.txt
 
-			await updateStopsMunicipalityIds(context);
+			await addMunicipalityIdsToStopsTxt(context);
 
 			//
 			// Align the shape_id values of trips.txt and shapes.txt with the pattern_id
@@ -191,7 +191,7 @@ export async function normalizePlansTask() {
 				planId: planData._id,
 			});
 
-			await goDb.operation.plans.updateById(planData._id, { hash: newHashValue });
+			await goDb.operation.plans.updateOne({ _id: planData._id }, { hash: newHashValue });
 
 			await setPlanStatus(planData._id, 'organizer', 'complete', newHashValue);
 

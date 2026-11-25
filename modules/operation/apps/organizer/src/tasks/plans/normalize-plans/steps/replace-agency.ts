@@ -11,7 +11,7 @@ import { type NormalizePlansTaskContext } from '../context/init-context.js';
 /**
  * Builds the contents of the agency.txt file from the given Agency document.
  */
-export function updateAgencyTxtContents(context: NormalizePlansTaskContext) {
+export function replaceAgencyTxtContents(context: NormalizePlansTaskContext) {
 	//
 
 	//
