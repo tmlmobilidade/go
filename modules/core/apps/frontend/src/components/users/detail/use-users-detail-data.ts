@@ -1,7 +1,7 @@
 'use client';
 
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type User } from '@tmlmobilidade/go-types-core';
+import { type UsersDetailItemResponse } from '@tmlmobilidade/go-core-pckg-types';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -12,11 +12,11 @@ import { useUsersDetailUserId } from './use-users-detail-user-id';
 /* * */
 
 interface UseUsersDetailDataReturnType {
-	data: User
+	data: UsersDetailItemResponse
 	error: null | string
 	isLoading: boolean
 	isValidating: boolean
-	mutate: (newData?: ApiResponse<User>) => void
+	mutate: (newData?: ApiResponse<UsersDetailItemResponse>) => void
 	timestamp: null | UnixMilliseconds
 }
 
@@ -33,8 +33,8 @@ export function useUsersDetailData(): UseUsersDetailDataReturnType {
 	//
 	// B. Fetch data
 
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<User>>(API_ROUTES.core.USERS_DETAIL(userId), {
-		fetcher: async (url: string) => await fetchApiData<User>({ url }),
+	const { data, error, isLoading, isValidating, mutate } = useSWR(API_ROUTES.core.USERS_DETAIL(userId), {
+		fetcher: async (url: string) => await fetchApiData<UsersDetailItemResponse>({ url }),
 		refreshInterval: 10_000, // 10 seconds
 	});
 
