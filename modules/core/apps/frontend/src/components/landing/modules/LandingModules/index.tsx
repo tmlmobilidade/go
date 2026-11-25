@@ -26,19 +26,22 @@ export function LandingModules() {
 	return (
 		<LandingSection>
 
-			<Section gap="lg">
-				<LandingInfoBlock
-					description={t('landing:LandingModules.intro.description')}
-					title={t('landing:LandingModules.intro.title')}
-				>
-					<LandingVideoModalButton
-						thumbnailSrc="/core/assets/landing/modules/hub-video-thumbnail.jpg"
-						videoSrc="https://storage.carrismetropolitana.pt/static/go/hub.mp4"
-					/>
-				</LandingInfoBlock>
-			</Section>
+			<div className={styles.intro}>
+				<Section gap="lg">
+					<LandingInfoBlock
+						description={t('landing:LandingModules.intro.description')}
+						title={t('landing:LandingModules.intro.title')}
+					>
+						<LandingVideoModalButton
+							className={styles.introVideo}
+							thumbnailSrc="/core/assets/landing/modules/hub-video-thumbnail.jpg"
+							videoSrc="https://storage.carrismetropolitana.pt/static/go/hub.mp4"
+						/>
+					</LandingInfoBlock>
+				</Section>
+			</div>
 
-			<div className={styles.grid}>
+			<div className={styles.timeline}>
 
 				<LandingModuleBlock
 					index={1}
@@ -51,6 +54,8 @@ export function LandingModules() {
 					}]}
 				/>
 
+				<div className={styles.connector} />
+
 				<LandingModuleBlock
 					index={2}
 					title={t('landing:LandingModules.offer.title')}
@@ -61,6 +66,8 @@ export function LandingModules() {
 						videoSrc: 'https://storage.carrismetropolitana.pt/static/go/offer.mp4',
 					}]}
 				/>
+
+				<div className={styles.connector} />
 
 				<LandingModuleBlock
 					index={3}
@@ -87,30 +94,31 @@ export function LandingModules() {
 					]}
 				/>
 
-				<div className={styles.lastBlock}>
-					<LandingModuleBlock
-						index={4}
-						title={t('landing:LandingModules.performance.title')}
-						content={[{
-							description: t('landing:LandingModules.performance.performance.description'),
-							subtitle: t('landing:LandingModules.performance.performance.subtitle'),
-							thumbnailSrc: '/core/assets/landing/modules/performance-video-thumbnail.jpg',
-							videoSrc: 'https://storage.carrismetropolitana.pt/static/go/performance.mp4',
-						}]}
-					/>
-					<div className={styles.meetingsBlock}>
-						<LandingInfoBlock
-							description={t('landing:LandingModules.meetings.description')}
-							title={t('landing:LandingModules.meetings.title')}
-						>
-							<Section gap="md" padding="none">
-								<Button label={t('landing:LandingModules.meetings.actions.send_email')} />
-								<Button label={t('landing:LandingModules.meetings.actions.schedule_meeting')} />
-							</Section>
-						</LandingInfoBlock>
-					</div>
-				</div>
+				<div className={styles.connector} />
 
+				<LandingModuleBlock
+					index={4}
+					title={t('landing:LandingModules.performance.title')}
+					content={[{
+						description: t('landing:LandingModules.performance.performance.description'),
+						subtitle: t('landing:LandingModules.performance.performance.subtitle'),
+						thumbnailSrc: '/core/assets/landing/modules/performance-video-thumbnail.jpg',
+						videoSrc: 'https://storage.carrismetropolitana.pt/static/go/performance.mp4',
+					}]}
+				/>
+
+			</div>
+
+			<div className={styles.meetingsBlock}>
+				<LandingInfoBlock
+					description={t('landing:LandingModules.meetings.description')}
+					title={t('landing:LandingModules.meetings.title')}
+				>
+					<Section flexDirection="row" gap="md" padding="none">
+						<Button label={t('landing:LandingModules.meetings.actions.send_email')} />
+						<Button label={t('landing:LandingModules.meetings.actions.schedule_meeting')} />
+					</Section>
+				</LandingInfoBlock>
 			</div>
 
 		</LandingSection>

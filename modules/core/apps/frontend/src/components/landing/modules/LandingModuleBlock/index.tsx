@@ -35,9 +35,12 @@ export function LandingModuleBlock({ content, index, title }: LandingModuleBlock
 			{content.map((item, idx) => (
 				<Fragment key={idx}>
 					<div className={styles.wrapper}>
-						<h2 className={styles.subtitle}>{item.subtitle}</h2>
-						<p className={styles.description}>{item.description}</p>
+						<div className={styles.text}>
+							<h2 className={styles.subtitle}>{item.subtitle}</h2>
+							<p className={styles.description}>{item.description}</p>
+						</div>
 						<LandingVideoModalButton
+							className={styles.video}
 							thumbnailSrc={item.thumbnailSrc}
 							videoSrc={item.videoSrc}
 						/>

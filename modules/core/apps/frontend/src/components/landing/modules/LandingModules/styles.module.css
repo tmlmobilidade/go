@@ -1,35 +1,37 @@
 /* * */
-/* GRID */
+/* INTRO */
 
-.grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	align-items: flex-start;
-	justify-content: flex-start;
-	gap: 100px 80px;
-	margin-top: 75px;
+.intro {
+	margin-bottom: 100px;
 }
 
-/* .grid > * {
-	grid-row: span 2;
-}
-
-.grid > *:nth-child(odd) {
-	grid-column: 1;
-} */
-
-.grid > *:nth-child(even) {
-	transform: translateY(100px);
+.intro .introVideo {
+	width: 260px;
+	height: 155px;
+	border-radius: 15px;
 }
 
 /* * */
-/* LAST BLOCK & MEETINGS BLOCK */
+/* TIMELINE */
 
-.lastBlock {
+.timeline {
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 }
+
+/* Centered under the index circle (10px header offset + 30px radius); runs into the next circle, which overlaps it. */
+.connector {
+	width: 3px;
+	height: 110px;
+	margin-left: 39px;
+	background: var(--color-background);
+}
+
+/* * */
+/* MEETINGS BLOCK */
 
 .meetingsBlock {
 	padding: 30px;
+	margin-top: 60px;
 }
