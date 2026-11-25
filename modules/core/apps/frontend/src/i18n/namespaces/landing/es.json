@@ -88,5 +88,10 @@
 			"open_services": "Servicios Abiertos",
 			"roadmap": "Roadmap"
 		}
+	},
+	"LandingStats": {
+		"operators": "Operadores",
+		"vehicle_events": "Eventos de vehículos en las últimas 24h",
+		"vehicles_live": "Vehículos en circulación"
 	}
 }

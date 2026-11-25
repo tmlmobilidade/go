@@ -88,5 +88,10 @@
 			"open_services": "Open Services",
 			"roadmap": "Roadmap"
 		}
+	},
+	"LandingStats": {
+		"operators": "Operators",
+		"vehicle_events": "Vehicle events in the last 24h",
+		"vehicles_live": "Vehicles live now"
 	}
 }

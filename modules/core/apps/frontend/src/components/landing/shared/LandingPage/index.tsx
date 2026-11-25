@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 import styles from './styles.module.css';
 
-import { LandingMap } from '../../map/LandingMap';
+import { LandingMapPreview } from '../../map/LandingMapPreview';
 import { LandingModules } from '../../modules/LandingModules';
 import { LandingOverview } from '../../overview/LandingOverview';
 import { LandingFooter } from '../LandingFooter';
@@ -35,7 +35,7 @@ export function LandingPage() {
 	return (
 		<main className={styles.root}>
 			<LandingHeader />
-			<LandingMap />
+			<LandingMapPreview />
 			<LandingOverview />
 			<LandingModules />
 			<LandingFooter />
