@@ -1,7 +1,7 @@
 'use client';
 
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type SelectDataItem, useMeData } from '@tmlmobilidade/ui';
+import { type SelectDataItem, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { useZonesAgenciesData } from '../shared/use-zones-agencies-data';
@@ -16,29 +16,48 @@ interface UseZonesExtractAgenciesDataReturnType {
 	options: SelectDataItem[]
 }
 
-/* * */
-
-/** Provides extraction options using the same combined agency access as the Zones API. */
+/**
+ * Provides extraction options using the same combined
+ * agency access as the Zones API.
+ */
 export function useZonesExtractAgenciesData(): UseZonesExtractAgenciesDataReturnType {
-	const { data: meData, error: meError, isLoading: meLoading } = useMeData();
+	//
+
+	//
+	// A. Setup variables
+
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 	const { error: agenciesError, isLoading: agenciesLoading, options } = useZonesAgenciesData();
 
+	//
+	// B. Transform data
+
 	const agencyAccess = useMemo(() => PermissionCatalog.getPermissionResourceAccess({
-		// Mirrors ZONES_READ_PERMISSION_CHECKS and the offer-zones extractor.
 		checks: [
-			{ action: PermissionCatalog.all.lines.actions.read, scope: PermissionCatalog.all.lines.scope },
-			{ action: PermissionCatalog.all.lines.actions.update, scope: PermissionCatalog.all.lines.scope },
-			{ action: PermissionCatalog.all.zones.actions.nav, scope: PermissionCatalog.all.zones.scope },
+			{ action: 'read', scope: 'lines' },
+			{ action: 'update', scope: 'lines' },
+			{ action: 'nav', scope: 'zones' },
 		],
-		permissions: meData?.permissions,
+		permissions: mePermissions,
 		resource_key: 'agency_ids',
-	}), [meData?.permissions]);
+	}), [mePermissions]);
 
-	const permittedOptions = useMemo(() => options.filter(option => agencyAccess.allowAll || agencyAccess.values.includes(option.value)), [agencyAccess, options]);
-	const ids = useMemo(() => permittedOptions.map(option => option.value), [permittedOptions]);
-	const error = meError ?? agenciesError;
-	const hasReadPermission = !meError && (agencyAccess.allowAll || agencyAccess.values.length > 0);
-	const isLoading = meLoading || agenciesLoading;
+	const permittedOptions = useMemo(() => {
+		return options.filter(option => agencyAccess.allowAll || agencyAccess.values.includes(option.value));
+	}, [agencyAccess, options]);
 
-	return useMemo(() => ({ error, hasReadPermission, ids, isLoading, options: permittedOptions }), [error, hasReadPermission, ids, isLoading, permittedOptions]);
+	const ids = useMemo(() => {
+		return permittedOptions.map(option => option.value);
+	}, [permittedOptions]);
+
+	//
+	// C. Return data
+
+	return useMemo(() => ({
+		error: mePermissionsError ?? agenciesError,
+		hasReadPermission: !mePermissionsError && (agencyAccess.allowAll || agencyAccess.values.length > 0),
+		ids,
+		isLoading: mePermissionsLoading || agenciesLoading,
+		options: permittedOptions,
+	}), [mePermissionsError, agenciesError, agencyAccess, ids, mePermissionsLoading, agenciesLoading, permittedOptions]);
 }
