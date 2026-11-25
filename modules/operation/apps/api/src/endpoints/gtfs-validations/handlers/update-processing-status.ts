@@ -4,7 +4,7 @@ import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSucce
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type GtfsValidation } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
+import { type ProcessingStatus, ProcessingStatusSchema } from '@tmlmobilidade/go-types-shared';
 
 /**
  * Updates the processing status of a GTFS Validation by ID.
@@ -47,8 +47,12 @@ export async function updateProcessingStatusHandler(request: FastifyRequest<{ Bo
 	//
 	// Update the Validation document and send it to caller
 
+	const processingStatus = ProcessingStatusSchema.parse(request.body.processing_status ?? 'error');
+	const shouldClearSummary = processingStatus === 'waiting' || processingStatus === 'processing';
+
 	const updatedGtfsValidation = await goDb.operation.gtfsValidations.updateById(gtfsValidationData._id, {
-		processing_status: request.body.processing_status ?? 'error',
+		...(shouldClearSummary && { summary: null }),
+		processing_status: processingStatus,
 		validation_attempts: 0,
 		validity_status: 'unknown',
 	});
