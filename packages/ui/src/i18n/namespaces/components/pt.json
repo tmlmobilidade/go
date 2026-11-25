@@ -72,13 +72,6 @@
 			}
 		}
 	},
-	"gtfsValidationResultGroup": {
-		"documentation": "Documentação",
-		"message": "Mensagem",
-		"occurrences": "{count, plural, =1 {1 ocorrência} other {# ocorrências}}",
-		"rows": "Índice(s)",
-		"showAll": "{count, plural, =1 {Mostrar mais 1 ocorrência} other {Mostrar mais # ocorrências}}"
-	},
 	"inputs": {
 		"CoordinatesInput": {
 			"latitude": {

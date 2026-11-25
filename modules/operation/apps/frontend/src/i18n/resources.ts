@@ -21,6 +21,9 @@ import namespaceAnalysisPt from '@/i18n/namespaces/ride-analysis/pt.json' with {
 import namespaceStatusEn from '@/i18n/namespaces/ride-status/en.json' with { type: 'json' };
 import namespaceStatusEs from '@/i18n/namespaces/ride-status/es.json' with { type: 'json' };
 import namespaceStatusPt from '@/i18n/namespaces/ride-status/pt.json' with { type: 'json' };
+import namespaceValidationsEn from '@/i18n/namespaces/validations/en.json' with { type: 'json' };
+import namespaceValidationsEs from '@/i18n/namespaces/validations/es.json' with { type: 'json' };
+import namespaceValidationsPt from '@/i18n/namespaces/validations/pt.json' with { type: 'json' };
 import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
@@ -39,6 +42,7 @@ export const i18nResourceKeysPt = {
 	reference_types: namespaceReferenceTypesPt,
 	ride_analysis: namespaceAnalysisPt,
 	ride_status: namespaceStatusPt,
+	validations: namespaceValidationsPt,
 } as const;
 
 /**
@@ -53,6 +57,7 @@ export const i18nResourceKeysEs = {
 	reference_types: namespaceReferenceTypesEs,
 	ride_analysis: namespaceAnalysisEs,
 	ride_status: namespaceStatusEs,
+	validations: namespaceValidationsEs,
 } as const;
 
 /**
@@ -67,4 +72,5 @@ export const i18nResourceKeysEn = {
 	reference_types: namespaceReferenceTypesEn,
 	ride_analysis: namespaceAnalysisEn,
 	ride_status: namespaceStatusEn,
+	validations: namespaceValidationsEn,
 } as const;

@@ -44,7 +44,7 @@ export async function processValidation(gtfsValidation: GtfsValidation) {
 
 		Logger.info({ message: 'Updating GTFS Validation document...' });
 
-		await goDb.operation.gtfsValidations.updateById(gtfsValidation._id, {
+		await goDb.operation.gtfsValidations.updateOne({ _id: gtfsValidation._id }, {
 			processing_status: 'processing',
 			summary: null,
 			validation_attempts: (gtfsValidation.validation_attempts ?? 0) + 1,

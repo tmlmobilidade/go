@@ -1,0 +1,28 @@
+{
+	"detail": {
+		"ValidationsDetailResultGroup": {
+			"affected_rows": "{count, plural, =1 {# linha afetada} other {# linhas afetadas}}",
+			"documentation": "Documentação"
+		},
+		"ValidationsDetailResultMessages": {
+			"message": "Mensagem",
+			"rows": "Índice(s)",
+			"show_all": "{count, plural, =1 {Mostrar mais 1 ocorrência} other {Mostrar mais # ocorrências}}"
+		},
+		"ValidationsDetailResultRows": {
+			"empty": "N/A"
+		},
+		"ValidationsDetailResultsFilters": {
+			"error": "{count, plural, =1 {# Erro} other {# Erros}}",
+			"info": "{count} Info",
+			"warning": "{count, plural, =1 {# Aviso} other {# Avisos}}"
+		},
+		"ValidationsDetailResultsList": {
+			"empty": "Sem resultados para mostrar"
+		},
+		"ValidationsDetailSectionResult": {
+			"description": "Informações, avisos e erros encontrados no arquivo GTFS",
+			"title": "Resultado da Validação"
+		}
+	}
+}

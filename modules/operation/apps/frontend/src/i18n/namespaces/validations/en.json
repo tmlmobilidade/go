@@ -1,0 +1,28 @@
+{
+	"detail": {
+		"ValidationsDetailResultGroup": {
+			"affected_rows": "{count, plural, =1 {# affected row} other {# affected rows}}",
+			"documentation": "Documentation"
+		},
+		"ValidationsDetailResultMessages": {
+			"message": "Message",
+			"rows": "Row index(es)",
+			"show_all": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}"
+		},
+		"ValidationsDetailResultRows": {
+			"empty": "N/A"
+		},
+		"ValidationsDetailResultsFilters": {
+			"error": "{count, plural, =1 {# Error} other {# Errors}}",
+			"info": "{count} Info",
+			"warning": "{count, plural, =1 {# Warning} other {# Warnings}}"
+		},
+		"ValidationsDetailResultsList": {
+			"empty": "No results to show"
+		},
+		"ValidationsDetailSectionResult": {
+			"description": "Information, warnings, and errors found in the GTFS file",
+			"title": "Validation Results"
+		}
+	}
+}
