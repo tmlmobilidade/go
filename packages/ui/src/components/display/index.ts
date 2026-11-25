@@ -8,6 +8,7 @@ export * from './Inline';
 export * from './Label';
 export * from './LiveIcon';
 export * from './NoDataLabel';
+export * from './RollingNumber';
 export * from './Stepper';
 export * from './Table';
 export * from './Tabs';
