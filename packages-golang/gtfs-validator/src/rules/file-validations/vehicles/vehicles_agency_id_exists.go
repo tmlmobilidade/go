@@ -28,7 +28,7 @@ func (VehiclesChecks) VehiclesAgencyIDExists(ctx context.Context, db *sql.DB, co
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "vehicles", "agency_id", "The agency_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "vehicles", "agency_id")
 	}
 
 	// 2. Check column and value presence

@@ -22,10 +22,11 @@ func CheckPresence(ctx context.Context, db *sql.DB, config types.Rule, table, co
 		return false, nil, err
 	}
 	finding := types.Finding{
-		Description: fmt.Sprintf("The required %s is missing.", strings.ReplaceAll(column, "_", " ")),
-		Severity:    config.Severity,
-		FileName:    table + ".txt",
-		Field:       column,
+		Description:            fmt.Sprintf("The required %s is missing.", strings.ReplaceAll(column, "_", " ")),
+		DescriptionTranslation: types.NewTranslation("required_field", map[string]any{"field": column}),
+		Severity:               config.Severity,
+		FileName:               table + ".txt",
+		Field:                  column,
 	}
 	if !hasColumn {
 		hasTable, err := sqlutils.TableExists(ctx, db, table)
@@ -33,6 +34,7 @@ func CheckPresence(ctx context.Context, db *sql.DB, config types.Rule, table, co
 			return err == nil, nil, err
 		}
 		finding.Message = fmt.Sprintf("The required %s column is missing.", column)
+		finding.MessageTranslation = types.NewTranslation("missing_column", map[string]any{"field": column})
 		return false, []types.Finding{finding}, nil
 	}
 
@@ -49,5 +51,6 @@ func CheckPresence(ctx context.Context, db *sql.DB, config types.Rule, table, co
 		return true, nil, nil
 	}
 	finding.Message = fmt.Sprintf("The required %s value is blank.", column)
+	finding.MessageTranslation = types.NewTranslation("blank_value", map[string]any{"field": column})
 	return false, []types.Finding{finding}, nil
 }

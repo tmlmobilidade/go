@@ -41,12 +41,14 @@ func (RoutesChecks) RoutesRouteDescDifferentFromRouteLongName(ctx context.Contex
 		description := values["route_desc"]
 		if strings.TrimSpace(description) != "" && description == values["route_long_name"] {
 			findings = append(findings, types.Finding{
-				Description: "The route description must differ from the route long name.",
-				Message:     fmt.Sprintf("The route_desc value %q duplicates route_long_name.", description),
-				Severity:    config.Severity,
-				FileName:    "routes.txt",
-				Field:       "route_desc",
-				Rows:        []int{row},
+				Description:            "The route description must differ from the route long name.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The route_desc value %q duplicates route_long_name.", description),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"value": description}),
+				Severity:               config.Severity,
+				FileName:               "routes.txt",
+				Field:                  "route_desc",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

@@ -43,12 +43,14 @@ func (CalendarChecks) CalendarStartDateBeforeEndDate(ctx context.Context, db *sq
 		end := strings.TrimSpace(values["end_date"])
 		if validators.ValidateDate(start) && validators.ValidateDate(end) && start > end {
 			findings = append(findings, types.Finding{
-				Description: "The start_date must be on or before the end_date.",
-				Message:     fmt.Sprintf("The start_date %q is after the end_date %q.", start, end),
-				Severity:    config.Severity,
-				FileName:    "calendar.txt",
-				Field:       "start_date",
-				Rows:        []int{row},
+				Description:            "The start_date must be on or before the end_date.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The start_date %q is after the end_date %q.", start, end),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"start": start, "end": end}),
+				Severity:               config.Severity,
+				FileName:               "calendar.txt",
+				Field:                  "start_date",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

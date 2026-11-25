@@ -29,7 +29,7 @@ func (FareAttributesChecks) FareAttributesAgencyIDExists(ctx context.Context, db
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "fare_attributes", "agency_id", "The agency_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "fare_attributes", "agency_id")
 	}
 
 	// 2. Check whether the feed defines multiple agencies

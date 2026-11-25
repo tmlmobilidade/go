@@ -66,7 +66,11 @@ func (s *ReportService) Add(ruleID string, finding types.Finding) {
 	g := s.groups[ruleID]
 	if g == nil {
 		g = &group{result: types.RuleResult{
-			Description: finding.Description, Messages: []types.Message{}, RuleID: ruleID, Severity: severity,
+			Description:            finding.Description,
+			DescriptionTranslation: finding.DescriptionTranslation.Clone(),
+			Messages:               []types.Message{},
+			RuleID:                 ruleID,
+			Severity:               severity,
 		}, rows: make(map[sourceRow]struct{})}
 		s.groups[ruleID] = g
 	}
@@ -79,8 +83,9 @@ func (s *ReportService) Add(ruleID string, finding types.Finding) {
 	}
 	if len(g.result.Messages) < MaxDetails {
 		g.result.Messages = append(g.result.Messages, types.Message{
-			Message: finding.Message,
-			Rows:    rows[:min(len(rows), MaxDetails)],
+			Message:     finding.Message,
+			Rows:        rows[:min(len(rows), MaxDetails)],
+			Translation: finding.MessageTranslation.Clone(),
 		})
 	}
 }
@@ -91,9 +96,11 @@ func (s *ReportService) Summary() types.Summary {
 	for _, g := range s.groups {
 		result := g.result
 		result.TotalRows = len(g.rows)
+		result.DescriptionTranslation = result.DescriptionTranslation.Clone()
 		result.Messages = slices.Clone(result.Messages)
 		for i := range result.Messages {
 			result.Messages[i].Rows = slices.Clone(result.Messages[i].Rows)
+			result.Messages[i].Translation = result.Messages[i].Translation.Clone()
 		}
 		summary.Results = append(summary.Results, result)
 	}

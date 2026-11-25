@@ -28,7 +28,7 @@ func (StopsChecks) StopsParentStationExists(ctx context.Context, db *sql.DB, con
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "stops", "parent_station", "The parent_station field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "stops", "parent_station")
 	}
 
 	// 2. Check column and value presence

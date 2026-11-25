@@ -28,7 +28,7 @@ func (ShapesChecks) ShapesShapeDistTraveledExists(ctx context.Context, db *sql.D
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "shapes", "shape_dist_traveled", "The shape_dist_traveled field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "shapes", "shape_dist_traveled")
 	}
 
 	// 2. Check column and value presence

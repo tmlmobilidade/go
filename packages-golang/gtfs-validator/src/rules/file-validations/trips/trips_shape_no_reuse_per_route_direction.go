@@ -76,7 +76,16 @@ func (TripsChecks) TripsShapeNoReusePerRouteDirection(ctx context.Context, db *s
 	for _, shape := range order {
 		g := groups[shape]
 		if len(g.pairs) > 1 {
-			findings = append(findings, types.Finding{Description: "A shape must not be reused across route and direction pairs.", Message: fmt.Sprintf("Shape %q is used by %d route and direction pairs.", shape, len(g.pairs)), Severity: config.Severity, FileName: tripsFile, Field: "shape_id", Rows: g.rows})
+			findings = append(findings, types.Finding{
+				Description:            "A shape must not be reused across route and direction pairs.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Shape %q is used by %d route and direction pairs.", shape, len(g.pairs)),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"shape_id": shape, "count": len(g.pairs)}),
+				Severity:               config.Severity,
+				FileName:               tripsFile,
+				Field:                  "shape_id",
+				Rows:                   g.rows,
+			})
 		}
 	}
 

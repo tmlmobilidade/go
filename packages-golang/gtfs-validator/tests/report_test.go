@@ -79,3 +79,35 @@ func TestReportGroupsRowsAcrossFiles(t *testing.T) {
 		t.Fatal(summary)
 	}
 }
+
+func TestReportRetainsTranslationVariants(t *testing.T) {
+	const setup = `
+		CREATE TABLE agency (agency_timezone TEXT);
+		INSERT INTO agency VALUES ('Europe/Lisbon'), ('Local'), ('Europe/Madrid');
+	`
+	graph, err := rules.NewValidationGraph([]types.Rule{{RuleID: "agency_timezone_valid", Severity: types.SEVERITY_ERROR}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	results, err := graph.Execute(t.Context(), openSQLTestDatabase(t, setup), 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	service := services.NewReport()
+	for _, finding := range results[0].Value {
+		service.Add(results[0].ID, finding)
+	}
+	result := service.Summary().Results[0]
+	if !reflect.DeepEqual(result.DescriptionTranslation, &types.Translation{Variant: "default"}) || len(result.Messages) != 2 {
+		t.Fatal(result)
+	}
+	want := &types.Translation{Variant: "invalid_timezone", Values: map[string]string{"value": "Local"}}
+	if !reflect.DeepEqual(result.Messages[0].Translation, want) ||
+		!reflect.DeepEqual(result.Messages[1].Translation, &types.Translation{Variant: "inconsistent_timezones"}) {
+		t.Fatal(result.Messages)
+	}
+	result.Messages[0].Translation.Values["value"] = "modified"
+	if !reflect.DeepEqual(service.Summary().Results[0].Messages[0].Translation, want) {
+		t.Fatal("snapshot aliases service translation values")
+	}
+}

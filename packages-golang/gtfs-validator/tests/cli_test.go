@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -113,6 +114,12 @@ func TestCLI(t *testing.T) {
 					if report.Totals.Errors != 1 || report.Totals.Warnings != 0 ||
 						len(report.Results) != 1 || report.Results[0].RuleID != "agency_file_exists" {
 						t.Fatal("expected a missing agency finding", string(data))
+					}
+					result := report.Results[0]
+					wantTranslation := &types.Translation{Variant: "missing_file", Values: map[string]string{"file": "agency.txt"}}
+					if !reflect.DeepEqual(result.DescriptionTranslation, wantTranslation) || len(result.Messages) != 1 ||
+						!reflect.DeepEqual(result.Messages[0].Translation, wantTranslation) {
+						t.Fatal("expected translation metadata in the CLI report", string(data))
 					}
 				} else if report.Results == nil || len(report.Results) != 0 || report.Totals.Errors != 0 || report.Totals.Warnings != 0 {
 					t.Fatal("unexpected report", string(data))

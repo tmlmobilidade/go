@@ -94,12 +94,14 @@ tripLoop:
 				continue
 			}
 			findings = append(findings, types.Finding{
-				Description: "The shape_dist_traveled must increase strictly within each trip.",
-				Message:     fmt.Sprintf("Trip %q has distance %g at sequence %d after distance %g at sequence %d.", id, current.distance, current.sequence, previous.distance, previous.sequence),
-				Severity:    config.Severity,
-				FileName:    "stop_times.txt",
-				Field:       "shape_dist_traveled",
-				Rows:        []int{previous.row, current.row},
+				Description:            "The shape_dist_traveled must increase strictly within each trip.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Trip %q has distance %g at sequence %d after distance %g at sequence %d.", id, current.distance, current.sequence, previous.distance, previous.sequence),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"trip_id": id, "current_distance": fmt.Sprintf("%g", current.distance), "current_sequence": current.sequence, "previous_distance": fmt.Sprintf("%g", previous.distance), "previous_sequence": previous.sequence}),
+				Severity:               config.Severity,
+				FileName:               "stop_times.txt",
+				Field:                  "shape_dist_traveled",
+				Rows:                   []int{previous.row, current.row},
 			})
 		}
 	}

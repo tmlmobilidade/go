@@ -29,7 +29,7 @@ func (StopsChecks) StopsStopLonValid(ctx context.Context, db *sql.DB, config typ
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "stops", "stop_lon", "The stop_lon field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "stops", "stop_lon")
 	}
 
 	// 2. Check the format of supplied values

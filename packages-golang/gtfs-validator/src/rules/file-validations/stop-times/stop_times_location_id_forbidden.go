@@ -40,12 +40,14 @@ func (StopTimesChecks) StopTimesLocationIDForbidden(ctx context.Context, db *sql
 		locationID, stopID, groupID := values["location_id"], values["stop_id"], values["location_group_id"]
 		if strings.TrimSpace(locationID) != "" && (strings.TrimSpace(stopID) != "" || strings.TrimSpace(groupID) != "") {
 			findings = append(findings, types.Finding{
-				Description: "The location_id is forbidden when stop_id or location_group_id is supplied.",
-				Message:     fmt.Sprintf("The location_id %q conflicts with stop_id %q or location_group_id %q.", locationID, stopID, groupID),
-				Severity:    config.Severity,
-				FileName:    "stop_times.txt",
-				Field:       "location_id",
-				Rows:        []int{row},
+				Description:            "The location_id is forbidden when stop_id or location_group_id is supplied.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The location_id %q conflicts with stop_id %q or location_group_id %q.", locationID, stopID, groupID),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"location_id": locationID, "stop_id": stopID, "group_id": groupID}),
+				Severity:               config.Severity,
+				FileName:               "stop_times.txt",
+				Field:                  "location_id",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

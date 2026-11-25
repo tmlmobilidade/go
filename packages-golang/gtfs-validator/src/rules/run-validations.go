@@ -96,10 +96,12 @@ func runCheck(ctx context.Context, db *sql.DB, config types.Rule, validate check
 		return types.Outcome[[]Finding]{
 			Failed: true,
 			Value: []Finding{{
-				Description: "The configured rule has no implementation.",
-				Severity:    SEVERITY_WARNING,
-				Field:       "system",
-				Message:     fmt.Sprintf("Rule %q has no implementation and could not be executed.", config.RuleID),
+				Description:            "The configured rule has no implementation.",
+				DescriptionTranslation: types.NewTranslation("unimplemented_rule", nil),
+				Severity:               SEVERITY_WARNING,
+				Field:                  "system",
+				Message:                fmt.Sprintf("Rule %q has no implementation and could not be executed.", config.RuleID),
+				MessageTranslation:     types.NewTranslation("unimplemented_rule", map[string]any{"rule_id": config.RuleID}),
 			}},
 		}, nil
 	}

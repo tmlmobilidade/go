@@ -29,7 +29,7 @@ func (FeedInfoChecks) FeedInfoFeedContactEmailValid(ctx context.Context, db *sql
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "feed_info", "feed_contact_email", "The feed_contact_email field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "feed_info", "feed_contact_email")
 	}
 
 	// 2. Check the format of supplied values

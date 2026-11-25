@@ -129,12 +129,14 @@ shapeLoop:
 		difference := math.Abs(declaredMeters - lengthMeters)
 		if difference > toleranceMeters {
 			findings = append(findings, types.Finding{
-				Description: "The maximum shape_dist_traveled must be within 10 m of the geographic shape length.",
-				Message:     fmt.Sprintf("Shape %q declares %.2f m, measures %.2f m, and differs by %.2f m.", id, declaredMeters, lengthMeters, difference),
-				Severity:    config.Severity,
-				FileName:    "shapes.txt",
-				Field:       "shape_dist_traveled",
-				Rows:        group.maxRows,
+				Description:            "The maximum shape_dist_traveled must be within 10 m of the geographic shape length.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Shape %q declares %.2f m, measures %.2f m, and differs by %.2f m.", id, declaredMeters, lengthMeters, difference),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"shape_id": id, "declared": fmt.Sprintf("%.2f", declaredMeters), "measured": fmt.Sprintf("%.2f", lengthMeters), "difference": fmt.Sprintf("%.2f", difference)}),
+				Severity:               config.Severity,
+				FileName:               "shapes.txt",
+				Field:                  "shape_dist_traveled",
+				Rows:                   group.maxRows,
 			})
 		}
 	}

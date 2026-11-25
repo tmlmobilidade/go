@@ -29,7 +29,7 @@ func (ShapesChecks) ShapesShapePtLonValid(ctx context.Context, db *sql.DB, confi
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "shapes", "shape_pt_lon", "The shape_pt_lon field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "shapes", "shape_pt_lon")
 	}
 
 	// 2. Check the format of supplied values

@@ -29,7 +29,7 @@ func (TripsChecks) TripServiceIDExists(ctx context.Context, db *sql.DB, config t
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, tripsTable, "service_id", "The service_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, tripsTable, "service_id")
 	}
 
 	// 2. Validate the column and required values

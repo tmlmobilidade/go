@@ -46,12 +46,14 @@ func (StopsChecks) StopsPlatformCodeForbidden(ctx context.Context, db *sql.DB, c
 		present := strings.TrimSpace(value) != ""
 		if locationType != 0 && present {
 			findings = append(findings, types.Finding{
-				Description: "A platform_code is allowed only for location_type 0.",
-				Message:     fmt.Sprintf("The platform_code %q is forbidden for location_type %d.", value, locationType),
-				Severity:    config.Severity,
-				FileName:    "stops.txt",
-				Field:       "platform_code",
-				Rows:        []int{row},
+				Description:            "A platform_code is allowed only for location_type 0.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The platform_code %q is forbidden for location_type %d.", value, locationType),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"value": value, "location_type": locationType}),
+				Severity:               config.Severity,
+				FileName:               "stops.txt",
+				Field:                  "platform_code",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

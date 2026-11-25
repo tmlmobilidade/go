@@ -29,7 +29,7 @@ func (TripsChecks) TripRouteIDExists(ctx context.Context, db *sql.DB, config typ
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, tripsTable, "route_id", "The route_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, tripsTable, "route_id")
 	}
 
 	// 2. Validate the column and required values

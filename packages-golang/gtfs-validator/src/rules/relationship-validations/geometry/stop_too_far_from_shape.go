@@ -179,12 +179,14 @@ func (GeometryChecks) StopTooFarFromShape(ctx context.Context, db *sql.DB, confi
 			return nil
 		}
 		findings = append(findings, types.Finding{
-			Description: fmt.Sprintf("Stops must be within %g meters of the shapes of the trips that serve them.", limitMeters),
-			Message:     fmt.Sprintf("Stop %q is %.3f m from shape %q on route %q with direction_id %d.", stopID, nearest, trip.shape, trip.route, trip.direction),
-			Severity:    config.Severity,
-			FileName:    "stops.txt",
-			Field:       "stop_id",
-			Rows:        []int{stop.row},
+			Description:            fmt.Sprintf("Stops must be within %g meters of the shapes of the trips that serve them.", limitMeters),
+			DescriptionTranslation: types.NewTranslation("default", map[string]any{"limit": fmt.Sprintf("%g", limitMeters)}),
+			Message:                fmt.Sprintf("Stop %q is %.3f m from shape %q on route %q with direction_id %d.", stopID, nearest, trip.shape, trip.route, trip.direction),
+			MessageTranslation:     types.NewTranslation("default", map[string]any{"stop_id": stopID, "distance": fmt.Sprintf("%.3f", nearest), "shape_id": trip.shape, "route_id": trip.route, "direction_id": trip.direction}),
+			Severity:               config.Severity,
+			FileName:               "stops.txt",
+			Field:                  "stop_id",
+			Rows:                   []int{stop.row},
 		})
 		return nil
 	})

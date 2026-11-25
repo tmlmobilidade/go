@@ -31,7 +31,16 @@ func (StopTimesChecks) StopTimesStopIDForeignKeyExists(ctx context.Context, db *
 			}
 		}
 		if !exists {
-			findings = append(findings, types.Finding{Description: "The stop_id references a missing stop_id.", Message: fmt.Sprintf("Unknown stop_id %q.", value), Severity: config.Severity, FileName: "stop_times.txt", Field: "stop_id", Rows: []int{row}})
+			findings = append(findings, types.Finding{
+				Description:            "The stop_id references a missing stop_id.",
+				DescriptionTranslation: types.NewTranslation("missing_reference_value", map[string]any{"field": "stop_id", "target_field": "stop_id"}),
+				Message:                fmt.Sprintf("Unknown stop_id %q.", value),
+				MessageTranslation:     types.NewTranslation("missing_reference_value", map[string]any{"target_field": "stop_id", "value": value}),
+				Severity:               config.Severity,
+				FileName:               "stop_times.txt",
+				Field:                  "stop_id",
+				Rows:                   []int{row},
+			})
 		}
 		return nil
 	})

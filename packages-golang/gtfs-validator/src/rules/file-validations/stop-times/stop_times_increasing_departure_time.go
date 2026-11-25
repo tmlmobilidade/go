@@ -82,12 +82,14 @@ tripLoop:
 			previous, current := stops[i-1], stops[i]
 			if order, valid := validators.CompareTimes(current.time, previous.time); valid && order < 0 {
 				findings = append(findings, types.Finding{
-					Description: "The departure_time must not decrease within a trip.",
-					Message:     fmt.Sprintf("Trip %q has departure_time %q at stop_sequence %d after %q at stop_sequence %d.", id, current.time, current.sequence, previous.time, previous.sequence),
-					Severity:    config.Severity,
-					FileName:    "stop_times.txt",
-					Field:       "departure_time",
-					Rows:        []int{previous.row, current.row},
+					Description:            "The departure_time must not decrease within a trip.",
+					DescriptionTranslation: types.NewTranslation("default", nil),
+					Message:                fmt.Sprintf("Trip %q has departure_time %q at stop_sequence %d after %q at stop_sequence %d.", id, current.time, current.sequence, previous.time, previous.sequence),
+					MessageTranslation:     types.NewTranslation("default", map[string]any{"trip_id": id, "current": current.time, "current_sequence": current.sequence, "previous": previous.time, "previous_sequence": previous.sequence}),
+					Severity:               config.Severity,
+					FileName:               "stop_times.txt",
+					Field:                  "departure_time",
+					Rows:                   []int{previous.row, current.row},
 				})
 			}
 		}

@@ -46,12 +46,14 @@ func (StopsChecks) StopsParentStationForbidden(ctx context.Context, db *sql.DB, 
 		present := strings.TrimSpace(value) != ""
 		if locationType == 1 && present {
 			findings = append(findings, types.Finding{
-				Description: "A station must have an empty parent_station.",
-				Message:     fmt.Sprintf("The parent_station %q is forbidden for location_type %d.", value, locationType),
-				Severity:    config.Severity,
-				FileName:    "stops.txt",
-				Field:       "parent_station",
-				Rows:        []int{row},
+				Description:            "A station must have an empty parent_station.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The parent_station %q is forbidden for location_type %d.", value, locationType),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"value": value, "location_type": locationType}),
+				Severity:               config.Severity,
+				FileName:               "stops.txt",
+				Field:                  "parent_station",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

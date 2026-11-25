@@ -62,7 +62,16 @@ func (TripsChecks) TripShapeIDForeignKeyExists(ctx context.Context, db *sql.DB, 
 				return nil
 			}
 		}
-		findings = append(findings, types.Finding{Description: "The shape_id references a missing shape_id.", Message: fmt.Sprintf("Unknown shape_id %q.", value), Severity: config.Severity, FileName: "trips.txt", Field: "shape_id", Rows: []int{row}})
+		findings = append(findings, types.Finding{
+			Description:            "The shape_id references a missing shape_id.",
+			DescriptionTranslation: types.NewTranslation("missing_reference_value", map[string]any{"field": "shape_id", "target_field": "shape_id"}),
+			Message:                fmt.Sprintf("Unknown shape_id %q.", value),
+			MessageTranslation:     types.NewTranslation("missing_reference_value", map[string]any{"target_field": "shape_id", "value": value}),
+			Severity:               config.Severity,
+			FileName:               "trips.txt",
+			Field:                  "shape_id",
+			Rows:                   []int{row},
+		})
 		return nil
 	})
 

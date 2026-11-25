@@ -28,7 +28,7 @@ func (FareRulesChecks) FareRulesRouteIDExists(ctx context.Context, db *sql.DB, c
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "fare_rules", "route_id", "The route_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "fare_rules", "route_id")
 	}
 
 	// 2. Check column and value presence

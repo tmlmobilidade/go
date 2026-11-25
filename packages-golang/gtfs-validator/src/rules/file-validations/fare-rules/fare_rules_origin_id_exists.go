@@ -28,7 +28,7 @@ func (FareRulesChecks) FareRulesOriginIDExists(ctx context.Context, db *sql.DB, 
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "fare_rules", "origin_id", "The origin_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "fare_rules", "origin_id")
 	}
 
 	// 2. Check column and value presence

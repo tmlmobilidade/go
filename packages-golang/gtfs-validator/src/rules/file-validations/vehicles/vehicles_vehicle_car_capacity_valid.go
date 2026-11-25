@@ -29,7 +29,7 @@ func (VehiclesChecks) VehiclesVehicleCarCapacityValid(ctx context.Context, db *s
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "vehicles", "car_capacity", "The car_capacity field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "vehicles", "car_capacity")
 	}
 
 	// 2. Check the format of supplied values

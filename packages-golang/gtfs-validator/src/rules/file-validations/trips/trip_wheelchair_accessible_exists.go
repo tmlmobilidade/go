@@ -33,7 +33,7 @@ func (TripsChecks) TripWheelchairAccessibleExists(ctx context.Context, db *sql.D
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, tripsTable, "wheelchair_accessible", "The wheelchair_accessible field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, tripsTable, "wheelchair_accessible")
 	}
 
 	// 2. Validate the column and required values

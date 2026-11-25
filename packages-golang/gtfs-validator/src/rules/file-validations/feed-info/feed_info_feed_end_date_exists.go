@@ -28,7 +28,7 @@ func (FeedInfoChecks) FeedInfoFeedEndDateExists(ctx context.Context, db *sql.DB,
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "feed_info", "feed_end_date", "The feed_end_date field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "feed_info", "feed_end_date")
 	}
 
 	// 2. Check column and value presence

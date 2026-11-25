@@ -40,12 +40,14 @@ func (StopTimesChecks) StopTimesArrivalTimeBeforeDepartureTime(ctx context.Conte
 		arrival, departure := values["arrival_time"], values["departure_time"]
 		if order, valid := validators.CompareTimes(arrival, departure); valid && order > 0 {
 			findings = append(findings, types.Finding{
-				Description: "The arrival_time must be on or before the departure_time.",
-				Message:     fmt.Sprintf("The arrival_time %q is after the departure_time %q.", arrival, departure),
-				Severity:    config.Severity,
-				FileName:    "stop_times.txt",
-				Field:       "arrival_time",
-				Rows:        []int{row},
+				Description:            "The arrival_time must be on or before the departure_time.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The arrival_time %q is after the departure_time %q.", arrival, departure),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"arrival": arrival, "departure": departure}),
+				Severity:               config.Severity,
+				FileName:               "stop_times.txt",
+				Field:                  "arrival_time",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

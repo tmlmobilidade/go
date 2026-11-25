@@ -29,7 +29,7 @@ func (StopTimesChecks) StopTimesEndPickupDropOffWindowValid(ctx context.Context,
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "stop_times", "end_pickup_drop_off_window", "The end_pickup_drop_off_window field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "stop_times", "end_pickup_drop_off_window")
 	}
 
 	// 2. Check the format of supplied values

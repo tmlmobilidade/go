@@ -72,13 +72,16 @@ func (PatternChecks) PatternSameTripHeadsign(ctx context.Context, db *sql.DB, co
 	for _, key := range order {
 		group := groups[key]
 		if len(group.headsigns) > 1 {
+			headsigns := fmt.Sprintf("%q", slices.Sorted(maps.Keys(group.headsigns)))
 			findings = append(findings, types.Finding{
-				Description: "Trips with the same route_id and direction_id must share a trip_headsign.",
-				Message:     fmt.Sprintf("Route %q with direction_id %q has conflicting trip headsigns %q.", key.route, key.direction, slices.Sorted(maps.Keys(group.headsigns))),
-				Severity:    config.Severity,
-				FileName:    "trips.txt",
-				Field:       "trip_headsign",
-				Rows:        group.rows,
+				Description:            "Trips with the same route_id and direction_id must share a trip_headsign.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Route %q with direction_id %q has conflicting trip headsigns %s.", key.route, key.direction, headsigns),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"route_id": key.route, "direction_id": key.direction, "values": headsigns}),
+				Severity:               config.Severity,
+				FileName:               "trips.txt",
+				Field:                  "trip_headsign",
+				Rows:                   group.rows,
 			})
 		}
 	}

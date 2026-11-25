@@ -43,12 +43,14 @@ func (FeedInfoChecks) FeedInfoStartDateBeforeEndDate(ctx context.Context, db *sq
 		end := strings.TrimSpace(values["feed_end_date"])
 		if validators.ValidateDate(start) && validators.ValidateDate(end) && start > end {
 			findings = append(findings, types.Finding{
-				Description: "The feed_start_date must be on or before the feed_end_date.",
-				Message:     fmt.Sprintf("The feed_start_date %q is after the feed_end_date %q.", start, end),
-				Severity:    config.Severity,
-				FileName:    "feed_info.txt",
-				Field:       "feed_start_date",
-				Rows:        []int{row},
+				Description:            "The feed_start_date must be on or before the feed_end_date.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The feed_start_date %q is after the feed_end_date %q.", start, end),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"start": start, "end": end}),
+				Severity:               config.Severity,
+				FileName:               "feed_info.txt",
+				Field:                  "feed_start_date",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

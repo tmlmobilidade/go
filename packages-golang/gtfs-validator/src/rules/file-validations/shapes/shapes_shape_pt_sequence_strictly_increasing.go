@@ -66,12 +66,14 @@ func (ShapesChecks) ShapesShapePtSequenceStrictlyIncreasing(ctx context.Context,
 		rows := rowsByPoint[point]
 		if len(rows) > 1 {
 			findings = append(findings, types.Finding{
-				Description: "The shape_pt_sequence must increase strictly within each shape.",
-				Message:     fmt.Sprintf("Shape %q uses shape_pt_sequence %d more than once.", point.id, point.sequence),
-				Severity:    config.Severity,
-				FileName:    "shapes.txt",
-				Field:       "shape_pt_sequence",
-				Rows:        rows,
+				Description:            "The shape_pt_sequence must increase strictly within each shape.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Shape %q uses shape_pt_sequence %d more than once.", point.id, point.sequence),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"shape_id": point.id, "sequence": point.sequence}),
+				Severity:               config.Severity,
+				FileName:               "shapes.txt",
+				Field:                  "shape_pt_sequence",
+				Rows:                   rows,
 			})
 		}
 	}

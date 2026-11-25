@@ -25,13 +25,18 @@ func CheckFilePresence(ctx context.Context, db *sql.DB, config types.Rule, table
 
 	file := table + ".txt"
 	message := fmt.Sprintf("The required %s file is missing.", file)
+	variant := "missing_file"
 	if exists {
 		message = fmt.Sprintf("The forbidden %s file is present.", file)
+		variant = "forbidden_file"
 	}
+	translation := types.NewTranslation(variant, map[string]any{"file": file})
 	return false, []types.Finding{{
-		Description: message,
-		Severity:    config.Severity,
-		Message:     message,
-		FileName:    file,
+		Description:            message,
+		DescriptionTranslation: translation,
+		Severity:               config.Severity,
+		Message:                message,
+		MessageTranslation:     translation,
+		FileName:               file,
 	}}, nil
 }

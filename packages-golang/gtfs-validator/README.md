@@ -62,6 +62,12 @@ includes its ID, severity, description, affected row count, and diagnostic
 before sampling. Zero-based input rows become CSV line numbers (index + 2 for the
 header). Findings without source rows use `rows: []`.
 
+Results can include `description_translation` and individual messages can include
+`translation`. Both identify a template `variant` for the result's `rule_id`
+and can supply named `values` for interpolation. The Operation frontend uses
+these fields to render the report in the selected language and falls back to the
+report's description and message strings when a template is unavailable.
+
 `totals.errors`, `totals.warnings`, and `totals.infos` count distinct diagnostics
 before sampling. Configured `forbidden` findings are reported as errors, and
 ignored findings are omitted. A run without findings produces `results: []` with

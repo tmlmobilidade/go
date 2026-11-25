@@ -72,13 +72,16 @@ func (PatternChecks) PatternSameShapeID(ctx context.Context, db *sql.DB, config 
 	for _, key := range order {
 		group := groups[key]
 		if len(group.shapes) > 1 {
+			shapes := fmt.Sprintf("%q", slices.Sorted(maps.Keys(group.shapes)))
 			findings = append(findings, types.Finding{
-				Description: "Trips with the same route_id and direction_id must share a shape_id.",
-				Message:     fmt.Sprintf("Route %q with direction_id %q has conflicting shape IDs %q.", key.route, key.direction, slices.Sorted(maps.Keys(group.shapes))),
-				Severity:    config.Severity,
-				FileName:    "trips.txt",
-				Field:       "shape_id",
-				Rows:        group.rows,
+				Description:            "Trips with the same route_id and direction_id must share a shape_id.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Route %q with direction_id %q has conflicting shape IDs %s.", key.route, key.direction, shapes),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"route_id": key.route, "direction_id": key.direction, "values": shapes}),
+				Severity:               config.Severity,
+				FileName:               "trips.txt",
+				Field:                  "shape_id",
+				Rows:                   group.rows,
 			})
 		}
 	}

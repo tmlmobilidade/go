@@ -28,7 +28,7 @@ func (RoutesChecks) RoutesContinuousPickupExists(ctx context.Context, db *sql.DB
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "routes", "continuous_pickup", "The continuous_pickup field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "routes", "continuous_pickup")
 	}
 
 	// 2. Check column and value presence

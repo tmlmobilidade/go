@@ -69,7 +69,16 @@ func (TripsChecks) TripHeadsignMaxTwoPerRoute(ctx context.Context, db *sql.DB, c
 	for _, route := range order {
 		g := groups[route]
 		if len(g.values) > 2 {
-			findings = append(findings, types.Finding{Description: "A route must have at most two distinct " + column + " values.", Message: fmt.Sprintf("Route %q has %d distinct %s values.", route, len(g.values), column), Severity: config.Severity, FileName: tripsFile, Field: column, Rows: g.rows})
+			findings = append(findings, types.Finding{
+				Description:            "A route must have at most two distinct " + column + " values.",
+				DescriptionTranslation: types.NewTranslation("default", map[string]any{"field": column}),
+				Message:                fmt.Sprintf("Route %q has %d distinct %s values.", route, len(g.values), column),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"route_id": route, "count": len(g.values), "field": column}),
+				Severity:               config.Severity,
+				FileName:               tripsFile,
+				Field:                  column,
+				Rows:                   g.rows,
+			})
 		}
 	}
 

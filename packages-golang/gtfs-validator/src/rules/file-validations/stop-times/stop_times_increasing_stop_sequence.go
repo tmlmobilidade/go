@@ -66,12 +66,14 @@ func (StopTimesChecks) StopTimesIncreasingStopSequence(ctx context.Context, db *
 		rows := rowsByStop[stop]
 		if len(rows) > 1 {
 			findings = append(findings, types.Finding{
-				Description: "The stop_sequence must increase strictly within each trip.",
-				Message:     fmt.Sprintf("Trip %q uses stop_sequence %d more than once.", stop.id, stop.sequence),
-				Severity:    config.Severity,
-				FileName:    "stop_times.txt",
-				Field:       "stop_sequence",
-				Rows:        rows,
+				Description:            "The stop_sequence must increase strictly within each trip.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Trip %q uses stop_sequence %d more than once.", stop.id, stop.sequence),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"trip_id": stop.id, "sequence": stop.sequence}),
+				Severity:               config.Severity,
+				FileName:               "stop_times.txt",
+				Field:                  "stop_sequence",
+				Rows:                   rows,
 			})
 		}
 	}

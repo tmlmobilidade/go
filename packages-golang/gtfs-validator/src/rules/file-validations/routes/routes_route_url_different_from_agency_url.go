@@ -72,12 +72,14 @@ func (RoutesChecks) RoutesRouteURLDifferentFromAgencyURL(ctx context.Context, db
 		}
 		if routeURL == agencyURL && strings.TrimSpace(routeURL) != "" {
 			findings = append(findings, types.Finding{
-				Description: "The route URL must differ from the agency URL.",
-				Message:     fmt.Sprintf("The route_url value %q matches its agency_url.", routeURL),
-				Severity:    config.Severity,
-				FileName:    "routes.txt",
-				Field:       "route_url",
-				Rows:        []int{row},
+				Description:            "The route URL must differ from the agency URL.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The route_url value %q matches its agency_url.", routeURL),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"value": routeURL}),
+				Severity:               config.Severity,
+				FileName:               "routes.txt",
+				Field:                  "route_url",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

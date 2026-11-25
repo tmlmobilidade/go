@@ -58,7 +58,16 @@ func (TripsChecks) TripRouteIDForeignKeyExists(ctx context.Context, db *sql.DB, 
 				return nil
 			}
 		}
-		findings = append(findings, types.Finding{Description: "The route_id references a missing route_id.", Message: fmt.Sprintf("Unknown route_id %q.", value), Severity: config.Severity, FileName: "trips.txt", Field: "route_id", Rows: []int{row}})
+		findings = append(findings, types.Finding{
+			Description:            "The route_id references a missing route_id.",
+			DescriptionTranslation: types.NewTranslation("missing_reference_value", map[string]any{"field": "route_id", "target_field": "route_id"}),
+			Message:                fmt.Sprintf("Unknown route_id %q.", value),
+			MessageTranslation:     types.NewTranslation("missing_reference_value", map[string]any{"target_field": "route_id", "value": value}),
+			Severity:               config.Severity,
+			FileName:               "trips.txt",
+			Field:                  "route_id",
+			Rows:                   []int{row},
+		})
 		return nil
 	})
 

@@ -28,7 +28,7 @@ func (RoutesChecks) RoutesRouteShortNameExists(ctx context.Context, db *sql.DB, 
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "routes", "route_short_name", "The route_short_name field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "routes", "route_short_name")
 	}
 
 	// 2. Check column and value presence

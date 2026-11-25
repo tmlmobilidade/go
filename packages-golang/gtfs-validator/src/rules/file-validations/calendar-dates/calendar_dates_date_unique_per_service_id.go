@@ -65,12 +65,14 @@ func (CalendarDatesChecks) CalendarDatesDateUniquePerServiceID(ctx context.Conte
 		rows := rowsByPair[pair]
 		if len(rows) > 1 {
 			findings = append(findings, types.Finding{
-				Description: "The date must be unique within each service_id.",
-				Message:     fmt.Sprintf("The date %q occurs multiple times for service_id %q.", pair.date, pair.serviceID),
-				Severity:    config.Severity,
-				FileName:    "calendar_dates.txt",
-				Field:       "date",
-				Rows:        rows,
+				Description:            "The date must be unique within each service_id.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The date %q occurs multiple times for service_id %q.", pair.date, pair.serviceID),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"date": pair.date, "service_id": pair.serviceID}),
+				Severity:               config.Severity,
+				FileName:               "calendar_dates.txt",
+				Field:                  "date",
+				Rows:                   rows,
 			})
 		}
 	}

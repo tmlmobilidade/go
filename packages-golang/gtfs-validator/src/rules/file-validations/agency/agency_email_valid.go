@@ -45,12 +45,14 @@ func (AgencyChecks) AgencyEmailValid(ctx context.Context, db *sql.DB, config typ
 	err := fields.ForEachValue(ctx, db, agencyTable, emailColumn, func(row int, value string) {
 		if !validators.ValidateEmail(value) {
 			findings = append(findings, types.Finding{
-				Description: "The agency_email field contains an invalid email address.",
-				Severity:    config.Severity,
-				Message:     fmt.Sprintf("Invalid email address %q.", strings.TrimSpace(value)),
-				FileName:    agencyFile,
-				Field:       emailColumn,
-				Rows:        []int{row},
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"value": strings.TrimSpace(value)}),
+				Description:            "The agency_email field contains an invalid email address.",
+				Severity:               config.Severity,
+				Message:                fmt.Sprintf("Invalid email address %q.", strings.TrimSpace(value)),
+				FileName:               agencyFile,
+				Field:                  emailColumn,
+				Rows:                   []int{row},
 			})
 		}
 	})

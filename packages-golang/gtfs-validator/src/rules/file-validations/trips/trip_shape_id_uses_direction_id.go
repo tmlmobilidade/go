@@ -46,12 +46,14 @@ func (TripsChecks) TripShapeIDUsesDirectionID(ctx context.Context, db *sql.DB, c
 		suffix := "_" + strconv.Itoa(direction)
 		if !strings.HasSuffix(shape, suffix) {
 			findings = append(findings, types.Finding{
-				Description: "The shape_id suffix must match direction_id.",
-				Message:     fmt.Sprintf("Shape ID %q must end in %q for direction_id %d.", shape, suffix, direction),
-				Severity:    config.Severity,
-				FileName:    tripsFile,
-				Field:       "shape_id",
-				Rows:        []int{row},
+				Description:            "The shape_id suffix must match direction_id.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("Shape ID %q must end in %q for direction_id %d.", shape, suffix, direction),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"shape_id": shape, "suffix": suffix, "direction_id": direction}),
+				Severity:               config.Severity,
+				FileName:               tripsFile,
+				Field:                  "shape_id",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

@@ -28,7 +28,7 @@ func (StopsChecks) StopsStopIDExists(ctx context.Context, db *sql.DB, config typ
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "stops", "stop_id", "The stop_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "stops", "stop_id")
 	}
 
 	// 2. Check column and value presence

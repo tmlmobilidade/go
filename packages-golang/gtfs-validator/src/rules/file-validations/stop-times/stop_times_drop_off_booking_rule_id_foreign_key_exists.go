@@ -31,7 +31,16 @@ func (StopTimesChecks) StopTimesDropOffBookingRuleIDForeignKeyExists(ctx context
 			}
 		}
 		if !exists {
-			findings = append(findings, types.Finding{Description: "The drop_off_booking_rule_id references a missing booking_rule_id.", Message: fmt.Sprintf("Unknown booking_rule_id %q.", value), Severity: config.Severity, FileName: "stop_times.txt", Field: "drop_off_booking_rule_id", Rows: []int{row}})
+			findings = append(findings, types.Finding{
+				Description:            "The drop_off_booking_rule_id references a missing booking_rule_id.",
+				DescriptionTranslation: types.NewTranslation("missing_reference_value", map[string]any{"field": "drop_off_booking_rule_id", "target_field": "booking_rule_id"}),
+				Message:                fmt.Sprintf("Unknown booking_rule_id %q.", value),
+				MessageTranslation:     types.NewTranslation("missing_reference_value", map[string]any{"target_field": "booking_rule_id", "value": value}),
+				Severity:               config.Severity,
+				FileName:               "stop_times.txt",
+				Field:                  "drop_off_booking_rule_id",
+				Rows:                   []int{row},
+			})
 		}
 		return nil
 	})

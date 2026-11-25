@@ -30,7 +30,7 @@ func (StopTimesChecks) StopTimesShapeDistTraveledValid(ctx context.Context, db *
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "stop_times", "shape_dist_traveled", "The shape_dist_traveled field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "stop_times", "shape_dist_traveled")
 	}
 
 	// 2. Check the format of supplied values

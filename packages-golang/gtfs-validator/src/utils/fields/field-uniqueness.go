@@ -21,16 +21,19 @@ func CheckUnique(ctx context.Context, db *sql.DB, config types.Rule, table, colu
 	}
 
 	var findings []types.Finding
+	descriptionTranslation := types.NewTranslation("duplicate_field", map[string]any{"field": column})
 	for _, value := range slices.Sorted(maps.Keys(rowsByValue)) {
 		rows := rowsByValue[value]
 		if len(rows) > 1 {
 			findings = append(findings, types.Finding{
-				Description: fmt.Sprintf("The %s field contains duplicate values.", column),
-				Severity:    config.Severity,
-				Message:     fmt.Sprintf("The %s value %q is used on multiple rows.", column, value),
-				FileName:    table + ".txt",
-				Field:       column,
-				Rows:        rows,
+				Description:            fmt.Sprintf("The %s field contains duplicate values.", column),
+				DescriptionTranslation: descriptionTranslation,
+				Severity:               config.Severity,
+				Message:                fmt.Sprintf("The %s value %q is used on multiple rows.", column, value),
+				MessageTranslation:     types.NewTranslation("duplicate_value", map[string]any{"field": column, "value": value}),
+				FileName:               table + ".txt",
+				Field:                  column,
+				Rows:                   rows,
 			})
 		}
 	}

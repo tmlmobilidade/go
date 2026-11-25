@@ -41,12 +41,14 @@ func (StopsChecks) StopsStopCodeEqualsStopID(ctx context.Context, db *sql.DB, co
 		code, id := values["stop_code"], values["stop_id"]
 		if code != id && strings.TrimSpace(code) != "" && strings.TrimSpace(id) != "" {
 			findings = append(findings, types.Finding{
-				Description: "The stop_code must match the stop_id.",
-				Message:     fmt.Sprintf("The stop_code %q differs from the stop_id %q.", code, id),
-				Severity:    config.Severity,
-				FileName:    "stops.txt",
-				Field:       "stop_code",
-				Rows:        []int{row},
+				Description:            "The stop_code must match the stop_id.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The stop_code %q differs from the stop_id %q.", code, id),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"code": code, "id": id}),
+				Severity:               config.Severity,
+				FileName:               "stops.txt",
+				Field:                  "stop_code",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

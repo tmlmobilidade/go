@@ -28,7 +28,7 @@ func (FeedInfoChecks) FeedInfoFeedPublisherNameExists(ctx context.Context, db *s
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "feed_info", "feed_publisher_name", "The feed_publisher_name field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "feed_info", "feed_publisher_name")
 	}
 
 	// 2. Check column and value presence

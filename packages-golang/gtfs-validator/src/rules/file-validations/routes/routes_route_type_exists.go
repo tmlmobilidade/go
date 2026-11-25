@@ -28,7 +28,7 @@ func (RoutesChecks) RoutesRouteTypeExists(ctx context.Context, db *sql.DB, confi
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "routes", "route_type", "The route_type field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "routes", "route_type")
 	}
 
 	// 2. Check column and value presence

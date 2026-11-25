@@ -25,15 +25,18 @@ func CheckForeignKey(ctx context.Context, db *sql.DB, config types.Rule, table, 
 	}
 
 	var findings []types.Finding
+	descriptionTranslation := types.NewTranslation("foreign_key", map[string]any{"field": column, "target_table": targetTable, "target_field": targetColumn})
 	err = ForEachValue(ctx, db, table, column, func(row int, value string) {
 		if _, ok := keys[value]; !ok {
 			findings = append(findings, types.Finding{
-				Description: fmt.Sprintf("The %s references a missing %s.%s value.", column, targetTable, targetColumn),
-				Message:     fmt.Sprintf("Unknown %s %q in %s.txt.", targetColumn, value, targetTable),
-				Severity:    config.Severity,
-				FileName:    table + ".txt",
-				Field:       column,
-				Rows:        []int{row},
+				Description:            fmt.Sprintf("The %s references a missing %s.%s value.", column, targetTable, targetColumn),
+				DescriptionTranslation: descriptionTranslation,
+				Message:                fmt.Sprintf("Unknown %s %q in %s.txt.", targetColumn, value, targetTable),
+				MessageTranslation:     types.NewTranslation("unknown_reference", map[string]any{"target_field": targetColumn, "value": value, "file": targetTable + ".txt"}),
+				Severity:               config.Severity,
+				FileName:               table + ".txt",
+				Field:                  column,
+				Rows:                   []int{row},
 			})
 		}
 	})

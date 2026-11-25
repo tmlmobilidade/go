@@ -28,7 +28,7 @@ func (FareAttributesChecks) FareAttributesTransferDurationExists(ctx context.Con
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "fare_attributes", "transfer_duration", "The transfer_duration field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "fare_attributes", "transfer_duration")
 	}
 
 	// 2. Check column and value presence

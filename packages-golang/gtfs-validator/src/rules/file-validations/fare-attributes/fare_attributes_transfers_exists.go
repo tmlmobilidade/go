@@ -29,7 +29,7 @@ func (FareAttributesChecks) FareAttributesTransfersExists(ctx context.Context, d
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "fare_attributes", "transfers", "The transfers field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "fare_attributes", "transfers")
 	}
 
 	// 2. Check whether the fare attributes table is present
@@ -47,10 +47,12 @@ func (FareAttributesChecks) FareAttributesTransfersExists(ctx context.Context, d
 	// 4. Return the missing column finding
 	const message = "The required transfers column is missing."
 	return false, []types.Finding{{
-		Description: message,
-		Message:     message,
-		Severity:    config.Severity,
-		FileName:    "fare_attributes.txt",
-		Field:       "transfers",
+		Description:            message,
+		DescriptionTranslation: types.NewTranslation("missing_column", map[string]any{"field": "transfers"}),
+		Message:                message,
+		MessageTranslation:     types.NewTranslation("missing_column", map[string]any{"field": "transfers"}),
+		Severity:               config.Severity,
+		FileName:               "fare_attributes.txt",
+		Field:                  "transfers",
 	}}, nil
 }

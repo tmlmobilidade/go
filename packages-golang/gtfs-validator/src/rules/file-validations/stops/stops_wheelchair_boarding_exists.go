@@ -28,7 +28,7 @@ func (StopsChecks) StopsWheelchairBoardingExists(ctx context.Context, db *sql.DB
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "stops", "wheelchair_boarding", "The wheelchair_boarding field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "stops", "wheelchair_boarding")
 	}
 
 	// 2. Check column and value presence

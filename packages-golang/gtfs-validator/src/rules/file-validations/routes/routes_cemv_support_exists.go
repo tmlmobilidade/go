@@ -28,7 +28,7 @@ func (RoutesChecks) RoutesCEMVSupportExists(ctx context.Context, db *sql.DB, con
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "routes", "cemv_support", "The cemv_support field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "routes", "cemv_support")
 	}
 
 	// 2. Check column and value presence

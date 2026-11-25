@@ -28,7 +28,7 @@ func (ShapesChecks) ShapesShapeIDExists(ctx context.Context, db *sql.DB, config 
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "shapes", "shape_id", "The shape_id field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "shapes", "shape_id")
 	}
 
 	// 2. Check column and value presence

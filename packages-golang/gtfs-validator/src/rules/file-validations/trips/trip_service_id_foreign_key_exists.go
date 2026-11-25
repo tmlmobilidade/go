@@ -58,7 +58,16 @@ func (TripsChecks) TripServiceIDForeignKeyExists(ctx context.Context, db *sql.DB
 				return nil
 			}
 		}
-		findings = append(findings, types.Finding{Description: "The service_id references a missing service_id.", Message: fmt.Sprintf("Unknown service_id %q.", value), Severity: config.Severity, FileName: "trips.txt", Field: "service_id", Rows: []int{row}})
+		findings = append(findings, types.Finding{
+			Description:            "The service_id references a missing service_id.",
+			DescriptionTranslation: types.NewTranslation("missing_reference_value", map[string]any{"field": "service_id", "target_field": "service_id"}),
+			Message:                fmt.Sprintf("Unknown service_id %q.", value),
+			MessageTranslation:     types.NewTranslation("missing_reference_value", map[string]any{"target_field": "service_id", "value": value}),
+			Severity:               config.Severity,
+			FileName:               "trips.txt",
+			Field:                  "service_id",
+			Rows:                   []int{row},
+		})
 		return nil
 	})
 

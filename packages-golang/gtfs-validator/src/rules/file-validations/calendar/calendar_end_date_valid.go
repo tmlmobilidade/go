@@ -29,7 +29,7 @@ func (CalendarChecks) CalendarEndDateValid(ctx context.Context, db *sql.DB, conf
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "calendar", "end_date", "The end_date field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "calendar", "end_date")
 	}
 
 	// 2. Check the format of supplied values

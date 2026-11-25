@@ -46,12 +46,14 @@ func (StopsChecks) StopsParentStationRequired(ctx context.Context, db *sql.DB, c
 		present := strings.TrimSpace(value) != ""
 		if locationType >= 2 && locationType <= 4 && !present {
 			findings = append(findings, types.Finding{
-				Description: "A parent_station is required for location types 2, 3, and 4.",
-				Message:     fmt.Sprintf("The parent_station is missing for location_type %d.", locationType),
-				Severity:    config.Severity,
-				FileName:    "stops.txt",
-				Field:       "parent_station",
-				Rows:        []int{row},
+				Description:            "A parent_station is required for location types 2, 3, and 4.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The parent_station is missing for location_type %d.", locationType),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"location_type": locationType}),
+				Severity:               config.Severity,
+				FileName:               "stops.txt",
+				Field:                  "parent_station",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

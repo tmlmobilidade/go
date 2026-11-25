@@ -33,12 +33,14 @@ func (AgencyChecks) AgencyIDMatchedWithAgencyName(ctx context.Context, db *sql.D
 		name := values[nameColumn]
 		if !slices.Contains(comparisons, types.RuleComparison{Key: id, Value: name}) {
 			findings = append(findings, types.Finding{
-				Description: "An agency ID and name pair is outside the configured pairs.",
-				Severity:    config.Severity,
-				Message:     fmt.Sprintf("Agency ID %q has an unexpected name %q.", id, name),
-				FileName:    agencyFile,
-				Field:       idColumn,
-				Rows:        []int{row},
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"id": id, "name": name}),
+				Description:            "An agency ID and name pair is outside the configured pairs.",
+				Severity:               config.Severity,
+				Message:                fmt.Sprintf("Agency ID %q has an unexpected name %q.", id, name),
+				FileName:               agencyFile,
+				Field:                  idColumn,
+				Rows:                   []int{row},
 			})
 		}
 		return nil

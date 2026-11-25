@@ -108,12 +108,14 @@ shapeLoop:
 			distance := geo.DistanceMeters(previous.position, current.position)
 			if distance > limitMeters {
 				findings = append(findings, types.Finding{
-					Description: "The distance between consecutive shape points exceeds the configured maximum.",
-					Message:     fmt.Sprintf("Shape %q has a %.2f m segment from sequence %d to %d. The maximum is %g m.", id, distance, previous.sequence, current.sequence, limitMeters),
-					Severity:    config.Severity,
-					FileName:    "shapes.txt",
-					Field:       "shape_pt_lat, shape_pt_lon",
-					Rows:        []int{previous.row, current.row},
+					Description:            "The distance between consecutive shape points exceeds the configured maximum.",
+					DescriptionTranslation: types.NewTranslation("default", nil),
+					Message:                fmt.Sprintf("Shape %q has a %.2f m segment from sequence %d to %d. The maximum is %g m.", id, distance, previous.sequence, current.sequence, limitMeters),
+					MessageTranslation:     types.NewTranslation("default", map[string]any{"shape_id": id, "distance": fmt.Sprintf("%.2f", distance), "previous": previous.sequence, "current": current.sequence, "limit": fmt.Sprintf("%g", limitMeters)}),
+					Severity:               config.Severity,
+					FileName:               "shapes.txt",
+					Field:                  "shape_pt_lat, shape_pt_lon",
+					Rows:                   []int{previous.row, current.row},
 				})
 			}
 		}

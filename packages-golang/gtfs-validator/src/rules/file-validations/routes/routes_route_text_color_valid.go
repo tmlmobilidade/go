@@ -29,7 +29,7 @@ func (RoutesChecks) RoutesRouteTextColorValid(ctx context.Context, db *sql.DB, c
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "routes", "route_text_color", "The route_text_color field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "routes", "route_text_color")
 	}
 
 	// 2. Check the format of supplied values

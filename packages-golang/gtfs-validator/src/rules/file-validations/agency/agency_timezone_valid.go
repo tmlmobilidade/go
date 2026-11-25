@@ -25,12 +25,14 @@ func (AgencyChecks) AgencyTimezoneValid(ctx context.Context, db *sql.DB, config 
 		value = strings.TrimSpace(value)
 		if !validators.ValidateTimezone(value) {
 			findings = append(findings, types.Finding{
-				Description: description,
-				Severity:    config.Severity,
-				Message:     fmt.Sprintf("Invalid IANA timezone %q.", value),
-				FileName:    agencyFile,
-				Field:       timezoneColumn,
-				Rows:        []int{row},
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				MessageTranslation:     types.NewTranslation("invalid_timezone", map[string]any{"value": value}),
+				Description:            description,
+				Severity:               config.Severity,
+				Message:                fmt.Sprintf("Invalid IANA timezone %q.", value),
+				FileName:               agencyFile,
+				Field:                  timezoneColumn,
+				Rows:                   []int{row},
 			})
 			return
 		}
@@ -44,12 +46,14 @@ func (AgencyChecks) AgencyTimezoneValid(ctx context.Context, db *sql.DB, config 
 	// 2. Report inconsistent timezones across agencies
 	if len(timezones) > 1 {
 		findings = append(findings, types.Finding{
-			Description: description,
-			Severity:    config.Severity,
-			Message:     "All agencies in the feed must use the same timezone.",
-			FileName:    agencyFile,
-			Field:       timezoneColumn,
-			Rows:        validRows,
+			DescriptionTranslation: types.NewTranslation("default", nil),
+			MessageTranslation:     types.NewTranslation("inconsistent_timezones", nil),
+			Description:            description,
+			Severity:               config.Severity,
+			Message:                "All agencies in the feed must use the same timezone.",
+			FileName:               agencyFile,
+			Field:                  timezoneColumn,
+			Rows:                   validRows,
 		})
 	}
 

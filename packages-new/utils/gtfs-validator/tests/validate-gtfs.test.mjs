@@ -41,7 +41,9 @@ test('returns completed reports and rejects a failed feed import', async (t) => 
 	assert.deepEqual(invalid.totals, { errors: 1, infos: 1, warnings: 1 });
 	const forbidden = invalid.results.find(result => result.rule_id === 'agency_file_exists');
 	assert.equal(forbidden.severity, 'error');
-	assert.deepEqual(forbidden.messages[0], { message: 'The forbidden agency.txt file is present.', rows: [] });
+	const forbiddenTranslation = { values: { file: 'agency.txt' }, variant: 'forbidden_file' };
+	assert.deepEqual(forbidden.description_translation, forbiddenTranslation);
+	assert.deepEqual(forbidden.messages[0], { message: 'The forbidden agency.txt file is present.', rows: [], translation: forbiddenTranslation });
 	const options = invalid.results.find(result => result.rule_id === 'agency_name_valid');
 	assert.deepEqual(options.messages[0].rows, [2]);
 	await assert.rejects(validateGtfs({

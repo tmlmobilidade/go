@@ -75,12 +75,14 @@ func (RoutesChecks) RoutesRouteColorRouteTextColorContrast(ctx context.Context, 
 		contrast := (max(background, foreground) + 0.05) / (min(background, foreground) + 0.05)
 		if contrast < minimumContrast {
 			findings = append(findings, types.Finding{
-				Description: "The route text and background colors must have a contrast ratio of at least 4.5:1.",
-				Message:     fmt.Sprintf("The route_text_color %q and route_color %q have a contrast ratio of %.2f:1.", textColor, backgroundColor, contrast),
-				Severity:    config.Severity,
-				FileName:    "routes.txt",
-				Field:       "route_text_color",
-				Rows:        []int{row},
+				Description:            "The route text and background colors must have a contrast ratio of at least 4.5:1.",
+				DescriptionTranslation: types.NewTranslation("default", nil),
+				Message:                fmt.Sprintf("The route_text_color %q and route_color %q have a contrast ratio of %.2f:1.", textColor, backgroundColor, contrast),
+				MessageTranslation:     types.NewTranslation("default", map[string]any{"text": textColor, "background": backgroundColor, "contrast": fmt.Sprintf("%.2f", contrast)}),
+				Severity:               config.Severity,
+				FileName:               "routes.txt",
+				Field:                  "route_text_color",
+				Rows:                   []int{row},
 			})
 		}
 		return nil

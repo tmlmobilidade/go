@@ -157,6 +157,7 @@ func (PatternChecks) PatternSameStopDistTraveled(ctx context.Context, db *sql.DB
 		ids := groups[key]
 		reference := trips[ids[0]]
 		var difference string
+		var translation *types.Translation
 		for _, id := range ids[1:] {
 			candidate := trips[id]
 			if reference.hash == candidate.hash {
@@ -164,11 +165,19 @@ func (PatternChecks) PatternSameStopDistTraveled(ctx context.Context, db *sql.DB
 			}
 			if len(reference.times) != len(candidate.times) {
 				difference = fmt.Sprintf("Trips %q and %q have %d and %d distances, respectively.", ids[0], id, len(reference.times), len(candidate.times))
+				translation = types.NewTranslation("different_count", map[string]any{
+					"route_id": key.route, "direction_id": key.direction, "reference": ids[0], "candidate": id,
+					"first": len(reference.times), "second": len(candidate.times),
+				})
 				break
 			}
 			for i, time := range reference.times {
 				if other := candidate.times[i]; time.distance != other.distance {
 					difference = fmt.Sprintf("Trips %q and %q have shape_dist_traveled values %g and %g at position %d.", ids[0], id, time.distance, other.distance, i+1)
+					translation = types.NewTranslation("different_value", map[string]any{
+						"route_id": key.route, "direction_id": key.direction, "reference": ids[0], "candidate": id,
+						"first": fmt.Sprintf("%g", time.distance), "second": fmt.Sprintf("%g", other.distance), "position": i + 1,
+					})
 					break
 				}
 			}
@@ -185,12 +194,14 @@ func (PatternChecks) PatternSameStopDistTraveled(ctx context.Context, db *sql.DB
 		}
 		slices.Sort(rows)
 		findings = append(findings, types.Finding{
-			Description: "Trips with the same route_id and direction_id must have the same shape_dist_traveled list.",
-			Message:     fmt.Sprintf("Route %q with direction_id %q. %s", key.route, key.direction, difference),
-			Severity:    config.Severity,
-			FileName:    "stop_times.txt",
-			Field:       "shape_dist_traveled",
-			Rows:        rows,
+			Description:            "Trips with the same route_id and direction_id must have the same shape_dist_traveled list.",
+			DescriptionTranslation: types.NewTranslation("default", nil),
+			Message:                fmt.Sprintf("Route %q with direction_id %q. %s", key.route, key.direction, difference),
+			MessageTranslation:     translation,
+			Severity:               config.Severity,
+			FileName:               "stop_times.txt",
+			Field:                  "shape_dist_traveled",
+			Rows:                   rows,
 		})
 	}
 

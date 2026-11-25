@@ -28,7 +28,7 @@ func (VehiclesChecks) VehiclesVehiclePropulsionExists(ctx context.Context, db *s
 	//
 	// 1. Reject supplied values when the field is forbidden
 	if config.Severity == types.SEVERITY_FORBIDDEN {
-		return fields.CheckValues(ctx, db, config, "vehicles", "propulsion", "The propulsion field must be empty.", func(string) bool { return false })
+		return fields.CheckForbiddenValues(ctx, db, config, "vehicles", "propulsion")
 	}
 
 	// 2. Check column and value presence

@@ -139,6 +139,7 @@ func (PatternChecks) PatternSameStopSequence(ctx context.Context, db *sql.DB, co
 		ids := groups[key]
 		reference := trips[ids[0]]
 		var difference string
+		var translation *types.Translation
 		for _, id := range ids[1:] {
 			candidate := trips[id]
 			if reference.hash == candidate.hash {
@@ -146,11 +147,19 @@ func (PatternChecks) PatternSameStopSequence(ctx context.Context, db *sql.DB, co
 			}
 			if len(reference.times) != len(candidate.times) {
 				difference = fmt.Sprintf("Trips %q and %q have %d and %d stop times, respectively.", ids[0], id, len(reference.times), len(candidate.times))
+				translation = types.NewTranslation("different_count", map[string]any{
+					"route_id": key.route, "direction_id": key.direction, "reference": ids[0], "candidate": id,
+					"first": len(reference.times), "second": len(candidate.times),
+				})
 				break
 			}
 			for i, time := range reference.times {
 				if other := candidate.times[i]; time.sequence != other.sequence {
 					difference = fmt.Sprintf("Trips %q and %q have stop_sequence values %d and %d at sorted position %d.", ids[0], id, time.sequence, other.sequence, i+1)
+					translation = types.NewTranslation("different_value", map[string]any{
+						"route_id": key.route, "direction_id": key.direction, "reference": ids[0], "candidate": id,
+						"first": time.sequence, "second": other.sequence, "position": i + 1,
+					})
 					break
 				}
 			}
@@ -167,12 +176,14 @@ func (PatternChecks) PatternSameStopSequence(ctx context.Context, db *sql.DB, co
 		}
 		slices.Sort(rows)
 		findings = append(findings, types.Finding{
-			Description: "Trips with the same route_id and direction_id must have the same stop sequence.",
-			Message:     fmt.Sprintf("Route %q with direction_id %q. %s", key.route, key.direction, difference),
-			Severity:    config.Severity,
-			FileName:    "stop_times.txt",
-			Field:       "stop_sequence",
-			Rows:        rows,
+			Description:            "Trips with the same route_id and direction_id must have the same stop sequence.",
+			DescriptionTranslation: types.NewTranslation("default", nil),
+			Message:                fmt.Sprintf("Route %q with direction_id %q. %s", key.route, key.direction, difference),
+			MessageTranslation:     translation,
+			Severity:               config.Severity,
+			FileName:               "stop_times.txt",
+			Field:                  "stop_sequence",
+			Rows:                   rows,
 		})
 	}
 
