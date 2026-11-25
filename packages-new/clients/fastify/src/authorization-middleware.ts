@@ -76,7 +76,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 			// Send the error response
 			return sendErrorApiResponse(reply, {
 				error: error.message || 'Authorization Middleware Error: Could not load user data',
-				status_code: '500',
+				status_code: '401', // Unauthorized
 			});
 		}
 
@@ -96,7 +96,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 			// Send the error response
 			return sendErrorApiResponse(reply, {
 				error: error.message || 'Authorization Middleware Error: Could not load permissions data',
-				status_code: '500',
+				status_code: '401', // Unauthorized
 			});
 		}
 
@@ -116,7 +116,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 			// Send the error response
 			return sendErrorApiResponse(reply, {
 				error: error.message || 'Authorization Middleware Error: Could not load organization data',
-				status_code: '500',
+				status_code: '401', // Unauthorized
 			});
 		}
 
@@ -128,7 +128,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 			const isAllowed = scopeOrChecks.some(check => isPermissionCheckAllowed(request.permissions, check));
 			if (!isAllowed) return sendErrorApiResponse(reply, {
 				error: `Insufficient permissions | User: ${request.me._id}`,
-				status_code: '403',
+				status_code: '401', // Unauthorized
 			});
 			return;
 		}
@@ -144,7 +144,7 @@ export function authorizationMiddleware<S extends Permission['scope']>(scopeOrCh
 		if (!isAllowed) {
 			return sendErrorApiResponse(reply, {
 				error: `Insufficient permissions | User: ${request.me._id} | Scope: "${scopeOrChecks}" | Actions: [${actions.join(',')}]`,
-				status_code: '403',
+				status_code: '401', // Unauthorized
 			});
 		}
 
