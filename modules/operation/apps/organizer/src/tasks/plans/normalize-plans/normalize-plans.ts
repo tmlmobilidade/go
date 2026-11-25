@@ -10,14 +10,15 @@ import path from 'node:path';
 import { ZipFile } from 'yazl';
 
 import { initNormalizePlansTaskContext } from './context/init-context.js';
-import { updateAgencyTxtContents } from './steps/agency.js';
-import { updateFeedInfoTxtContents } from './steps/feed-info.js';
-import { rewriteShapeIdsToPatternIds } from './steps/shapes.js';
+import { addMunicipalityIdsToStopsTxt } from './steps/add-municipality-ids.js';
+import { replaceAgencyTxtContents } from './steps/replace-agency.js';
+import { replaceFeedInfoTxtContents } from './steps/replace-feed-info.js';
+import { rewriteShapeIdsToPatternIds } from './steps/rewrite-shape-ids.js';
 
 /**
  * This task makes sure the associated GTFS files of plan documents have the correct
- * agency.txt and feed_info.txt information, and that the shape_id values of trips.txt
- * and shapes.txt match the pattern_id of each trip.
+ * agency.txt and feed_info.txt information, adds municipality IDs to stops.txt, and
+ * aligns the shape_id values of trips.txt and shapes.txt with each trip's pattern_id.
  * This will download the zip archive, unzip it, check and update the necessary files,
  * re-zip it and upload it again, for each plan document.
  */
@@ -86,9 +87,14 @@ export async function normalizePlansTask() {
 			// Update the agency.txt and feed_info.txt files
 			// in the extracted directory with normalized data.
 
-			updateAgencyTxtContents(context);
+			replaceAgencyTxtContents(context);
 
-			updateFeedInfoTxtContents(context);
+			replaceFeedInfoTxtContents(context);
+
+			//
+			// Add municipality IDs to stops.txt
+
+			await addMunicipalityIdsToStopsTxt(context);
 
 			//
 			// Align the shape_id values of trips.txt and shapes.txt with the pattern_id
@@ -185,7 +191,7 @@ export async function normalizePlansTask() {
 				planId: planData._id,
 			});
 
-			await goDb.operation.plans.updateById(planData._id, { hash: newHashValue });
+			await goDb.operation.plans.updateOne({ _id: planData._id }, { hash: newHashValue });
 
 			await setPlanStatus(planData._id, 'organizer', 'complete', newHashValue);
 
