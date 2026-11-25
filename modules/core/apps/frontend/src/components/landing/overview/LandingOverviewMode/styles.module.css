@@ -1,0 +1,21 @@
+/* * */
+/* TOGGLE */
+
+.toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	color: var(--color-system-text-200);
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+.toggle:hover {
+	color: var(--color-system-text-100);
+}
+
+.toggle:active {
+	transform: scale(0.95);
+}

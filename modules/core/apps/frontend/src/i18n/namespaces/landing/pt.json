@@ -1,11 +1,16 @@
 {
 	"LandingFooter": {
 		"links": {
+			"documentation": "Documentação",
 			"github": "GitHub",
 			"infrastructure": "Infraestrutura",
 			"roadmap": "Roadmap",
 			"status": "Estado"
 		}
+	},
+	"LandingHeader": {
+		"login": "Login",
+		"toggle_mode": "Alternar modo escuro"
 	},
 	"LandingMap": {
 		"close": "Fechar mapa",
@@ -71,22 +76,37 @@
 		}
 	},
 	"LandingOverview": {
-		"actions": {
-			"explore": "Explorar",
-			"login": "Login"
-		},
 		"description": "O GO é uma plataforma que responde às necessidades das autoridades e dos operadores de transporte, de forma ágil e intuitiva.",
 		"title": "Uma nova forma de trabalhar transportes públicos em Portugal."
 	},
 	"LandingOverviewLinks": {
-		"label": "Links rápidos",
-		"links": {
-			"apex": "Sistema APEX",
-			"documentation": "Documentação",
-			"gtfs": "Standard GTFS",
-			"open_data": "API Dados Abertos",
-			"open_services": "Serviços Abertos",
-			"roadmap": "Roadmap"
+		"developers": {
+			"label": "Para programadores",
+			"links": {
+				"open_data": {
+					"description": "Posições dos veículos em tempo real, dados da rede e previsões de chegada, para usar nas tuas apps.",
+					"title": "API Dados Abertos"
+				},
+				"open_services": {
+					"description": "Planeamento de viagens, alertas e tempos de chegada prontos a integrar nos teus produtos.",
+					"title": "Serviços Abertos"
+				}
+			},
+			"title": "Constrói com os dados abertos do GO"
+		},
+		"operators": {
+			"label": "Para operadores e autoridades",
+			"links": {
+				"apex": {
+					"description": "Os dados de bilhética e validações registados nos veículos, prontos a analisar.",
+					"title": "Sistema APEX"
+				},
+				"gtfs": {
+					"description": "O formato aberto de horários e rede que apps como o Google Maps leem.",
+					"title": "Standard GTFS"
+				}
+			},
+			"title": "Gere a tua rede com o GO"
 		}
 	},
 	"LandingStats": {

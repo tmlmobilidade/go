@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './styles.module.css';
 
 import { LandingMapVehiclePopup } from '../LandingMapVehiclePopup';
+import { useDocumentThemeMode } from './use-document-theme-mode';
 import { useLandingVehiclesData } from './use-landing-vehicles-data';
 import { setVehicleArrowImage, usePrimaryColor, VEHICLE_ARROW_IMAGE } from './vehicle-arrow';
 
@@ -44,6 +45,7 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 
 	const { data, geoJson } = useLandingVehiclesData();
 	const primaryColor = usePrimaryColor();
+	const themeMode = useDocumentThemeMode();
 	const [hoveredVehicleKey, setHoveredVehicleKey] = useState<null | string>(null);
 	const closeTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -87,6 +89,7 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={scheduleClose}
 					showSearchPin={false}
+					themeMode={themeMode}
 					toolbar={false}
 				>
 					<LandingMapViewport features={fitToVehicles ? geoJson.features : undefined} />

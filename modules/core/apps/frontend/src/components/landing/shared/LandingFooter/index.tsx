@@ -1,5 +1,6 @@
 'use client';
 
+import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { Image, Section, WhenMode } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +19,7 @@ export function LandingFooter() {
 	const { t } = useTranslation();
 
 	const footerLinks = [
+		{ href: `${PAGE_ROUTES.root.BASE}/hub/reference`, label: t('landing:LandingFooter.links.documentation') },
 		{ href: '#', label: t('landing:LandingFooter.links.github') },
 		{ href: '#', label: t('landing:LandingFooter.links.status') },
 		{ href: '#', label: t('landing:LandingFooter.links.roadmap') },
