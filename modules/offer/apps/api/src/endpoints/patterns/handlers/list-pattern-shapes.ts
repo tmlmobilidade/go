@@ -5,7 +5,7 @@ import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type PatternsShapeMapItem, type PatternsShapeMapQuery, PatternsShapeMapQuerySchema } from '@tmlmobilidade/go-offer-pckg-types';
 import { filterPermissionResourceValues, PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
-const FULL_SHAPE_LIMIT = 100;
+const FULL_SHAPE_LIMIT = 2000;
 
 /**
  * Retrieves full or simplified overview shapes for the permitted agencies.

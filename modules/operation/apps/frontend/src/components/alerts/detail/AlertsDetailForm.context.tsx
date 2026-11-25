@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Alert, type UpdateAlertDto, UpdateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, type StandardFormContextValue, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -46,7 +46,7 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 
 	const { alertId } = useAlertsDetailAlertId();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate: alertsListMutate } = useAlertsListData();
 
@@ -117,46 +117,46 @@ export function AlertsDetailFormContextProvider({ children }: PropsWithChildren)
 	// D. Setup flags
 
 	const hasUpdatePermission = useMemo(() => {
-		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
+		const hasPermissionAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: alertData?.agency_id,
 			resourceKey: 'agency_ids',
 		});
-		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
+		const hasPermissionReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: alertData?.reference_type,
 			resourceKey: 'reference_types',
 		});
 		return hasPermissionAgencyId && hasPermissionReferenceType;
-	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
+	}, [alertData?.agency_id, alertData?.reference_type, mePermissions]);
 
 	const hasDuplicatePermission = useMemo(() => {
-		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
+		const hasPermissionAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'create', scope: 'alerts' },
 			requiredValue: alertData?.agency_id,
 			resourceKey: 'agency_ids',
 		});
-		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
+		const hasPermissionReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'create', scope: 'alerts' },
 			requiredValue: alertData?.reference_type,
 			resourceKey: 'reference_types',
 		});
 		return hasPermissionAgencyId && hasPermissionReferenceType;
-	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
+	}, [alertData?.agency_id, alertData?.reference_type, mePermissions]);
 
 	const hasDeletePermission = useMemo(() => {
-		const hasPermissionAgencyId = hasPermissionResource(meData?.permissions, {
+		const hasPermissionAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'delete', scope: 'alerts' },
 			requiredValue: alertData?.agency_id,
 			resourceKey: 'agency_ids',
 		});
-		const hasPermissionReferenceType = hasPermissionResource(meData?.permissions, {
+		const hasPermissionReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'delete', scope: 'alerts' },
 			requiredValue: alertData?.reference_type,
 			resourceKey: 'reference_types',
 		});
 		return hasPermissionAgencyId && hasPermissionReferenceType;
-	}, [alertData?.agency_id, alertData?.reference_type, meData?.permissions]);
+	}, [alertData?.agency_id, alertData?.reference_type, mePermissions]);
 
 	const { deleteEnabled, duplicateEnabled, editEnabled, updateEnabled } = useStandardFormCapabilities({
 		delete: {

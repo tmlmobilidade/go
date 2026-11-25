@@ -1,23 +1,94 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type AuthChangePasswordRequest, AuthChangePasswordRequestSchema, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
+import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
+import { sendPasswordChangedEmail } from '@tmlmobilidade/go-providers-emails';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import bcrypt from 'bcryptjs';
 
 /**
  * Change user password
  */
-export async function changePasswordHandler(request: FastifyRequest<{ Body: { password_hash: string, token: string } }>, reply: FastifyReply<void>) {
-	// Check if the verification token is valid
-	const tokenResult = await goDb.core.verificationTokens.findOne({ token: { $eq: request.body.token } });
-	// If the token is invalid or expired, throw an error
-	if (!tokenResult || tokenResult.expires_at < Dates.now('utc').unix_milliseconds) {
-		return sendErrorApiResponse(reply, { error: 'Invalid or expired token', status_code: '400' });
+export async function changePasswordHandler(request: FastifyRequest<{ Body: AuthChangePasswordRequest }>, reply: FastifyReply<void>) {
+	//
+
+	//
+	// Verify if the request body is valid
+
+	const validatedRequest = AuthChangePasswordRequestSchema.safeParse(request.body);
+
+	if (!validatedRequest.success) {
+		Logger.error({ message: `Invalid request body: ${validatedRequest.error.issues[0].message}` });
+		return sendErrorApiResponse(reply, {
+			error: validatedRequest.error.issues[0].message,
+			status_code: '400',
+		});
 	}
+
+	//
+	// Validate the password requirements
+
+	const passwordValidationResult = PasswordRequirementsSchema.safeParse(request.body.password);
+
+	if (!passwordValidationResult.success) {
+		Logger.error({ message: `Invalid password: ${passwordValidationResult.error.issues[0].message}` });
+		return sendErrorApiResponse(reply, {
+			error: passwordValidationResult.error.issues[0].message,
+			status_code: '400',
+		});
+	}
+
+	//
+	// Check if the verification token is valid
+
+	const foundVerificationToken = await goDb.core.verificationTokens.findOne({
+		expires_at: { $gt: Dates.now('utc').unix_milliseconds },
+		token: { $eq: hashAuthToken(request.body.token) },
+	});
+
+	if (!foundVerificationToken) {
+		Logger.error({ message: `Invalid or expired token` });
+		return sendErrorApiResponse(reply, {
+			error: 'Invalid or expired token',
+			status_code: '400',
+		});
+	}
+
+	//
 	// Update the user's password in the database
-	await goDb.core.users.updateById(tokenResult.user_id, { password_hash: request.body.password_hash });
-	// Once the token is validated, delete it from the database
-	await goDb.core.verificationTokens.deleteOne({ token: { $eq: request.body.token } });
+
+	const hashedPassword = await bcrypt.hash(request.body.password, 12);
+
+	const updatedUser = await goDb.core.users.updateOne(
+		{ _id: { $eq: foundVerificationToken.user_id } },
+		{ password_hash: hashedPassword },
+	);
+
+	//
+	// Once the token is validated, delete all tokens for the current user
+
+	await goDb.core.verificationTokens.deleteMany({ user_id: { $eq: foundVerificationToken.user_id } });
+
+	//
+	// Also delete all sessions for the current user
+
+	await goDb.core.sessions.deleteMany({ user_id: { $eq: foundVerificationToken.user_id } });
+
+	//
+	// Send the password changed email to the user
+
+	await sendPasswordChangedEmail({
+		data: {
+			firstName: updatedUser.first_name,
+		},
+		to: updatedUser.email,
+	});
+
+	//
 	// Send a success response
+
 	return sendSuccessApiResponse(reply, undefined);
 }

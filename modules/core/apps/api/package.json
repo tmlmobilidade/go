@@ -41,7 +41,7 @@
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
 		"@tmlmobilidade/strings": "*",
-		"zod": "4.6.7"
+		"bcryptjs": "3.0.3"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

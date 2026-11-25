@@ -113,8 +113,42 @@
 		"list": {
 			"PlansListCellFeedDates": {
 				"has_overlap": "The validity dates of this plan are overlapping with other plans. Only one plan should be active for a given period."
+			},
+			"PlansListHeader": {
+				"title": "Plans"
+			},
+			"PlansListHeaderMenu": {
+				"extract": "Export",
+				"extractPDFs": "Export PDFs"
 			}
 		}
+	},
+	"posterExport": {
+		"PlanPostersExtractBody": {
+			"canvasProfileAutomatic": "Automatic",
+			"canvasProfileDescription": "Choose Automatic to select the model per stop, or apply a fixed model to the exported PDFs.",
+			"canvasProfileLabel": "PDF model",
+			"canvas_profiles": {
+				"a": "Model A",
+				"b": "Model B",
+				"c": "Model C",
+				"f": "Model F"
+			},
+			"contentModeAll": "All",
+			"contentModeLabel": "Content to export",
+			"contentModeStops": "Stops",
+			"filterModeExclude": "All except selected",
+			"filterModeInclude": "Only selected",
+			"stop_filter_label": "Stops filter"
+		},
+		"PlanPostersExtractHeader": {
+			"exportButtonLabel": "Generate PDFs",
+			"title": "Generate PDFs"
+		},
+		"agenciesDescription": "Select operators and select a plan for each operator.",
+		"agenciesLabel": "Select operators",
+		"planDescription": "Select a single plan for this operator.",
+		"planLabel": "Select plan"
 	},
 	"rides": {
 		"acceptance": {

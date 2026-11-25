@@ -1,6 +1,5 @@
 'use client';
 
-import { IconArrowRight } from '@tabler/icons-react';
 import { Button, EnvironmentTag, keepUrlParams, Label, Section, Surface, TMLogoDark, TMLogoLight, WhenMode } from '@tmlmobilidade/ui';
 import { type PropsWithChildren, type SubmitEvent } from 'react';
 
@@ -61,15 +60,14 @@ export function AuthenticationForm({ children, description, footerLabel, footerU
 
 						<div className={styles.formFooter}>
 							<span
-								className={styles.resetLink}
+								className={styles.formFooterLink}
 								onClick={handleFooterClick}
 								style={{ cursor: 'pointer' }}
 							>
-								<Label size="sm" caps>{footerLabel}</Label>
+								{footerLabel}
 							</span>
 							<Button
 								disabled={submitDisabled}
-								icon={<IconArrowRight />}
 								label={submitLabel}
 								loading={loading}
 								type="submit"

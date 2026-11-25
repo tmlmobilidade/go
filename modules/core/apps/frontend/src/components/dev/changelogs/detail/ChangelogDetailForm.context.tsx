@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Changelog, ChangelogSchema, type UpdateChangelogDto, UpdateChangelogSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch, useToast } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,12 +46,12 @@ export function ChangelogDetailFormContextProvider({ children }: PropsWithChildr
 	const { t } = useTranslation();
 	const router = useRouter();
 	const { id } = useChangelogDetailId();
-	const { data: me } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 	const { data, error, isLoading, mutate } = useChangelogDetailData();
 	const { mutate: mutateList } = useChangelogListData();
 	const catalog = PermissionCatalog.all.changelogs;
-	const canDelete = PermissionCatalog.hasPermission(me?.permissions ?? [], catalog.scope, catalog.actions.delete);
-	const canUpdate = PermissionCatalog.hasPermission(me?.permissions ?? [], catalog.scope, catalog.actions.update);
+	const canDelete = PermissionCatalog.hasPermission(mePermissions ?? [], catalog.scope, catalog.actions.delete);
+	const canUpdate = PermissionCatalog.hasPermission(mePermissions ?? [], catalog.scope, catalog.actions.update);
 
 	//
 	// B. Set up validation and unsaved-change protection

@@ -8,6 +8,7 @@
 	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
+		"build": "turbo run build",
 		"build:apex": "turbo run build --filter=@tmlmobilidade/go-apex-*",
 		"build:apex:pcgi-stream": "turbo run build --filter=@tmlmobilidade/go-apex-pcgi-stream",
 		"build:apex:pcgi-sync": "turbo run build --filter=@tmlmobilidade/go-apex-pcgi-sync",

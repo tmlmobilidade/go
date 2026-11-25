@@ -1,28 +1,39 @@
 /* * */
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type UsersUpdateItemRequest, UsersUpdateItemRequestSchema, type UsersUpdateItemResponse, UsersUpdateItemResponseSchema } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/go-types-core';
 
 /**
  * Update a user in the database.
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function updateUserHandler(request: FastifyRequest<{ Body: UpdateUserDto, Params: { id: string } }>, reply: FastifyReply<User>) {
-	// Set the updated_by field to the current user id
-	request.body.updated_by = request.me._id;
+export async function updateUserHandler(request: FastifyRequest<{ Body: UsersUpdateItemRequest, Params: { id: string } }>, reply: FastifyReply<UsersUpdateItemResponse>) {
+	//
+
+	//
 	// Validate the request body against the UpdateUserDto schema
-	const validatedUserData = UpdateUserSchema.safeParse(request.body);
+
+	const validatedUserData = UsersUpdateItemRequestSchema.safeParse(request.body);
+
 	if (!validatedUserData.success) {
 		return sendErrorApiResponse(reply, { error: validatedUserData.error, status_code: '400' });
 	}
 
-	// Remove password field if not provided to avoid
-	// overwriting existing password with undefined
-	if (!validatedUserData.data.password_hash) delete validatedUserData.data.password_hash;
+	//
 	// Update the user in the database
-	const updateResult = await goDb.core.users.updateById(request.params.id, validatedUserData.data);
-	// Send the updated user data back in the response
-	return sendSuccessApiResponse(reply, updateResult);
+
+	const updateResult = await goDb.core.users.updateOne(
+		{ _id: request.params.id },
+		{ ...validatedUserData.data, updated_by: request.me._id },
+	);
+
+	//
+	// Send the updated user data back in the response,
+	// without the sensitive fields (password_hash, session_ids, verification_token_ids, etc.)
+
+	const updateResultResponse = UsersUpdateItemResponseSchema.parse(updateResult);
+
+	return sendSuccessApiResponse(reply, updateResultResponse);
 }

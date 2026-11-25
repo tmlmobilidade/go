@@ -2,14 +2,12 @@
 
 import { useStopsDetailFormContext } from '@/components/stops/detail/StopsDetailForm.context';
 import { useStopsDetailData } from '@/components/stops/detail/use-stops-detail-data';
-import { IconBus, IconPencil } from '@tabler/icons-react';
+import { IconPencil } from '@tabler/icons-react';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { Divider, IconButton, Label, Section, Surface, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Divider, IconButton, Label, Section, Surface, Text, useMePermissions, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import styles from './styles.module.css';
 
 import { openStopsDetailUpdateNameModal } from '../StopsDetailUpdateName.modal';
 
@@ -25,7 +23,7 @@ export function StopsDetailUpdateName() {
 
 	const { data } = useStopsDetailData();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { capabilities, form } = useStopsDetailFormContext();
 
@@ -40,13 +38,13 @@ export function StopsDetailUpdateName() {
 		if (!data?.location) return false;
 		const hasPermission = PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.stops.actions.edit_name,
-			permissions: meData?.permissions,
+			permissions: mePermissions,
 			resource_key: 'location_ids',
 			scope: PermissionCatalog.all.stops.scope,
 			value: locationSlotOsmIds(data.location),
 		});
 		return hasPermission && !capabilities.updateEnabled;
-	}, [data?.location, meData?.permissions, capabilities.updateEnabled]);
+	}, [data?.location, mePermissions, capabilities.updateEnabled]);
 
 	//
 	// C. Render components
