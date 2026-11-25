@@ -2,7 +2,6 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { storageProvider } from '@tmlmobilidade/go-providers-storage';
 
 /**
@@ -12,18 +11,6 @@ import { storageProvider } from '@tmlmobilidade/go-providers-storage';
  */
 export async function downloadExtractionHandler(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply<string>) {
 	//
-
-	//
-	// Extract the session token from authentication cookie
-
-	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
-
-	if (!sessionToken) {
-		return sendErrorApiResponse(reply, {
-			error: 'Session token not found',
-			status_code: '401',
-		});
-	}
 
 	//
 	// Retrieve extraction for the current user

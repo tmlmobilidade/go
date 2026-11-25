@@ -3,7 +3,7 @@
 import { AlertReferenceTypeValues, type CreateAlertDto, CreateAlertSchema } from '@tmlmobilidade/go-types-operation';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { ErrorDisplay, useMeContext, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { ErrorDisplay, useMePermissions, useStandardForm, type UseStandardFormReturnType, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 
 import { useAlertsAgenciesData } from '../shared/use-alerts-agencies-data';
@@ -26,7 +26,7 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 	//
 	// A. Setup variables
 
-	const meContext = useMeContext();
+	const { data: mePermissions } = useMePermissions();
 
 	//
 	// B. Setup form
@@ -183,7 +183,7 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		const enabledTypes = AlertReferenceTypeValues.filter(referenceTypeValue => !!matchingAgencyData.alerts.catalog?.[causeValue]?.[effectValue]?.[referenceTypeValue]);
 		if (!enabledTypes.length) return;
 		// Get user's permissions for alert creation to determine which reference types they can select.
-		const permissions = PermissionCatalog.get(meContext.data.user.permissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
+		const permissions = PermissionCatalog.get(mePermissions, PermissionCatalog.all.alerts.scope, PermissionCatalog.all.alerts.actions.create);
 		const allowAllReferenceTypes = permissions?.resources.reference_types.includes(PermissionCatalog.ALLOW_ALL_FLAG);
 		const allowedReferenceTypes = permissions?.resources.reference_types ?? [];
 		// Auto-select the best reference_type based on permissions.
@@ -195,7 +195,7 @@ export function AlertsCreateFormContextProvider({ children }: PropsWithChildren)
 		else console.log(`[Form] No enabled "reference_type" options available to set as default -> cause: "${causeValue}", effect: "${effectValue}"`);
 		// eslint-disable-next-line no-console
 		console.log(`[Form] Auto-selected "reference_type" options based on "cause"/"effect" change and user permissions -> cause: "${causeValue}", effect: "${effectValue}"`);
-	}, [agenciesData, agencyIdValue, causeValue, effectValue, form, meContext.data.user.permissions, referenceTypeValue]);
+	}, [agenciesData, agencyIdValue, causeValue, effectValue, form, mePermissions, referenceTypeValue]);
 
 	/**
 	 * Auto-select "references" when "reference_type"

@@ -2,7 +2,7 @@
 
 import { AlertCauseValues, AlertEffectValues } from '@tmlmobilidade/go-types-operation';
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select, StandardFormController, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { AlertCauseIcons, AlertEffectIcons, Collapsible, Grid, Section, Select, StandardFormController, useMePermissions, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +18,7 @@ export function AlertsDetailSectionCauseEffect() {
 
 	const { t } = useTranslation();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { form } = useAlertsDetailFormContext();
 
@@ -29,18 +29,18 @@ export function AlertsDetailSectionCauseEffect() {
 	// B. Transform data
 
 	const hasPermissionToUpdate = useMemo(() => {
-		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
+		const permissionForAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: agencyIdValue,
 			resourceKey: 'agency_ids',
 		});
-		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
+		const permissionForReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: referenceTypeValue,
 			resourceKey: 'reference_types',
 		});
 		return permissionForAgencyId && permissionForReferenceType;
-	}, [agencyIdValue, meData?.permissions, referenceTypeValue]);
+	}, [agencyIdValue, mePermissions, referenceTypeValue]);
 
 	const causeItems = AlertCauseValues.map(cause => ({
 		icon: AlertCauseIcons[cause],

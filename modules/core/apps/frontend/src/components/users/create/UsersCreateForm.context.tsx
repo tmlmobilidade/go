@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { CreateUserDto, CreateUserSchema, User } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -30,7 +30,7 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 
 	const router = useRouter();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate } = useUsersListData();
 
@@ -60,11 +60,11 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 	// C. Setup flags
 
 	const hasCreatePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'create',
 			scope: 'users',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
 		create: {

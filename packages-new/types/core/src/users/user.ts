@@ -23,7 +23,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 export const UserSchema = BaseDocumentSchema.extend({
 	dismissed_banners: z.array(UserBannerDismissalSchema).default([]),
-	email: z.string().email(),
+	email: z.email(),
 	email_verified: UnixMillisecondsSchema.nullable().default(null),
 	first_name: z.string().min(2),
 	last_name: z.string().min(2),

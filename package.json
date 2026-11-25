@@ -8,6 +8,7 @@
 	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
+		"build": "turbo run build",
 		"build:apex": "turbo run build --filter=@tmlmobilidade/go-apex-*",
 		"build:apex:pcgi-stream": "turbo run build --filter=@tmlmobilidade/go-apex-pcgi-stream",
 		"build:apex:pcgi-sync": "turbo run build --filter=@tmlmobilidade/go-apex-pcgi-sync",
@@ -178,6 +179,7 @@
 		"prd:tracker:pt-tml-ttsl": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tml-ttsl-*",
 		"prd:tracker:pt-tmp-unir": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-pt-tmp-unir-*",
 		"prd:tracker:rawdb-sync": "npm run build:tracker:pckg && npm run repo:load-env-prd -- turbo run dev --filter=@tmlmobilidade/go-tracker-rawdb-sync",
+
 		"repo:assets": "bash ./scripts/set-public-symlinks.sh",
 		"repo:build": "turbo build --filter=./packages-new/**/* && turbo build --filter=./packages/**/* && turbo build --filter=./modules/**/packages/**/* && turbo build --filter=./cli/**/*",
 		"repo:deps": "npx --yes @tmlmobilidade/repo-deps",

@@ -24,7 +24,7 @@ export function useMapBottomSheet() {
 	// A. Setup variables
 
 	const { activeBottomSheet, activeBottomSheetSnap, snapActiveBottomSheet } = useBottomSheet();
-	const ignoredMapFitRef = useRef<null | { navigationEntry: typeof activeBottomSheet, snapPoint: number }>(null);
+	const ignoredMapFitRef = useRef<null | { navigationEntry: typeof activeBottomSheet, snapIndex: number }>(null);
 
 	const compactSnapPoint = MAP_BOTTOM_SHEET_SNAP_POINTS[MAP_BOTTOM_SHEET_INITIAL_SNAP];
 
@@ -43,13 +43,13 @@ export function useMapBottomSheet() {
 		};
 	}, [activeBottomSheetSnap.snapPoint, compactSnapPoint]);
 
-	const shouldFitMap = ignoredMapFitRef.current?.navigationEntry !== activeBottomSheet || ignoredMapFitRef.current?.snapPoint !== activeBottomSheetSnap.snapPoint;
+	const shouldFitMap = ignoredMapFitRef.current?.navigationEntry !== activeBottomSheet || ignoredMapFitRef.current?.snapIndex !== activeBottomSheetSnap.snapIndex;
 
 	useEffect(() => {
 		if (ignoredMapFitRef.current === null) return;
-		if (activeBottomSheet === ignoredMapFitRef.current.navigationEntry && activeBottomSheetSnap.snapPoint === ignoredMapFitRef.current.snapPoint) return;
+		if (activeBottomSheet === ignoredMapFitRef.current.navigationEntry && activeBottomSheetSnap.snapIndex === ignoredMapFitRef.current.snapIndex) return;
 		ignoredMapFitRef.current = null;
-	}, [activeBottomSheet, activeBottomSheetSnap.snapPoint]);
+	}, [activeBottomSheet, activeBottomSheetSnap.snapIndex]);
 
 	//
 	// C. Handle actions
@@ -61,12 +61,12 @@ export function useMapBottomSheet() {
 			snapIndex: activeBottomSheetSnap.snapIndex,
 		});
 		if (collapseTarget === null) return;
-		if (ignoredMapFitRef.current?.navigationEntry === activeBottomSheet && ignoredMapFitRef.current.snapPoint === compactSnapPoint) return;
+		if (ignoredMapFitRef.current?.navigationEntry === activeBottomSheet && ignoredMapFitRef.current.snapIndex === collapseTarget) return;
 
-		ignoredMapFitRef.current = { navigationEntry: activeBottomSheet, snapPoint: compactSnapPoint };
+		ignoredMapFitRef.current = { navigationEntry: activeBottomSheet, snapIndex: collapseTarget };
 		const didSnap = snapActiveBottomSheet(collapseTarget);
 		if (!didSnap) ignoredMapFitRef.current = null;
-	}, [activeBottomSheet, activeBottomSheetSnap.snapIndex, compactSnapPoint, snapActiveBottomSheet]);
+	}, [activeBottomSheet, activeBottomSheetSnap.snapIndex, snapActiveBottomSheet]);
 
 	//
 	// D. Return data

@@ -16,12 +16,23 @@
 		"footer": {
 			"label": "Volver al inicio de sesión"
 		},
+		"password_requirements": {
+			"excessive_bytes": "La contraseña no es demasiado larga",
+			"min_length": "La contraseña tiene al menos {value} caracteres",
+			"min_lower_case": "La contraseña tiene al menos {value} carácter(es) minúsculo(s)",
+			"min_number": "La contraseña tiene al menos {value} número(s)",
+			"min_special_char": "La contraseña tiene al menos {value} carácter(es) especial(es)",
+			"min_upper_case": "La contraseña tiene al menos {value} carácter(es) mayúsculo(s)",
+			"mismatch": "Las contraseñas coinciden",
+			"not_common_passwords": "La contraseña no es una contraseña común"
+		},
 		"submit": {
 			"label": "Confirmar"
 		},
 		"success": {
-			"description": "Contraseña cambiada correctamente.",
-			"title": "Éxito"
+			"description": "Ya puede utilizarla para iniciar sesión en su cuenta.",
+			"footnote": "Será automaticamente redirecionado para la página de inicio de sesión dentro de momentos...",
+			"title": "La contraseña ha sido cambiada con éxito"
 		},
 		"title": "Cambiar contraseña"
 	},
@@ -69,8 +80,8 @@
 			"label": "Enviar email"
 		},
 		"success": {
-			"description": "Email de recuperación enviado correctamente",
-			"title": "Éxito"
+			"description": "Utilice el enlace que se ha enviado a su email para definir una nueva contraseña.",
+			"title": "Verifique su email"
 		},
 		"title": "Recuperar contraseña"
 	}

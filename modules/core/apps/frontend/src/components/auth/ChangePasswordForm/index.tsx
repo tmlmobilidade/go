@@ -3,19 +3,19 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { getPasswordRequirements, type Session } from '@tmlmobilidade/go-types-core';
-import { translateValidationMessage } from '@tmlmobilidade/go-utils-validation';
-import { fetchApiData, PasswordInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
+import { type AuthChangePasswordRequest, passwordRequirementsConditions, passwordRequirementsKeys, PasswordRequirementsSchema } from '@tmlmobilidade/go-core-pckg-types';
+import { type Session } from '@tmlmobilidade/go-types-core';
+import { fetchApiData, Label, PasswordInput, Section, Surface, TextInput, useHandleAction, useQueryState } from '@tmlmobilidade/ui';
 import { useToast } from '@tmlmobilidade/ui';
-import bcrypt from 'bcryptjs';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
-interface PasswordValidation {
+interface PasswordRequirement {
+	_id: string
 	message: string
 	valid: boolean
 }
@@ -28,8 +28,7 @@ export function ChangePasswordForm() {
 	//
 	// A. Setup variables
 
-	const { i18n, t } = useTranslation();
-	const locale = i18n.resolvedLanguage ?? i18n.language;
+	const { t } = useTranslation();
 
 	const [tokenValue] = useQueryState('token');
 	const [emailValue] = useQueryState('email');
@@ -37,22 +36,34 @@ export function ChangePasswordForm() {
 	const [passwordValue, setPasswordValue] = useState('');
 	const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
 
+	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
 	//
 	// B. Transform data
 
-	const validationErrors: PasswordValidation[] = useMemo(() => {
-		const errors: PasswordValidation[] = getPasswordRequirements(passwordValue).map(requirement => ({
-			message: translateValidationMessage(requirement.key, requirement.values, locale),
-			valid: requirement.valid,
+	const validationErrors: PasswordRequirement[] = useMemo(() => {
+		// Setup an array of requirements
+		const passwordRequirements: PasswordRequirement[] = passwordRequirementsKeys.map(key => ({
+			_id: key,
+			message: t(`unauthenticated:ChangePasswordForm.password_requirements.${key}`, '', { value: passwordRequirementsConditions[key] }),
+			valid: true,
 		}));
-		if (passwordValue !== confirmPasswordValue) {
-			errors.push({
-				message: translateValidationMessage('custom.password.mismatch', {}, locale),
-				valid: false,
-			});
-		}
-		return errors;
-	}, [passwordValue, confirmPasswordValue, locale]);
+		// Validate the password
+		const validationResult = PasswordRequirementsSchema.safeParse(passwordValue);
+		// Populate the requirements with the validation result
+		validationResult.error?.issues.forEach((issue) => {
+			const requirement = passwordRequirements.find(requirement => requirement._id === issue.message);
+			if (requirement) requirement.valid = false;
+		});
+		// Validate the confirm password
+		passwordRequirements.push({
+			_id: 'mismatch',
+			message: t('unauthenticated:ChangePasswordForm.password_requirements.mismatch'),
+			valid: confirmPasswordValue === passwordValue,
+		});
+		// Return the requirements
+		return passwordRequirements;
+	}, [t, passwordValue, confirmPasswordValue]);
 
 	const isDisabled = useMemo(() => {
 		return validationErrors.some(error => !error.valid);
@@ -61,8 +72,19 @@ export function ChangePasswordForm() {
 	//
 	// C. Handle actions
 
+	useEffect(() => {
+		// Skip if the token is present
+		if (tokenValue) return;
+		// Otherwise, redirect to the login page
+		window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
+	}, [tokenValue]);
+
 	const { action: handleChangePassword, isLoading: isChangingPassword } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Session>({ body: { password_hash: bcrypt.hashSync(passwordValue), token: tokenValue }, method: 'POST', url: API_ROUTES.core.AUTH_CHANGE_PASSWORD }),
+		fetchFn: async () => await fetchApiData<Session, AuthChangePasswordRequest>({
+			body: { password: passwordValue, token: tokenValue },
+			method: 'POST',
+			url: API_ROUTES.core.AUTH_CHANGE_PASSWORD,
+		}),
 		onError: ({ message }) => {
 			useToast.error({
 				message: message ?? t('unauthenticated:ChangePasswordForm.error_message.description'),
@@ -70,8 +92,8 @@ export function ChangePasswordForm() {
 			});
 		},
 		onSuccess: async () => {
-			// Show success message and redirect to login page
-			useToast.success({ message: t('unauthenticated:ChangePasswordForm.success.description'), title: t('unauthenticated:ChangePasswordForm.success.title') });
+			// Show the success message
+			setIsFormSubmitted(true);
 			// Wait for a few seconds before redirecting to login page
 			await new Promise(resolve => setTimeout(resolve, 3_000));
 			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
@@ -80,6 +102,18 @@ export function ChangePasswordForm() {
 
 	//
 	// D. Render components
+
+	if (isFormSubmitted) {
+		return (
+			<Surface style={{ maxWidth: 550 }}>
+				<Section gap="sm">
+					<Label size="lg">{t('unauthenticated:ChangePasswordForm.success.title')}</Label>
+					<Label>{t('unauthenticated:ChangePasswordForm.success.description')}</Label>
+					<Label variant="muted">{t('unauthenticated:ChangePasswordForm.success.footnote')}</Label>
+				</Section>
+			</Surface>
+		);
+	}
 
 	return (
 		<AuthenticationForm
@@ -92,7 +126,12 @@ export function ChangePasswordForm() {
 			submitLabel={t('unauthenticated:ChangePasswordForm.submit.label')}
 			title={t('unauthenticated:ChangePasswordForm.title')}
 		>
-			<input defaultValue={emailValue} name="email" type="email" readOnly />
+			<TextInput
+				key="email"
+				value={emailValue}
+				disabled
+				readOnly
+			/>
 			<PasswordInput
 				key="password"
 				disabled={isChangingPassword}

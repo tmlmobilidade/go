@@ -102,17 +102,24 @@ export function collectReplacementDayContributions(
 		// intersects the replacement — e.g. ALL_DU + ALL_DU-SAB both match but only ALL_DU owns 21:00.
 		for (const timepoint of operatingTimepoints) {
 			let ownerRule = calendarOperatingByTimepoint.get(timepoint);
+			let effectivePeriodIds: string[] | undefined;
 
 			if (!ownerRule) {
 				const candidates = collectReplacementManualIncludesByRule(effectiveReplacement, monthFilteredManualRules)
 					.filter(({ timepoints }) => timepoints.some(tp => hhmm(tp) === timepoint))
 					.sort((a, b) => compareGeneralManualOwnershipPriority(a.rule, b.rule));
 
-				ownerRule = candidates[0]?.rule;
+				const replacementOwner = candidates[0]?.rule;
+				ownerRule = replacementOwner;
+				if (replacementOwner && effectiveReplacement.year_period_ids.length) {
+					effectivePeriodIds = effectiveReplacement.year_period_ids.filter(id =>
+						!replacementOwner.year_period_ids.length || replacementOwner.year_period_ids.includes(id),
+					);
+				}
 			}
 
 			if (ownerRule) {
-				contributions.push({ kind: 'operating', rule: ownerRule, timepoint });
+				contributions.push({ ...(effectivePeriodIds?.length ? { effectivePeriodIds } : {}), kind: 'operating', rule: ownerRule, timepoint });
 			}
 		}
 	}
