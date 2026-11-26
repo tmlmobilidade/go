@@ -34,6 +34,7 @@
 			"cycle": "The current dependencies contain a cycle.",
 			"direction": "Arrows point from prerequisite to dependent.",
 			"no_connections": "This rule has no direct dependencies or dependents.",
+			"select_rule": "Select a rule to view its dependencies.",
 			"title": "Rule dependency graph"
 		},
 		"AgenciesDetailValidationRulesTable": {

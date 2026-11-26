@@ -22,6 +22,7 @@ interface AgenciesDetailValidationRulesContextState {
 	data: {
 		configuredEntries: AgenciesDetailValidationRuleEntry[]
 		entries: AgenciesDetailValidationRuleEntry[]
+		entriesById: ReadonlyMap<GtfsValidatorRuleId, AgenciesDetailValidationRuleEntry>
 		selectedEntry?: AgenciesDetailValidationRuleEntry
 		selectedRule?: AgenciesDetailValidationRule
 	}
@@ -73,11 +74,15 @@ export function AgenciesDetailValidationRulesContextProvider({ children }: Props
 		filters.severity === null || (entry.severity ?? 'unconfigured') === filters.severity
 	)), [entriesById, filters.severity]);
 	const matchingEntries = useSearch({ accessors: SEARCH_ACCESSORS, data: entries, debounce: 0, query: filters.search.value.trim() });
-	const selectedEntry = selectedId ? entriesById.get(selectedId) : matchingEntries[0];
+	const selectedEntry = selectedId && entriesById.get(selectedId);
 	const selectedRule = selectedEntry && rulesById.get(selectedEntry.ruleId);
 
 	//
 	// C. Handle actions
+
+	const selectRule = useCallback((ruleId: GtfsValidatorRuleId) => {
+		setSelectedId(currentId => currentId === ruleId ? undefined : ruleId);
+	}, []);
 
 	const setSearch = useCallback((value: string) => {
 		setSelectedId(undefined);
@@ -104,11 +109,11 @@ export function AgenciesDetailValidationRulesContextProvider({ children }: Props
 	// D. Return state
 
 	const value = useMemo<AgenciesDetailValidationRulesContextState>(() => ({
-		actions: { selectRule: setSelectedId, setSearch, setSeverityFilter, updateRule },
-		data: { configuredEntries, entries: matchingEntries, selectedEntry, selectedRule },
+		actions: { selectRule, setSearch, setSeverityFilter, updateRule },
+		data: { configuredEntries, entries: matchingEntries, entriesById, selectedEntry, selectedRule },
 		filters,
 		flags: { can_edit: editEnabled },
-	}), [configuredEntries, editEnabled, filters, matchingEntries, selectedEntry, selectedRule, setSearch, setSeverityFilter, updateRule]);
+	}), [configuredEntries, editEnabled, entriesById, filters, matchingEntries, selectRule, selectedEntry, selectedRule, setSearch, setSeverityFilter, updateRule]);
 
 	return <AgenciesDetailValidationRulesContext.Provider value={value}>{children}</AgenciesDetailValidationRulesContext.Provider>;
 }

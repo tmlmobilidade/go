@@ -1,6 +1,6 @@
 'use client';
 
-import { Collapsible, Section } from '@tmlmobilidade/ui';
+import { CloseButton, Collapsible, PanesManager, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -32,16 +32,20 @@ export function AgenciesDetailValidationRules() {
 			title={t('default:agencies.detail.ValidationRules.title')}
 		>
 			<AgenciesDetailValidationRulesContextProvider key={agencyId}>
-				<Section gap="md" width="100%">
-					<div className={styles.workspace}>
-						<div className={styles.list}>
-							<AgenciesDetailValidationRulesFilters />
-							<AgenciesDetailValidationRulesTable />
-						</div>
-						<div className={styles.inspector}>
-							<AgenciesDetailValidationRuleInspector />
-						</div>
-					</div>
+				<Section className={styles.container} gap="md">
+					<PanesManager
+						id="agencies-validation-rules"
+						stackBelow={650}
+						panes={[
+							<Section key="rules" className={styles.pane} gap="md" padding="none">
+								<AgenciesDetailValidationRulesFilters />
+								<AgenciesDetailValidationRulesTable />
+							</Section>,
+							<Section key="details" className={styles.pane} gap="md" padding="none">
+								<AgenciesDetailValidationRuleInspector />
+							</Section>,
+						]}
+					/>
 					<AgenciesDetailValidationRulesGraph />
 				</Section>
 			</AgenciesDetailValidationRulesContextProvider>

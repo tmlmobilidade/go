@@ -34,6 +34,16 @@
 
 .chart {
 	display: block;
+	flex: none;
+}
+
+.overview {
+	display: grid;
+	flex: none;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+	gap: var(--size-spacing-xs);
+	width: 100%;
+	padding: var(--size-spacing-sm);
 }
 
 .edge,
@@ -86,6 +96,7 @@
 .severity {
 	--severity-dot: currentColor;
 	display: inline-flex;
+	flex-shrink: 0;
 	gap: var(--size-spacing-xs);
 	align-items: center;
 	color: var(--color-system-text-200);

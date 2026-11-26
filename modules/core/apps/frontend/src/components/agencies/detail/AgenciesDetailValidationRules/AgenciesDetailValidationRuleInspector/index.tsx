@@ -1,8 +1,6 @@
 'use client';
 
-import { Section } from '@tmlmobilidade/ui';
-
-import styles from './styles.module.css';
+import { CloseButton, Section } from '@tmlmobilidade/ui';
 
 import { AgenciesDetailValidationRuleDependencies } from '../AgenciesDetailValidationRuleDependencies';
 import { AgenciesDetailValidationRuleModifier } from '../AgenciesDetailValidationRuleModifier';
@@ -17,16 +15,16 @@ export function AgenciesDetailValidationRuleInspector() {
 	//
 	// A. Setup variables
 
-	const { data: { selectedEntry } } = useAgenciesDetailValidationRulesContext();
+	const agenciesDetailValidationRulesContext = useAgenciesDetailValidationRulesContext();
 
 	//
 	// B. Render components
 
-	if (!selectedEntry) return null;
+	if (!agenciesDetailValidationRulesContext.data.selectedEntry) return null;
 
 	return (
-		<Section key={selectedEntry.ruleId} gap="md" padding="none">
-			<h3 className={styles.rule}>{selectedEntry.ruleId}</h3>
+		<Section key={agenciesDetailValidationRulesContext.data.selectedEntry.ruleId} gap="md" padding="none">
+			<CloseButton onClick={() => agenciesDetailValidationRulesContext.actions.selectRule(undefined)} type="close" />
 			<AgenciesDetailValidationRuleSeverity />
 			<AgenciesDetailValidationRuleDependencies />
 			<AgenciesDetailValidationRuleModifier />

@@ -34,6 +34,7 @@
 			"cycle": "Las dependencias actuales contienen un ciclo.",
 			"direction": "Las flechas apuntan del requisito previo a la regla que depende de él.",
 			"no_connections": "Esta regla no tiene dependencias directas ni reglas que dependan directamente de ella.",
+			"select_rule": "Selecciona una regla para ver sus dependencias.",
 			"title": "Gráfico de dependencias entre reglas"
 		},
 		"AgenciesDetailValidationRulesTable": {
