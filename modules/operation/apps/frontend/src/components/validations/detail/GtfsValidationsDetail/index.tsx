@@ -10,7 +10,7 @@ import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
 
-export function ValidationsDetail() {
+export function GtfsValidationsDetail() {
 	//
 
 	//
@@ -37,6 +37,4 @@ export function ValidationsDetail() {
 			<ValidationsDetailFootnote />
 		</Pane>
 	);
-
-	//
 }

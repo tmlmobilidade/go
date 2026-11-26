@@ -1,6 +1,6 @@
 /* * */
 
-import { ValidationsDetail } from '@/components/validations/detail/ValidationsDetail';
+import { GtfsValidationsDetail } from '@/components/validations/detail/GtfsValidationsDetail';
 import { ValidationsDetailContextProvider } from '@/components/validations/detail/ValidationsDetailForm.context';
 
 /* * */
@@ -8,7 +8,7 @@ import { ValidationsDetailContextProvider } from '@/components/validations/detai
 export default function Page() {
 	return (
 		<ValidationsDetailContextProvider>
-			<ValidationsDetail />
+			<GtfsValidationsDetail />
 		</ValidationsDetailContextProvider>
 	);
 }
