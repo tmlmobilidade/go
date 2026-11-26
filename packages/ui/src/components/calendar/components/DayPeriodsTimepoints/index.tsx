@@ -20,11 +20,11 @@ interface DayPeriodType {
 }
 
 const DAY_PERIODS: DayPeriodType[] = [
+	{ icon: <IconMoon className={styles.mutedIcon} size={14} />, key: 'early_morning' },
 	{ icon: <IconSun size={14} />, key: 'morning_peak' },
 	{ icon: <IconSun className={styles.mutedIcon} size={14} />, key: 'daytime' },
 	{ icon: <IconSunset className={styles.mutedIcon} size={14} />, key: 'afternoon_peak' },
 	{ icon: <IconMoon size={14} />, key: 'night' },
-	{ icon: <IconMoon className={styles.mutedIcon} size={14} />, key: 'early_morning' },
 ];
 
 /* * */
