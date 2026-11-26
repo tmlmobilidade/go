@@ -12,6 +12,9 @@ import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 
 import namespaceEffectsEn from '@/i18n/namespaces/effects/en.json' with { type: 'json' };
 import namespaceEffectsEs from '@/i18n/namespaces/effects/es.json' with { type: 'json' };
 import namespaceEffectsPt from '@/i18n/namespaces/effects/pt.json' with { type: 'json' };
+import namespaceGtfsValidationsEn from '@/i18n/namespaces/gtfs-validations/en.json' with { type: 'json' };
+import namespaceGtfsValidationsEs from '@/i18n/namespaces/gtfs-validations/es.json' with { type: 'json' };
+import namespaceGtfsValidationsPt from '@/i18n/namespaces/gtfs-validations/pt.json' with { type: 'json' };
 import namespaceReferenceTypesEn from '@/i18n/namespaces/reference-types/en.json' with { type: 'json' };
 import namespaceReferenceTypesEs from '@/i18n/namespaces/reference-types/es.json' with { type: 'json' };
 import namespaceReferenceTypesPt from '@/i18n/namespaces/reference-types/pt.json' with { type: 'json' };
@@ -21,9 +24,6 @@ import namespaceAnalysisPt from '@/i18n/namespaces/ride-analysis/pt.json' with {
 import namespaceStatusEn from '@/i18n/namespaces/ride-status/en.json' with { type: 'json' };
 import namespaceStatusEs from '@/i18n/namespaces/ride-status/es.json' with { type: 'json' };
 import namespaceStatusPt from '@/i18n/namespaces/ride-status/pt.json' with { type: 'json' };
-import namespaceValidationsEn from '@/i18n/namespaces/validations/en.json' with { type: 'json' };
-import namespaceValidationsEs from '@/i18n/namespaces/validations/es.json' with { type: 'json' };
-import namespaceValidationsPt from '@/i18n/namespaces/validations/pt.json' with { type: 'json' };
 import { i18nResourceKeysEnShared, i18nResourceKeysEsShared, i18nResourceKeysPtShared } from '@tmlmobilidade/ui';
 
 /**
@@ -39,10 +39,10 @@ export const i18nResourceKeysPt = {
 	causes: namespaceCausesPt,
 	default: namespaceDefaultPt,
 	effects: namespaceEffectsPt,
+	gtfs_validations: namespaceGtfsValidationsPt,
 	reference_types: namespaceReferenceTypesPt,
 	ride_analysis: namespaceAnalysisPt,
 	ride_status: namespaceStatusPt,
-	validations: namespaceValidationsPt,
 } as const;
 
 /**
@@ -54,10 +54,10 @@ export const i18nResourceKeysEs = {
 	causes: namespaceCausesEs,
 	default: namespaceDefaultEs,
 	effects: namespaceEffectsEs,
+	gtfs_validations: namespaceGtfsValidationsEs,
 	reference_types: namespaceReferenceTypesEs,
 	ride_analysis: namespaceAnalysisEs,
 	ride_status: namespaceStatusEs,
-	validations: namespaceValidationsEs,
 } as const;
 
 /**
@@ -72,5 +72,4 @@ export const i18nResourceKeysEn = {
 	reference_types: namespaceReferenceTypesEn,
 	ride_analysis: namespaceAnalysisEn,
 	ride_status: namespaceStatusEn,
-	validations: namespaceValidationsEn,
 } as const;

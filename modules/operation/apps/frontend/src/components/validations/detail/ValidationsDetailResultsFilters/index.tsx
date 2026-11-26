@@ -17,15 +17,15 @@ export function ValidationsDetailResultsFilters() {
 
 	const { t } = useTranslation();
 	const { actions, data: { totals }, filters } = useValidationsDetailResultsContext();
-	const searchLabel = t('validations:detail.ValidationsDetailResultsFilters.search_placeholder');
+	const searchLabel = t('gtfs_validations:detail.ValidationsDetailResultsFilters.search_placeholder');
 
 	//
 	// B. Transform data
 
 	const severityOptions: { label: string, severity: ValidationsDetailResultSeverity }[] = [
-		{ label: t('validations:detail.ValidationsDetailResultsFilters.error', '', { count: totals.errors }), severity: 'error' },
-		{ label: t('validations:detail.ValidationsDetailResultsFilters.warning', '', { count: totals.warnings }), severity: 'warning' },
-		{ label: t('validations:detail.ValidationsDetailResultsFilters.info', '', { count: totals.infos }), severity: 'info' },
+		{ label: t('gtfs_validations:detail.ValidationsDetailResultsFilters.error', '', { count: totals.errors }), severity: 'error' },
+		{ label: t('gtfs_validations:detail.ValidationsDetailResultsFilters.warning', '', { count: totals.warnings }), severity: 'warning' },
+		{ label: t('gtfs_validations:detail.ValidationsDetailResultsFilters.info', '', { count: totals.infos }), severity: 'info' },
 	];
 
 	//

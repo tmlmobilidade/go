@@ -28,8 +28,8 @@ export function ValidationsDetailSectionResult() {
 	return (
 		<Collapsible
 			defaultOpen={true}
-			description={t('validations:detail.ValidationsDetailSectionResult.description')}
-			title={t('validations:detail.ValidationsDetailSectionResult.title')}
+			description={t('gtfs_validations:detail.ValidationsDetailSectionResult.description')}
+			title={t('gtfs_validations:detail.ValidationsDetailSectionResult.title')}
 		>
 			<ValidationsDetailResultsContextProvider key={validationsDetailContext.data.validation._id}>
 				<Section gap="md">

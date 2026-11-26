@@ -24,8 +24,7 @@ export function ValidationsDetailResultsList() {
 	return (
 		<Pane header={[
 			<Section key="header" alignItems="center" flexDirection="row" flexWrap="wrap" gap="xs" justifyContent="space-between">
-				<Label>{t('validations:detail.ValidationsDetailResultsList.title')}</Label>
-				<Label size="sm" variant="muted">{t('validations:detail.ValidationsDetailResultsList.affected_rows')}</Label>
+				<Label>{t('gtfs_validations:detail.ValidationsDetailResultsList.title')}</Label>
 			</Section>,
 		]}
 		>
@@ -41,7 +40,7 @@ export function ValidationsDetailResultsList() {
 					))}
 				</ul>
 			) : (
-				<NoDataLabel text={t('validations:detail.ValidationsDetailResultsList.empty')} />
+				<NoDataLabel text={t('gtfs_validations:detail.ValidationsDetailResultsList.empty')} />
 			)}
 		</Pane>
 	);

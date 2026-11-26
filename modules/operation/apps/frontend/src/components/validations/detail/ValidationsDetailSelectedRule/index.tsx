@@ -19,7 +19,7 @@ export function ValidationsDetailSelectedRule() {
 
 	const { i18n, t } = useTranslation();
 	const { data: { selected } } = useValidationsDetailResultsContext();
-	const title = t('validations:detail.ValidationsDetailSelectedRule.title');
+	const title = t('gtfs_validations:detail.ValidationsDetailSelectedRule.title');
 	const documentationUrl = getGtfsScheduleDocUrl(selected?.ruleId);
 
 	//
@@ -35,7 +35,7 @@ export function ValidationsDetailSelectedRule() {
 							className={styles.documentation}
 							classNames={{ label: styles.documentationLabel }}
 							href={documentationUrl}
-							label={t('validations:detail.ValidationsDetailSelectedRule.documentation')}
+							label={t('gtfs_validations:detail.ValidationsDetailSelectedRule.documentation')}
 							rightSection={<IconExternalLink size={18} aria-hidden />}
 							target="_blank"
 							variant="primary"
@@ -52,7 +52,7 @@ export function ValidationsDetailSelectedRule() {
 						</Section>
 						<Text className={styles.description}>{selected.description}</Text>
 						<ValueDisplay
-							label={t('validations:detail.ValidationsDetailSelectedRule.affected_rows')}
+							label={t('gtfs_validations:detail.ValidationsDetailSelectedRule.affected_rows')}
 							padding="none"
 							value={selected.result.total_rows.toLocaleString(i18n.resolvedLanguage)}
 							variant="transparent"

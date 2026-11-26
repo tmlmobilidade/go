@@ -25,7 +25,7 @@ export function ValidationsDetailSectionFeedInfo() {
 			// Open file.url in a new window
 			window.open(API_ROUTES.operation.GTFS_VALIDATIONS_DETAIL_FILE_DOWNLOAD(validationsDetailContext.data.validation?._id), '_blank');
 		} catch (error) {
-			const errorTitle = t('validations:detail.ValidationsDetailSectionFeedInfo.download_error');
+			const errorTitle = t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.download_error');
 			useToast.error({
 				message: error instanceof Error ? error.message : errorTitle,
 				title: errorTitle,
@@ -38,8 +38,8 @@ export function ValidationsDetailSectionFeedInfo() {
 
 	return (
 		<Collapsible
-			description={t('validations:detail.ValidationsDetailSectionFeedInfo.description')}
-			title={t('validations:detail.ValidationsDetailSectionFeedInfo.title')}
+			description={t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.description')}
+			title={t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.title')}
 		>
 
 			<Section gap="sm">
@@ -54,7 +54,7 @@ export function ValidationsDetailSectionFeedInfo() {
 						onDownload={handleDownload}
 					/>
 				) : (
-					<Label>{t('validations:detail.ValidationsDetailSectionFeedInfo.no_file')}</Label>
+					<Label>{t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.no_file')}</Label>
 				)}
 			</Section>
 

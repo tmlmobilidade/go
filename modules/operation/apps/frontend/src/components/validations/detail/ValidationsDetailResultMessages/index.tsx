@@ -42,16 +42,16 @@ export function ValidationsDetailResultMessages({ description, messages, ruleId 
 	return (
 		<section className={styles.container}>
 			<div>
-				<h4>{t('validations:detail.ValidationsDetailResultMessages.title')}</h4>
-				<p>{t('validations:detail.ValidationsDetailResultMessages.description')}</p>
+				<h4>{t('gtfs_validations:detail.ValidationsDetailResultMessages.title')}</h4>
+				<p>{t('gtfs_validations:detail.ValidationsDetailResultMessages.description')}</p>
 			</div>
 			{visibleMessages.length > 0 ? (
 				<Surface overflow="auto" variant="bordered">
 					<Table aria-label={description} className={styles.table}>
 						<Table.Thead>
 							<Table.Tr>
-								<Table.Th scope="col">{t('validations:detail.ValidationsDetailResultMessages.message')}</Table.Th>
-								<Table.Th className={styles.rowsColumn} scope="col">{t('validations:detail.ValidationsDetailResultMessages.rows')}</Table.Th>
+								<Table.Th scope="col">{t('gtfs_validations:detail.ValidationsDetailResultMessages.message')}</Table.Th>
+								<Table.Th className={styles.rowsColumn} scope="col">{t('gtfs_validations:detail.ValidationsDetailResultMessages.rows')}</Table.Th>
 							</Table.Tr>
 						</Table.Thead>
 						<Table.Tbody>
@@ -65,11 +65,11 @@ export function ValidationsDetailResultMessages({ description, messages, ruleId 
 					</Table>
 				</Surface>
 			) : (
-				<NoDataLabel text={t('validations:detail.ValidationsDetailResultMessages.empty')} />
+				<NoDataLabel text={t('gtfs_validations:detail.ValidationsDetailResultMessages.empty')} />
 			)}
 			{hiddenMessageCount > 0 && (
 				<button className={styles.showAll} onClick={() => setShowAll(true)} type="button">
-					{t('validations:detail.ValidationsDetailResultMessages.show_all', '', { count: hiddenMessageCount })}
+					{t('gtfs_validations:detail.ValidationsDetailResultMessages.show_all', '', { count: hiddenMessageCount })}
 				</button>
 			)}
 		</section>

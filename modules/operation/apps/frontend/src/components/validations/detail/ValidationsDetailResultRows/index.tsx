@@ -28,7 +28,7 @@ export function ValidationsDetailResultRows({ rows }: ValidationsDetailResultRow
 	//
 	// C. Render components
 
-	if (rows.length === 0) return t('validations:detail.ValidationsDetailResultRows.empty');
+	if (rows.length === 0) return t('gtfs_validations:detail.ValidationsDetailResultRows.empty');
 
 	return <TagGroup limit={10} tags={tags} wrap="wrap" />;
 

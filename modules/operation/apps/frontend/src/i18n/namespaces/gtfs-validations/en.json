@@ -387,9 +387,8 @@
 			"warning": "{count, plural, =1 {# Warning} other {# Warnings}}"
 		},
 		"ValidationsDetailResultsList": {
-			"affected_rows": "Affected rows",
-			"empty": "No results to show",
-			"title": "Validation rules"
+			"empty": "No issues found",
+			"title": "Issues found"
 		},
 		"ValidationsDetailSectionFeedInfo": {
 			"description": "Summary of the data extracted from feed_info.txt",
