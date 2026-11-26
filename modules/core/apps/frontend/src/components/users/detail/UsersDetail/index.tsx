@@ -76,6 +76,7 @@ export function UsersDetail() {
 		<Pane header={[<UsersDetailHeader key="header" />]} isLoading={isLoading}>
 			<UsersDetailBasicInfo />
 			<UsersDetailOrganizationAndRoles />
+			{/* Render UsersDetailAnalytics here once the Session Replay toggle is implemented. */}
 			{permissionsConfig.map(item => (
 				<PermissionSection
 					key={item.scope}
