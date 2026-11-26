@@ -4,9 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 	sqlutils "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/sql"
-	"strings"
 )
 
 /*
@@ -29,34 +30,29 @@ calendar_dates.service_id. Missing values are handled by trip_service_id_exists.
 func (TripsChecks) TripServiceIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 
 	//
-	// 1. Check if the trips table exists
-	exists, err := sqlutils.TableExists(ctx, db, "trips")
+	// 1. Check if the trips table contains service_id
+	exists, err := sqlutils.ColumnExists(ctx, db, "trips", "service_id")
 	if err != nil || !exists {
 		return err == nil, nil, err
 	}
 
-	// 2. Check each supplied ID against its referenced tables
+	// 2. Load the service IDs from both referenced tables
+	calendarIDs, err := sqlutils.ColumnTextSet(ctx, db, "calendar", "service_id")
+	if err != nil {
+		return false, nil, err
+	}
+	calendarDateIDs, err := sqlutils.ColumnTextSet(ctx, db, "calendar_dates", "service_id")
+	if err != nil {
+		return false, nil, err
+	}
+
+	// 3. Report each supplied ID absent from both tables
 	var findings []types.Finding
-	err = sqlutils.ForEachRow(ctx, db, "trips", []string{"service_id"}, func(row int, values map[string]string) error {
-		value := values["service_id"]
-		if strings.TrimSpace(value) == "" {
-			return nil
-		}
-		for _, table := range []string{"calendar", "calendar_dates"} {
-			exists, err := sqlutils.TableExists(ctx, db, table)
-			if err != nil {
-				return err
-			}
-			if !exists {
-				continue
-			}
-			exists, err = sqlutils.Exists(ctx, db, table, "service_id", value)
-			if err != nil {
-				return err
-			}
-			if exists {
-				return nil
-			}
+	err = fields.ForEachValue(ctx, db, "trips", "service_id", func(row int, value string) {
+		_, inCalendar := calendarIDs[value]
+		_, inCalendarDates := calendarDateIDs[value]
+		if inCalendar || inCalendarDates {
+			return
 		}
 		findings = append(findings, types.Finding{
 			Description:            "The service_id references a missing service_id.",
@@ -68,10 +64,9 @@ func (TripsChecks) TripServiceIDForeignKeyExists(ctx context.Context, db *sql.DB
 			Field:                  "service_id",
 			Rows:                   []int{row},
 		})
-		return nil
 	})
 
-	// 3. Return the findings
+	// 4. Return the findings
 	if err != nil {
 		return false, nil, err
 	}

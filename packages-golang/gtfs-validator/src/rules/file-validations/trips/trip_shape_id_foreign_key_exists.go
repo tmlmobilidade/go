@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
-	sqlutils "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/sql"
-	"strings"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 )
 
 /*
@@ -33,35 +33,9 @@ Missing values are handled by trip_shape_id_exists.
 func (TripsChecks) TripShapeIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
 
 	//
-	// 1. Check if the trips table exists
-	exists, err := sqlutils.TableExists(ctx, db, "trips")
-	if err != nil || !exists {
-		return err == nil, nil, err
-	}
-
-	// 2. Check each supplied ID against its referenced tables
+	// 1. Report each shape_id missing from shapes.txt
 	var findings []types.Finding
-	err = sqlutils.ForEachRow(ctx, db, "trips", []string{"shape_id"}, func(row int, values map[string]string) error {
-		value := values["shape_id"]
-		if strings.TrimSpace(value) == "" {
-			return nil
-		}
-		for _, table := range []string{"shapes"} {
-			exists, err := sqlutils.TableExists(ctx, db, table)
-			if err != nil {
-				return err
-			}
-			if !exists {
-				continue
-			}
-			exists, err = sqlutils.Exists(ctx, db, table, "shape_id", value)
-			if err != nil {
-				return err
-			}
-			if exists {
-				return nil
-			}
-		}
+	err := fields.ForEachMissingForeignKey(ctx, db, "trips", "shape_id", "shapes", "shape_id", func(row int, value string) {
 		findings = append(findings, types.Finding{
 			Description:            "The shape_id references a missing shape_id.",
 			DescriptionTranslation: types.NewTranslation("missing_reference_value", map[string]any{"field": "shape_id", "target_field": "shape_id"}),
@@ -72,10 +46,9 @@ func (TripsChecks) TripShapeIDForeignKeyExists(ctx context.Context, db *sql.DB, 
 			Field:                  "shape_id",
 			Rows:                   []int{row},
 		})
-		return nil
 	})
 
-	// 3. Return the findings
+	// 2. Return the findings
 	if err != nil {
 		return false, nil, err
 	}

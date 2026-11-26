@@ -4,48 +4,50 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
-	sqlutils "github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/sql"
-	"strings"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
 )
 
+/*
+# Attributes
+
+  - File: [stop_times.txt]
+  - Field: stop_id
+  - Presence: Conditionally Required
+  - Type: Foreign Key referencing stops.stop_id
+
+# Description
+
+Each supplied stop_id must match an ID in stops.txt. A missing target file or
+column produces a finding for each supplied ID. Field-presence rules handle
+missing or blank source IDs.
+
+[stop_times.txt]: https://gtfs.org/documentation/schedule/reference/#stop_timestxt
+*/
 func (StopTimesChecks) StopTimesStopIDForeignKeyExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
-	exists, err := sqlutils.TableExists(ctx, db, "stop_times")
-	if err != nil || !exists {
-		return err == nil, nil, err
-	}
+
+	//
+	// 1. Report each stop_id missing from stops.txt
 	var findings []types.Finding
-	err = sqlutils.ForEachRow(ctx, db, "stop_times", []string{"stop_id"}, func(row int, values map[string]string) error {
-		value := values["stop_id"]
-		if strings.TrimSpace(value) == "" {
-			return nil
-		}
-		exists, err := sqlutils.TableExists(ctx, db, "stops")
-		if err != nil {
-			return err
-		}
-		if exists {
-			exists, err = sqlutils.Exists(ctx, db, "stops", "stop_id", value)
-			if err != nil {
-				return err
-			}
-		}
-		if !exists {
-			findings = append(findings, types.Finding{
-				Description:            "The stop_id references a missing stop_id.",
-				DescriptionTranslation: types.NewTranslation("missing_reference_value", map[string]any{"field": "stop_id", "target_field": "stop_id"}),
-				Message:                fmt.Sprintf("Unknown stop_id %q.", value),
-				MessageTranslation:     types.NewTranslation("missing_reference_value", map[string]any{"target_field": "stop_id", "value": value}),
-				Severity:               config.Severity,
-				FileName:               "stop_times.txt",
-				Field:                  "stop_id",
-				Rows:                   []int{row},
-			})
-		}
-		return nil
+	descriptionTranslation := types.NewTranslation("missing_reference_value", map[string]any{"field": "stop_id", "target_field": "stop_id"})
+	err := fields.ForEachMissingForeignKey(ctx, db, "stop_times", "stop_id", "stops", "stop_id", func(row int, value string) {
+		findings = append(findings, types.Finding{
+			Description:            "The stop_id references a missing stop_id.",
+			DescriptionTranslation: descriptionTranslation,
+			Message:                fmt.Sprintf("Unknown stop_id %q.", value),
+			MessageTranslation:     types.NewTranslation("missing_reference_value", map[string]any{"target_field": "stop_id", "value": value}),
+			Severity:               config.Severity,
+			FileName:               "stop_times.txt",
+			Field:                  "stop_id",
+			Rows:                   []int{row},
+		})
 	})
+
+	// 2. Return the findings
 	if err != nil {
 		return false, nil, err
 	}
+
 	return len(findings) == 0, findings, nil
 }

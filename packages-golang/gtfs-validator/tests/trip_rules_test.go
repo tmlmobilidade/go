@@ -134,7 +134,11 @@ func TestTripForeignKeys(t *testing.T) {
 			checkTripRule(t, setup, config, test.field, [][]int{{0}, {1}, {2}})
 		})
 	}
-	checkTripRule(t, `CREATE TABLE trips (service_id TEXT); INSERT INTO trips VALUES ('dates-only'); CREATE TABLE calendar_dates (service_id TEXT); INSERT INTO calendar_dates VALUES ('dates-only');`, types.Rule{RuleID: "trip_service_id_foreign_key_exists", Severity: types.SEVERITY_ERROR}, "service_id", nil)
+	serviceRule := types.Rule{RuleID: "trip_service_id_foreign_key_exists", Severity: types.SEVERITY_ERROR}
+	const datesOnly = `CREATE TABLE trips (service_id TEXT); INSERT INTO trips VALUES ('dates-only');
+		CREATE TABLE calendar_dates (service_id TEXT); INSERT INTO calendar_dates VALUES ('dates-only');`
+	checkTripRule(t, datesOnly, serviceRule, "service_id", nil)
+	checkTripRule(t, datesOnly+`CREATE TABLE calendar (extra TEXT);`, serviceRule, "service_id", nil)
 }
 
 func TestTripsFilePresence(t *testing.T) {
