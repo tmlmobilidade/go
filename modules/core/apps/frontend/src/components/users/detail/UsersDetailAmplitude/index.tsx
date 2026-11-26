@@ -23,7 +23,7 @@ interface UsersDetailAmplitudeProps {
 export function UsersDetailAmplitude({ authorization, isLoading, onChange }: UsersDetailAmplitudeProps) {
 	const { i18n, t } = useTranslation();
 	const { userId } = useUsersDetailUserId();
-	const { data: { user }, mutate: { me: refreshMe } } = useMeContext();
+	const { data: { user }, mutate: { user: refreshMe } } = useMeContext();
 	const { flags: { failedReplayActivationId } } = useAnalyticsContext();
 
 	const expiresAt = authorization?.started_at === null ? authorization.pending_expires_at : authorization?.expires_at;
