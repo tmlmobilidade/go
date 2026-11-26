@@ -167,7 +167,8 @@
 					"id": "#ID",
 					"name": "Nome",
 					"organizations": "Organizações",
-					"pta_name": "Nome da Autoridade"
+					"pta_name": "Nome da Autoridade",
+					"short_name": "Nome curto"
 				}
 			}
 		}
