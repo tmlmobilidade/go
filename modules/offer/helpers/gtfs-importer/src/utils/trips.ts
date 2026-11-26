@@ -2,7 +2,7 @@
 
 import { parseCsv, readGtfsFile } from '@/helpers/index.js';
 import { type GtfsStrictV29Trips, GtfsStrictV29TripsSchema } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type PatternDirection, patternDirectionMapper } from '@tmlmobilidade/go-types-offer';
+import { type PatternDirection } from '@tmlmobilidade/go-types-offer';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'fs/promises';
 import path from 'path';
@@ -39,7 +39,7 @@ export function buildTripsByRouteAndDirection(gtfsTrips: GtfsStrictV29Trips[]) {
 	const tripsByRouteAndDirection = new Map<string, { directionId: PatternDirection, headsign?: string }>();
 	const tripsByRoute = new Map<string, GtfsStrictV29Trips[]>();
 	for (const trip of gtfsTrips) {
-		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
+		const directionId = trip.direction_id ?? '0';
 		const key = `${trip.route_id}:${directionId}`;
 		if (!tripsByRouteAndDirection.has(key)) {
 			tripsByRouteAndDirection.set(key, { directionId, headsign: trip.trip_headsign });

@@ -2,7 +2,7 @@
 
 import { CalendarRule } from '@/types.js';
 import { GtfsStrictV29StopTimes, GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { HHMM, type ManualRule, PatternDirection, patternDirectionMapper } from '@tmlmobilidade/go-types-offer';
+import { HHMM, type ManualRule } from '@tmlmobilidade/go-types-offer';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
 import { CalendarRulesCM } from '../config/cm/calendarRules.js';
@@ -192,7 +192,7 @@ export function buildScheduleRulesForRoute(params: {
 	const validEventIds = new Set(events.map(event => event._id));
 
 	for (const trip of routeTrips) {
-		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
+		const directionId = trip.direction_id ?? '0';
 		const stopTimes = stopTimesByTrip.get(trip.trip_id) ?? [];
 
 		if (!stopTimes.length) continue;

@@ -3,7 +3,7 @@
 import { getStopByLegacyId } from '@/utils/stops.js';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { GtfsStrictV29StopTimes, GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { type CreatePatternDto, type Pattern, PatternDirection, patternDirectionMapper, type Shape } from '@tmlmobilidade/go-types-offer';
+import { type CreatePatternDto, Pattern, type PatternDirection, type Shape } from '@tmlmobilidade/go-types-offer';
 import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomString } from '@tmlmobilidade/strings';
 
@@ -60,9 +60,9 @@ export async function buildPatternsForRoute(params: {
 	//
 	// A. Build patterns per direction
 
-	const patternsByDirection = new Map<string, Map<string, { patternKey: string, stopTimes: GtfsStrictV29StopTimes[], trip: GtfsStrictV29Trips }>>();
+	const patternsByDirection = new Map<PatternDirection, Map<string, { patternKey: string, stopTimes: GtfsStrictV29StopTimes[], trip: GtfsStrictV29Trips }>>();
 	for (const trip of routeTrips) {
-		const directionId = patternDirectionMapper.fromGtfs(trip.direction_id ?? '0') as PatternDirection;
+		const directionId = trip.direction_id ?? '0';
 		const stopTimes = stopTimesByTrip.get(trip.trip_id) ?? [];
 		if (!stopTimes.length) continue;
 		const fingerprint = stopTimes.map(stopTime => stopTime.stop_id).join('|');
@@ -181,7 +181,7 @@ export async function buildPatternsForRoute(params: {
 			const patternInput: BuiltPattern['input'] = {
 				code: patternCode,
 				destination,
-				direction: directionId as PatternDirection,
+				direction: directionId,
 				headsign: trip.trip_headsign ?? destination,
 				line_id: lineId,
 				origin,

@@ -1,9 +1,9 @@
-import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { type GtfsV29ExportConfig, TripDirectionResolver } from '@/versions/v29/types.js';
 import { createV29PeriodResolver } from '@/versions/v29/utils/period-mapping.js';
 import { type ServiceId, type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
 import { type GtfsStrictV29Period, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
-import { DayPeriod, type Event, type HHMM, hhmm, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
+import { DayPeriod, type Event, type HHMM, hhmm, type ManualRule, type Pattern, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type IsoWeekday, type OperationalDateInt, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
 import { buildRuleSummaryGtfs, calendarWeekday, type CanonicalDateCache, collectGtfsIncludeContributionsForDate, compareGeneralManualOwnershipPriority, computeActiveRules, computeOffRowDates, getActivePeriodIds, getTimepointsRemovedByEventRestriction, type OfferSchedulingTranslator, resolveDayPeriod, resolvePatternRules, splitOperationalDatesByExcludeOverlap } from '@tmlmobilidade/go-utils-offer';
@@ -578,6 +578,7 @@ export async function exportTripsForPattern(
 	startDate: Dates,
 	endDate: Dates,
 	serviceRegistry: ServiceRegistry,
+	resolveTripDirection: TripDirectionResolver,
 	exportConfig: GtfsV29ExportConfig,
 	locale: string,
 	t: OfferSchedulingTranslator,
@@ -625,6 +626,12 @@ export async function exportTripsForPattern(
 		// Step 3: Export trips
 		const headsign = patternData.headsign.replaceAll(',', '').replace(/  +/g, ' ').trim();
 
+		const directionId = resolveTripDirection({
+			route_id: routeData.code,
+			shape_id: shapeId,
+			trip_headsign: headsign,
+		});
+
 		const sortedTripRows = resolvedTripRows.sort((a, b) => {
 			const timeDiff = timepointToOperationalMinutes(a.timepoint) - timepointToOperationalMinutes(b.timepoint);
 			if (timeDiff !== 0) return timeDiff;
@@ -652,7 +659,7 @@ export async function exportTripsForPattern(
 			const tripData: GtfsStrictV29Trips = {
 				bikes_allowed: '0',
 				calendar_desc: '', // TODO: derive a readable description if needed
-				direction_id: patternDirectionMapper.toGtfs(patternData.direction),
+				direction_id: directionId,
 				pattern_id: patternData.code,
 				pattern_short_name: headsign,
 				route_id: routeData.code,
