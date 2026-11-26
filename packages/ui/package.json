@@ -16,10 +16,6 @@
 		"./i18n": {
 			"types": "./src/i18n/index.ts",
 			"default": "./src/i18n/index.ts"
-		},
-		"./server": {
-			"types": "./server.ts",
-			"default": "./server.ts"
 		}
 	},
 	"scripts": {
@@ -54,15 +50,14 @@
 		"@tmlmobilidade/geo": "*",
 		"@tmlmobilidade/go-types-core": "*",
 		"@tmlmobilidade/go-types-dates": "*",
+		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-gtfs-rt": "*",
 		"@tmlmobilidade/go-types-hub": "*",
-		"@tmlmobilidade/go-types-locations": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",
-		"@tmlmobilidade/go-ui-analytics": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-offer": "*",
 		"@tmlmobilidade/go-utils-validation": "*",

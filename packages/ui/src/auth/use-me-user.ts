@@ -3,18 +3,15 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type MeUser } from '@tmlmobilidade/go-types-core';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
+import { fetchApiData } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-
-import { fetchMeData } from './fetch-me-data';
 
 /* * */
 
 interface UseMeUserReturnType {
-	data: MeUser | undefined
+	data: MeUser
 	error: null | string
-	/** Undefined means authentication has not been established; false means a confirmed 401. */
-	isAuthenticated: boolean | undefined
 	isLoading: boolean
 	isValidating: boolean
 	mutate: (data?: ApiResponse<MeUser>) => void
@@ -23,16 +20,23 @@ interface UseMeUserReturnType {
 
 /* * */
 
-export function useMeUser(enabled = true, refreshInterval = 60_000): UseMeUserReturnType {
-	const { data, error, isLoading, isValidating, mutate } = useSWR<ApiResponse<MeUser>, Error>(enabled ? API_ROUTES.core.ME_LIST_ME_USER : null, {
-		fetcher: fetchMeData,
-		refreshInterval,
+export function useMeUser(): UseMeUserReturnType {
+	//
+
+	//
+	// A. Fetch data
+
+	const { data, error, isLoading, isValidating, mutate } = useSWR(API_ROUTES.core.ME_LIST_ME_USER, {
+		fetcher: async (url: string) => await fetchApiData<MeUser>({ url }),
+		refreshInterval: 60_000, // 1 minute
 	});
 
+	//
+	// B. Return data
+
 	return useMemo(() => ({
-		data: data?.data ?? undefined,
-		error: data?.error ?? error?.message ?? null,
-		isAuthenticated: data?.status_code === '401' ? false : data?.data ? true : undefined,
+		data: data?.data,
+		error: error?.error,
 		isLoading,
 		isValidating,
 		mutate,

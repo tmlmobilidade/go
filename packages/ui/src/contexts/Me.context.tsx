@@ -55,25 +55,25 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-	const { data: meUser, error: meError, isAuthenticated, isLoading: meLoading, mutate: meMutate } = useMeUser();
-	const { data: mePermissions, error: mePermissionsError, isAuthenticated: arePermissionsAuthenticated, isLoading: mePermissionsLoading, mutate: mePermissionsMutate } = useMePermissions();
+	const { data: meUser, error: meError, isLoading: meLoading, mutate: meMutate } = useMeUser();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading, mutate: mePermissionsMutate } = useMePermissions();
 
 	//
 	// C. Handle actions
 
-	const isUnauthorized = isAuthenticated === false || arePermissionsAuthenticated === false;
-	const isRedirectingToLogin = isLoggingOut || isUnauthorized;
+	const isUnauthorized = meError || mePermissionsError;
+	const isRedirectingToLogin = isLoggingOut || isUnauthorized || (!meLoading && !meUser && !mePermissions);
 
 	useEffect(() => {
 		// Skip if data is still loading or logout is already redirecting
 		if (meLoading || mePermissionsLoading || isLoggingOut) return;
 		// Redirect to login when the session is missing or expired
-		if (isUnauthorized) {
+		if (!meUser || !mePermissions || isUnauthorized) {
 			const loginUrl = new URL(PAGE_ROUTES.core.LOGIN_LIST, window.location.origin);
 			loginUrl.searchParams.set('redirect', `${window.location.pathname}${window.location.search}`);
 			window.location.href = loginUrl.href;
 		}
-	}, [meLoading, mePermissionsLoading, isUnauthorized, isLoggingOut]);
+	}, [meLoading, mePermissionsLoading, meUser, mePermissions, isUnauthorized, isLoggingOut]);
 
 	const hasPermission = <S extends Permission['scope']>(scope: S, action: ActionsOf<S>) => {
 		if (!mePermissions) return false;
@@ -104,7 +104,6 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 			// Clear the SWR cache without revalidating — the session is already gone,
 			// so a revalidate would 401 and surface ErrorDisplay before redirect.
 			meMutate();
-			mePermissionsMutate();
 		} finally {
 			// Always redirect to login, even if logout or cache clear fails
 			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
@@ -156,17 +155,13 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 	//
 	// E. Render components
 
-	if (meLoading || mePermissionsLoading || isRedirectingToLogin) {
+	if (meLoading || isRedirectingToLogin) {
 		return <LoadingOverlay size="lg" fullscreen />;
 	}
 
-	if (meError && !meUser) {
+	if (meError) {
 		return <ErrorDisplay message={meError} />;
 	}
-	if (mePermissionsError && !mePermissions) {
-		return <ErrorDisplay message={mePermissionsError} />;
-	}
-	if (!meUser || !mePermissions) return <LoadingOverlay size="lg" fullscreen />;
 
 	return (
 		<MeContext.Provider value={contextValue}>

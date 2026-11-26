@@ -204,7 +204,8 @@
 					"id": "#ID",
 					"name": "Nome",
 					"organizations": "Organizações",
-					"pta_name": "Nome da Autoridade"
+					"pta_name": "Nome da Autoridade",
+					"short_name": "Nome curto"
 				}
 			}
 		}
@@ -873,10 +874,6 @@
 			}
 		},
 		"detail": {
-			"Amplitude": {
-				"description": "Autorizar e gerir capturas de Session Replay para suporte deste utilizador.",
-				"title": "Amplitude"
-			},
 			"BasicInfo": {
 				"description": "Informação básica do utilizador",
 				"fields": {
@@ -927,33 +924,6 @@
 					}
 				},
 				"title": "Roles & Organizações"
-			},
-			"SessionReplay": {
-				"authorize": {
-					"label": "Ativar Session Replay",
-					"success": "Pedido de captura autorizado para este utilizador."
-				},
-				"cancel": {
-					"label": "Parar Session Replay",
-					"success": "Paragem solicitada. Os dados já enviados ao Amplitude são mantidos."
-				},
-				"error": {
-					"capture": "Este navegador não conseguiu iniciar a captura do Session Replay.",
-					"title": "Não foi possível gerir o Session Replay"
-				},
-				"states": {
-					"active": {
-						"description": "A autorização é válida até {{deadline}} (hora de Lisboa).",
-						"label": "Ativo"
-					},
-					"inactive": {
-						"description": "Não existe uma autorização válida para capturar Session Replay deste utilizador.",
-						"label": "Inativo"
-					}
-				},
-				"success": {
-					"title": "Session Replay"
-				}
 			}
 		},
 		"list": {
