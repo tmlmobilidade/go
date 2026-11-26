@@ -24,14 +24,13 @@ export function generateParametersJson(activeDate?: string): string {
 
 	"canvasId": "0Master.0",
 
-	"dateParameters": [
-
-	],
+	"dateParameters": [],
 
 	"textParameters": [
 		{
 			"id": "Text.Validity.Date",
-			"default": ${JSON.stringify(date.toFormat('dd.MM.yyyy'))}
+			
+			"value": ${JSON.stringify(date.toFormat('dd.MM.yyyy'))}
 		}
 	]
 }
