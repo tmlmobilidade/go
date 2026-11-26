@@ -380,7 +380,7 @@
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
-		"ValidationsDetailResultsList": {
+		"GtfsValidationsDetailResultsList": {
 			"columns": {
 				"description": "Description",
 				"severity": "Severity"
@@ -400,7 +400,7 @@
 			"no_file": "No file selected",
 			"title": "File details"
 		},
-		"ValidationsDetailSectionResult": {
+		"GtfsValidationsDetailSectionResult": {
 			"description": "Information, warnings, and errors found in the GTFS file",
 			"title": "Validation Results"
 		},

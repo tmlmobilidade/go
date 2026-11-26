@@ -1,11 +1,11 @@
 'use client';
 
+import { GtfsValidationsDetailSectionResult } from '@/components/validations/detail/GtfsGtfsValidationsDetailSectionResult';
 import { ValidationsDetailFootnote } from '@/components/validations/detail/ValidationsDetailFootnote';
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { ValidationsDetailHeader } from '@/components/validations/detail/ValidationsDetailHeader';
 import { ValidationsDetailSectionAgency } from '@/components/validations/detail/ValidationsDetailSectionAgency';
 import { ValidationsDetailSectionFeedInfo } from '@/components/validations/detail/ValidationsDetailSectionFeedInfo';
-import { ValidationsDetailSectionResult } from '@/components/validations/detail/ValidationsDetailSectionResult';
 import { ErrorDisplay, LoadingOverlay, Pane } from '@tmlmobilidade/ui';
 
 /* * */
@@ -33,7 +33,7 @@ export function GtfsValidationsDetail() {
 		<Pane header={[<ValidationsDetailHeader key="header" />]}>
 			<ValidationsDetailSectionAgency />
 			<ValidationsDetailSectionFeedInfo />
-			<ValidationsDetailSectionResult />
+			<GtfsValidationsDetailSectionResult />
 			<ValidationsDetailFootnote />
 		</Pane>
 	);

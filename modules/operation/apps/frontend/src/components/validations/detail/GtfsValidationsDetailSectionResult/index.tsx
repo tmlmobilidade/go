@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function ValidationsDetailSectionResult() {
+export function GtfsGtfsValidationsDetailSectionResult() {
 	//
 
 	//
@@ -27,8 +27,8 @@ export function ValidationsDetailSectionResult() {
 	return (
 		<Collapsible
 			defaultOpen={true}
-			description={t('gtfs_validations:detail.ValidationsDetailSectionResult.description')}
-			title={t('gtfs_validations:detail.ValidationsDetailSectionResult.title')}
+			description={t('gtfs_validations:detail.GtfsValidationsDetailSectionResult.description')}
+			title={t('gtfs_validations:detail.GtfsValidationsDetailSectionResult.title')}
 		>
 			<ValidationsDetailResultsContextProvider key={validationsDetailContext.data.validation._id}>
 				<Section gap="md">
