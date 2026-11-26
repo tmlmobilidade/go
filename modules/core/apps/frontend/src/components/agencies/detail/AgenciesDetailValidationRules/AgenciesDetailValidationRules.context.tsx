@@ -1,6 +1,6 @@
 'use client';
 
-import { type GtfsValidationRule, type GtfsValidatorRuleId, GtfsValidatorRuleIdValues, GtfsValidatorRuleSeveritySchema } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidationRule, type GtfsValidatorRuleId, GtfsValidatorRuleIdSchema, GtfsValidatorRuleIdValues, GtfsValidatorRuleSeveritySchema } from '@tmlmobilidade/go-types-gtfs-validator';
 import { useSearch, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo, useState } from 'react';
 
@@ -20,6 +20,7 @@ interface AgenciesDetailValidationRulesContextState {
 		updateRule: (ruleId: GtfsValidatorRuleId, update: UpdateRule) => void
 	}
 	data: {
+		configuredEntries: AgenciesDetailValidationRuleEntry[]
 		entries: AgenciesDetailValidationRuleEntry[]
 		selectedEntry?: AgenciesDetailValidationRuleEntry
 		selectedRule?: AgenciesDetailValidationRule
@@ -60,9 +61,14 @@ export function AgenciesDetailValidationRulesContextProvider({ children }: Props
 
 	const rulesById = useMemo(() => new Map(rules?.map(rule => [rule.rule_id, rule])), [rules]);
 	const entriesById = useMemo(() => new Map(GtfsValidatorRuleIdValues.map((ruleId) => {
-		const severity = GtfsValidatorRuleSeveritySchema.safeParse(rulesById.get(ruleId)?.severity).data;
-		return [ruleId, { ruleId, severity }];
+		const rule = rulesById.get(ruleId);
+		const dependsOn = Array.isArray(rule?.depends_on)
+			? [...new Set(rule.depends_on)].filter(id => GtfsValidatorRuleIdSchema.safeParse(id).success)
+			: [];
+		const severity = GtfsValidatorRuleSeveritySchema.safeParse(rule?.severity).data;
+		return [ruleId, { dependsOn, ruleId, severity }];
 	})), [rulesById]);
+	const configuredEntries = useMemo(() => [...entriesById.values()].filter(entry => rulesById.has(entry.ruleId)), [entriesById, rulesById]);
 	const entries = useMemo(() => [...entriesById.values()].filter(entry => (
 		filters.severity === null || (entry.severity ?? 'unconfigured') === filters.severity
 	)), [entriesById, filters.severity]);
@@ -99,10 +105,10 @@ export function AgenciesDetailValidationRulesContextProvider({ children }: Props
 
 	const value = useMemo<AgenciesDetailValidationRulesContextState>(() => ({
 		actions: { selectRule: setSelectedId, setSearch, setSeverityFilter, updateRule },
-		data: { entries: matchingEntries, selectedEntry, selectedRule },
+		data: { configuredEntries, entries: matchingEntries, selectedEntry, selectedRule },
 		filters,
 		flags: { can_edit: editEnabled },
-	}), [editEnabled, filters, matchingEntries, selectedEntry, selectedRule, setSearch, setSeverityFilter, updateRule]);
+	}), [configuredEntries, editEnabled, filters, matchingEntries, selectedEntry, selectedRule, setSearch, setSeverityFilter, updateRule]);
 
 	return <AgenciesDetailValidationRulesContext.Provider value={value}>{children}</AgenciesDetailValidationRulesContext.Provider>;
 }

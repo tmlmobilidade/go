@@ -9,6 +9,7 @@ import { useAgenciesDetailAgencyId } from '../use-agencies-detail-agency-id';
 import { AgenciesDetailValidationRuleInspector } from './AgenciesDetailValidationRuleInspector';
 import { AgenciesDetailValidationRulesContextProvider } from './AgenciesDetailValidationRules.context';
 import { AgenciesDetailValidationRulesFilters } from './AgenciesDetailValidationRulesFilters';
+import { AgenciesDetailValidationRulesGraph } from './AgenciesDetailValidationRulesGraph';
 import { AgenciesDetailValidationRulesTable } from './AgenciesDetailValidationRulesTable';
 
 /* * */
@@ -31,18 +32,17 @@ export function AgenciesDetailValidationRules() {
 			title={t('default:agencies.detail.ValidationRules.title')}
 		>
 			<AgenciesDetailValidationRulesContextProvider key={agencyId}>
-				<Section>
-					<div className={styles.container}>
-						<div className={styles.workspace}>
-							<div className={styles.list}>
-								<AgenciesDetailValidationRulesFilters />
-								<AgenciesDetailValidationRulesTable />
-							</div>
-							<div className={styles.inspector}>
-								<AgenciesDetailValidationRuleInspector />
-							</div>
+				<Section gap="md" width="100%">
+					<div className={styles.workspace}>
+						<div className={styles.list}>
+							<AgenciesDetailValidationRulesFilters />
+							<AgenciesDetailValidationRulesTable />
+						</div>
+						<div className={styles.inspector}>
+							<AgenciesDetailValidationRuleInspector />
 						</div>
 					</div>
+					<AgenciesDetailValidationRulesGraph />
 				</Section>
 			</AgenciesDetailValidationRulesContextProvider>
 		</Collapsible>

@@ -28,12 +28,13 @@ export function AgenciesDetailValidationRulesTable() {
 				<Table.Thead className={styles.header}>
 					<Table.Tr>
 						<Table.Th scope="col">{t('agencies:detail.AgenciesDetailValidationRulesTable.rule')}</Table.Th>
+						<Table.Th scope="col">{t('agencies:detail.AgenciesDetailValidationRulesTable.dependencies')}</Table.Th>
 						<Table.Th scope="col">{t('agencies:detail.AgenciesDetailValidationRulesTable.severity')}</Table.Th>
 					</Table.Tr>
 				</Table.Thead>
 				<Table.Tbody>
 					{data.entries.length === 0 && (
-						<Table.Tr><Table.Td colSpan={2}>{t('agencies:detail.AgenciesDetailValidationRulesTable.empty')}</Table.Td></Table.Tr>
+						<Table.Tr><Table.Td colSpan={3}>{t('agencies:detail.AgenciesDetailValidationRulesTable.empty')}</Table.Td></Table.Tr>
 					)}
 					{data.entries.map(entry => (
 						<AgenciesDetailValidationRuleRow

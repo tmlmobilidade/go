@@ -30,7 +30,14 @@
 			"search": "Search rules...",
 			"severity": "Severity"
 		},
+		"AgenciesDetailValidationRulesGraph": {
+			"cycle": "The current dependencies contain a cycle.",
+			"direction": "Arrows point from prerequisite to dependent.",
+			"no_connections": "This rule has no direct dependencies or dependents.",
+			"title": "Rule dependency graph"
+		},
 		"AgenciesDetailValidationRulesTable": {
+			"dependencies": "Dependencies",
 			"empty": "No rules found.",
 			"rule": "Rule",
 			"severity": "Severity"

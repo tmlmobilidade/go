@@ -43,6 +43,15 @@
 	font-weight: 700;
 }
 
+.dependencies {
+	margin: 0;
+	padding-inline-start: 1em;
+	color: var(--color-system-text-200);
+	font-family: var(--font-family-monospace);
+	font-size: var(--font-size-xs);
+	overflow-wrap: anywhere;
+}
+
 .severity {
 	--severity-dot: currentColor;
 	display: inline-flex;

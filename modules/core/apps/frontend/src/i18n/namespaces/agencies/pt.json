@@ -30,7 +30,14 @@
 			"search": "Pesquisar regra...",
 			"severity": "Severidade"
 		},
+		"AgenciesDetailValidationRulesGraph": {
+			"cycle": "As dependências atuais contêm um ciclo.",
+			"direction": "As setas apontam do pré-requisito para a regra que dele depende.",
+			"no_connections": "Esta regra não tem dependências diretas nem regras que dependam diretamente dela.",
+			"title": "Gráfico de dependências entre regras"
+		},
 		"AgenciesDetailValidationRulesTable": {
+			"dependencies": "Dependências",
 			"empty": "Nenhuma regra encontrada.",
 			"rule": "Regra",
 			"severity": "Severidade"

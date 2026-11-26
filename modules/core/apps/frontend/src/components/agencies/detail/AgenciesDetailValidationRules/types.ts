@@ -11,6 +11,7 @@ interface LegacyModifiers {
 export type AgenciesDetailValidationRule = LegacyModifiers & Omit<GtfsValidationRule, 'depends_on' | 'severity'> & Partial<Pick<GtfsValidationRule, 'depends_on' | 'severity'>>;
 
 export interface AgenciesDetailValidationRuleEntry {
+	dependsOn: GtfsValidatorRuleId[]
 	ruleId: GtfsValidatorRuleId
 	severity?: GtfsValidationRuleSeverity
 }

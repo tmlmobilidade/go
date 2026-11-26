@@ -32,6 +32,15 @@ export function AgenciesDetailValidationRuleRow({ entry, isSelected, onSelect, s
 				</button>
 			</Table.Td>
 			<Table.Td>
+				{entry.dependsOn.length > 0
+					? (
+						<ul className={styles.dependencies}>
+							{entry.dependsOn.map(ruleId => <li key={ruleId}>{ruleId}</li>)}
+						</ul>
+					)
+					: '—'}
+			</Table.Td>
+			<Table.Td>
 				<span className={styles.severity} data-severity={entry.severity ?? 'unconfigured'}>{severityLabel}</span>
 			</Table.Td>
 		</Table.Tr>
