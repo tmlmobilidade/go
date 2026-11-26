@@ -42,12 +42,12 @@ export function AgenciesList() {
 			accessor: 'code',
 			render: item => <IdTag id={item.code} />,
 			title: t('default:agencies.list.Table.columns.code'),
-			width: 80,
+			width: 100,
 		},
 		{
 			accessor: 'short_name',
 			title: t('default:agencies.list.Table.columns.short_name'),
-			width: 80,
+			width: 100,
 		},
 		{
 			accessor: 'name',
