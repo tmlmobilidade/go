@@ -25,7 +25,7 @@ export function GtfsValidationsDetailResultsList() {
 			accessor: 'severity',
 			render: item => <SeverityTag severity={item.result.severity} />,
 			title: t('gtfs_validations:detail.GtfsValidationsDetailResultsList.columns.severity'),
-			width: 90,
+			width: 110,
 		},
 		{
 			accessor: 'description',

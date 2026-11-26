@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
 import { GtfsValidationsDetailSelectedRuleHeader } from '../GtfsValidationsDetailSelectedRuleHeader';
-import { ValidationsDetailResultMessages } from '../ValidationsDetailResultMessages';
+import { GtfsValidationsDetailSelectedRuleMessages } from '../GtfsValidationsDetailSelectedRuleMessages';
 
 /* * */
 
@@ -40,7 +40,7 @@ export function GtfsValidationsDetailSelectedRule() {
 					label={t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.rule_description')}
 					value={data.selected.description}
 				/>
-				<ValidationsDetailResultMessages
+				<GtfsValidationsDetailSelectedRuleMessages
 					description={data.selected.description}
 					messages={data.selected.result.messages}
 					ruleId={data.selected.ruleId}

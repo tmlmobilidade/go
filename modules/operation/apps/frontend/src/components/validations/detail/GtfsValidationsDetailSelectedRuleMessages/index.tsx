@@ -21,7 +21,7 @@ const VISIBLE_MESSAGES_LIMIT = 10;
 
 /* * */
 
-export function ValidationsDetailResultMessages({ description, messages, ruleId }: ValidationsDetailResultMessagesProps) {
+export function GtfsValidationsDetailSelectedRuleMessages({ description, messages, ruleId }: ValidationsDetailResultMessagesProps) {
 	//
 
 	//
