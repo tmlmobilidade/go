@@ -1,3 +1,3 @@
-export * from './Analytics.context.js';
+export * from './contexts/Analytics.context.js';
 export * from './events/index.js';
-export * from './use-session-replay.js';
+export * from './hooks/use-session-replay.js';
