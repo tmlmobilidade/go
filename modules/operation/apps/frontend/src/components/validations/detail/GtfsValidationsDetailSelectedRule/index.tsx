@@ -30,7 +30,7 @@ export function GtfsValidationsDetailSelectedRule() {
 			{selected && (
 				<Section gap="sm">
 					<ValueDisplay
-						label={t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.description')}
+						label={t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.rule_description')}
 						value={selected.description}
 					/>
 					<ValidationsDetailResultMessages

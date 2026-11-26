@@ -13,9 +13,8 @@
 			"title": "Validation Results"
 		},
 		"GtfsValidationsDetailSelectedRule": {
-			"description": "Description",
 			"documentation": "View rule documentation",
-			"title": "Rule details"
+			"rule_description": "What this rule checks"
 		},
 		"ValidationsDetailResultListItem": {
 			"rule_descriptions": {
