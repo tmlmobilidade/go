@@ -2,11 +2,12 @@
 
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
+import { type UsersCreateItemRequest, UsersCreateItemRequestSchema, type UsersCreateItemResponse } from '@tmlmobilidade/go-core-pckg-types';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { hashAuthToken } from '@tmlmobilidade/go-providers-auth';
 import { sendWelcomeEmail } from '@tmlmobilidade/go-providers-emails';
-import { type CreateUserDto, CreateUserSchema } from '@tmlmobilidade/go-types-core';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import { generateRandomToken } from '@tmlmobilidade/strings';
 
 /**
@@ -14,15 +15,16 @@ import { generateRandomToken } from '@tmlmobilidade/strings';
  * @param request The request object.
  * @param reply The reply object.
  */
-export async function createUserHandler(request: FastifyRequest<{ Body: CreateUserDto }>, reply: FastifyReply<void>) {
+export async function createUserHandler(request: FastifyRequest<{ Body: UsersCreateItemRequest }>, reply: FastifyReply<UsersCreateItemResponse>) {
 	//
 
 	//
 	// Validate the request body
 
-	const validatedRequest = CreateUserSchema.safeParse(request.body);
+	const validatedRequest = UsersCreateItemRequestSchema.safeParse(request.body);
 
 	if (!validatedRequest.success) {
+		Logger.error({ message: validatedRequest.error.message });
 		return sendErrorApiResponse(reply, {
 			error: validatedRequest.error.message,
 			status_code: '400',
@@ -36,8 +38,17 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 		...validatedRequest.data,
 		created_by: request.me._id,
 		dismissed_banners: [],
+		email_verified: null,
+		is_locked: false,
+		password_hash: null,
+		permissions: [],
+		phone: null,
+		preferences: null,
 		seen_changelogs: [],
+		seen_last_at: null,
+		session_ids: [],
 		updated_by: request.me._id,
+		verification_token_ids: [],
 	});
 
 	//
@@ -69,5 +80,7 @@ export async function createUserHandler(request: FastifyRequest<{ Body: CreateUs
 		to: request.body.email,
 	});
 
-	return sendSuccessApiResponse(reply, undefined);
+	return sendSuccessApiResponse(reply, {
+		user_id: newUserData._id,
+	});
 }
