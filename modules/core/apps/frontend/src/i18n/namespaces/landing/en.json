@@ -148,5 +148,12 @@
 				"street": "Lime"
 			}
 		}
+	},
+	"stats": {
+		"LandingStatsPanel": {
+			"events": "Events · last 24h",
+			"operators": "Operators",
+			"vehicles_live": "Vehicles live"
+		}
 	}
 }

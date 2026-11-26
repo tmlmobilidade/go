@@ -11,6 +11,7 @@ import styles from './styles.module.css';
 
 import { useLandingVehiclesData } from '../../map/LandingMap/use-landing-vehicles-data';
 import { LandingStatCard } from '../LandingStatCard';
+import { LandingStatsPanel } from '../LandingStatsPanel';
 
 /* * */
 
@@ -37,11 +38,14 @@ export function LandingStats() {
 	// B. Render components
 
 	return (
-		<div className={styles.grid}>
-			<LandingStatCard label={t('landing:LandingStats.vehicle_events')} thousandSeparator={thousandSeparator} value={vehicleEventsCount} isLive />
-			<LandingStatCard label={t('landing:LandingStats.vehicles_live')} thousandSeparator={thousandSeparator} value={vehicles.length} isLive />
-			<LandingStatCard label={t('landing:LandingStats.operators')} thousandSeparator={thousandSeparator} value={operatorsCount} isLive />
-		</div>
+		<>
+			<div className={styles.grid}>
+				<LandingStatCard label={t('landing:LandingStats.vehicle_events')} thousandSeparator={thousandSeparator} value={vehicleEventsCount} isLive />
+				<LandingStatCard label={t('landing:LandingStats.vehicles_live')} thousandSeparator={thousandSeparator} value={vehicles.length} isLive />
+				<LandingStatCard label={t('landing:LandingStats.operators')} thousandSeparator={thousandSeparator} value={operatorsCount} isLive />
+			</div>
+			<LandingStatsPanel eventsCount={vehicleEventsCount} operatorsCount={operatorsCount} vehiclesCount={vehicles.length} />
+		</>
 	);
 
 	//

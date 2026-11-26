@@ -1,7 +1,7 @@
 'use client';
 
-import { centerMapView, MapContextProvider, MapView, useMapViewContext } from '@tmlmobilidade/ui';
-import { Layer, type MapLayerMouseEvent, Source } from '@vis.gl/react-maplibre';
+import { LoadingOverlay, MapContextProvider, MapView, useMapViewContext } from '@tmlmobilidade/ui';
+import { Layer, type MapLayerMouseEvent, type MapProps, Source } from '@vis.gl/react-maplibre';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -14,7 +14,8 @@ import { setVehicleArrowImage, usePrimaryColor, VEHICLE_ARROW_IMAGE } from './ve
 /* * */
 
 const LISBON_METRO_VIEW = {
-	center: [-9.15, 38.7] as [number, number],
+	latitude: 38.7,
+	longitude: -9.15,
 	zoom: 10,
 };
 
@@ -43,7 +44,7 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 	//
 	// A. Setup variables
 
-	const { data, geoJson } = useLandingVehiclesData();
+	const { data, geoJson, isLoading } = useLandingVehiclesData();
 	const primaryColor = usePrimaryColor();
 	const themeMode = useDocumentThemeMode();
 	const [hoveredVehicleKey, setHoveredVehicleKey] = useState<null | string>(null);
@@ -53,6 +54,18 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 
 	//
 	// B. Transform data
+
+	const initialViewState = useMemo<MapProps['initialViewState']>(() => {
+		if (!fitToVehicles || !geoJson.features.length) return LISBON_METRO_VIEW;
+		const coordinates = geoJson.features.map(feature => feature.geometry.coordinates).filter(([longitude, latitude]) => Number.isFinite(longitude) && Number.isFinite(latitude));
+		if (!coordinates.length) return LISBON_METRO_VIEW;
+		const longitudes = coordinates.map(([longitude]) => longitude);
+		const latitudes = coordinates.map(([, latitude]) => latitude);
+		return {
+			bounds: [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]],
+			fitBoundsOptions: { padding: 25 },
+		};
+	}, [fitToVehicles, geoJson.features]);
 
 	const hoveredVehicle = useMemo(() => {
 		if (!hoveredVehicleKey) return null;
@@ -81,50 +94,52 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 
 	return (
 		<div className={styles.container}>
-			<MapContextProvider preferenceScope="landing-map">
-				<MapView
-					id={interactive ? 'landing-map-explore' : 'landing-map'}
-					interactiveLayerIds={[VEHICLES_LAYER_ID, VEHICLE_ARROWS_LAYER_ID]}
-					layers={{ navigation: interactive }}
-					onMouseEnter={handleMouseEnter}
-					onMouseLeave={scheduleClose}
-					showSearchPin={false}
-					themeMode={themeMode}
-					toolbar={false}
-				>
-					<LandingMapViewport features={fitToVehicles ? geoJson.features : undefined} />
-					<LandingMapVehicleArrowImage color={primaryColor} />
-					<Source data={geoJson} id={VEHICLES_LAYER_ID} type="geojson">
-						<Layer
-							id={VEHICLES_LAYER_ID}
-							type="circle"
-							paint={{
-								'circle-color': primaryColor,
-								'circle-opacity': ['step', ['zoom'], 1, ARROWS_MIN_ZOOM, ['case', ['!=', ['get', 'bearing'], null], 0, 1]],
-								'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, 3, 10, 3.5, 13, 4.5, 16, 7],
-								'circle-stroke-color': '#ffffff',
-								'circle-stroke-opacity': ['step', ['zoom'], 1, ARROWS_MIN_ZOOM, ['case', ['!=', ['get', 'bearing'], null], 0, 1]],
-								'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 13, 1],
-							}}
-						/>
-						<Layer
-							filter={['!=', ['get', 'bearing'], null]}
-							id={VEHICLE_ARROWS_LAYER_ID}
-							minzoom={ARROWS_MIN_ZOOM}
-							type="symbol"
-							layout={{
-								'icon-allow-overlap': true,
-								'icon-ignore-placement': true,
-								'icon-image': VEHICLE_ARROW_IMAGE,
-								'icon-rotate': ['get', 'bearing'],
-								'icon-rotation-alignment': 'map',
-								'icon-size': ['interpolate', ['linear'], ['zoom'], ARROWS_MIN_ZOOM, 0.8, 17, 1.4],
-							}}
-						/>
-					</Source>
-					{hoveredVehicle && <LandingMapVehiclePopup data={hoveredVehicle} onMouseEnter={cancelClose} onMouseLeave={scheduleClose} />}
-				</MapView>
-			</MapContextProvider>
+			{fitToVehicles && isLoading ? <div className={styles.loading}><LoadingOverlay /></div> : (
+				<MapContextProvider preferenceScope="landing-map">
+					<MapView
+						id={interactive ? 'landing-map-explore' : 'landing-map'}
+						initialViewState={initialViewState}
+						interactiveLayerIds={[VEHICLES_LAYER_ID, VEHICLE_ARROWS_LAYER_ID]}
+						layers={{ navigation: interactive }}
+						onMouseEnter={handleMouseEnter}
+						onMouseLeave={scheduleClose}
+						showSearchPin={false}
+						themeMode={themeMode}
+						toolbar={false}
+					>
+						<LandingMapVehicleArrowImage color={primaryColor} />
+						<Source data={geoJson} id={VEHICLES_LAYER_ID} type="geojson">
+							<Layer
+								id={VEHICLES_LAYER_ID}
+								type="circle"
+								paint={{
+									'circle-color': primaryColor,
+									'circle-opacity': ['step', ['zoom'], 1, ARROWS_MIN_ZOOM, ['case', ['!=', ['get', 'bearing'], null], 0, 1]],
+									'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, 3, 10, 3.5, 13, 4.5, 16, 7],
+									'circle-stroke-color': '#ffffff',
+									'circle-stroke-opacity': ['step', ['zoom'], 1, ARROWS_MIN_ZOOM, ['case', ['!=', ['get', 'bearing'], null], 0, 1]],
+									'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 13, 1],
+								}}
+							/>
+							<Layer
+								filter={['!=', ['get', 'bearing'], null]}
+								id={VEHICLE_ARROWS_LAYER_ID}
+								minzoom={ARROWS_MIN_ZOOM}
+								type="symbol"
+								layout={{
+									'icon-allow-overlap': true,
+									'icon-ignore-placement': true,
+									'icon-image': VEHICLE_ARROW_IMAGE,
+									'icon-rotate': ['get', 'bearing'],
+									'icon-rotation-alignment': 'map',
+									'icon-size': ['interpolate', ['linear'], ['zoom'], ARROWS_MIN_ZOOM, 0.8, 17, 1.4],
+								}}
+							/>
+						</Source>
+						{hoveredVehicle && <LandingMapVehiclePopup data={hoveredVehicle} onMouseEnter={cancelClose} onMouseLeave={scheduleClose} />}
+					</MapView>
+				</MapContextProvider>
+			)}
 		</div>
 	);
 
@@ -144,37 +159,4 @@ function LandingMapVehicleArrowImage({ color }: { color: string }) {
 	}, [color, isLoading, mapRef]);
 
 	return null;
-}
-
-/* * */
-
-function LandingMapViewport({ features }: { features?: GeoJSON.Feature<GeoJSON.Point>[] }) {
-	//
-
-	//
-	// A. Setup variables
-
-	const mapViewContext = useMapViewContext();
-	const isLoading = mapViewContext.flags.loading;
-	const mapRef = mapViewContext.ref.map;
-	const hasSetInitialView = useRef(false);
-
-	//
-	// B. Handle actions
-
-	useEffect(() => {
-		if (hasSetInitialView.current || isLoading || !mapRef.current) return;
-		if (!features) {
-			hasSetInitialView.current = true;
-			mapRef.current.jumpTo(LISBON_METRO_VIEW);
-			return;
-		}
-		if (!features.length) return;
-		hasSetInitialView.current = true;
-		centerMapView(mapRef.current, features);
-	}, [features, isLoading, mapRef]);
-
-	return null;
-
-	//
 }

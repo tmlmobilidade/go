@@ -148,5 +148,12 @@
 				"street": "Lima"
 			}
 		}
+	},
+	"stats": {
+		"LandingStatsPanel": {
+			"events": "Eventos · últimas 24h",
+			"operators": "Operadores",
+			"vehicles_live": "Vehículos en circulación"
+		}
 	}
 }

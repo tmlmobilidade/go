@@ -44,7 +44,23 @@
 
 @media (max-width: 800px) {
 	.card {
+		min-width: 0;
 		padding: 0 16px;
+	}
+
+	.card:first-child {
+		grid-column: 1 / -1;
+		padding: 0;
+	}
+
+	.card:nth-child(2) {
+		padding-left: 0;
+		border-left: none;
+	}
+
+	.label {
+		font-size: 11px;
+		white-space: normal;
 	}
 
 	.value {

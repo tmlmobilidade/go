@@ -12,6 +12,15 @@
 }
 
 /* * */
+/* MAP */
+
+.map {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+/* * */
 /* OVERLAY */
 
 .overlay {
@@ -111,14 +120,25 @@
 }
 
 @media (max-width: 800px) {
+	.container {
+		width: 100%;
+		height: auto;
+		min-height: 0;
+		margin: 0;
+	}
+
+	.map {
+		height: clamp(260px, 70vw, 320px);
+	}
+
 	.overlay {
 		align-items: flex-start;
 		padding: 20px;
+		background: transparent;
 	}
 
 	.stats {
-		right: 20px;
-		bottom: 20px;
-		left: 20px;
+		position: static;
+		pointer-events: auto;
 	}
 }

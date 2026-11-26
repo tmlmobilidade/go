@@ -1,7 +1,7 @@
 'use client';
 
 import { type ThemeMode } from '@tmlmobilidade/go-types-shared';
-import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
+import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapProps, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren, useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -32,6 +32,8 @@ export const DEFAULT_LAYERS: MapViewBasemapLayers = {
 export interface MapViewBasemapProps {
 	cursor?: CSSProperties['cursor'] | null
 	id: string
+	/** Camera applied before the map first renders. */
+	initialViewState?: MapProps['initialViewState']
 	interactiveLayerIds?: string[]
 	layers: MapViewBasemapLayers
 	onClick?: (e: MapLayerMouseEvent) => void
@@ -60,7 +62,7 @@ export interface MapViewBasemapProps {
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, scrollZoom, searchPinFocusOnChange = true, showSearchPin = true, themeMode }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, initialViewState, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, scrollZoom, searchPinFocusOnChange = true, showSearchPin = true, themeMode }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -131,7 +133,7 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			attributionControl={false}
 			cursor={mapViewContext.flags.cursor}
 			id={id}
-			initialViewState={MAP_VIEWPORT}
+			initialViewState={initialViewState ?? MAP_VIEWPORT}
 			interactive={true}
 			interactiveLayerIds={interactiveLayerIds}
 			mapStyle={currentMapStyleConfigValue}

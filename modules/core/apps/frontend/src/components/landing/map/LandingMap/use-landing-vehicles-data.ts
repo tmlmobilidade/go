@@ -19,7 +19,7 @@ export function useLandingVehiclesData() {
 	//
 	// A. Fetch data
 
-	const { data } = useSWR<ApiResponse<HubV1ApiVehiclePosition[]>>(LANDING_VEHICLES_URL, {
+	const { data, isLoading } = useSWR<ApiResponse<HubV1ApiVehiclePosition[]>>(LANDING_VEHICLES_URL, {
 		fetcher: async (url: string) => await fetchApiData<HubV1ApiVehiclePosition[]>({ credentials: 'omit', url }),
 		refreshInterval: 5_000,
 	});
@@ -36,7 +36,7 @@ export function useLandingVehiclesData() {
 	//
 	// C. Return value
 
-	return useMemo(() => ({ data: data?.data ?? [], geoJson }), [data?.data, geoJson]);
+	return useMemo(() => ({ data: data?.data ?? [], geoJson, isLoading }), [data?.data, geoJson, isLoading]);
 
 	//
 }
