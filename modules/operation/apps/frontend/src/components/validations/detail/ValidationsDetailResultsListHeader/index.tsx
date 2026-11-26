@@ -50,6 +50,7 @@ export function ValidationsDetailResultsListHeader() {
 				onChange={actions.search}
 				placeholder={searchLabel}
 				value={filters.search}
+				w="100%"
 			/>
 		</Toolbar>
 	);

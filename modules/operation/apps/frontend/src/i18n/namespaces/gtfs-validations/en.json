@@ -381,6 +381,10 @@
 			"empty": "N/A"
 		},
 		"ValidationsDetailResultsList": {
+			"columns": {
+				"description": "Description",
+				"severity": "Severity"
+			},
 			"empty": "No issues found",
 			"title": "Issues found"
 		},

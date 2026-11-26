@@ -1,18 +1,21 @@
-.pane {
+/* * */
+/* DESCRIPTION */
+
+.descriptionWrapper {
 	display: flex;
 	flex-direction: column;
-	min-width: 0;
-	min-height: 0;
+	gap: var(--size-spacing-xs);
+	font-size: var(--font-size-sm);
 }
 
-.list {
-	padding: 0;
-	margin: 0;
-	list-style: none;
+.ruleId {
+	line-height: 1;
+	font-family: var(--font-family-monospace);
+	font-size: var(--font-size-xs);
+	color: var(--color-system-text-200);
+	font-weight: var(--font-weight-medium);
 }
 
-@container (max-width: 640px) {
-	.pane {
-		max-height: 22rem;
-	}
+.description {
+	text-wrap: pretty;
 }

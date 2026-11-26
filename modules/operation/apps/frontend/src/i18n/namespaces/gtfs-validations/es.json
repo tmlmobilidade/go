@@ -381,6 +381,10 @@
 			"empty": "N/A"
 		},
 		"ValidationsDetailResultsList": {
+			"columns": {
+				"description": "Descripción",
+				"severity": "Severidad"
+			},
 			"empty": "No hay situaciones encontradas",
 			"title": "Situaciones encontradas"
 		},
