@@ -13,8 +13,8 @@ interface RuleNode {
 	y: number
 }
 
-const NODE_HEIGHT = 36;
-const ROW_HEIGHT = 52;
+const NODE_HEIGHT = 48;
+const ROW_HEIGHT = 64;
 const COLUMN_GAP = 60;
 const PADDING = 24;
 

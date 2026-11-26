@@ -53,6 +53,11 @@
 }
 
 .rule {
+	display: flex;
+	flex-direction: row;
+	gap: 2px;
+	align-items: center;
+	justify-content: space-between;
 	width: 100%;
 	height: 100%;
 	padding: var(--size-spacing-xs) var(--size-spacing-sm);
@@ -76,4 +81,39 @@
 .rule:focus-visible {
 	outline: 2px solid var(--color-primary);
 	outline-offset: -3px;
+}
+
+.severity {
+	--severity-dot: currentColor;
+	display: inline-flex;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	color: var(--color-system-text-200);
+	font-family: var(--font-family);
+	font-size: var(--font-size-xs);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.severity::before {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background-color: var(--severity-dot);
+	content: '';
+}
+
+.severity[data-severity='error'],
+.severity[data-severity='forbidden'] {
+	color: var(--color-status-danger-primary);
+}
+
+.severity[data-severity='warning'] {
+	--severity-dot: var(--color-status-warning-primary);
+	color: var(--pill-3-text);
+}
+
+.severity[data-severity='ignore'],
+.severity[data-severity='info'] {
+	color: var(--color-status-info-primary);
 }
