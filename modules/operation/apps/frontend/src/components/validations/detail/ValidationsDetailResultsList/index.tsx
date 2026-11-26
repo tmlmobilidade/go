@@ -2,10 +2,12 @@
 
 import { ValidationsDetailResultListItem } from '@/components/validations/detail/ValidationsDetailResultListItem';
 import { useValidationsDetailResultsContext } from '@/components/validations/detail/ValidationsDetailResults.context';
-import { Label, NoDataLabel, Pane, Section } from '@tmlmobilidade/ui';
+import { NoDataLabel, Pane } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
+
+import { ValidationsDetailResultsListHeader } from '../ValidationsDetailResultsListHeader';
 
 /* * */
 
@@ -23,9 +25,7 @@ export function ValidationsDetailResultsList() {
 
 	return (
 		<Pane header={[
-			<Section key="header" alignItems="center" flexDirection="row" flexWrap="wrap" gap="xs" justifyContent="space-between">
-				<Label>{t('gtfs_validations:detail.ValidationsDetailResultsList.title')}</Label>
-			</Section>,
+			<ValidationsDetailResultsListHeader key="filters" />,
 		]}
 		>
 			{data.results.length > 0 ? (

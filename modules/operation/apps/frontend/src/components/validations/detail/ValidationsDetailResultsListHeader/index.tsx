@@ -2,14 +2,14 @@
 
 import { type ValidationsDetailResultSeverity } from '@/components/validations/detail/get-validations-detail-results';
 import { useValidationsDetailResultsContext } from '@/components/validations/detail/ValidationsDetailResults.context';
-import { SearchInput, SeverityTag } from '@tmlmobilidade/ui';
+import { SearchInput, SeverityTag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
 /* * */
 
-export function ValidationsDetailResultsFilters() {
+export function ValidationsDetailResultsListHeader() {
 	//
 
 	//
@@ -17,22 +17,22 @@ export function ValidationsDetailResultsFilters() {
 
 	const { t } = useTranslation();
 	const { actions, data: { totals }, filters } = useValidationsDetailResultsContext();
-	const searchLabel = t('gtfs_validations:detail.ValidationsDetailResultsFilters.search_placeholder');
+	const searchLabel = t('gtfs_validations:detail.ValidationsDetailResultsListHeader.search_placeholder');
 
 	//
 	// B. Transform data
 
 	const severityOptions: { label: string, severity: ValidationsDetailResultSeverity }[] = [
-		{ label: t('gtfs_validations:detail.ValidationsDetailResultsFilters.error', '', { count: totals.errors }), severity: 'error' },
-		{ label: t('gtfs_validations:detail.ValidationsDetailResultsFilters.warning', '', { count: totals.warnings }), severity: 'warning' },
-		{ label: t('gtfs_validations:detail.ValidationsDetailResultsFilters.info', '', { count: totals.infos }), severity: 'info' },
+		{ label: t('gtfs_validations:detail.ValidationsDetailResultsListHeader.error', '', { count: totals.errors }), severity: 'error' },
+		{ label: t('gtfs_validations:detail.ValidationsDetailResultsListHeader.warning', '', { count: totals.warnings }), severity: 'warning' },
+		{ label: t('gtfs_validations:detail.ValidationsDetailResultsListHeader.info', '', { count: totals.infos }), severity: 'info' },
 	];
 
 	//
 	// C. Render components
 
 	return (
-		<div className={styles.toolbar}>
+		<Toolbar>
 			<div className={styles.severities}>
 				{severityOptions.map(({ label, severity }) => (
 					<SeverityTag
@@ -51,6 +51,6 @@ export function ValidationsDetailResultsFilters() {
 				placeholder={searchLabel}
 				value={filters.search}
 			/>
-		</div>
+		</Toolbar>
 	);
 }

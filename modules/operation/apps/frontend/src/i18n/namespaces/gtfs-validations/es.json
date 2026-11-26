@@ -380,15 +380,15 @@
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
-		"ValidationsDetailResultsFilters": {
+		"ValidationsDetailResultsList": {
+			"empty": "No hay situaciones encontradas",
+			"title": "Situaciones encontradas"
+		},
+		"ValidationsDetailResultsListHeader": {
 			"error": "{count, plural, =1 {# Error} other {# Errores}}",
 			"info": "{count, plural, =1 {# Información} other {# Informaciones}}",
 			"search_placeholder": "Buscar por identificador de regla o descripción…",
 			"warning": "{count, plural, =1 {# Aviso} other {# Avisos}}"
-		},
-		"ValidationsDetailResultsList": {
-			"empty": "No hay situaciones encontradas",
-			"title": "Situaciones encontradas"
 		},
 		"ValidationsDetailSectionFeedInfo": {
 			"description": "Resumen de los datos extraídos de feed_info.txt",

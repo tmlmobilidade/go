@@ -380,15 +380,15 @@
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
-		"ValidationsDetailResultsFilters": {
+		"ValidationsDetailResultsList": {
+			"empty": "No issues found",
+			"title": "Issues found"
+		},
+		"ValidationsDetailResultsListHeader": {
 			"error": "{count, plural, =1 {# Error} other {# Errors}}",
 			"info": "{count, plural, =1 {# Info} other {# Info}}",
 			"search_placeholder": "Search by rule ID or description…",
 			"warning": "{count, plural, =1 {# Warning} other {# Warnings}}"
-		},
-		"ValidationsDetailResultsList": {
-			"empty": "No issues found",
-			"title": "Issues found"
 		},
 		"ValidationsDetailSectionFeedInfo": {
 			"description": "Summary of the data extracted from feed_info.txt",

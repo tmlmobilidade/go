@@ -2,7 +2,6 @@
 
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { ValidationsDetailResultsContextProvider } from '@/components/validations/detail/ValidationsDetailResults.context';
-import { ValidationsDetailResultsFilters } from '@/components/validations/detail/ValidationsDetailResultsFilters';
 import { ValidationsDetailResultsList } from '@/components/validations/detail/ValidationsDetailResultsList';
 import { ValidationsDetailSelectedRule } from '@/components/validations/detail/ValidationsDetailSelectedRule';
 import { Collapsible, PanesManager, Section } from '@tmlmobilidade/ui';
@@ -33,7 +32,6 @@ export function ValidationsDetailSectionResult() {
 		>
 			<ValidationsDetailResultsContextProvider key={validationsDetailContext.data.validation._id}>
 				<Section gap="md">
-					<ValidationsDetailResultsFilters />
 					<PanesManager
 						id="gtfs-validation-results"
 						stackBelow={640}
