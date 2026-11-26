@@ -37,7 +37,7 @@ export function UsersDetailAmplitude({ authorization, isLoading, onChange }: Use
 	const state = activationId ? 'active' : 'inactive';
 	const formattedDeadline = deadline === null ? '' : new Intl.DateTimeFormat(i18n.resolvedLanguage ?? i18n.language, {
 		dateStyle: 'short',
-		timeStyle: 'short',©
+		timeStyle: 'short',
 		timeZone: 'Europe/Lisbon',
 	}).format(deadline);
 	const tooltipOptions: TOptions = { deadline: formattedDeadline };
