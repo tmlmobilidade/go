@@ -10,6 +10,7 @@ import { type MeUser } from '@tmlmobilidade/go-types-core';
  */
 export async function listMeUserHandler(request: FastifyRequest, reply: FastifyReply<MeUser>) {
 	//
+
 	//
 	// Reply with the already populated MeUser data from the request.
 
