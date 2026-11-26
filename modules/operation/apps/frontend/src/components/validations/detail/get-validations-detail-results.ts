@@ -40,15 +40,20 @@ export function getValidationsDetailResults(
 ): ValidationsDetailResultsData {
 	if (!summary) return { results: [], totals: EMPTY_TOTALS };
 
-	if ('results' in summary) {
-		const results = summary.results
-			.filter(result => result.severity !== 'ignore' && (severity === null || result.severity === severity))
-			.map(result => ({ id: result.rule_id, result }));
+	const data = 'results' in summary
+		? {
+			results: summary.results
+				.filter(result => result.severity !== 'ignore' && (severity === null || result.severity === severity))
+				.map(result => ({ id: result.rule_id, result })),
+			totals: summary.totals,
+		}
+		: getLegacyValidationResults(summary, severity);
 
-		return { results, totals: summary.totals };
-	}
+	data.results.sort(({ result: a }, { result: b }) => (
+		SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity] || a.rule_id.localeCompare(b.rule_id)
+	));
 
-	return getLegacyValidationResults(summary, severity);
+	return data;
 }
 
 /* * */
