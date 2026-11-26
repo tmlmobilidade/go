@@ -105,6 +105,9 @@
 		"LinesListFilterAgencies": {
 			"agencies": "Operadores"
 		},
+		"LinesListFilterOrganizations": {
+			"organizations": "Organizaciones"
+		},
 		"LinesListHeader": {
 			"actions": "Acciones",
 			"export_gtfs": "Exportar GTFS",
@@ -118,6 +121,9 @@
 		"LinesOverviewMapHover": {
 			"line_count": "{count, plural, one {# línea} other {# líneas}}",
 			"pattern_line_count": "{count, plural, one {# recorrido} other {# recorridos}} en {line_count, plural, one {# línea} other {# líneas}}"
+		},
+		"LinesOverviewMapPopup": {
+			"no_organization": "Sin organización asociada"
 		},
 		"LinesOverviewMapStatus": {
 			"count": "{count, plural, one {# recorrido} other {# recorridos}}",

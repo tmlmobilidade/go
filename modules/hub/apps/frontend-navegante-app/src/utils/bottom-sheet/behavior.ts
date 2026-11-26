@@ -16,6 +16,16 @@ interface ShouldShowBottomSheetOverlayParams {
 
 /* * */
 
+export function getInsetAdjustedSnapPoints(snapPoints: number[], bottomInset: number, sheetHeight: number): number[] {
+	if (bottomInset <= 0 || sheetHeight <= 0) return snapPoints;
+	return snapPoints.map((point, index) => {
+		if (point <= 0 || point >= 1) return point;
+		// Preserve distinct partial snaps, with at least one pixel before the next snap.
+		const maximum = 1 - (snapPoints.length - 1 - index) / sheetHeight;
+		return Math.min(point + bottomInset / sheetHeight, maximum);
+	});
+}
+
 export function getBottomSheetSnapState(snapPoints: number[], snapIndex: number): BottomSheetSnapState {
 	return {
 		snapIndex,

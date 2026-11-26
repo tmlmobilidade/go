@@ -1,0 +1,124 @@
+/* * */
+
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ZipFile } from 'yazl';
+
+import { ZIP_TIMEOUT_MS } from './types/consts.js';
+import { type ExportHitouchConfig } from './types/export-hitouch-config.js';
+
+/* * */
+
+/**
+ * Creates the HiTouch ZIP archive with all supported TXT files at the archive root.
+ */
+export async function createHitouchZip(exportConfig: ExportHitouchConfig): Promise<string> {
+	//
+
+	//
+	// A. Prepare the final and temporary archive paths
+
+	const outputPath = path.resolve(exportConfig.workdir, exportConfig.output);
+	const temporaryOutputPath = `${outputPath}.tmp`;
+
+	//
+	// B. Collect supported TXT files and reject missing or empty input
+
+	const textFiles = fs.readdirSync(exportConfig.workdir, { withFileTypes: true })
+		.filter((entry) => {
+			const isTextFile = path.extname(entry.name).toLowerCase() === '.txt';
+			return entry.isFile() && isTextFile;
+		})
+		.map(entry => entry.name)
+		.sort();
+
+	if (!textFiles.length) {
+		throw new Error(`No TXT files found in ${exportConfig.workdir}.`);
+	}
+
+	//
+	// C. Reject empty TXT files
+
+	const emptyTextFiles = textFiles.filter(fileName => fs.statSync(path.join(exportConfig.workdir, fileName)).size === 0);
+
+	if (emptyTextFiles.length) {
+		throw new Error(`Empty TXT files found in ${exportConfig.workdir}: ${emptyTextFiles.join(', ')}.`);
+	}
+
+	//
+	// D. Prepare the archive with TXT files at its root
+
+	Logger.info({ message: `Zipping ${textFiles.length} HiTouch files from ${exportConfig.workdir}...` });
+
+	if (fs.existsSync(temporaryOutputPath)) {
+		fs.rmSync(temporaryOutputPath);
+	}
+
+	const outputZip = new ZipFile();
+
+	for (const fileName of textFiles) {
+		outputZip.addFile(path.join(exportConfig.workdir, fileName), fileName);
+	}
+
+	//
+	// E. Stream the archive to disk with timeout and error handling
+
+	await new Promise<void>((resolve, reject) => {
+		//
+
+		//
+		// 1. Open the output stream and start the timeout
+
+		let settled = false;
+		const outputStream = fs.createWriteStream(temporaryOutputPath);
+		const timeout = setTimeout(() => {
+			fail(new Error(`Timed out creating ZIP after ${ZIP_TIMEOUT_MS / 1000}s: ${temporaryOutputPath}`));
+		}, ZIP_TIMEOUT_MS);
+
+		//
+		// 2. Settle once and release the timeout or failed stream
+
+		const succeed = () => {
+			if (settled) return;
+			settled = true;
+			clearTimeout(timeout);
+			resolve();
+		};
+
+		const fail = (error: Error) => {
+			if (settled) return;
+			settled = true;
+			clearTimeout(timeout);
+			outputStream.destroy();
+			reject(error);
+		};
+
+		//
+		// 3. Connect the archive stream and handle completion or errors
+
+		outputStream.on('finish', succeed);
+		outputStream.on('error', fail);
+		outputZip.on('error', fail);
+		outputZip.outputStream.on('error', fail);
+		outputZip.outputStream.pipe(outputStream);
+		outputZip.end();
+	});
+
+	//
+	// F. Validate the completed archive and move it to the final path
+
+	const zipSize = fs.statSync(temporaryOutputPath).size;
+
+	if (zipSize === 0) {
+		fs.rmSync(temporaryOutputPath);
+		throw new Error(`Created ZIP file is empty: ${temporaryOutputPath}.`);
+	}
+
+	fs.renameSync(temporaryOutputPath, outputPath);
+
+	//
+	// G. Return the output path
+
+	return outputPath;
+}

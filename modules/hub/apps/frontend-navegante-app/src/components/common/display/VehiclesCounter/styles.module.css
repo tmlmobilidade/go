@@ -3,7 +3,7 @@
 
 .container {
 	position: fixed;
-	bottom: 20px;
+	bottom: calc(var(--app-bottom-inset) + 20px);
 	left: 15px;
 	/* Above the mapAware bottom sheet's container (z-index: 100), see ActionBar for rationale. */
 	z-index: 101;

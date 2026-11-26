@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { getBaseGeoJsonFeatureCollection, transformVehicleDataIntoGeoJsonFeature } from '@tmlmobilidade/geo';
 import { type HubV1ApiVehiclePosition } from '@tmlmobilidade/go-types-hub';
 import { type ApiResponse, type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, useMeData } from '@tmlmobilidade/ui';
+import { fetchApiData, useMeUser } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
@@ -28,7 +28,7 @@ export function useVehiclesPositionsData(): UseVehiclesPositionsDataReturnType {
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	//
 	// B. Fetch data

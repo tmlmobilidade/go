@@ -206,7 +206,8 @@
 					"id": "#ID",
 					"name": "Nombre",
 					"organizations": "Organizaciones",
-					"pta_name": "Nombre de la Autoridad"
+					"pta_name": "Nombre de la Autoridad",
+					"short_name": "Nombre corto"
 				}
 			}
 		}

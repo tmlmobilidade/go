@@ -19,6 +19,7 @@
 	"dependencies": {
 		"@tmlmobilidade/go-interfaces-cachedb": "*",
 		"@tmlmobilidade/go-interfaces-labdb": "*",
+		"@tmlmobilidade/go-types-hub": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*"
 	},

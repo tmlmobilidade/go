@@ -1,7 +1,8 @@
 import { type GtfsV29ExportConfig } from '@/versions/v29/types.js';
+import { createV29PeriodResolver } from '@/versions/v29/utils/period-mapping.js';
 import { type ServiceId, type ServiceRegistry } from '@/versions/v29/utils/service-registry.js';
 import { type Holiday } from '@tmlmobilidade/go-types-dates';
-import { type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
+import { type GtfsStrictV29Period, type GtfsStrictV29Trips } from '@tmlmobilidade/go-types-gtfs-strict';
 import { DayPeriod, type Event, type HHMM, hhmm, type ManualRule, type Pattern, patternDirectionMapper, type Route, type ScheduleRule, type YearPeriod } from '@tmlmobilidade/go-types-offer';
 import { type IsoWeekday, type OperationalDateInt, toCalendarDate } from '@tmlmobilidade/go-types-shared';
 import { buildOperationalDateRange, Dates } from '@tmlmobilidade/go-utils-dates';
@@ -17,6 +18,7 @@ type ScheduleContributionMode = 'exclude' | 'include';
 
 interface RuleTimepointSchedule {
 	dates: Set<OperationalDateInt>
+	effectivePeriodsByDate?: Map<OperationalDateInt, readonly string[]>
 	mode: ScheduleContributionMode
 	rule: ScheduleRule
 	timepoint: HHMM
@@ -44,6 +46,7 @@ function addScheduleDate(
 	schedules: Map<string, RuleTimepointSchedule>,
 	args: {
 		date: OperationalDateInt
+		effectivePeriodIds?: readonly string[]
 		mode: ScheduleContributionMode
 		rule: ScheduleRule
 		timepoint: HHMM
@@ -60,7 +63,12 @@ function addScheduleDate(
 		});
 	}
 
-	schedules.get(scheduleKey)?.dates.add(args.date);
+	const schedule = schedules.get(scheduleKey);
+	schedule?.dates.add(args.date);
+	if (schedule && args.effectivePeriodIds?.length) {
+		schedule.effectivePeriodsByDate ??= new Map();
+		schedule.effectivePeriodsByDate.set(args.date, args.effectivePeriodIds);
+	}
 }
 
 function buildTimepointSchedules(
@@ -154,6 +162,7 @@ function collectIncludeTimepointsForDate(
 
 			addScheduleDate(schedules, {
 				date: operationalDate,
+				effectivePeriodIds: contribution.effectivePeriodIds,
 				mode: 'include',
 				rule: contribution.rule,
 				timepoint: contribution.timepoint,
@@ -380,6 +389,7 @@ function resolveTripRows(
 ): ResolvedTripRow[] {
 	const canonicalCache: CanonicalDateCache = new Map();
 	const registryOptions = { events, holidays, periods };
+	const resolvePeriod = createV29PeriodResolver(agencyId, periods);
 	const groupedByTimepoint = groupSchedulesByTimepoint(schedules);
 	const resolvedRows: ResolvedTripRow[] = [];
 
@@ -466,9 +476,21 @@ function resolveTripRows(
 				: includeRuleName;
 
 			const periodIds = 'year_period_ids' in row.includeSchedule.rule ? row.includeSchedule.rule.year_period_ids : [];
-			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates, agencyId, periodIds);
+			const periodOverrides = new Map<OperationalDateInt, GtfsStrictV29Period>();
+			for (const [date, effectivePeriodIds] of row.includeSchedule.effectivePeriodsByDate ?? []) {
+				if (!resultingDates.has(date)) continue;
+				const effectivePeriod = resolvePeriod(date, effectivePeriodIds);
+				let ordinaryPeriod: GtfsStrictV29Period | undefined;
+				try {
+					ordinaryPeriod = resolvePeriod(date, periodIds);
+				} catch {
+					// An explicit replacement can select a period outside the date's ordinary calendar.
+				}
+				if (effectivePeriod !== ordinaryPeriod) periodOverrides.set(date, effectivePeriod);
+			}
+			const hashServiceId = serviceRegistry.getOrCreateServiceId(resultingDates, agencyId, periodIds, periodOverrides);
 			const resolvedRuleToken = serviceRegistry.resolveRuleToken(ruleToken, hashServiceId);
-			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates, agencyId, periodIds);
+			serviceRegistry.registerServiceId(resolvedRuleToken, resultingDates, agencyId, periodIds, periodOverrides);
 
 			resolvedRows.push({
 				dates: resultingDates,

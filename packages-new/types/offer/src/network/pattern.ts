@@ -91,6 +91,7 @@ const ShapeLegSchema = z.object({
 export const ShapeSchema = z.object({
 	anchors: z.array(ShapeAnchorSchema).optional(),
 	encoded_polyline: z.string().optional(),
+	encoded_polyline_simplified: z.string().optional(),
 	extension: z.number().finite().nonnegative(),
 	geojson: z.object({
 		geometry: z.object({

@@ -21,7 +21,7 @@ export const Inline = forwardRef<HTMLSpanElement, InlineProps>(({ dotted, onClic
 	<span
 		ref={ref}
 		{...props}
-		className={`${styles.inline} ${props.className || ''}`}
+		className={styles.inline}
 		data-clickable={!!onClick}
 		data-dotted={dotted}
 		onClick={onClick}

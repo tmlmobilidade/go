@@ -45,9 +45,14 @@ export function AgenciesList() {
 			width: 80,
 		},
 		{
+			accessor: 'short_name',
+			title: t('default:agencies.list.Table.columns.short_name'),
+			width: 80,
+		},
+		{
 			accessor: 'name',
 			title: t('default:agencies.list.Table.columns.name'),
-			width: 600,
+			width: 500,
 		},
 		{
 			accessor: 'organizations',

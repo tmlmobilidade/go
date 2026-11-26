@@ -3,6 +3,7 @@
 import { FastifyService } from '@tmlmobilidade/go-clients-fastify';
 
 import { getDemandByAgencyByOperationalDateHandler } from './handlers/get-demand-by-agency-by-operational-date.js';
+import { getVehicleEventsLast24hHandler } from './handlers/get-vehicle-events-last-24h.js';
 
 /* * */
 
@@ -17,6 +18,8 @@ server.register(
 		//
 
 		instance.get('/demand-by-agency-by-operational-date', getDemandByAgencyByOperationalDateHandler);
+
+		instance.get('/vehicle-events/last-24h', getVehicleEventsLast24hHandler);
 
 		next();
 	},

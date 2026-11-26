@@ -1,8 +1,7 @@
 'use client';
 
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { Collapsible, Grid, PasswordInput, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
-import bcrypt from 'bcryptjs';
+import { Collapsible, Grid, Section, StandardFormController, TextInput } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useUsersDetailFormContext } from '../UsersDetailForm.context';
@@ -20,15 +19,7 @@ export function UsersDetailBasicInfo() {
 	const { capabilities, form } = useUsersDetailFormContext();
 
 	//
-	// B. Handle actions
-
-	function handleChangePassword(value: string) {
-		const passwordHash = bcrypt.hashSync(value);
-		form.setValue('password_hash', passwordHash, { shouldDirty: true });
-	}
-
-	//
-	// C. Render components
+	// B. Render components
 
 	return (
 		<Collapsible
@@ -113,15 +104,6 @@ export function UsersDetailBasicInfo() {
 								withAsterisk
 							/>
 						)}
-					/>
-
-					<PasswordInput
-						autoComplete="new-password"
-						disabled={!capabilities.editEnabled}
-						label={t('default:users.detail.BasicInfo.fields.password.label')}
-						maxLength={255}
-						onChange={event => handleChangePassword(event.target.value)}
-						placeholder={t('default:users.detail.BasicInfo.fields.password.placeholder')}
 					/>
 
 				</Grid>
