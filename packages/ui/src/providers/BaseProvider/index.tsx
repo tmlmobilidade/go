@@ -9,7 +9,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { type PropsWithChildren, Suspense, useMemo } from 'react';
 import { SWRConfig, type SWRConfiguration } from 'swr';
 
-import { useMeData } from '../../auth/use-me-data';
+import { useMeUser } from '../../auth/use-me-user';
 import { type LocaleContextProps, LocaleContextProvider } from '../../contexts/Locale.context';
 import { type VersionContextProps, VersionContextProvider } from '../../contexts/Version.context';
 import { LoadingSection } from '../../loaders';
@@ -41,7 +41,7 @@ export function BaseProvider({ analytics, children, i18n, theme, version }: Prop
 	// Setup variables
 
 	const analyticsApiKey = analytics?.apiKey ?? process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
-	const { data: meData, error: meError, isAuthenticated } = useMeData(analyticsApiKey !== '', 30_000);
+	const { data: meData, error: meError, isAuthenticated } = useMeUser(analyticsApiKey !== '', 30_000);
 	const analyticsUser = useMemo<AnalyticsContextProps['user']>(() => {
 		if (analytics?.user !== undefined) return analytics.user;
 		if (isAuthenticated === undefined) return undefined;

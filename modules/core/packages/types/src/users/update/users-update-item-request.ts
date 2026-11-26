@@ -15,6 +15,7 @@ export const UsersUpdateItemRequestSchema = UserSchema.omit({
 	seen_changelogs: true,
 	seen_last_at: true,
 	session_ids: true,
+	session_replay: true,
 	updated_at: true,
 	updated_by: true,
 	verification_token_ids: true,
