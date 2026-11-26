@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import styles from './styles.module.css';
 
 import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
+import { GtfsValidationsDetailResultsListHeader } from '../GtfsValidationsDetailResultsListHeader';
 import { type ValidationsDetailResultItem } from '../use-validations-detail-results';
-import { ValidationsDetailResultsListHeader } from '../ValidationsDetailResultsListHeader';
 
 /* * */
 
@@ -52,7 +52,7 @@ export function GtfsValidationsDetailResultsList() {
 
 	return (
 		<Pane header={[
-			<ValidationsDetailResultsListHeader key="filters" />,
+			<GtfsValidationsDetailResultsListHeader key="filters" />,
 		]}
 		>
 			<DataTableScroller>

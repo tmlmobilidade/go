@@ -10,7 +10,7 @@ import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetail
 
 /* * */
 
-export function ValidationsDetailResultsListHeader() {
+export function GtfsValidationsDetailResultsListHeader() {
 	//
 
 	//
