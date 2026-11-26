@@ -29,8 +29,6 @@ interface CreateGoDbCollectionParams<T extends Document> {
 	collectionName: string
 	database: Db
 	indexDescription: null | SimplifiedMongoIndex<T>[]
-	/** Fields owned by dedicated atomic operations, excluded from ordinary document updates. */
-	protectedUpdateFields?: (keyof T)[]
 	schema: null | z.ZodType<T>
 }
 
@@ -39,7 +37,7 @@ interface CreateGoDbCollectionParams<T extends Document> {
  * @param params The parameters for the GoDB collection interface.
  * @returns The GoDB collection interface implementation.
  */
-export function createGoDbCollection<T extends Document>({ collectionName, database, indexDescription, protectedUpdateFields, schema }: CreateGoDbCollectionParams<T>): GoDbCollection<T> {
+export function createGoDbCollection<T extends Document>({ collectionName, database, indexDescription, schema }: CreateGoDbCollectionParams<T>): GoDbCollection<T> {
 	//
 
 	const context: GoDbCollectionContext<T> = {
@@ -47,7 +45,6 @@ export function createGoDbCollection<T extends Document>({ collectionName, datab
 		collectionName,
 		database,
 		indexDescription,
-		protectedUpdateFields,
 		schema,
 	};
 

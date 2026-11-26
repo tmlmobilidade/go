@@ -219,7 +219,6 @@ export const API_ROUTES = Object.freeze({
 		// ME
 		ME_LIST_ME_PERMISSIONS: `${getModuleConfig('core', 'api_url')}/platform/me/list-me-permissions`,
 		ME_LIST_ME_USER: `${getModuleConfig('core', 'api_url')}/platform/me/list-me-user`,
-		ME_SESSION_REPLAY_START: `${getModuleConfig('core', 'api_url')}/platform/me/session-replay/start`,
 		ME_UPDATE_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/me/update-preferences`,
 
 		// NOTIFICATIONS
@@ -253,8 +252,6 @@ export const API_ROUTES = Object.freeze({
 		USERS_CREATE: `${getModuleConfig('core', 'api_url')}/users/create`,
 		USERS_DELETE: (id: string) => `${getModuleConfig('core', 'api_url')}/users/delete/${encodeURIComponent(id)}`,
 		USERS_DETAIL: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}`,
-		USERS_DETAIL_SESSION_REPLAY: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay`,
-		USERS_DETAIL_SESSION_REPLAY_VAR: (id: string, activationId: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/session-replay/${encodeURIComponent(activationId)}`,
 		USERS_DETAIL_SIMPLIFIED: (id: string) => `${getModuleConfig('core', 'api_url')}/users/${encodeURIComponent(id)}/simplified`,
 		USERS_LIST: `${getModuleConfig('core', 'api_url')}/users/list`,
 		USERS_LIST_AGENCIES: `${getModuleConfig('core', 'api_url')}/users/list-agencies`,

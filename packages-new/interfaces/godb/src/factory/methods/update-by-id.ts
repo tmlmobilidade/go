@@ -49,7 +49,6 @@ export async function updateById<T extends Document>(context: GoDbCollectionCont
 	delete validatedDocument._id;
 	delete validatedDocument.created_at;
 	delete validatedDocument.created_by;
-	for (const field of context.protectedUpdateFields ?? []) delete validatedDocument[field];
 
 	//
 	// Attempt to update the document in the collection
