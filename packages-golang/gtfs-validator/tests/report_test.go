@@ -2,6 +2,7 @@ package gtfsvalidator_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -50,18 +51,53 @@ func TestReportCollection(t *testing.T) {
 
 func TestReportDetailCap(t *testing.T) {
 	service := services.NewReport()
-	for i := 0; i < services.MaxDetails+1; i++ {
-		service.Add("rule", types.Finding{Severity: rules.SEVERITY_INFO, Rows: []int{i}, Description: "Invalid names."})
+	for i := range services.MaxDetails + 1 {
+		service.Add("rule", types.Finding{Severity: rules.SEVERITY_INFO, Rows: []int{i}, Message: fmt.Sprintf("Invalid name %d.", i)})
 	}
+	rows := make([]int, services.MaxDetails+1)
+	for i := range rows {
+		rows[i] = i
+	}
+	service.Add("rule", types.Finding{Severity: rules.SEVERITY_INFO, Rows: rows, Message: "Invalid name 0."})
 	summary := service.Summary()
 	result := summary.Results[0]
-	if summary.Totals.Infos != services.MaxDetails+1 || result.TotalRows != services.MaxDetails+1 || len(result.Messages) != services.MaxDetails {
+	if summary.Totals.Infos != services.MaxDetails+2 || result.TotalRows != services.MaxDetails+1 || len(result.Messages) != services.MaxDetails {
 		t.Fatal(summary)
+	}
+	if got := result.Messages[0].Rows; len(got) != services.MaxDetails || got[0] != 2 || got[len(got)-1] != services.MaxDetails+1 {
+		t.Fatalf("expected the first %d CSV lines, got %v", services.MaxDetails, got)
 	}
 	// Snapshots cannot mutate retained diagnostics.
 	summary.Results[0].Messages[0].Rows[0] = 999
 	if service.Summary().Results[0].Messages[0].Rows[0] != 2 {
 		t.Fatal("snapshot aliases service rows")
+	}
+}
+
+func TestReportGroupsRepeatedMessages(t *testing.T) {
+	service := services.NewReport()
+	translation := &types.Translation{Variant: "default", Values: map[string]string{"shape_id": "2002_0_1", "direction_id": "0", "suffix": "_0"}}
+	finding := types.Finding{
+		FileName:           "trips.txt",
+		Severity:           rules.SEVERITY_WARNING,
+		Message:            `Shape ID "2002_0_1" must end in "_0" for direction_id 0.`,
+		MessageTranslation: translation,
+		Rows:               []int{1},
+	}
+	service.Add("trip_shape_id_uses_direction_id", finding)
+	finding.Rows = []int{0}
+	finding.MessageTranslation = translation.Clone()
+	service.Add("trip_shape_id_uses_direction_id", finding)
+	finding.MessageTranslation.Variant = "other"
+	service.Add("trip_shape_id_uses_direction_id", finding)
+
+	result := service.Summary().Results[0]
+	want := []types.Message{
+		{Message: finding.Message, Rows: []int{2, 3}, Translation: translation},
+		{Message: finding.Message, Rows: []int{2}, Translation: finding.MessageTranslation},
+	}
+	if !reflect.DeepEqual(result.Messages, want) || result.TotalRows != 2 {
+		t.Fatalf("unexpected grouped result: %+v", result)
 	}
 }
 

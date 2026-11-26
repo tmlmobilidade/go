@@ -57,10 +57,12 @@ include the reason and any blocking prerequisites. The CLI creates no log files.
 
 The report contains `results` and `totals`. Each result represents one rule and
 includes its ID, severity, description, affected row count, and diagnostic
-`messages` with text and CSV line numbers. A result retains up to 100 messages and
-100 lines per message. `total_rows` counts distinct affected rows across files
-before sampling. Zero-based input rows become CSV line numbers (index + 2 for the
-header). Findings without source rows use `rows: []`.
+`messages` with text and CSV line numbers. Findings with matching message text
+and translation data share one message with sorted, distinct line numbers. A
+result retains up to 100 messages and 100 lines per message. `total_rows` counts
+distinct affected rows across files before sampling. Zero-based input rows become
+CSV line numbers (index + 2 for the header). Findings without source rows use
+`rows: []`.
 
 Results can include `description_translation` and individual messages can include
 `translation`. Both identify a template `variant` for the result's `rule_id`
