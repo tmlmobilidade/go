@@ -1,6 +1,6 @@
 'use client';
 
-import { Pane, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { NoDataLabel, Pane, Section, ValueDisplay } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
@@ -16,30 +16,36 @@ export function GtfsValidationsDetailSelectedRule() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { data: { selected } } = useGtfsValidationsDetailResultsContext();
+	const { data } = useGtfsValidationsDetailResultsContext();
 	// const documentationUrl = getGtfsScheduleDocUrl(selected?.ruleId);
 
 	//
 	// B. Render components
+
+	if (!data.selected) {
+		return (
+			<Section alignItems="center" height="100%" justifyContent="center">
+				<NoDataLabel text={t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.no_rule_selected')} />
+			</Section>
+		);
+	}
 
 	return (
 		<Pane header={[
 			<GtfsValidationsDetailSelectedRuleHeader key="header" />,
 		]}
 		>
-			{selected && (
-				<Section gap="sm">
-					<ValueDisplay
-						label={t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.rule_description')}
-						value={selected.description}
-					/>
-					<ValidationsDetailResultMessages
-						description={selected.description}
-						messages={selected.result.messages}
-						ruleId={selected.ruleId}
-					/>
-				</Section>
-			)}
+			<Section gap="sm">
+				<ValueDisplay
+					label={t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.rule_description')}
+					value={data.selected.description}
+				/>
+				<ValidationsDetailResultMessages
+					description={data.selected.description}
+					messages={data.selected.result.messages}
+					ruleId={data.selected.ruleId}
+				/>
+			</Section>
 		</Pane>
 	);
 }

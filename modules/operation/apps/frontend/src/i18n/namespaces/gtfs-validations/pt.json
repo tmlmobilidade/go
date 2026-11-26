@@ -14,6 +14,7 @@
 		},
 		"GtfsValidationsDetailSelectedRule": {
 			"documentation": "Ver documentação da regra",
+			"no_rule_selected": "Seleciona uma regra para ver detalhes",
 			"rule_description": "O que esta regra verifica"
 		},
 		"ValidationsDetailResultListItem": {

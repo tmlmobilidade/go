@@ -43,31 +43,36 @@ export function useValidationsDetailResults(): UseValidationsDetailResultsReturn
 	// A. Setup variables
 
 	const { data: { validation } } = useValidationsDetailContext();
-	const { i18n } = useTranslation('validations');
+	const { i18n } = useTranslation('gtfs_validations');
 	const search = useFilterStateText('validationRuleSearch');
 	const severityFilter = useFilterStateText('validationRuleSeverity');
-	const [selectedId, setSelectedId] = useState<string>();
+	const [selectedId, setSelectedId] = useState<null | string>();
 	const summary = validation?.summary;
 
 	//
 	// B. Transform data
 
 	const severityValue = severityFilter.value;
+
 	const severity = severityValue === 'error' || severityValue === 'warning' || severityValue === 'info' ? severityValue : null;
+
 	const { results, totals } = useMemo(() => getValidationsDetailResults(summary, severity), [summary, severity]);
+
 	const searchableResults = useMemo(() => results.map(({ id, result }) => ({
 		description: translateValidationResult(i18n, 'description', result.rule_id, result.description_translation, result.description),
 		id,
 		result,
 		ruleId: result.rule_id,
 	})), [i18n, i18n.resolvedLanguage, results]);
+
 	const filteredResults = useSearch({
 		accessors: SEARCH_ACCESSORS,
 		data: searchableResults,
 		debounce: 150,
 		query: search.value.trim(),
 	});
-	const selected = filteredResults.find(({ id }) => id === selectedId) ?? filteredResults[0];
+
+	const selected = filteredResults.find(({ id }) => id === selectedId);
 
 	//
 	// C. Handle actions
