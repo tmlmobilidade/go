@@ -1,7 +1,8 @@
 'use client';
 
+import { OperationalDateIntSchema } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
-import { Divider, MultiSelect, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
+import { DateInput, Divider, MultiSelect, Section, SegmentedControl, Select, TagsInput } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,6 +21,10 @@ export function PlanPostersExtractBody() {
 
 	//
 	// B. Transform data
+
+	const pickerDate = context.data.activeDates
+		? OperationalDateIntSchema.parse(context.data.activeDates.split('.').reverse().join('-'))
+		: null;
 
 	const availableCanvasProfiles = [
 		{ label: t('default:posterExport.PlanPostersExtractBody.canvasProfileAutomatic'), value: 'auto' },
@@ -86,6 +91,22 @@ export function PlanPostersExtractBody() {
 			)}
 
 			{context.data.planIds.length > 0 && (
+				<>
+					<Section gap="md">
+						<DateInput
+							description={t('default:posterExport.PlanPostersExtractBody.activeDatesDescription')}
+							label={t('default:posterExport.PlanPostersExtractBody.activeDatesLabel')}
+							onChange={context.actions.setActiveDates}
+							value={pickerDate}
+							w="100%"
+							clearable
+						/>
+					</Section>
+					<Divider />
+				</>
+			)}
+
+			{context.data.activeDates && (
 				<Section gap="md">
 					<SegmentedControl
 						fullWidth={true}

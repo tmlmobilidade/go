@@ -1,6 +1,6 @@
 'use client';
 
-import { IconFileDownload } from '@tabler/icons-react';
+import { IconFileTypePdf } from '@tabler/icons-react';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { ToolbarActions, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -20,7 +20,7 @@ export function PlansListHeaderMenu() {
 		const actions = [];
 		if (hasPermission(mePermissions, { action: 'generate_pdf_posters', scope: 'plans' })) {
 			actions.push({
-				icon: <IconFileDownload />,
+				icon: <IconFileTypePdf />,
 				label: t('default:plans.list.PlansListHeaderMenu.extractPDFs'),
 				onClick: openPlanPostersExtractModal,
 			});

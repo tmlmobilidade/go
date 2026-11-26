@@ -122,12 +122,14 @@
 			},
 			"PlansListHeaderMenu": {
 				"extract": "Exportar",
-				"extractPDFs": "Exportar PDFs"
+				"extractPDFs": "Exportar horarios"
 			}
 		}
 	},
 	"posterExport": {
 		"PlanPostersExtractBody": {
+			"activeDatesDescription": "Seleccione la fecha a partir de la cual los horarios son válidos.",
+			"activeDatesLabel": "Fecha de inicio de validez",
 			"canvasProfileAutomatic": "Automático",
 			"canvasProfileDescription": "Elija Automático para seleccionar el modelo por parada, o aplique un modelo fijo a los PDFs exportados.",
 			"canvasProfileLabel": "Modelo del PDF",
@@ -141,12 +143,12 @@
 			"contentModeLabel": "Contenido a exportar",
 			"contentModeStops": "Paradas",
 			"filterModeExclude": "Todas excepto seleccionadas",
-			"filterModeInclude": "Solo seleccionadas",
+			"filterModeInclude": "Solo las seleccionadas",
 			"stop_filter_label": "Filtro de paradas"
 		},
 		"PlanPostersExtractHeader": {
-			"exportButtonLabel": "Generar PDFs",
-			"title": "Generar PDFs"
+			"exportButtonLabel": "Generar",
+			"title": "Generar horarios"
 		},
 		"agenciesDescription": "Seleccione los operadores y elija un plan por operador.",
 		"agenciesLabel": "Seleccionar operadores",

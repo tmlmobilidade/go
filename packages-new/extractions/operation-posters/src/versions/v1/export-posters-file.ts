@@ -28,6 +28,7 @@ export async function exportPostersFile(context: ExtractionTaskContext, plans: P
 	// B. Generate the plan posters download
 
 	const downloadUrl = await generatePlanDownload(plans, extractionId, {
+		active_dates: properties.active_dates,
 		canvas_profile: properties.canvas_profile ?? 'auto',
 		content: properties.content,
 		filter_mode: properties.filter_mode,

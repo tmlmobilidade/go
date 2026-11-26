@@ -119,12 +119,14 @@
 			},
 			"PlansListHeaderMenu": {
 				"extract": "Export",
-				"extractPDFs": "Export PDFs"
+				"extractPDFs": "Export Schedules"
 			}
 		}
 	},
 	"posterExport": {
 		"PlanPostersExtractBody": {
+			"activeDatesDescription": "Select the date from which the schedules are valid.",
+			"activeDatesLabel": "Start of validity date",
 			"canvasProfileAutomatic": "Automatic",
 			"canvasProfileDescription": "Choose Automatic to select the model per stop, or apply a fixed model to the exported PDFs.",
 			"canvasProfileLabel": "PDF model",
@@ -138,12 +140,12 @@
 			"contentModeLabel": "Content to export",
 			"contentModeStops": "Stops",
 			"filterModeExclude": "All except selected",
-			"filterModeInclude": "Only selected",
+			"filterModeInclude": "Only the selected",
 			"stop_filter_label": "Stops filter"
 		},
 		"PlanPostersExtractHeader": {
-			"exportButtonLabel": "Generate PDFs",
-			"title": "Generate PDFs"
+			"exportButtonLabel": "Generate",
+			"title": "Generate Schedules"
 		},
 		"agenciesDescription": "Select operators and select a plan for each operator.",
 		"agenciesLabel": "Select operators",
