@@ -2,11 +2,11 @@
 
 /* * */
 
-// A. Read the authenticated user with useMeUser.
+// A. Receive meUserData from the consuming UI's existing useMeUser hook.
 
-// B. Fetch the current user's analytics configuration from the Core API.
+// B. Read meUserData?.analytics?.session_replay_enabled ?? false.
 
-// C. Pass analytics.session_replay_enabled to useSessionReplay.
+// C. Pass the enabled flag to useSessionReplay.
 
 // D. Expose the analytics state through AnalyticsContextProvider.
 
