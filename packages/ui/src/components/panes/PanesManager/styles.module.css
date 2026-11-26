@@ -13,6 +13,17 @@
 	gap: var(--size-spacing-xs);
 }
 
+.container[data-responsive='true'] {
+	position: relative;
+	grid-template-rows: minmax(0, 1fr);
+}
+
+.container[data-stacked='true'] {
+	grid-template-rows: none;
+	height: auto;
+	overflow: visible;
+}
+
 /* * */
 /* INNER WRAPPER */
 

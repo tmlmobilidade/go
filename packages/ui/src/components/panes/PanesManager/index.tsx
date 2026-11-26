@@ -2,6 +2,7 @@
 
 /* * */
 
+import { useElementSize, useMergedRef } from '@mantine/hooks';
 import { IconCaretLeftFilled, IconCaretRightFilled } from '@tabler/icons-react';
 import { type ReactNode, useMemo, useRef } from 'react';
 
@@ -24,11 +25,12 @@ type CollapsedPane = 0 | 1 | 'none';
 interface PanesManagerProps {
 	id: string
 	panes: ReactNode[]
+	stackBelow?: number
 }
 
 /* * */
 
-export function PanesManager({ id, panes }: PanesManagerProps) {
+export function PanesManager({ id, panes, stackBelow }: PanesManagerProps) {
 	//
 
 	//
@@ -36,6 +38,8 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const latestFractionsRef = useRef<number[]>([]);
+	const { ref: sizeRef, width } = useElementSize<HTMLDivElement>();
+	const ref = useMergedRef(containerRef, stackBelow === undefined ? undefined : sizeRef);
 
 	const visiblePanes = useMemo(() => panes.filter(Boolean), [panes]);
 
@@ -59,6 +63,8 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 	//
 	// B. Transform data
 
+	const isStacked = stackBelow !== undefined && width > 0 && width <= stackBelow;
+	const activeCollapsedPane = isStacked ? 'none' : collapsedPane;
 	const normalizedPaneFractions = paneFractions.length === visiblePanes.length
 		? paneFractions
 		: defaultPaneFractions;
@@ -70,8 +76,9 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 	};
 
 	const gridTemplateColumns = (() => {
-		if (collapsedPane === 0) return `${COLLAPSED_PANE_WIDTH} 1fr`;
-		if (collapsedPane === 1) return `1fr ${COLLAPSED_PANE_WIDTH}`;
+		if (isStacked) return 'minmax(0, 1fr)';
+		if (activeCollapsedPane === 0) return `${COLLAPSED_PANE_WIDTH} 1fr`;
+		if (activeCollapsedPane === 1) return `1fr ${COLLAPSED_PANE_WIDTH}`;
 
 		return getGridTemplateColumns(normalizedPaneFractions);
 	})();
@@ -182,13 +189,15 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 
 	return (
 		<div
-			ref={containerRef}
+			ref={ref}
 			className={styles.container}
-			data-is-collapsed={collapsedPane !== 'none'}
+			data-is-collapsed={activeCollapsedPane !== 'none'}
+			data-responsive={stackBelow !== undefined}
+			data-stacked={isStacked}
 			style={{ gridTemplateColumns }}
 		>
 			{visiblePanes.map((pane, index) => {
-				const isCollapsed = collapsedPane === index;
+				const isCollapsed = activeCollapsedPane === index;
 
 				if (isCollapsed) {
 					return (
@@ -206,7 +215,7 @@ export function PanesManager({ id, panes }: PanesManagerProps) {
 					<div key={index} className={styles.innerWrapper}>
 						{pane}
 
-						{collapsedPane === 'none' && index < visiblePanes.length - 1 && (
+						{!isStacked && activeCollapsedPane === 'none' && index < visiblePanes.length - 1 && (
 							<div
 								className={styles.handleWrapper}
 								onDoubleClick={handleDoubleClick}

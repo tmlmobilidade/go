@@ -1,14 +1,27 @@
 .container {
 	display: flex;
 	flex-direction: column;
-	gap: var(--size-spacing-sm);
+	gap: var(--size-spacing-md);
 	align-items: flex-start;
+	width: 100%;
 	min-width: 0;
+	padding-top: var(--size-spacing-md);
+	border-top: 1px solid var(--color-system-border-100);
+
+	h4 {
+		margin: 0;
+		font-size: var(--font-size-lg);
+	}
+
+	p {
+		margin: 0;
+		font-size: var(--font-size-sm);
+		color: var(--color-system-text-200);
+	}
 }
 
 .table {
 	width: 100%;
-	min-width: 560px;
 	text-align: left;
 	table-layout: fixed;
 	border-collapse: collapse;
@@ -28,7 +41,7 @@
 }
 
 .rowsColumn {
-	width: 28%;
+	width: 38%;
 }
 
 .message {

@@ -5,8 +5,8 @@ import { type i18n } from 'i18next';
 
 const TRANSLATION_KEYS = {
 	description: {
-		rule: 'detail.ValidationsDetailResultGroup.rule_descriptions',
-		shared: 'detail.ValidationsDetailResultGroup.shared_descriptions',
+		rule: 'detail.ValidationsDetailResultListItem.rule_descriptions',
+		shared: 'detail.ValidationsDetailResultListItem.shared_descriptions',
 	},
 	message: {
 		rule: 'detail.ValidationsDetailResultMessages.rule_messages',

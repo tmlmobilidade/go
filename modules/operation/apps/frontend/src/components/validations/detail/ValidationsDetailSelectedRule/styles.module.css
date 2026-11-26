@@ -1,0 +1,30 @@
+.pane {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+}
+
+.documentation[data-variant='primary'] {
+	max-width: 100%;
+	height: auto;
+	min-height: 40px;
+	padding-block: var(--size-spacing-xs);
+}
+
+.documentationLabel {
+	line-height: var(--font-line-height);
+	text-transform: none;
+	white-space: normal;
+}
+
+.ruleId,
+.description {
+	overflow-wrap: anywhere;
+}
+
+.ruleId {
+	font-family: var(--font-family-monospace);
+	font-size: var(--font-size-sm);
+	color: var(--color-system-text-200);
+}

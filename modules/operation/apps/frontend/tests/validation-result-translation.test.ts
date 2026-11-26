@@ -47,6 +47,6 @@ test('renders one parsed report in the selected language and falls back to saved
 	assert.equal(translateValidationResult(i18n, 'message', result.rule_id, { variant: 'invalid_timezone' }, 'Missing value'), 'Missing value');
 	assert.equal(translateValidationResult(i18n, 'message', 'custom.rule', { values: { rule_id: 'custom.rule' }, variant: 'unimplemented_rule' }, 'Saved warning'), 'Rule “custom.rule” has no implementation and could not be executed.');
 
-	i18n.addResource('pt', 'validations', 'detail.ValidationsDetailResultGroup.rule_descriptions.new_rule.default', 'Portuguese only');
+	i18n.addResource('pt', 'validations', 'detail.ValidationsDetailResultListItem.rule_descriptions.new_rule.default', 'Portuguese only');
 	assert.equal(translateValidationResult(i18n, 'description', 'new_rule', { variant: 'default' }, 'Saved description'), 'Saved description');
 });

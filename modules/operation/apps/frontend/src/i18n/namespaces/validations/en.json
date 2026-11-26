@@ -1,8 +1,6 @@
 {
 	"detail": {
-		"ValidationsDetailResultGroup": {
-			"affected_rows": "{count, plural, =1 {# affected row} other {# affected rows}}",
-			"documentation": "Documentation",
+		"ValidationsDetailResultListItem": {
 			"rule_descriptions": {
 				"agency_email_valid": {
 					"default": "The agency_email field contains an invalid email address."
@@ -251,6 +249,8 @@
 			}
 		},
 		"ValidationsDetailResultMessages": {
+			"description": "Messages for this rule and examples of the rows where they occur.",
+			"empty": "There are no messages for this rule.",
 			"message": "Message",
 			"rows": "Row index(es)",
 			"rule_messages": {
@@ -374,22 +374,37 @@
 				"unimplemented_rule": "Rule “{rule_id}” has no implementation and could not be executed.",
 				"unknown_reference": "Unknown {target_field} “{value}” in {file}."
 			},
-			"show_all": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}"
+			"show_all": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}",
+			"title": "Validation messages"
 		},
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
 		"ValidationsDetailResultsFilters": {
 			"error": "{count, plural, =1 {# Error} other {# Errors}}",
-			"info": "{count} Info",
+			"info": "{count, plural, =1 {# Info} other {# Info}}",
+			"search_placeholder": "Search by rule ID or description…",
 			"warning": "{count, plural, =1 {# Warning} other {# Warnings}}"
 		},
 		"ValidationsDetailResultsList": {
-			"empty": "No results to show"
+			"affected_rows": "Affected rows",
+			"empty": "No results to show",
+			"title": "Validation rules"
+		},
+		"ValidationsDetailSectionFeedInfo": {
+			"description": "Summary of the data extracted from feed_info.txt",
+			"download_error": "Could not download the file",
+			"no_file": "No file selected",
+			"title": "File details"
 		},
 		"ValidationsDetailSectionResult": {
 			"description": "Information, warnings, and errors found in the GTFS file",
 			"title": "Validation Results"
+		},
+		"ValidationsDetailSelectedRule": {
+			"affected_rows": "Affected rows",
+			"documentation": "View rule documentation",
+			"title": "Rule details"
 		}
 	}
 }

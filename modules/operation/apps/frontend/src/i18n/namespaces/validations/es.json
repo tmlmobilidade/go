@@ -1,8 +1,6 @@
 {
 	"detail": {
-		"ValidationsDetailResultGroup": {
-			"affected_rows": "{count, plural, =1 {# fila afectada} other {# filas afectadas}}",
-			"documentation": "Documentación",
+		"ValidationsDetailResultListItem": {
 			"rule_descriptions": {
 				"agency_email_valid": {
 					"default": "El campo agency_email contiene una dirección de correo electrónico no válida."
@@ -251,6 +249,8 @@
 			}
 		},
 		"ValidationsDetailResultMessages": {
+			"description": "Mensajes de esta regla y ejemplos de las filas en las que aparecen.",
+			"empty": "No hay mensajes para esta regla.",
 			"message": "Mensaje",
 			"rows": "Líneas",
 			"rule_messages": {
@@ -374,22 +374,37 @@
 				"unimplemented_rule": "La regla «{rule_id}» todavía no se ha implementado y no se ha podido ejecutar.",
 				"unknown_reference": "El valor «{value}» de {target_field} no existe en {file}."
 			},
-			"show_all": "{count, plural, =1 {Mostrar 1 ocurrencia más} other {Mostrar # ocurrencias más}}"
+			"show_all": "{count, plural, =1 {Mostrar 1 ocurrencia más} other {Mostrar # ocurrencias más}}",
+			"title": "Mensajes de validación"
 		},
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
 		"ValidationsDetailResultsFilters": {
 			"error": "{count, plural, =1 {# Error} other {# Errores}}",
-			"info": "{count} Información",
+			"info": "{count, plural, =1 {# Información} other {# Informaciones}}",
+			"search_placeholder": "Buscar por identificador de regla o descripción…",
 			"warning": "{count, plural, =1 {# Aviso} other {# Avisos}}"
 		},
 		"ValidationsDetailResultsList": {
-			"empty": "No hay resultados para mostrar"
+			"affected_rows": "Filas afectadas",
+			"empty": "No hay resultados para mostrar",
+			"title": "Reglas de validación"
+		},
+		"ValidationsDetailSectionFeedInfo": {
+			"description": "Resumen de los datos extraídos de feed_info.txt",
+			"download_error": "No se pudo descargar el archivo",
+			"no_file": "Ningún archivo seleccionado",
+			"title": "Datos del archivo"
 		},
 		"ValidationsDetailSectionResult": {
 			"description": "Información, avisos y errores encontrados en el archivo GTFS",
 			"title": "Resultado de la validación"
+		},
+		"ValidationsDetailSelectedRule": {
+			"affected_rows": "Filas afectadas",
+			"documentation": "Ver documentación de la regla",
+			"title": "Detalle de la regla"
 		}
 	}
 }

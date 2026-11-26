@@ -1,8 +1,6 @@
 {
 	"detail": {
-		"ValidationsDetailResultGroup": {
-			"affected_rows": "{count, plural, =1 {# linha afetada} other {# linhas afetadas}}",
-			"documentation": "Documentação",
+		"ValidationsDetailResultListItem": {
 			"rule_descriptions": {
 				"agency_email_valid": {
 					"default": "O campo agency_email contém um endereço de correio eletrónico inválido."
@@ -251,6 +249,8 @@
 			}
 		},
 		"ValidationsDetailResultMessages": {
+			"description": "Mensagens desta regra e exemplos das linhas do ficheiro onde ocorrem.",
+			"empty": "Não há mensagens para esta regra.",
 			"message": "Mensagem",
 			"rows": "Linhas",
 			"rule_messages": {
@@ -374,22 +374,37 @@
 				"unimplemented_rule": "A regra “{rule_id}” ainda não foi implementada e não pôde ser executada.",
 				"unknown_reference": "O valor “{value}” de {target_field} não existe em {file}."
 			},
-			"show_all": "{count, plural, =1 {Mostrar mais 1 ocorrência} other {Mostrar mais # ocorrências}}"
+			"show_all": "{count, plural, =1 {Mostrar mais 1 ocorrência} other {Mostrar mais # ocorrências}}",
+			"title": "Mensagens de validação"
 		},
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
 		"ValidationsDetailResultsFilters": {
 			"error": "{count, plural, =1 {# Erro} other {# Erros}}",
-			"info": "{count} Info",
+			"info": "{count, plural, =1 {# Informação} other {# Informações}}",
+			"search_placeholder": "Pesquisar por identificador da regra ou descrição…",
 			"warning": "{count, plural, =1 {# Aviso} other {# Avisos}}"
 		},
 		"ValidationsDetailResultsList": {
-			"empty": "Sem resultados para mostrar"
+			"affected_rows": "Linhas afetadas",
+			"empty": "Sem resultados para mostrar",
+			"title": "Regras de validação"
+		},
+		"ValidationsDetailSectionFeedInfo": {
+			"description": "Resumo dos dados extraídos de feed_info.txt",
+			"download_error": "Erro ao transferir ficheiro",
+			"no_file": "Nenhum ficheiro selecionado",
+			"title": "Dados do ficheiro"
 		},
 		"ValidationsDetailSectionResult": {
-			"description": "Informações, avisos e erros encontrados no arquivo GTFS",
-			"title": "Resultado da Validação"
+			"description": "Informações, avisos e erros encontrados no ficheiro GTFS",
+			"title": "Resultado da validação"
+		},
+		"ValidationsDetailSelectedRule": {
+			"affected_rows": "Linhas afetadas",
+			"documentation": "Ver documentação da regra",
+			"title": "Detalhe da regra"
 		}
 	}
 }
