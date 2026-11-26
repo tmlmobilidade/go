@@ -16,7 +16,7 @@ import { useGtfsValidationsAgenciesData } from '../../shared/use-gtfs-validation
 
 /* * */
 
-export function ValidationsDetailHeader() {
+export function GtfsValidationsDetailHeader() {
 	//
 
 	//

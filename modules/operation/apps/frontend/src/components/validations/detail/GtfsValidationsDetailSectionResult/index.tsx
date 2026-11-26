@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 /* * */
 
-export function GtfsGtfsValidationsDetailSectionResult() {
+export function GtfsValidationsDetailSectionResult() {
 	//
 
 	//
