@@ -1,13 +1,14 @@
 'use client';
 
-import { ValidationsDetailResultMessages } from '@/components/validations/detail/ValidationsDetailResultMessages';
-import { useValidationsDetailResultsContext } from '@/components/validations/detail/ValidationsDetailResults.context';
 import { getGtfsScheduleDocUrl } from '@/lib/gtfs-schedule-doc-url';
 import { IconExternalLink } from '@tabler/icons-react';
 import { Button, Label, Pane, Section, SeverityTag, Text, ValueDisplay } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
+
+import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
+import { ValidationsDetailResultMessages } from '../ValidationsDetailResultMessages';
 
 /* * */
 
@@ -18,7 +19,7 @@ export function GtfsValidationsDetailSelectedRule() {
 	// A. Setup variables
 
 	const { i18n, t } = useTranslation();
-	const { data: { selected } } = useValidationsDetailResultsContext();
+	const { data: { selected } } = useGtfsValidationsDetailResultsContext();
 	const title = t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.title');
 	const documentationUrl = getGtfsScheduleDocUrl(selected?.ruleId);
 

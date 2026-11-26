@@ -1,11 +1,12 @@
 'use client';
 
-import { type ValidationsDetailResultSeverity } from '@/components/validations/detail/get-validations-detail-results';
-import { useValidationsDetailResultsContext } from '@/components/validations/detail/ValidationsDetailResults.context';
 import { SearchInput, SeverityTag, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
+
+import { type ValidationsDetailResultSeverity } from '../get-validations-detail-results';
+import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
 
 /* * */
 
@@ -16,7 +17,7 @@ export function ValidationsDetailResultsListHeader() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { actions, data: { totals }, filters } = useValidationsDetailResultsContext();
+	const { actions, data: { totals }, filters } = useGtfsValidationsDetailResultsContext();
 	const searchLabel = t('gtfs_validations:detail.ValidationsDetailResultsListHeader.search_placeholder');
 
 	//

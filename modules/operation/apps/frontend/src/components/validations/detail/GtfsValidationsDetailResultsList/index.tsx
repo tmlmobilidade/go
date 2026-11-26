@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
 
+import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
 import { type ValidationsDetailResultItem } from '../use-validations-detail-results';
-import { useValidationsDetailResultsContext } from '../ValidationsDetailResults.context';
 import { ValidationsDetailResultsListHeader } from '../ValidationsDetailResultsListHeader';
 
 /* * */
@@ -18,7 +18,7 @@ export function GtfsValidationsDetailResultsList() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { actions, data } = useValidationsDetailResultsContext();
+	const { actions, data } = useGtfsValidationsDetailResultsContext();
 
 	const columns: DataTableColumn<ValidationsDetailResultItem>[] = [
 		{

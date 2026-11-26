@@ -1,11 +1,12 @@
 'use client';
 
 import { GtfsValidationsDetailResultsList } from '@/components/validations/detail/GtfsValidationsDetailResultsList';
-import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
-import { ValidationsDetailResultsContextProvider } from '@/components/validations/detail/ValidationsDetailResults.context';
 import { GtfsValidationsDetailSelectedRule } from '@/components/validations/detail/GtfsValidationsDetailSelectedRule';
+import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { Collapsible, PanesManager, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
+
+import { GtfsValidationsDetailResultsContextProvider } from '../GtfsValidationsDetailResults.context';
 
 /* * */
 
@@ -30,7 +31,7 @@ export function GtfsValidationsDetailSectionResult() {
 			description={t('gtfs_validations:detail.GtfsValidationsDetailSectionResult.description')}
 			title={t('gtfs_validations:detail.GtfsValidationsDetailSectionResult.title')}
 		>
-			<ValidationsDetailResultsContextProvider key={validationsDetailContext.data.validation._id}>
+			<GtfsValidationsDetailResultsContextProvider key={validationsDetailContext.data.validation._id}>
 				<Section gap="md">
 					<PanesManager
 						id="gtfs-validation-results"
@@ -41,7 +42,7 @@ export function GtfsValidationsDetailSectionResult() {
 						]}
 					/>
 				</Section>
-			</ValidationsDetailResultsContextProvider>
+			</GtfsValidationsDetailResultsContextProvider>
 		</Collapsible>
 	);
 }
