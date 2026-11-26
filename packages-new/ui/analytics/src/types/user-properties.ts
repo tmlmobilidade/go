@@ -5,9 +5,9 @@ import { z } from 'zod';
 /* * */
 
 export const AnalyticsUserProperties = z.object({
-	_id: z.string().optional(),
-	email: z.string().email().optional(),
-	name: z.string().optional(),
+	_id: z.string(),
+	email: z.string(),
+	name: z.string(),
 });
 
 /* * */

@@ -4,9 +4,9 @@ import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { BaseDocumentSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
+import { UserAnalyticsSchema } from './analytics.js';
 import { UserBannerDismissalSchema } from './banner-dismissal.js';
 import { UserChangelogSeenSchema } from './changelog-seen.js';
-import { UserSessionReplayAuthorizationSchema } from './session-replay-authorization.js';
 
 /* * */
 
@@ -23,6 +23,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 /* * */
 
 export const UserSchema = BaseDocumentSchema.extend({
+	analytics: UserAnalyticsSchema.nullish(),
 	dismissed_banners: z.array(UserBannerDismissalSchema).default([]),
 	email: z.email(),
 	email_verified: UnixMillisecondsSchema.nullable().default(null),
@@ -37,7 +38,6 @@ export const UserSchema = BaseDocumentSchema.extend({
 	seen_changelogs: z.array(UserChangelogSeenSchema).default([]),
 	seen_last_at: UnixMillisecondsSchema.nullable().default(null),
 	session_ids: z.array(z.string()).default([]),
-	session_replay: UserSessionReplayAuthorizationSchema.nullish(),
 	verification_token_ids: z.array(z.string()).default([]),
 });
 

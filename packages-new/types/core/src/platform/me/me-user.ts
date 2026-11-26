@@ -8,6 +8,7 @@ import { z } from 'zod';
 export const MeUserSchema = UserSchema
 	.pick({
 		_id: true,
+		analytics: true,
 		created_at: true,
 		dismissed_banners: true,
 		email: true,
@@ -18,7 +19,6 @@ export const MeUserSchema = UserSchema
 		preferences: true,
 		seen_changelogs: true,
 		seen_last_at: true,
-		session_replay: true,
 		updated_at: true,
 	});
 
