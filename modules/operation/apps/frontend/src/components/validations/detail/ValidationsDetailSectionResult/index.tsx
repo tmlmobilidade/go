@@ -5,10 +5,8 @@ import { ValidationsDetailResultsContextProvider } from '@/components/validation
 import { ValidationsDetailResultsFilters } from '@/components/validations/detail/ValidationsDetailResultsFilters';
 import { ValidationsDetailResultsList } from '@/components/validations/detail/ValidationsDetailResultsList';
 import { ValidationsDetailSelectedRule } from '@/components/validations/detail/ValidationsDetailSelectedRule';
-import { Collapsible, PanesManager } from '@tmlmobilidade/ui';
+import { Collapsible, PanesManager, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
-
-import styles from './styles.module.css';
 
 /* * */
 
@@ -18,13 +16,14 @@ export function ValidationsDetailSectionResult() {
 	//
 	// A. Setup variables
 
-	const { data: { validation } } = useValidationsDetailContext();
 	const { t } = useTranslation();
+
+	const validationsDetailContext = useValidationsDetailContext();
 
 	//
 	// B. Render components
 
-	if (validation?.processing_status !== 'complete' && validation?.processing_status !== 'error') return null;
+	if (validationsDetailContext.data.validation?.processing_status !== 'complete' && validationsDetailContext.data.validation?.processing_status !== 'error') return null;
 
 	return (
 		<Collapsible
@@ -32,23 +31,19 @@ export function ValidationsDetailSectionResult() {
 			description={t('validations:detail.ValidationsDetailSectionResult.description')}
 			title={t('validations:detail.ValidationsDetailSectionResult.title')}
 		>
-			<ValidationsDetailResultsContextProvider key={validation._id}>
-				<div className={styles.results}>
+			<ValidationsDetailResultsContextProvider key={validationsDetailContext.data.validation._id}>
+				<Section gap="md">
 					<ValidationsDetailResultsFilters />
-					<div className={styles.panes}>
-						<PanesManager
-							id="validation-results"
-							stackBelow={640}
-							panes={[
-								<ValidationsDetailResultsList key="rules" />,
-								<ValidationsDetailSelectedRule key="selected-rule" />,
-							]}
-						/>
-					</div>
-				</div>
+					<PanesManager
+						id="validation-results"
+						stackBelow={640}
+						panes={[
+							<ValidationsDetailResultsList key="rules" />,
+							<ValidationsDetailSelectedRule key="selected-rule" />,
+						]}
+					/>
+				</Section>
 			</ValidationsDetailResultsContextProvider>
 		</Collapsible>
 	);
-
-	//
 }
