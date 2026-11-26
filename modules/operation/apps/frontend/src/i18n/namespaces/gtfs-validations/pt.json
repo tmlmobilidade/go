@@ -404,7 +404,7 @@
 			"description": "Informações, avisos e erros encontrados no ficheiro GTFS",
 			"title": "Resultado da validação"
 		},
-		"ValidationsDetailSelectedRule": {
+		"GtfsValidationsDetailSelectedRule": {
 			"affected_rows": "Linhas afetadas",
 			"documentation": "Ver documentação da regra",
 			"title": "Detalhe da regra"
