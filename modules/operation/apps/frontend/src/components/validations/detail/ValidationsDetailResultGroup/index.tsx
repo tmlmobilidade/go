@@ -50,18 +50,24 @@ export function ValidationsDetailResultGroup({ result }: ValidationsDetailResult
 				<IconChevronRight className={styles.chevron} data-open={isOpen} size={16} />
 				<span className={styles.severity}><SeverityTag severity={result.severity} /></span>
 				<span className={styles.ruleId}>{result.rule_id}</span>
-				<span className={styles.headline}>{description}</span>
+				<span className={styles.headline}>
+					{description}
+					&nbsp;
+					{documentationUrl && (
+						<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
+							{t('validations:detail.ValidationsDetailResultGroup.documentation')} <IconExternalLink size={16} />
+						</a>
+					)}
+				</span>
 				<span className={styles.affectedRows}>{rowsLabel}</span>
 			</button>
 			{isOpen && (
 				<div className={styles.detail}>
-					<div className={styles.detailHeader}>
-						{documentationUrl && (
-							<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
-								{t('validations:detail.ValidationsDetailResultGroup.documentation')} <IconExternalLink size={16} />
-							</a>
-						)}
-					</div>
+					{documentationUrl && (
+						<a className={styles.link} href={documentationUrl} rel="noopener noreferrer" target="_blank">
+							{t('validations:detail.ValidationsDetailResultGroup.documentation')} <IconExternalLink size={16} />
+						</a>
+					)}
 					{result.messages.length > 0 && (
 						<ValidationsDetailResultMessages
 							description={description}

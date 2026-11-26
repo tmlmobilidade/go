@@ -5,7 +5,7 @@
 
 .header {
 	display: grid;
-	grid-template-columns: 16px 76px 400px minmax(0, 1fr) max-content;
+	grid-template-columns: 16px 76px 420px minmax(0, 1fr) max-content;
 	gap: var(--size-spacing-sm);
 	align-items: center;
 	width: 100%;
@@ -96,8 +96,6 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	align-self: stretch;
-	justify-content: space-between;
 	padding: 0 var(--size-spacing-sm);
 }
 
@@ -144,7 +142,6 @@
 	display: inline-flex;
 	gap: 4px;
 	align-items: center;
-	margin-left: auto;
 	font-size: var(--font-size-md);
 	color: var(--color-system-text-200);
 	white-space: nowrap;

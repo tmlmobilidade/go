@@ -252,7 +252,7 @@
 		},
 		"ValidationsDetailResultMessages": {
 			"message": "Mensaje",
-			"rows": "Índice(s)",
+			"rows": "Líneas",
 			"rule_messages": {
 				"agency_email_valid": {
 					"default": "La dirección de correo electrónico «{value}» no es válida."

@@ -252,7 +252,7 @@
 		},
 		"ValidationsDetailResultMessages": {
 			"message": "Mensagem",
-			"rows": "Índice(s)",
+			"rows": "Linhas",
 			"rule_messages": {
 				"agency_email_valid": {
 					"default": "O endereço de correio eletrónico “{value}” é inválido."
