@@ -1,8 +1,8 @@
 'use client';
 
+import { GtfsValidationsDetailResultsList } from '@/components/validations/detail/GtfsValidationsDetailResultsList';
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { ValidationsDetailResultsContextProvider } from '@/components/validations/detail/ValidationsDetailResults.context';
-import { ValidationsDetailResultsList } from '@/components/validations/detail/ValidationsDetailResultsList';
 import { ValidationsDetailSelectedRule } from '@/components/validations/detail/ValidationsDetailSelectedRule';
 import { Collapsible, PanesManager, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ export function ValidationsDetailSectionResult() {
 						id="gtfs-validation-results"
 						stackBelow={640}
 						panes={[
-							<ValidationsDetailResultsList key="rules" />,
+							<GtfsValidationsDetailResultsList key="rules" />,
 							<ValidationsDetailSelectedRule key="selected-rule" />,
 						]}
 					/>

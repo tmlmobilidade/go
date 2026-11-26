@@ -11,7 +11,7 @@ import { ValidationsDetailResultsListHeader } from '../ValidationsDetailResultsL
 
 /* * */
 
-export function ValidationsDetailResultsList() {
+export function GtfsValidationsDetailResultsList() {
 	//
 
 	//
