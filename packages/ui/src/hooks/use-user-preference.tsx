@@ -7,7 +7,7 @@ import { type UnixMilliseconds } from '@tmlmobilidade/go-types-shared';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { type SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
-import { useMeData } from '../auth';
+import { useMeUser } from '../auth';
 import { fetchApiData } from '../fetch';
 
 /* * */
@@ -28,7 +28,7 @@ export function useUserPreference<T extends UserPreferenceValue>(scope: string, 
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeData();
+	const { data: meData } = useMeUser();
 
 	const [preferenceValue, setPreferenceValue] = useState<T>(defaultValue);
 

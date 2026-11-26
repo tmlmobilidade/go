@@ -3,7 +3,7 @@
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { AnnotationCategorySchema } from '@tmlmobilidade/go-types-dates';
 import { type DatesAnnotationsV1ExtractionCreate, type DatesAnnotationsV1ExtractionProperties, DatesAnnotationsV1ExtractionPropertiesSchema, DatesAnnotationsV1ExtractionVersionValue, DatesAnnotationsV1WithoutCategoryValue, type Extraction } from '@tmlmobilidade/go-types-extractions';
-import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, openExtractionsListModal, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMeUser, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
 import { useAnnotationsAgenciesData } from '../../../shared/use-annotations-agencies-data';
@@ -31,7 +31,7 @@ export function AnnotationsListExportFormContextProvider({ children }: PropsWith
 	//
 	// A. Setup variables
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: me, error: meError, isLoading: meLoading } = useMeUser();
 	const { error: agenciesError, isLoading: agenciesLoading } = useAnnotationsAgenciesData();
 	const { mutate } = useExtractionsListData();
 	const agencies = useAnnotationsListFilterAgencies();

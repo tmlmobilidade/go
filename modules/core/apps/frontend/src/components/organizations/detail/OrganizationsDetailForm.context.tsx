@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Organization, type UpdateOrganizationDto, UpdateOrganizationSchema } from '@tmlmobilidade/go-types-core';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiMultipart, type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiMultipart, type StandardFormContextValue, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -52,7 +52,7 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 
 	const { organizationId } = useOrganizationsDetailOrganizationId();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate: organizationsListMutate } = useOrganizationsListData();
 
@@ -138,18 +138,18 @@ export function OrganizationsDetailFormContextProvider({ children }: PropsWithCh
 	// C. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'delete',
 			scope: 'organizations',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const hasUpdatePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'update',
 			scope: 'organizations',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const { deleteEnabled, editEnabled, lockEnabled, updateEnabled } = useStandardFormCapabilities({
 		delete: {

@@ -1,7 +1,7 @@
 /* * */
 
 import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
-import { BaseDocumentSchema, partialWithoutDefaults, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
+import { BaseDocumentSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
 import { UserBannerDismissalSchema } from './banner-dismissal.js';
@@ -23,7 +23,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 
 export const UserSchema = BaseDocumentSchema.extend({
 	dismissed_banners: z.array(UserBannerDismissalSchema).default([]),
-	email: z.string().email(),
+	email: z.email(),
 	email_verified: UnixMillisecondsSchema.nullable().default(null),
 	first_name: z.string().min(2),
 	last_name: z.string().min(2),
@@ -39,12 +39,7 @@ export const UserSchema = BaseDocumentSchema.extend({
 	verification_token_ids: z.array(z.string()).default([]),
 });
 
-export const CreateUserSchema = UserSchema.omit({ _id: true, created_at: true, dismissed_banners: true, seen_changelogs: true, updated_at: true });
-export const UpdateUserSchema = partialWithoutDefaults(CreateUserSchema.omit({ created_by: true, session_ids: true, verification_token_ids: true }));
-
 export type User = z.infer<typeof UserSchema>;
-export type CreateUserDto = z.infer<typeof CreateUserSchema>;
-export type UpdateUserDto = z.infer<typeof UpdateUserSchema>;
 
 /* * */
 

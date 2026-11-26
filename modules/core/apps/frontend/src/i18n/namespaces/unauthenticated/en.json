@@ -16,12 +16,23 @@
 		"footer": {
 			"label": "Back to login"
 		},
+		"password_requirements": {
+			"excessive_bytes": "The password is not too long",
+			"min_length": "The password has at least {value} characters",
+			"min_lower_case": "The password has at least {value} lowercase character(s)",
+			"min_number": "The password has at least {value} number(s)",
+			"min_special_char": "The password has at least {value} special character(s)",
+			"min_upper_case": "The password has at least {value} uppercase character(s)",
+			"mismatch": "The passwords match",
+			"not_common_passwords": "The password is not a common password"
+		},
 		"submit": {
 			"label": "Confirm"
 		},
 		"success": {
-			"description": "Password changed successfully.",
-			"title": "Success"
+			"description": "You can now use it to log in to your account.",
+			"footnote": "You will be automatically redirected to the login page within moments...",
+			"title": "Your password has been changed successfully"
 		},
 		"title": "Change password"
 	},
@@ -69,8 +80,8 @@
 			"label": "Send email"
 		},
 		"success": {
-			"description": "Password recovery email sent successfully",
-			"title": "Success"
+			"description": "Use the link sent to your email to define a new password.",
+			"title": "Check your inbox"
 		},
 		"title": "Recover Password"
 	}

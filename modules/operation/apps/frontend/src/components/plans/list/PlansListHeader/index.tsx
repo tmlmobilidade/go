@@ -1,8 +1,10 @@
-/* * */
+'use client';
 
-import { PlansListFilterSearch } from '@/components/plans/list/filters/PlansListFilterSearch';
 import { ListHeader, LoadingActivity } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
+import { PlansListFilterSearch } from '../filters/PlansListFilterSearch';
+import { PlansListHeaderMenu } from '../PlansListHeaderMenu';
 import { usePlansListData } from '../use-plans-list-data';
 
 /* * */
@@ -13,6 +15,8 @@ export function PlansListHeader() {
 	//
 	// A. Setup variables
 
+	const { t } = useTranslation();
+
 	const { data, isLoading, isValidating, timestamp } = usePlansListData();
 
 	//
@@ -20,10 +24,11 @@ export function PlansListHeader() {
 
 	return (
 		<ListHeader
+			actions={<PlansListHeaderMenu />}
 			activity={<LoadingActivity isLoading={isLoading} isValidating={isValidating} timestamp={timestamp} />}
 			count={data?.length}
 			search={<PlansListFilterSearch />}
-			title="Planos"
+			title={t('default:plans.list.PlansListHeader.title')}
 		/>
 	);
 }

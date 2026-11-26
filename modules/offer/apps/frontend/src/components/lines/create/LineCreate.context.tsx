@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type CreateLineDto, CreateLineSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
@@ -29,7 +29,7 @@ export function LineCreateContextProvider({ children }: PropsWithChildren) {
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 	const accessRef = useRef(false);
 	const { mutate: listMutate } = useLinesListData();
 
@@ -62,19 +62,19 @@ export function LineCreateContextProvider({ children }: PropsWithChildren) {
 	const agencyIds = values.agency_id ? [values.agency_id] : [];
 	const hasCreatePermission = agencyIds.length > 0 && PermissionCatalog.hasPermissionResourceAll({
 		action: PermissionCatalog.all.lines.actions.create,
-		permissions: me?.permissions ?? [],
+		permissions: mePermissions ?? [],
 		resource_key: 'agency_ids',
 		scope: PermissionCatalog.all.lines.scope,
 		value: agencyIds,
 	});
-	const isReady = !meLoading && !meError;
+	const isReady = !mePermissionsLoading && !mePermissionsError;
 	const standardCapabilities = useStandardFormCapabilities({
 		create: { hasPermission: hasCreatePermission, isCreating },
 		form: { isDirty, isValid },
 		loading: { isLoading: !isReady },
 	});
 	const createEnabled = standardCapabilities.createEnabled;
-	const editEnabled = standardCapabilities.editEnabled && PermissionCatalog.hasPermission(me?.permissions ?? [], PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.create);
+	const editEnabled = standardCapabilities.editEnabled && PermissionCatalog.hasPermission(mePermissions ?? [], PermissionCatalog.all.lines.scope, PermissionCatalog.all.lines.actions.create);
 	accessRef.current = createEnabled;
 
 	const handleCreate = useCallback(async () => {
