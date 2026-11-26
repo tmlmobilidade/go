@@ -6,7 +6,7 @@ import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type PopulatedLine } from '@tmlmobilidade/go-offer-pckg-types';
 import { type UpdateLineDto, UpdateLineSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
@@ -44,7 +44,7 @@ export function LineDetailContextProvider({ children, lineId }: PropsWithChildre
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 	const { mutate: listMutate } = useLinesListData();
 	const { data: line, error, isLoading: dataLoading, mutate } = useLinesDetailData(lineId);
 	const accessRef = useRef({ deleteEnabled: false, editEnabled: false, lockEnabled: false, updateEnabled: false });
@@ -94,14 +94,14 @@ export function LineDetailContextProvider({ children, lineId }: PropsWithChildre
 
 	const permissions = PermissionCatalog.getScopePermissions({
 		actions: PermissionCatalog.all.lines.actions,
-		permissions: me?.permissions ?? [],
+		permissions: mePermissions ?? [],
 		resource: { key: 'agency_ids', requireAll: true, value: line?.agency_id ? [line.agency_id] : [] },
 		scope: PermissionCatalog.all.lines.scope,
 	});
 	const hasData = !!line;
-	const isLoading = dataLoading || meLoading;
-	const hasError = !!(error || meError);
-	const canUpdateAgency = !!values.agency_id && PermissionCatalog.hasPermissionResourceAll({ action: PermissionCatalog.all.lines.actions.update, permissions: me?.permissions ?? [], resource_key: 'agency_ids', scope: PermissionCatalog.all.lines.scope, value: [values.agency_id] });
+	const isLoading = dataLoading || mePermissionsLoading;
+	const hasError = !!(error || mePermissionsError);
+	const canUpdateAgency = !!values.agency_id && PermissionCatalog.hasPermissionResourceAll({ action: PermissionCatalog.all.lines.actions.update, permissions: mePermissions ?? [], resource_key: 'agency_ids', scope: PermissionCatalog.all.lines.scope, value: [values.agency_id] });
 	const standardCapabilities = useStandardFormCapabilities({
 		delete: { hasPermission: permissions.delete, isDeleting },
 		form: { isDirty, isValid },
@@ -160,7 +160,7 @@ export function LineDetailContextProvider({ children, lineId }: PropsWithChildre
 			id: lineId,
 			line,
 		},
-		error: error || meError,
+		error: error || mePermissionsError,
 		form,
 		isDirty,
 		isValid,
@@ -172,7 +172,7 @@ export function LineDetailContextProvider({ children, lineId }: PropsWithChildre
 			isUpdating,
 		},
 		unblock,
-	}), [applyChanges, capabilities, handleDelete, handleLock, handleUpdate, line, lineId, error, meError, form, isDirty, isValid, isDeleting, isLoading, isLocking, isUpdating, unblock]);
+	}), [applyChanges, capabilities, handleDelete, handleLock, handleUpdate, line, lineId, error, mePermissionsError, form, isDirty, isValid, isDeleting, isLoading, isLocking, isUpdating, unblock]);
 
 	return (
 		<TypologiesContextProvider>

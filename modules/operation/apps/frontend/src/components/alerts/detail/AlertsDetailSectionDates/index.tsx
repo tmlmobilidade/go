@@ -1,7 +1,7 @@
 'use client';
 
 import { hasPermissionResource } from '@tmlmobilidade/go-types-permissions';
-import { Collapsible, DateTimeInput, Divider, Grid, Label, Section, StandardFormController, Text, useMeData, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { Collapsible, DateTimeInput, Divider, Grid, Label, Section, StandardFormController, Text, useMePermissions, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
 
 import { useAlertsDetailFormContext } from '../AlertsDetailForm.context';
@@ -14,7 +14,7 @@ export function AlertsDetailSectionDates() {
 	//
 	// A. Setup variables
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { form } = useAlertsDetailFormContext();
 
@@ -25,18 +25,18 @@ export function AlertsDetailSectionDates() {
 	// B. Transform data
 
 	const hasPermissionToUpdateDates = useMemo(() => {
-		const permissionForAgencyId = hasPermissionResource(meData?.permissions, {
+		const permissionForAgencyId = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: agencyIdValue,
 			resourceKey: 'agency_ids',
 		});
-		const permissionForReferenceType = hasPermissionResource(meData?.permissions, {
+		const permissionForReferenceType = hasPermissionResource(mePermissions, {
 			requiredPermission: { action: 'update', scope: 'alerts' },
 			requiredValue: referenceTypeValue,
 			resourceKey: 'reference_types',
 		});
 		return permissionForAgencyId && permissionForReferenceType;
-	}, [agencyIdValue, meData?.permissions, referenceTypeValue]);
+	}, [agencyIdValue, mePermissions, referenceTypeValue]);
 
 	//
 	// C. Render components

@@ -1,2 +1,3 @@
 export * from './HasPermission';
-export * from './use-me-data';
+export * from './use-me-permissions';
+export * from './use-me-user';

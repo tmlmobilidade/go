@@ -16,12 +16,23 @@
 		"footer": {
 			"label": "Voltar ao login"
 		},
+		"password_requirements": {
+			"excessive_bytes": "A password não é demasiado longa",
+			"min_length": "A password tem pelo menos {value} caracteres",
+			"min_lower_case": "A password tem pelo menos {value} caractere(s) minúsculo(s)",
+			"min_number": "A password tem pelo menos {value} número(s)",
+			"min_special_char": "A password tem pelo menos {value} caractere(s) especial(es)",
+			"min_upper_case": "A password tem pelo menos {value} caractere(s) maiúsculo(s)",
+			"mismatch": "As passwords coincidem",
+			"not_common_passwords": "A password não é uma palavra-passe comum"
+		},
 		"submit": {
 			"label": "Confirmar"
 		},
 		"success": {
-			"description": "Password alterada com sucesso.",
-			"title": "Sucesso"
+			"description": "Já a pode utilizar para entrar na sua conta.",
+			"footnote": "Será automaticamente redirecionado para a página de login dentro de momentos...",
+			"title": "A sua password foi alterada com sucesso"
 		},
 		"title": "Alterar password"
 	},
@@ -69,8 +80,8 @@
 			"label": "Enviar email"
 		},
 		"success": {
-			"description": "Email de recuperação enviado com sucesso",
-			"title": "Sucesso"
+			"description": "Utilize o link que foi enviado para o seu email para definir uma nova password.",
+			"title": "Verifique o seu email"
 		},
 		"title": "Recuperar Password"
 	}

@@ -2,8 +2,10 @@
 
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { AuthSendPasswordResetEmailRequest } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
-import { fetchApiData, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
+import { fetchApiData, Label, Section, Surface, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /* * */
@@ -18,11 +20,17 @@ export function SendPasswordResetEmailForm() {
 
 	const [emailValue, setEmailValue] = useQueryState('email', { clearOnDefault: true, defaultValue: '' });
 
+	const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
 	//
 	// B. Handle actions
 
 	const { action: handleSendResetPasswordEmail, isLoading: isSendingResetPasswordEmail } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue }, method: 'POST', url: API_ROUTES.core.AUTH_SEND_PASSWORD_RESET_EMAIL }),
+		fetchFn: async () => await fetchApiData<Session, AuthSendPasswordResetEmailRequest>({
+			body: { email: emailValue },
+			method: 'POST',
+			url: API_ROUTES.core.AUTH_SEND_PASSWORD_RESET_EMAIL,
+		}),
 		onError: ({ message }) => {
 			useToast.error({
 				message: message ?? t('unauthenticated:SendPasswordResetEmailForm.error.description'),
@@ -30,16 +38,24 @@ export function SendPasswordResetEmailForm() {
 			});
 		},
 		onSuccess: async () => {
-			// Show success message and redirect to login page
-			useToast.success({ message: t('unauthenticated:SendPasswordResetEmailForm.success.description'), title: t('unauthenticated:SendPasswordResetEmailForm.success.title') });
-			// Wait for a few seconds before redirecting to login page
-			await new Promise(resolve => setTimeout(resolve, 3_000));
-			window.location.href = PAGE_ROUTES.core.LOGIN_LIST;
+			// Show the success message
+			setIsFormSubmitted(true);
 		},
 	});
 
 	//
 	// C. Render components
+
+	if (isFormSubmitted) {
+		return (
+			<Surface style={{ maxWidth: 550 }}>
+				<Section gap="sm">
+					<Label size="lg">{t('unauthenticated:SendPasswordResetEmailForm.success.title')}</Label>
+					<Label>{t('unauthenticated:SendPasswordResetEmailForm.success.description')}</Label>
+				</Section>
+			</Surface>
+		);
+	}
 
 	return (
 		<AuthenticationForm

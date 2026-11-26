@@ -49,6 +49,9 @@
 		"operation-alerts-v1": {
 			"title": "Alertas (v1)"
 		},
+		"operation-posters-v1": {
+			"title": "PDFs (v1)"
+		},
 		"operation-rides-v1": {
 			"title": "Circulações (GO v1)"
 		},

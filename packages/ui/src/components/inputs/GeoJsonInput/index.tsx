@@ -15,6 +15,8 @@ interface GeoJsonInputProps {
 	onError?: (error: string | undefined) => void
 	onRemove?: () => void
 	onUpdateMap?: () => void
+	placeholder?: string
+	removeLabel?: string
 }
 
 export function GeoJsonInput({
@@ -25,6 +27,8 @@ export function GeoJsonInput({
 	onError,
 	onRemove,
 	onUpdateMap,
+	placeholder = 'Upload GeoJSON file',
+	removeLabel = 'Remover',
 }: GeoJsonInputProps) {
 	//
 
@@ -60,7 +64,7 @@ export function GeoJsonInput({
 				error={error}
 				label={label}
 				onChange={handleFile}
-				placeholder="Upload GeoJSON file"
+				placeholder={placeholder}
 			/>
 
 			<Grid columns="ab" gap="md">
@@ -74,7 +78,7 @@ export function GeoJsonInput({
 
 				<Button
 					disabled={disabled}
-					label="Remover"
+					label={removeLabel}
 					onClick={handleRemove}
 					variant="danger"
 				/>

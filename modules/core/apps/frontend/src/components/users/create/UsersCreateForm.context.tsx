@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { CreateUserDto, CreateUserSchema, User } from '@tmlmobilidade/go-types-core';
+import { type UsersCreateItemRequest, UsersCreateItemRequestSchema, type UsersCreateItemResponse } from '@tmlmobilidade/go-core-pckg-types';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -12,7 +12,7 @@ import { closeUsersCreateModal } from './UsersCreate.modal';
 
 /* * */
 
-const UsersCreateFormContext = createContext<StandardFormContextValue<CreateUserDto> | undefined>(undefined);
+const UsersCreateFormContext = createContext<StandardFormContextValue<UsersCreateItemRequest> | undefined>(undefined);
 
 export function useUsersCreateFormContext() {
 	const context = useContext(UsersCreateFormContext);
@@ -30,29 +30,29 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 
 	const router = useRouter();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate } = useUsersListData();
 
 	//
 	// B. Setup form
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<CreateUserDto, typeof CreateUserSchema>({
-		schema: CreateUserSchema,
+	const { form, isDirty, isValid, unblock } = useStandardForm<UsersCreateItemRequest, typeof UsersCreateItemRequestSchema>({
+		schema: UsersCreateItemRequestSchema,
 	});
 
 	//
 	// C. Handle actions
 
 	const { action: handleCreate, isLoading: isCreating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'POST', url: API_ROUTES.core.USERS_CREATE }),
+		fetchFn: async () => await fetchApiData<UsersCreateItemResponse>({ body: form.getValues(), method: 'POST', url: API_ROUTES.core.USERS_CREATE }),
 		onSuccess: ({ data }) => {
 			closeUsersCreateModal();
 			form.reset();
 			unblock();
 			mutate();
-			if (!data?._id) return;
-			router.push(keepUrlParams(PAGE_ROUTES.core.USERS_DETAIL(data._id)));
+			if (!data?.user_id) return;
+			router.push(keepUrlParams(PAGE_ROUTES.core.USERS_DETAIL(data.user_id)));
 		},
 	});
 
@@ -60,11 +60,11 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 	// C. Setup flags
 
 	const hasCreatePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'create',
 			scope: 'users',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const { createEnabled, editEnabled } = useStandardFormCapabilities({
 		create: {
@@ -80,7 +80,7 @@ export function UsersCreateFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// D. Return context value
 
-	const stateValue: StandardFormContextValue<CreateUserDto> = useMemo(() => ({
+	const stateValue: StandardFormContextValue<UsersCreateItemRequest> = useMemo(() => ({
 		actions: {
 			create: handleCreate,
 		},

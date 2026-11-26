@@ -1,5 +1,7 @@
 'use client';
 
+import { OrganizationsDetailContacts } from '@/components/organizations/detail/OrganizationsDetailContacts';
+import { OrganizationsDetailGeoJson } from '@/components/organizations/detail/OrganizationsDetailGeoJson';
 import { OrganizationsDetailHeader } from '@/components/organizations/detail/OrganizationsDetailHeader';
 import { OrganizationsDetailOpenData } from '@/components/organizations/detail/OrganizationsDetailOpenData';
 import { OrganizationsDetailBasicInfo } from '@/components/organizations/detail/OrganizationSectionBasicInfo';
@@ -18,7 +20,9 @@ export function OrganizationsDetail() {
 	return (
 		<Pane header={[<OrganizationsDetailHeader key="header" />]} isLoading={isLoading}>
 			<OrganizationsDetailBasicInfo />
+			<OrganizationsDetailGeoJson />
 			<OrganizationsDetailOpenData />
+			<OrganizationsDetailContacts />
 			<OrganizationsDetailQuickLinks />
 		</Pane>
 	);
