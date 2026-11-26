@@ -70,11 +70,11 @@ and can supply named `values` for interpolation. The Operation frontend uses
 these fields to render the report in the selected language and falls back to the
 report's description and message strings when a template is unavailable.
 
-`totals.errors`, `totals.warnings`, and `totals.infos` count distinct diagnostics
-before sampling. Configured `forbidden` findings are reported as errors, and
-ignored findings are omitted. A run without findings produces `results: []` with
-zero totals. Argument and rule configuration errors are written to stderr before
-any report is emitted.
+`totals.errors`, `totals.warnings`, and `totals.infos` count each `rule_id` once
+at its highest reported severity. Configured `forbidden` findings are reported
+as errors, and ignored findings are omitted. A run without findings produces
+`results: []` with zero totals. Argument and rule configuration errors are
+written to stderr before any report is emitted.
 
 ### Execution visualization
 

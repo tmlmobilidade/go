@@ -30,7 +30,7 @@ func (t *Translation) Clone() *Translation {
 	return &Translation{Variant: t.Variant, Values: maps.Clone(t.Values)}
 }
 
-// Summary is the exported validation report. Totals count distinct collected diagnostics.
+// Summary is the exported validation report. Totals count each reported rule once at its highest severity.
 type Summary struct {
 	Results []RuleResult `json:"results"`
 	Totals  Totals       `json:"totals"`

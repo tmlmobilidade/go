@@ -61,7 +61,7 @@ func TestReportDetailCap(t *testing.T) {
 	service.Add("rule", types.Finding{Severity: rules.SEVERITY_INFO, Rows: rows, Message: "Invalid name 0."})
 	summary := service.Summary()
 	result := summary.Results[0]
-	if summary.Totals.Infos != services.MaxDetails+2 || result.TotalRows != services.MaxDetails+1 || len(result.Messages) != services.MaxDetails {
+	if summary.Totals.Infos != 1 || result.TotalRows != services.MaxDetails+1 || len(result.Messages) != services.MaxDetails {
 		t.Fatal(summary)
 	}
 	if got := result.Messages[0].Rows; len(got) != services.MaxDetails || got[0] != 2 || got[len(got)-1] != services.MaxDetails+1 {
@@ -103,15 +103,17 @@ func TestReportGroupsRepeatedMessages(t *testing.T) {
 
 func TestReportGroupsRowsAcrossFiles(t *testing.T) {
 	service := services.NewReport()
-	finding := types.Finding{FileName: "agency.txt", Field: "agency_id", Severity: rules.SEVERITY_ERROR, Rows: []int{0}, Message: "Invalid ID."}
+	finding := types.Finding{FileName: "agency.txt", Field: "agency_id", Severity: rules.SEVERITY_WARNING, Rows: []int{0}, Message: "Invalid ID."}
 	service.Add("rule", finding)
 	finding.Field = "agency_name"
 	service.Add("rule", finding)
 	finding.FileName = "routes.txt"
+	finding.Rows = []int{0, 2}
+	finding.Severity = rules.SEVERITY_ERROR
 	service.Add("rule", finding)
 
 	summary := service.Summary()
-	if len(summary.Results) != 1 || summary.Results[0].TotalRows != 2 || summary.Totals.Errors != 3 {
+	if len(summary.Results) != 1 || summary.Results[0].TotalRows != 3 || summary.Totals != (types.Totals{Errors: 1}) {
 		t.Fatal(summary)
 	}
 }
@@ -133,7 +135,11 @@ func TestReportRetainsTranslationVariants(t *testing.T) {
 	for _, finding := range results[0].Value {
 		service.Add(results[0].ID, finding)
 	}
-	result := service.Summary().Results[0]
+	summary := service.Summary()
+	if summary.Totals != (types.Totals{Errors: 1}) {
+		t.Fatal(summary.Totals)
+	}
+	result := summary.Results[0]
 	if !reflect.DeepEqual(result.DescriptionTranslation, &types.Translation{Variant: "default"}) || len(result.Messages) != 2 {
 		t.Fatal(result)
 	}
