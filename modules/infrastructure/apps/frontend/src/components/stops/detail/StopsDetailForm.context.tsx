@@ -4,7 +4,7 @@ import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Stop, type UpdateStopDto, UpdateStopSchema } from '@tmlmobilidade/go-types-infrastructure';
 import { locationSlotOsmIds } from '@tmlmobilidade/go-types-locations';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
 import { useStopsListData } from '../list/use-stops-list-data';
@@ -31,7 +31,7 @@ export function StopsDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { stopId } = useStopsDetailStopId();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate: stopsListMutate } = useStopsListData();
 
@@ -64,12 +64,12 @@ export function StopsDetailFormContextProvider({ children }: PropsWithChildren) 
 		if (!stopData?.location) return false;
 		return PermissionCatalog.hasPermissionResource({
 			action: PermissionCatalog.all.stops.actions.update,
-			permissions: meData?.permissions,
+			permissions: mePermissions,
 			resource_key: 'location_ids',
 			scope: PermissionCatalog.all.stops.scope,
 			value: locationSlotOsmIds(stopData.location),
 		});
-	}, [meData?.permissions, stopData?.location]);
+	}, [mePermissions, stopData?.location]);
 
 	const { editEnabled, updateEnabled } = useStandardFormCapabilities({
 		form: {

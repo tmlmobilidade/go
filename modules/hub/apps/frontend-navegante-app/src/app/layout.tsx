@@ -6,12 +6,20 @@ import { MapContextProvider } from '@/contexts/Map.context';
 import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 'json' };
 import { i18nResourceKeysEn, i18nResourceKeysPt } from '@/i18n/resources';
 import { BaseProvider } from '@tmlmobilidade/ui';
-import { type Metadata } from 'next';
+import { type Metadata, type Viewport } from 'next';
 import { type PropsWithChildren } from 'react';
 
 import '@/styles/reset.css';
 import '@/styles/navegante/font.css';
 import '@/styles/navegante/color.css';
+
+/* * */
+
+export const viewport: Viewport = {
+	initialScale: 1,
+	viewportFit: 'cover',
+	width: 'device-width',
+};
 
 /* * */
 

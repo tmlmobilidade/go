@@ -126,7 +126,7 @@ export function useAgenciesDetailFormContext() {
 }
 
 export function AgenciesDetailFormContextProvider({ children }: PropsWithChildren) {
-	// A. Setup variables: id hook, useMeData, list mutate, detail data
+	// A. Setup variables: id hook, useMeUser, list mutate, detail data
 	// B. Setup form: useStandardForm<UpdateAgencyDto, typeof UpdateAgencySchema>({ apiData, schema })
 	// C. Handle actions: one useHandleAction per action; onSuccess → form.reset(response.data); detailMutate(response); listMutate();
 	// D. Setup flags: hasPermission(...) per action, then useStandardFormCapabilities({ form, loading, update, delete, locked })
@@ -175,7 +175,7 @@ Each line names a shortcut seen in older code or tempting under time pressure, a
 - **No `useState` form state, no bare `react-hook-form`.** Forms are `useStandardForm` inside a `Form.context.tsx`; fields render through `StandardFormController`.
 - **No hand-rolled `isReadOnly` / `canSave` booleans.** Derive them with `useStandardFormCapabilities` and expose them as `capabilities.xEnabled`.
 - **No direct `fetchApiData` calls in event handlers.** Wrap every mutation in `useHandleAction` so loading state, toasts and error handling stay uniform.
-- **No `DetailContextStateTemplate`, `useFlag*` hooks or `useMeContext`.** Those are the previous generation; the current context shape is `StandardFormContextValue` with `useMeData` and `hasPermission`.
+- **No `DetailContextStateTemplate`, `useFlag*` hooks or `useMeContext`.** Those are the previous generation; the current context shape is `StandardFormContextValue` with `useMeUser` and `hasPermission`.
 - **No permission checks by string literal in JSX.** Wrap buttons in `HasPermission` with `PermissionCatalog.all.<scope>` values.
 - **No user-facing strings in code.** Every label, title, description and placeholder is a `t('default:...')` key present in both `pt.json` and `es.json`.
 - **No default exports, no two components in one file, no `styles` prop for layout.** Named exports, one folder per component, CSS modules.

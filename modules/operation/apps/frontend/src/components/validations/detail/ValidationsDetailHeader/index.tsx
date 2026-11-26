@@ -45,7 +45,7 @@ export function ValidationsDetailHeader() {
 			},
 		]);
 	}, [
-		meContext.data.user?.permissions,
+		meContext.data.permissions,
 		validationsDetailContext.data.validation.agency_id,
 	]);
 

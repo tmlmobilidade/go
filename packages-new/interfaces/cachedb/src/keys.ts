@@ -35,6 +35,7 @@ export const cacheDbKeyValues = [
 	'hub:v1:network:plans',
 	`hub:v1:network:plans:${dynamicKey()}`,
 	'hub:v1:metrics:demand:by-agency:by-operational-date:json',
+	'hub:v1:metrics:vehicle-events:last-24h:json',
 	'hub:v1:network:vehicles:protobuf',
 	`hub:v1:network:patterns:${dynamicKey()}`,
 	`hub:v1:network:shapes:${dynamicKey()}`,
