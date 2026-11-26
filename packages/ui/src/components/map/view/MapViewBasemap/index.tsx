@@ -44,6 +44,7 @@ export interface MapViewBasemapProps {
 	onMouseDrag?: (e: ViewStateChangeEvent) => void
 	onMouseEnter?: (e: MapLayerMouseEvent) => void
 	onMouseLeave?: (e: MapLayerMouseEvent) => void
+	onMouseMove?: (e: MapLayerMouseEvent) => void
 	onMouseOut?: (e: MapLayerMouseEvent) => void
 	onMouseOver?: (e: MapLayerMouseEvent) => void
 	onWheel?: (e: MapWheelEvent) => void
@@ -62,7 +63,7 @@ export interface MapViewBasemapProps {
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, initialViewState, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseOut, onMouseOver, onWheel, scrollZoom, searchPinFocusOnChange = true, showSearchPin = true, themeMode }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, initialViewState, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onWheel, scrollZoom, searchPinFocusOnChange = true, showSearchPin = true, themeMode }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -146,6 +147,7 @@ export function MapViewBasemap({ children, cursor, id, initialViewState, interac
 			onLoad={mapViewContext.actions.initMap}
 			onMouseEnter={handleOnMouseEnter}
 			onMouseLeave={handleOnMouseLeave}
+			onMouseMove={onMouseMove}
 			onMouseOut={onMouseOut}
 			onMouseOver={onMouseOver}
 			onWheel={handleOnWheel}

@@ -1,13 +1,14 @@
 'use client';
 
 import { LoadingOverlay, MapContextProvider, MapView, useMapViewContext } from '@tmlmobilidade/ui';
-import { Layer, type MapLayerMouseEvent, type MapProps, Source } from '@vis.gl/react-maplibre';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Layer, type MapProps, Source } from '@vis.gl/react-maplibre';
+import { useEffect, useMemo } from 'react';
 
 import styles from './styles.module.css';
 
 import { LandingMapVehiclePopup } from '../LandingMapVehiclePopup';
 import { useDocumentThemeMode } from './use-document-theme-mode';
+import { useLandingVehicleSelection } from './use-landing-vehicle-selection';
 import { useLandingVehiclesData } from './use-landing-vehicles-data';
 import { setVehicleArrowImage, usePrimaryColor, VEHICLE_ARROW_IMAGE } from './vehicle-arrow';
 
@@ -24,8 +25,6 @@ const VEHICLE_ARROWS_LAYER_ID = 'landing-vehicle-arrows';
 
 /** From this zoom on, vehicles with a known bearing render as arrows instead of dots. */
 const ARROWS_MIN_ZOOM = 13;
-
-const POPUP_CLOSE_DELAY_MS = 300;
 
 /* * */
 
@@ -47,10 +46,7 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 	const { data, geoJson, isLoading } = useLandingVehiclesData();
 	const primaryColor = usePrimaryColor();
 	const themeMode = useDocumentThemeMode();
-	const [hoveredVehicleKey, setHoveredVehicleKey] = useState<null | string>(null);
-	const closeTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-	useEffect(() => () => clearTimeout(closeTimeout.current), []);
+	const { cancelClose, handleClick, handleMouseMove, scheduleClose, vehicleKey } = useLandingVehicleSelection();
 
 	//
 	// B. Transform data
@@ -67,30 +63,13 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 		};
 	}, [fitToVehicles, geoJson.features]);
 
-	const hoveredVehicle = useMemo(() => {
-		if (!hoveredVehicleKey) return null;
-		return data.find(position => `${position.agency_id}-${position.vehicle_id}` === hoveredVehicleKey) ?? null;
-	}, [data, hoveredVehicleKey]);
+	const selectedVehicle = useMemo(() => {
+		if (!vehicleKey) return null;
+		return data.find(position => `${position.agency_id}-${position.vehicle_id}` === vehicleKey) ?? null;
+	}, [data, vehicleKey]);
 
 	//
-	// C. Handle actions
-
-	const cancelClose = () => clearTimeout(closeTimeout.current);
-
-	const scheduleClose = () => {
-		cancelClose();
-		closeTimeout.current = setTimeout(() => setHoveredVehicleKey(null), POPUP_CLOSE_DELAY_MS);
-	};
-
-	const handleMouseEnter = (event: MapLayerMouseEvent) => {
-		const properties = event.features?.[0]?.properties;
-		if (!properties) return;
-		cancelClose();
-		setHoveredVehicleKey(`${properties.agency_id}-${properties.vehicle_id}`);
-	};
-
-	//
-	// D. Render components
+	// C. Render components
 
 	return (
 		<div className={styles.container}>
@@ -101,8 +80,9 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 						initialViewState={initialViewState}
 						interactiveLayerIds={[VEHICLES_LAYER_ID, VEHICLE_ARROWS_LAYER_ID]}
 						layers={{ navigation: interactive }}
-						onMouseEnter={handleMouseEnter}
+						onClick={handleClick}
 						onMouseLeave={scheduleClose}
+						onMouseMove={handleMouseMove}
 						showSearchPin={false}
 						themeMode={themeMode}
 						toolbar={false}
@@ -136,7 +116,7 @@ export function LandingMap({ fitToVehicles = false, interactive = false }: Landi
 								}}
 							/>
 						</Source>
-						{hoveredVehicle && <LandingMapVehiclePopup data={hoveredVehicle} onMouseEnter={cancelClose} onMouseLeave={scheduleClose} />}
+						{selectedVehicle && <LandingMapVehiclePopup data={selectedVehicle} onMouseEnter={cancelClose} onMouseLeave={scheduleClose} />}
 					</MapView>
 				</MapContextProvider>
 			)}
