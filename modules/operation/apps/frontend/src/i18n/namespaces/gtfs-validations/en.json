@@ -1,5 +1,22 @@
 {
 	"detail": {
+		"GtfsValidationsDetailResultsList": {
+			"columns": {
+				"description": "Description",
+				"severity": "Severity"
+			},
+			"empty": "No issues found",
+			"title": "Issues found"
+		},
+		"GtfsValidationsDetailSectionResult": {
+			"description": "Information, warnings, and errors found in the GTFS file",
+			"title": "Validation Results"
+		},
+		"GtfsValidationsDetailSelectedRule": {
+			"description": "Description",
+			"documentation": "View rule documentation",
+			"title": "Rule details"
+		},
 		"ValidationsDetailResultListItem": {
 			"rule_descriptions": {
 				"agency_email_valid": {
@@ -380,14 +397,6 @@
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
-		"GtfsValidationsDetailResultsList": {
-			"columns": {
-				"description": "Description",
-				"severity": "Severity"
-			},
-			"empty": "No issues found",
-			"title": "Issues found"
-		},
 		"ValidationsDetailResultsListHeader": {
 			"error": "{count, plural, =1 {# Error} other {# Errors}}",
 			"info": "{count, plural, =1 {# Info} other {# Info}}",
@@ -399,15 +408,6 @@
 			"download_error": "Could not download the file",
 			"no_file": "No file selected",
 			"title": "File details"
-		},
-		"GtfsValidationsDetailSectionResult": {
-			"description": "Information, warnings, and errors found in the GTFS file",
-			"title": "Validation Results"
-		},
-		"GtfsValidationsDetailSelectedRule": {
-			"affected_rows": "Affected rows",
-			"documentation": "View rule documentation",
-			"title": "Rule details"
 		}
 	}
 }

@@ -1,5 +1,22 @@
 {
 	"detail": {
+		"GtfsValidationsDetailResultsList": {
+			"columns": {
+				"description": "Descripción",
+				"severity": "Severidad"
+			},
+			"empty": "No hay situaciones encontradas",
+			"title": "Situaciones encontradas"
+		},
+		"GtfsValidationsDetailSectionResult": {
+			"description": "Información, avisos y errores encontrados en el archivo GTFS",
+			"title": "Resultado de la validación"
+		},
+		"GtfsValidationsDetailSelectedRule": {
+			"description": "Descripción",
+			"documentation": "Ver documentación de la regla",
+			"title": "Detalle de la regla"
+		},
 		"ValidationsDetailResultListItem": {
 			"rule_descriptions": {
 				"agency_email_valid": {
@@ -380,14 +397,6 @@
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"
 		},
-		"GtfsValidationsDetailResultsList": {
-			"columns": {
-				"description": "Descripción",
-				"severity": "Severidad"
-			},
-			"empty": "No hay situaciones encontradas",
-			"title": "Situaciones encontradas"
-		},
 		"ValidationsDetailResultsListHeader": {
 			"error": "{count, plural, =1 {# Error} other {# Errores}}",
 			"info": "{count, plural, =1 {# Información} other {# Informaciones}}",
@@ -399,15 +408,6 @@
 			"download_error": "No se pudo descargar el archivo",
 			"no_file": "Ningún archivo seleccionado",
 			"title": "Datos del archivo"
-		},
-		"GtfsValidationsDetailSectionResult": {
-			"description": "Información, avisos y errores encontrados en el archivo GTFS",
-			"title": "Resultado de la validación"
-		},
-		"GtfsValidationsDetailSelectedRule": {
-			"affected_rows": "Filas afectadas",
-			"documentation": "Ver documentación de la regla",
-			"title": "Detalle de la regla"
 		}
 	}
 }
