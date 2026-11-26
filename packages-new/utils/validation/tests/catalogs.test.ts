@@ -49,6 +49,7 @@ test('custom keys referenced by schemas and UI exist in the catalogs', () => {
 		if (!existsSync(directory)) continue;
 		for (const path of readdirSync(directory, { encoding: 'utf8', recursive: true })) {
 			if (!/\.(ts|tsx)$/.test(path) || /(^|\/)(dist|node_modules|\.next)\//.test(path)) continue;
+			if (/\.(test|spec)\.tsx?$/.test(path)) continue;
 			const source = ts.createSourceFile(path, readFileSync(resolve(directory, path), 'utf8'), ts.ScriptTarget.Latest, true);
 			function visit(node: ts.Node) {
 				if (ts.isStringLiteral(node) && node.text.startsWith('custom.')) {
