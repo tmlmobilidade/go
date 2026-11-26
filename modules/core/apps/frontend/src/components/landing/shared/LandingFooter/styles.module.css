@@ -39,3 +39,39 @@
 .tmlmobilidade {
 	width: 150px;
 }
+
+.mobileLogin {
+	display: none;
+}
+
+@media (max-width: 800px) {
+	.section[data-padding] {
+		padding: 0;
+	}
+
+	.footer {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 24px;
+		padding-top: 16px;
+	}
+
+	.links {
+		flex-direction: column;
+		gap: 0;
+		width: 100%;
+	}
+
+	.link {
+		display: flex;
+		align-items: center;
+		min-height: 44px;
+		color: var(--color-system-text-200);
+		font-size: 16px;
+		line-height: 1.4;
+	}
+
+	.mobileLogin {
+		display: flex;
+	}
+}

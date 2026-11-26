@@ -11,6 +11,8 @@ import { LandingOverviewMode } from '../../overview/LandingOverviewMode';
 import { LandingOverviewTheme } from '../../overview/LandingOverviewTheme';
 import { LandingSection } from '../../shared/LandingContainer';
 import { LandingHeaderLogo } from '../LandingHeaderLogo';
+import { LandingHeaderMobile } from '../LandingHeaderMobile';
+import { useLandingAppearance } from './use-landing-appearance';
 
 /* * */
 
@@ -21,6 +23,7 @@ export function LandingHeader() {
 	// A. Setup variables
 
 	const { t } = useTranslation();
+	const appearance = useLandingAppearance();
 
 	//
 	// B. Render components
@@ -32,10 +35,11 @@ export function LandingHeader() {
 					<LandingHeaderLogo />
 					<div className={styles.preferences}>
 						<LandingOverviewI18n />
-						<LandingOverviewTheme />
-						<LandingOverviewMode />
+						<LandingOverviewTheme activeTheme={appearance.theme} onChange={appearance.setTheme} />
+						<LandingOverviewMode activeMode={appearance.resolvedMode} onChange={appearance.setMode} />
 						<Button href={PAGE_ROUTES.core.LOGIN_LIST} label={t('landing:LandingHeader.login')} />
 					</div>
+					<LandingHeaderMobile appearance={appearance} />
 				</div>
 			</LandingSection>
 		</header>

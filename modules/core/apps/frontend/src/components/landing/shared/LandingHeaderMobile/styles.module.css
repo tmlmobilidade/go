@@ -1,0 +1,48 @@
+.controls {
+	display: none;
+}
+
+@media (max-width: 800px) {
+	.controls {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+}
+
+.language,
+.preferences {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 44px;
+	min-height: 44px;
+	color: var(--color-system-text-100);
+	background: transparent;
+	border: none;
+	border-radius: 12px;
+}
+
+.language {
+	position: relative;
+	gap: 4px;
+	padding-inline: 8px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.language,
+.preferences {
+	cursor: pointer;
+}
+
+.language:focus-visible,
+.preferences:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
+.language:hover,
+.preferences:hover {
+	background: var(--color-system-background-100);
+}

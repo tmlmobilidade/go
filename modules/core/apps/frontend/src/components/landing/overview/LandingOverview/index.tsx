@@ -24,7 +24,7 @@ export function LandingOverview() {
 
 	return (
 		<LandingSection>
-			<Section>
+			<Section className={styles.section}>
 				<div className={styles.container}>
 					<LandingInfoBlock
 						description={t('landing:LandingOverview.description')}

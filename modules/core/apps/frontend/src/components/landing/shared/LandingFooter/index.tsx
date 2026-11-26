@@ -31,7 +31,7 @@ export function LandingFooter() {
 
 	return (
 		<LandingSection>
-			<Section>
+			<Section className={styles.section}>
 				<footer className={styles.footer}>
 					<WhenMode
 						dark={<Image alt="TML Mobilidade" className={styles.tmlmobilidade} src="/core/assets/landing/brand/tmlmobilidade-dark.svg" />}
@@ -41,6 +41,7 @@ export function LandingFooter() {
 						{footerLinks.map(({ href, label }) => (
 							<a key={label} className={styles.link} href={href}>{label}</a>
 						))}
+						<a className={`${styles.link} ${styles.mobileLogin}`} href={PAGE_ROUTES.core.LOGIN_LIST}>{t('landing:shared.LandingFooter.login')}</a>
 					</div>
 				</footer>
 			</Section>

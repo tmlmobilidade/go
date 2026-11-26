@@ -113,5 +113,40 @@
 		"operators": "Operadores",
 		"vehicle_events": "Eventos de veículos nas últimas 24h",
 		"vehicles_live": "Veículos em circulação"
+	},
+	"shared": {
+		"LandingFooter": {
+			"login": "Entrar no GO"
+		},
+		"LandingHeaderLanguage": {
+			"close": "Fechar seleção de idioma",
+			"title": "Idioma"
+		},
+		"LandingHeaderMobile": {
+			"language": "Idioma"
+		},
+		"LandingHeaderPreferences": {
+			"accent_colour": "Cor de destaque",
+			"appearance": "Aparência",
+			"close": "Fechar preferências",
+			"modes": {
+				"light": "Claro",
+				"dark": "Escuro",
+				"system": "Sistema"
+			},
+			"title": "Preferências"
+		}
+	},
+	"overview": {
+		"LandingOverviewTheme": {
+			"colours": {
+				"ocean": "Azul",
+				"park": "Verde",
+				"path": "Pedra",
+				"pool": "Turquesa",
+				"royal": "Roxo",
+				"street": "Lima"
+			}
+		}
 	}
 }

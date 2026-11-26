@@ -16,3 +16,14 @@
 	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 	gap: 24px;
 }
+
+@media (max-width: 800px) {
+	.section[data-padding] {
+		padding: 0;
+	}
+
+	.links {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 20px;
+	}
+}

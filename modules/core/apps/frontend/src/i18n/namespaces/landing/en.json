@@ -113,5 +113,40 @@
 		"operators": "Operators",
 		"vehicle_events": "Vehicle events in the last 24h",
 		"vehicles_live": "Vehicles live now"
+	},
+	"shared": {
+		"LandingFooter": {
+			"login": "Login to GO"
+		},
+		"LandingHeaderLanguage": {
+			"close": "Close language selector",
+			"title": "Language"
+		},
+		"LandingHeaderMobile": {
+			"language": "Language"
+		},
+		"LandingHeaderPreferences": {
+			"accent_colour": "Accent colour",
+			"appearance": "Appearance",
+			"close": "Close preferences",
+			"modes": {
+				"light": "Light",
+				"dark": "Dark",
+				"system": "System"
+			},
+			"title": "Preferences"
+		}
+	},
+	"overview": {
+		"LandingOverviewTheme": {
+			"colours": {
+				"ocean": "Blue",
+				"park": "Green",
+				"path": "Stone",
+				"pool": "Turquoise",
+				"royal": "Purple",
+				"street": "Lime"
+			}
+		}
 	}
 }

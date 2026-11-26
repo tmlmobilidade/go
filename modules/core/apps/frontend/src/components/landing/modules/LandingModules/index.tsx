@@ -27,7 +27,7 @@ export function LandingModules() {
 		<LandingSection>
 
 			<div className={styles.intro}>
-				<Section gap="lg">
+				<Section className={styles.introSection} gap="lg">
 					<LandingInfoBlock
 						description={t('landing:LandingModules.intro.description')}
 						title={t('landing:LandingModules.intro.title')}
@@ -114,9 +114,9 @@ export function LandingModules() {
 					description={t('landing:LandingModules.meetings.description')}
 					title={t('landing:LandingModules.meetings.title')}
 				>
-					<Section flexDirection="row" gap="md" padding="none">
-						<Button label={t('landing:LandingModules.meetings.actions.send_email')} />
-						<Button label={t('landing:LandingModules.meetings.actions.schedule_meeting')} />
+					<Section className={styles.meetingActions} flexDirection="row" gap="md" padding="none">
+						<Button classNames={{ label: styles.meetingActionLabel }} label={t('landing:LandingModules.meetings.actions.send_email')} />
+						<Button classNames={{ label: styles.meetingActionLabel }} label={t('landing:LandingModules.meetings.actions.schedule_meeting')} />
 					</Section>
 				</LandingInfoBlock>
 			</div>

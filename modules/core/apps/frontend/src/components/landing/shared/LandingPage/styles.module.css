@@ -10,3 +10,10 @@
 	gap: 50px;
 	padding-bottom: 50px;
 }
+
+@media (max-width: 800px) {
+	.root {
+		gap: 32px;
+		padding-bottom: 32px;
+	}
+}
