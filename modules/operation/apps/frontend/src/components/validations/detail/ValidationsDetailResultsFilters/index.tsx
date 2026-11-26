@@ -22,7 +22,7 @@ export function ValidationsDetailResultsFilters() {
 	//
 	// B. Transform data
 
-	const options: { label: string, severity: ValidationsDetailResultSeverity }[] = [
+	const severityOptions: { label: string, severity: ValidationsDetailResultSeverity }[] = [
 		{ label: t('validations:detail.ValidationsDetailResultsFilters.error', '', { count: totals.errors }), severity: 'error' },
 		{ label: t('validations:detail.ValidationsDetailResultsFilters.warning', '', { count: totals.warnings }), severity: 'warning' },
 		{ label: t('validations:detail.ValidationsDetailResultsFilters.info', '', { count: totals.infos }), severity: 'info' },
@@ -34,7 +34,7 @@ export function ValidationsDetailResultsFilters() {
 	return (
 		<div className={styles.toolbar}>
 			<div className={styles.severities}>
-				{options.map(({ label, severity }) => (
+				{severityOptions.map(({ label, severity }) => (
 					<SeverityTag
 						key={severity}
 						dimmed={filters.severity !== null && filters.severity !== severity}
@@ -53,6 +53,4 @@ export function ValidationsDetailResultsFilters() {
 			/>
 		</div>
 	);
-
-	//
 }

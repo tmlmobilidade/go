@@ -35,7 +35,7 @@ export function ValidationsDetailSectionResult() {
 				<Section gap="md">
 					<ValidationsDetailResultsFilters />
 					<PanesManager
-						id="validation-results"
+						id="gtfs-validation-results"
 						stackBelow={640}
 						panes={[
 							<ValidationsDetailResultsList key="rules" />,
