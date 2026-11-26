@@ -5,6 +5,8 @@ import { usePlansExtractListData } from '@/components/plans/shared/use-plans-ext
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type PlansListItem } from '@tmlmobilidade/go-operation-pckg-types';
 import { type Extraction, type OperationPostersV1ExtractionCreate, type OperationPostersV1ExtractionProperties } from '@tmlmobilidade/go-types-extractions';
+import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
+import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { fetchApiData, openExtractionsListModal, type SelectDataItem, useForm, type UseFormReturnType, useToast } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -15,7 +17,7 @@ import { closePlanPostersExtractModal } from './PlanPostersExtract.modal';
 interface PlanPostersExtractFormContextState {
 	actions: {
 		exportPosters: () => Promise<void>
-		setActiveDates: (value: string) => void
+		setActiveDates: (value: null | OperationalDateInt) => void
 		setAgencyIds: (value: string[]) => void
 		setCanvasProfile: (value: null | OperationPostersV1ExtractionProperties['canvas_profile']) => void
 		setContent: (value: OperationPostersV1ExtractionProperties['content']) => void
@@ -93,9 +95,10 @@ export const PlanPostersExtractFormContextProvider = ({ children }: PropsWithChi
 	//
 	// C. Handle selections
 
-	const setActiveDates = useCallback((value: string) => {
-		setValues({ active_dates: value });
-	}, [setValues]);
+	const setActiveDates = useCallback((value: null | OperationalDateInt) => {
+		const date = value === null ? '' : Dates.fromOperationalDateInt(value, 'Europe/Lisbon').toFormat('dd.MM.yyyy');
+		setFieldValue('active_dates', date);
+	}, [setFieldValue]);
 
 	const setAgencyIds = useCallback((value: string[]) => {
 		setValues(current => ({

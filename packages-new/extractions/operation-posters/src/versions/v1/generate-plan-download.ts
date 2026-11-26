@@ -11,6 +11,7 @@ import { getPDFStatus } from './controller/get-pdf-status.js';
 import { importPlans } from './import-plans.js';
 import { type ExportHitouchConfig, type ExportHitouchOptions } from './types/export-hitouch-config.js';
 import { type PDFStatus } from './types/interfaces.js';
+import { generateParametersJson } from './generate-parameters-json.js';
 import { waitCheckStatus } from './utils/wait-check-status.js';
 
 /* * */
@@ -52,16 +53,22 @@ export async function generatePlanDownload(plans: Plan[], exportId: string, opti
 		await generateToken();
 
 		//
-		// 4. Submit the poster GTFS to ZPHERES
+		// 4. Prepare the parameters for this upload
+
+		const parameters = generateParametersJson(options?.active_dates);
+
+		Logger.info({ message: `ZPHERES parameters.json: ${parameters}` });
+
+		//
+		// 5. Submit the poster GTFS to ZPHERES
 
 		Logger.info({ message: `Submitting poster GTFS for export ${exportId} to ZPHERES.` });
-
-		const pdfId = await generatePDF(exportConfig);
+		const pdfId = await generatePDF(exportConfig, parameters);
 
 		Logger.info({ message: `Created ZPHERES PDF job ${pdfId} for poster export ${exportId}.` });
 
 		//
-		// 5. Wait for the PDF status
+		// 6. Wait for the PDF status
 
 		pdfStatus = await getPDFStatus(pdfId);
 
@@ -76,7 +83,7 @@ export async function generatePlanDownload(plans: Plan[], exportId: string, opti
 		}
 
 		//
-		// 6. Return the download URL
+		// 7. Return the download URL
 
 		if (!pdfStatus.downloadLink) {
 			throw new Error(`PDF job ${pdfId} completed without a download URL.`);

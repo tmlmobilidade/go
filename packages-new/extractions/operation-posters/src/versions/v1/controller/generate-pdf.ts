@@ -2,7 +2,6 @@ import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 import fs from 'fs';
 import path from 'path';
 
-import parametersConfig from '../parameters.json' with { type: 'json' };
 import { GENERATE_TIMEOUT_MS } from '../types/consts.js';
 import { ExportHitouchConfig } from '../types/export-hitouch-config.js';
 import { getRequiredEnv } from '../utils/get-required-env.js';
@@ -11,7 +10,7 @@ import { generateToken } from './generate-token.js';
 /**
 * Creates a new poster in the API.
 */
-export async function generatePDF(exportConfig: ExportHitouchConfig): Promise<string> {
+export async function generatePDF(exportConfig: ExportHitouchConfig, parameters: string): Promise<string> {
 	//
 
 	//
@@ -37,10 +36,9 @@ export async function generatePDF(exportConfig: ExportHitouchConfig): Promise<st
 	}
 
 	//
-	// D. Read the HiTouch ZIP file and parameters
+	// D. Read the HiTouch ZIP file
 
 	const gtfsZip = await fs.promises.readFile(gtfsZipPath);
-	const parameters = JSON.stringify(parametersConfig);
 
 	const body = new FormData();
 

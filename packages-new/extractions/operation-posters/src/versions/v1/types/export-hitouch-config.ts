@@ -20,4 +20,4 @@ export interface ExportHitouchConfig {
 }
 
 /** Optional selection settings accepted before the export workspace is initialized. */
-export type ExportHitouchOptions = Partial<Pick<ExportHitouchConfig, 'canvas_profile' | 'content' | 'filter_mode' | 'stop_ids'>>;
+export type ExportHitouchOptions = Partial<Pick<OperationPostersV1ExtractionProperties, 'active_dates' | 'canvas_profile' | 'content' | 'filter_mode' | 'stop_ids'>>;

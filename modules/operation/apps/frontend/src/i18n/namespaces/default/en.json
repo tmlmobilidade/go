@@ -125,7 +125,8 @@
 	},
 	"posterExport": {
 		"PlanPostersExtractBody": {
-			"activeDatesLabel": "Valid from",
+			"activeDatesDescription": "Select the date from which the schedules are valid.",
+			"activeDatesLabel": "Start of validity date",
 			"canvasProfileAutomatic": "Automatic",
 			"canvasProfileDescription": "Choose Automatic to select the model per stop, or apply a fixed model to the exported PDFs.",
 			"canvasProfileLabel": "PDF model",
