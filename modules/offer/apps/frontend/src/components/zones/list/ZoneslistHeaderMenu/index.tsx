@@ -1,6 +1,6 @@
 'use client';
 
-import { IconFileDownload, IconPlus } from '@tabler/icons-react';
+import { IconMapDown, IconPlus } from '@tabler/icons-react';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
 import { ToolbarActions, useMePermissions } from '@tmlmobilidade/ui';
 import { useMemo } from 'react';
@@ -34,7 +34,7 @@ export function ZonesListHeaderMenu() {
 		}
 		if (hasPermission(mePermissions, { action: 'export-geopackage', scope: 'zones' })) {
 			actions.push({
-				icon: <IconFileDownload />,
+				icon: <IconMapDown />,
 				label: t('zones:list.ZonesListHeaderMenu.export_geopackage'),
 				onClick: openZonesExportGeopackageModal,
 			});
