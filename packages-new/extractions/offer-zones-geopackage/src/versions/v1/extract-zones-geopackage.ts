@@ -1,5 +1,6 @@
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
 import { type ExtractionTaskContext, type ExtractionTaskResult, type OfferZonesGeopackageV1Extraction, OfferZonesGeopackageV1ExtractionPropertiesSchema } from '@tmlmobilidade/go-types-extractions';
+import { Logger } from '@tmlmobilidade/go-utils-telemetry';
 
 import { writeZonesGeoPackage } from './write-zones-geopackage.js';
 
@@ -18,6 +19,8 @@ export async function offerZonesGeopackageV1Extraction(context: ExtractionTaskCo
 	//
 	// B. Find the selected zones
 
+	Logger.info({ message: `Loading ${zoneIds.length} selected zones for GeoPackage extraction ${extraction._id}.` });
+
 	const zones = await goDb.offer.zones.findMany({
 		_id: { $in: zoneIds },
 	}, { sort: { _id: 1 } });
@@ -25,6 +28,7 @@ export async function offerZonesGeopackageV1Extraction(context: ExtractionTaskCo
 	//
 	// C. Validate the selected zones
 
+	Logger.info({ message: `Loaded ${zones.length} of ${zoneIds.length} requested zones.` });
 	if (zones.length !== zoneIds.length) throw new Error('One or more selected zones are no longer available.');
 
 	//

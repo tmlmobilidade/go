@@ -1,4 +1,5 @@
 import { type Zone } from '@tmlmobilidade/go-types-offer';
+import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 import { unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -22,7 +23,7 @@ export async function writeZonesGeoPackage(outputPath: string, zones: Pick<Zone,
 	});
 
 	//
-	// B. Convert the GeoJSON to the GeoPackage
+	// B. Save the GeoJSON for GDAL
 
 	const inputPath = path.resolve(outputPath, 'zones.geojson');
 	await writeFile(inputPath, JSON.stringify({ features, type: 'FeatureCollection' }));
@@ -31,7 +32,10 @@ export async function writeZonesGeoPackage(outputPath: string, zones: Pick<Zone,
 	// C. Convert the GeoJSON to the GeoPackage
 
 	try {
+		Logger.info({ message: `Wrote ${features.length} features to zones.geojson. Starting GDAL validation and conversion.` });
+		const conversionTimer = new Timer();
 		await convertGeoPackage(inputPath);
+		Logger.success(`Created zones.gpkg in ${conversionTimer.get()}.`);
 	} finally {
 		await unlink(inputPath);
 	}

@@ -24,6 +24,7 @@
 		"@tmlmobilidade/go-types-extractions": "*",
 		"@tmlmobilidade/go-types-offer": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
+		"@tmlmobilidade/go-utils-telemetry": "*",
 		"gdal3.js": "2.8.1"
 	},
 	"devDependencies": {
