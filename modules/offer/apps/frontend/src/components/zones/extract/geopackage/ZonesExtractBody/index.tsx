@@ -4,18 +4,18 @@ import { SelectAllButton } from '@/components/common/SelectAllButton';
 import { ErrorDisplay, Flex, Group, MultiSelect, Section, StandardFormController, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
-import { useZonesExportFormContext } from '../ZonesExportForm.context';
+import { useZonesExtractFormContext } from '../ZonesExtractForm.context';
 
 /* * */
 
-export function ZonesExportBody() {
+export function ZonesExtractBody() {
 	//
 
 	//
 	// A. Setup variables
 
 	const { t } = useTranslation();
-	const { error, form, options } = useZonesExportFormContext();
+	const { error, form, options } = useZonesExtractFormContext();
 
 	//
 	// B. Render components

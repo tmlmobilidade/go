@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { openCreateZoneModal } from '../../create/ZoneCreate.modal';
-import { openZonesExportGeopackageModal } from '../../export/geopackage/ZonesExport.modal';
+import { openZonesExportGeopackageModal } from '../../extract/geopackage/ZonesExtract.modal';
 
 /* * */
 

@@ -6,12 +6,12 @@ import { type Extraction, type OfferZonesGeopackageV1ExtractionCreate, type Offe
 import { fetchApiData, openExtractionsListModal, type SelectDataItem, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
 
-import { getZonesExportOptions } from './get-zones-export-options';
-import { closeZonesExportGeopackageModal } from './ZonesExport.modal';
+import { getZonesExportOptions } from './get-zones-extract-options';
+import { closeZonesExtractGeopackageModal } from './ZonesExtract.modal';
 
 /* * */
 
-interface ZonesExportFormContextValue extends Omit<StandardFormContextValue<OfferZonesGeopackageV1ExtractionProperties>, 'actions'> {
+interface ZonesExtractFormContextValue extends Omit<StandardFormContextValue<OfferZonesGeopackageV1ExtractionProperties>, 'actions'> {
 	actions: {
 		exportGeopackage: () => void
 	}
@@ -19,17 +19,17 @@ interface ZonesExportFormContextValue extends Omit<StandardFormContextValue<Offe
 	options: SelectDataItem[]
 }
 
-const ZonesExportFormContext = createContext<undefined | ZonesExportFormContextValue>(undefined);
+const ZonesExtractFormContext = createContext<undefined | ZonesExtractFormContextValue>(undefined);
 
-export function useZonesExportFormContext() {
-	const context = useContext(ZonesExportFormContext);
-	if (!context) throw new Error('useZonesExportFormContext must be used within ZonesExportFormContextProvider');
+export function useZonesExtractFormContext() {
+	const context = useContext(ZonesExtractFormContext);
+	if (!context) throw new Error('useZonesExtractFormContext must be used within ZonesExtractFormContextProvider');
 	return context;
 }
 
 /* * */
 
-export function ZonesExportFormContextProvider({ children }: PropsWithChildren) {
+export function ZonesExtractFormContextProvider({ children }: PropsWithChildren) {
 	//
 
 	//
@@ -71,7 +71,7 @@ export function ZonesExportFormContextProvider({ children }: PropsWithChildren) 
 		onSuccess: (response) => {
 			mutate(response);
 			unblock();
-			closeZonesExportGeopackageModal();
+			closeZonesExtractGeopackageModal();
 			openExtractionsListModal();
 		},
 	});
@@ -88,7 +88,7 @@ export function ZonesExportFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// D. Return context value
 
-	const state = useMemo<ZonesExportFormContextValue>(() => ({
+	const state = useMemo<ZonesExtractFormContextValue>(() => ({
 		actions: {
 			exportGeopackage: handleExportGeopackage,
 		},
@@ -103,8 +103,8 @@ export function ZonesExportFormContextProvider({ children }: PropsWithChildren) 
 	}), [capabilities, error, form, handleExportGeopackage, isCreating, isDirty, isValid, options, unblock]);
 
 	return (
-		<ZonesExportFormContext.Provider value={state}>
+		<ZonesExtractFormContext.Provider value={state}>
 			{children}
-		</ZonesExportFormContext.Provider>
+		</ZonesExtractFormContext.Provider>
 	);
 }
