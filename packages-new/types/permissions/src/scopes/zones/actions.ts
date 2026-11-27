@@ -10,6 +10,7 @@ const ZonesPermissionActionsValues = [
 	'lock',
 	'nav',
 	'update',
+	'export-geopackage',
 ] as const;
 
 export const ZonesPermissionActionsSchema = z.enum(ZonesPermissionActionsValues);
