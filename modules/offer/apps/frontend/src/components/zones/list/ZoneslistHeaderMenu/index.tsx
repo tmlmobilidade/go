@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { openCreateZoneModal } from '../../create/ZoneCreate.modal';
-import { openZonesExportModal } from '../../export/geopackages/ZonesListExport.modal';
+import { openZonesExportGeopackageModal } from '../../export/geopackages/ZonesListExport.modal';
 
 /* * */
 
@@ -35,8 +35,8 @@ export function ZonesListHeaderMenu() {
 		if (hasPermission(mePermissions, { action: 'export-geopackage', scope: 'zones' })) {
 			actions.push({
 				icon: <IconFileDownload />,
-				label: t('default:zones.list.ZonesListHeaderMenu.exportGeopackage'),
-				onClick: openZonesExportModal,
+				label: t('zones:list.ZonesListHeaderMenu.export_geopackage'),
+				onClick: openZonesExportGeopackageModal,
 			});
 		}
 		return actions;
