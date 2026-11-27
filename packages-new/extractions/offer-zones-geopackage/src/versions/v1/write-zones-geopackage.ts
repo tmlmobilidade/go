@@ -10,7 +10,8 @@ import { convertGeoPackage } from './convert-geopackage.js';
 /**
  * Writes zones.gpkg with one row per source Polygon or MultiPolygon.
  * A zone with two polygon features produces two rows with the same zone_id.
- * A zone with no polygon produces one row with its attributes and a null geometry.
+ * A supplied GeoJSON without polygons produces one row with the zone attributes and a null geometry.
+ * @throws If a selected zone has no GeoJSON.
  * @param outputPath The directory the worker will archive.
  * @param zones The selected zones with their identifying attributes and stored GeoJSON.
  */
@@ -21,7 +22,9 @@ export async function writeZonesGeoPackage(outputPath: string, zones: Pick<Zone,
 	// A. Accept both single features and collections. Keep each polygon's rings and holes together.
 
 	const features = zones.flatMap((zone) => {
-		const source = zone.geojson?.type === 'FeatureCollection' ? zone.geojson.features : zone.geojson ? [zone.geojson] : [];
+		if (!zone.geojson) throw new Error(`Zone ${zone._id} has no GeoJSON.`);
+
+		const source = zone.geojson.type === 'FeatureCollection' ? zone.geojson.features : [zone.geojson];
 		const polygons = source.map(feature => feature.geometry).filter(geometry => geometry.type === 'Polygon' || geometry.type === 'MultiPolygon');
 		// Store the agency IDs as a JSON array in one text attribute to retain every association.
 		const properties = { agency_ids: JSON.stringify(zone.agency_ids), code: zone.code, name: zone.name, zone_id: zone._id };
