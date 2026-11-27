@@ -6,6 +6,7 @@ import { DatesAnnotationsV1ExtractionVersionValue } from './modules/dates/annota
 import { InfrastructureNodesV1ExtractionVersionValue } from './modules/infrastructure/nodes/v1/version.js';
 import { InfrastructureStopsV1ExtractionVersionValue } from './modules/infrastructure/stops/v1/version.js';
 import { OfferGtfsV29ExtractionVersionValue } from './modules/offer/gtfs/v29/version.js';
+import { OfferZonesV1ExtractionVersionValue } from './modules/offer/zones/v1/version.js';
 import { OperationAlertsV1ExtractionVersionValue } from './modules/operation/alerts/v1/version.js';
 import { OperationPostersV1ExtractionVersionValue } from './modules/operation/posters/v1/version.js';
 import { OperationRidesV1ExtractionVersionValue } from './modules/operation/rides/v1/version.js';
@@ -19,6 +20,7 @@ export const ExtractionVersionValues = [
 	InfrastructureNodesV1ExtractionVersionValue,
 	InfrastructureStopsV1ExtractionVersionValue,
 	OfferGtfsV29ExtractionVersionValue,
+	OfferZonesV1ExtractionVersionValue,
 	OperationPostersV1ExtractionVersionValue,
 	OperationAlertsV1ExtractionVersionValue,
 	OperationRidesV1ExtractionVersionValue,
