@@ -291,6 +291,7 @@ const zonesActions: PermissionConfig = {
 		{ action: 'update', description: 'Permite editar uma zona', label: 'Editar zona', resources: ['AGENCIES'] },
 		{ action: 'delete', description: 'Permite eliminar uma zona', label: 'Eliminar zona', resources: ['AGENCIES'] },
 		{ action: 'lock', description: 'Permite bloquear/desbloquear uma zona', label: 'Bloquear/Desbloquear', resources: ['AGENCIES'] },
+		{ action: 'export-geopackage', description: 'Permite exportar zonas como GeoPackage', label: 'Exportar como GeoPackage', resources: ['AGENCIES'] },
 	],
 	description: 'As ações que o utilizador pode realizar na gestão de zonas. A consulta de zonas para edição de linhas depende das permissões de linhas.',
 	scope: PermissionCatalog.all.zones.scope,
