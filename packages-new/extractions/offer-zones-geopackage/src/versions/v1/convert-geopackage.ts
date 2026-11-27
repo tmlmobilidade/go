@@ -10,9 +10,12 @@ import { promisify } from 'node:util';
  * @param inputPath Absolute path to the temporary zones.geojson, also used to locate the output directory.
  */
 export async function convertGeoPackage(inputPath: string): Promise<void> {
+	//
 	// GDAL resolves its bundled WebAssembly and projection data relative to the working directory.
+
 	const gdalAssetsDirectory = new URL('.', import.meta.resolve('gdal3.js'));
 	const entryPath = fileURLToPath(new URL('./gdal-conversion.cli.js', import.meta.url));
+
 	await promisify(execFile)(process.execPath, [entryPath, inputPath], {
 		cwd: gdalAssetsDirectory,
 	});
