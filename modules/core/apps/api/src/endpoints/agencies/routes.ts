@@ -3,6 +3,7 @@
 import { authorizationMiddleware, FastifyService } from '@tmlmobilidade/go-clients-fastify';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 
+import { downloadRulesReportHandler } from './handlers/download-rules-report.js';
 import { getAgencyHandler } from './handlers/get-agency.js';
 import { listAgenciesHandler } from './handlers/list-agencies.js';
 import { lockAgencyHandler } from './handlers/lock-agency.js';
@@ -24,6 +25,12 @@ server.register(
 			'/',
 			{ preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.read]) },
 			listAgenciesHandler,
+		);
+
+		instance.get(
+			'/validation-rules-report',
+			{ preHandler: authorizationMiddleware(PermissionCatalog.all.agencies.scope, [PermissionCatalog.all.agencies.actions.read]) },
+			downloadRulesReportHandler,
 		);
 
 		instance.get(

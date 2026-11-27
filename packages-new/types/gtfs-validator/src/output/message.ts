@@ -1,17 +1,14 @@
 /* * */
 
-import { SeverityStatusSchema } from '@tmlmobilidade/go-types-shared';
+import { GtfsValidationOutputTranslationSchema } from '@/output/translation.js';
 import { z } from 'zod';
 
 /* * */
 
 export const GtfsValidationOutputMessageSchema = z.object({
-	field: z.string(),
-	file_name: z.string(),
 	message: z.string(),
-	rows: z.array(z.number()),
-	rule_id: z.string(),
-	severity: SeverityStatusSchema,
+	rows: z.array(z.int().positive()),
+	translation: GtfsValidationOutputTranslationSchema.optional(),
 });
 
 export type GtfsValidationOutputMessage = z.infer<typeof GtfsValidationOutputMessageSchema>;

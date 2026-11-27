@@ -1,0 +1,37 @@
+package calendar
+
+import (
+	"context"
+	"database/sql"
+
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/validators"
+)
+
+/*
+# Attributes
+
+  - File: [calendar.txt]
+  - Field: start_date
+  - Presence: Required
+  - Type: Date
+
+# Description
+
+Checks that each supplied start_date is a real calendar date in YYYYMMDD format.
+Missing or blank values are handled by the presence rule. Forbidden severity rejects supplied values.
+
+[calendar.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/calendar
+*/
+func (CalendarChecks) CalendarStartDateValid(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Reject supplied values when the field is forbidden
+	if config.Severity == types.SEVERITY_FORBIDDEN {
+		return fields.CheckForbiddenValues(ctx, db, config, "calendar", "start_date")
+	}
+
+	// 2. Check the format of supplied values
+	return fields.CheckValues(ctx, db, config, "calendar", "start_date", "The start_date field must be a real calendar date in YYYYMMDD format.", validators.ValidateDate)
+}

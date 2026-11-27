@@ -1,0 +1,8 @@
+.container {
+	width: 100%;
+	container-type: inline-size;
+}
+
+.pane {
+	min-width: 0;
+}

@@ -1,0 +1,13 @@
+.modifier {
+	width: 100%;
+	padding-top: var(--size-spacing-md);
+	border-top: 1px solid var(--color-system-border-100);
+}
+
+.values {
+	width: 100%;
+	padding: var(--size-spacing-sm);
+	border: 1px solid var(--color-system-border-100);
+	border-radius: 5px;
+	background-color: var(--color-system-background-200);
+}

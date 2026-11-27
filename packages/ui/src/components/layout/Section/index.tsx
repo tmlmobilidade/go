@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 
 /* * */
 
-interface SectionProps {
+export interface SectionProps {
 	alignItems?: 'center' | 'flex-end' | 'flex-start'
 	className?: string
 	flexDirection?: 'column' | 'row'

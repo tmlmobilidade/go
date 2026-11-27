@@ -10,8 +10,9 @@ import { type GtfsSQLTables } from './types/index.js';
 /**
  * Opens the imported file or in-memory image and registers existing SQLite tables.
  */
-
 export function initGtfsSqlTables<T extends GtfsSQLTables>(source: Buffer | string): T {
+	//
+	// 1. Initialize the SQLite database
 	const database = new SQLiteDatabase(typeof source === 'string' ? { instancePath: source } : { databaseInstance: new BSQLite3(source), memory: true });
 
 	// Read the actual headers rather than imposing a GTFS schema.

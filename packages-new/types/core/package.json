@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@tmlmobilidade/go-types-geo": "*",
+		"@tmlmobilidade/go-types-gtfs-validator": "*",
 		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-types-permissions": "*",
 		"@tmlmobilidade/go-types-shared": "*",

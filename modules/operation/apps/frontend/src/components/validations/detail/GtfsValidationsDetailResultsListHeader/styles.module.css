@@ -1,0 +1,26 @@
+/* * */
+/* TOOLBAR */
+
+.toolbar {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: var(--size-spacing-xl);
+	align-items: center;
+	width: 100%;
+}
+
+/* * */
+/* SEVERITIES */
+
+.severities {
+	display: flex;
+	gap: var(--size-spacing-sm);
+	align-items: center;
+}
+
+@container (max-width: 640px) {
+	.toolbar {
+		grid-template-columns: 1fr;
+		gap: var(--size-spacing-sm);
+	}
+}

@@ -81,6 +81,12 @@
 				"placeholder": "Longitud (-180 a 180)"
 			}
 		},
+		"KeyValueListInput": {
+			"add": "Añadir par",
+			"key": "Clave",
+			"remove": "Eliminar par",
+			"value": "Valor"
+		},
 		"SearchField": {
 			"placeholder": "Buscar...",
 			"tags": {
@@ -186,6 +192,24 @@
 		"IdTag": {
 			"copied": "¡Copiado!",
 			"copy": "Haga clic para copiar el ID"
+		},
+		"SeverityTag": {
+			"error": {
+				"filter": "Filtrar por errores",
+				"label": "Error"
+			},
+			"forbidden": {
+				"filter": "Filtrar por prohibidos",
+				"label": "Prohibido"
+			},
+			"info": {
+				"filter": "Filtrar por información",
+				"label": "Información"
+			},
+			"warning": {
+				"filter": "Filtrar por avisos",
+				"label": "Aviso"
+			}
 		}
 	},
 	"topbar": {

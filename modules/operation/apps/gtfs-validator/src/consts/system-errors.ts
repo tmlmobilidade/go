@@ -1,6 +1,6 @@
 /* * */
 
-import { type GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-validator';
+import { type GtfsValidationOutputResult } from '@tmlmobilidade/go-types-gtfs-validator';
 
 /**
  * Predefined system error messages to be used
@@ -8,24 +8,24 @@ import { type GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-v
  * like when the validation process fails due to an internal error
  * or when the maximum number of validation attempts is reached.
  */
-export const SYSTEM_ERROR_MESSAGES: Record<string, GtfsValidationOutputMessage> = {
+export const SYSTEM_ERROR_MESSAGES = {
 
 	GENERIC_ERROR: {
-		field: 'N/A',
-		file_name: 'Erro de Sistema',
-		message: 'Ocorreu um erro inesperado durante a validação. Tenta novamente ou entra em contacto connosco.',
-		rows: [],
+		description: 'Ocorreu um erro inesperado durante a validação. Tenta novamente ou entra em contacto connosco.',
+		description_translation: { variant: 'default' },
+		messages: [],
 		rule_id: 'system_error_generic',
 		severity: 'error',
+		total_rows: 0,
 	},
 
 	MAX_ATTEMPTS_REACHED: {
-		field: 'N/A',
-		file_name: 'Erro de Sistema',
-		message: 'Número máximo de tentativas de validação atingido. Verifique o arquivo e tente novamente.',
-		rows: [],
+		description: 'Número máximo de tentativas de validação atingido. Verifique o arquivo e tente novamente.',
+		description_translation: { variant: 'default' },
+		messages: [],
 		rule_id: 'system_error_max_attempts_reached',
 		severity: 'error',
+		total_rows: 0,
 	},
 
-};
+} satisfies Record<string, GtfsValidationOutputResult>;

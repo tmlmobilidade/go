@@ -86,7 +86,7 @@ export function PlanChangeContextProvider({ children, planId }: PropsWithChildre
 		return availableValidations.find(item => item._id === selectedValidationId);
 	}, [availableValidations, selectedValidationId]);
 
-	const selectedValidationIsValid = selectedValidation?.summary?.total_errors === 0;
+	const selectedValidationIsValid = selectedValidation?.summary?.totals?.errors === 0;
 
 	const error = planResponse?.error ?? (planSwrError instanceof Error ? planSwrError.message : null) ?? validationsError;
 

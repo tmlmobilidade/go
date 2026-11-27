@@ -79,6 +79,8 @@ interface UseStandardFormCapabilitiesProps {
 	update?: {
 		hasPermission?: boolean
 		isUpdating?: boolean
+		/** Keep Save available so the action can validate current values and explain errors. */
+		validateOnSubmit?: boolean
 	}
 
 }
@@ -148,7 +150,7 @@ export function useStandardFormCapabilities(props: UseStandardFormCapabilitiesPr
 		if (props.loading?.isLoading) return false;
 		if (props.locked?.isLocked) return false;
 		if (!props.form.isDirty) return false;
-		if (!props.form.isValid) return false;
+		if (!props.form.isValid && !props.update?.validateOnSubmit) return false;
 		return true;
 	})();
 

@@ -14,7 +14,8 @@
 		"build": "tsc && resolve-tspaths",
 		"dev": "tsx watch src/index.ts",
 		"lint": "eslint ./src && tsc --noEmit",
-		"lint:fix": "eslint --fix ."
+		"lint:fix": "eslint --fix .",
+		"predev": "turbo run build --filter=@tmlmobilidade/go-utils-gtfs-validator"
 	},
 	"dependencies": {
 		"@tmlmobilidade/consts": "*",
@@ -22,11 +23,13 @@
 		"@tmlmobilidade/go-providers-emails": "*",
 		"@tmlmobilidade/go-providers-storage": "*",
 		"@tmlmobilidade/go-types-gtfs-validator": "*",
+		"@tmlmobilidade/go-types-operation": "*",
 		"@tmlmobilidade/go-utils-dates": "*",
 		"@tmlmobilidade/go-utils-exec": "*",
-		"@tmlmobilidade/go-utils-files": "*",
+		"@tmlmobilidade/go-utils-gtfs-validator": "*",
 		"@tmlmobilidade/go-utils-telemetry": "*",
-		"@tmlmobilidade/gtfs-validator": "20261027.1151.59"
+		"@tmlmobilidade/logger": "*",
+		"@tmlmobilidade/timer": "*"
 	},
 	"devDependencies": {
 		"@tmlmobilidade/go-utils-tsconfig": "*",

@@ -1,0 +1,34 @@
+package agency
+
+import (
+	"context"
+	"database/sql"
+
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/types"
+	"github.com/tmlmobilidade/go/packages-golang/gtfs-validator/src/utils/fields"
+)
+
+/*
+# Attributes
+
+  - File: [agency.txt]
+  - Field: agency_email
+  - Presence: Optional
+  - Type: Email
+
+# Description
+
+Email address actively monitored by the agency's customer service department. This address provides a direct way
+for riders to contact customer service.
+
+Presence and type follow [GTFS Standard].
+
+[agency.txt]: https://go.tmlmobilidade.pt/reference/gtfs/schedule/agency
+[GTFS Standard]: https://gtfs.org/documentation/schedule/reference/#agencytxt
+*/
+func (AgencyChecks) AgencyEmailExists(ctx context.Context, db *sql.DB, config types.Rule) (bool, []types.Finding, error) {
+
+	//
+	// 1. Validate the column and required values
+	return fields.CheckPresence(ctx, db, config, "agency", "agency_email", false)
+}

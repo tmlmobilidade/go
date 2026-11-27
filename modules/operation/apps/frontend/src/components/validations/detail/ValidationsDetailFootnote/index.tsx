@@ -36,6 +36,4 @@ export function ValidationsDetailFootnote() {
 			<Label size="sm">As validações são eliminadas automaticamente ao fim de 30 dias após a sua data de criação. Poderão ser eliminadas mais cedo se necessário.</Label>
 		</Section>
 	);
-
-	//
 }

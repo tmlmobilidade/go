@@ -1,9 +1,10 @@
-/* * */
+'use client';
 
 import { FeedInfoDisplay } from '@/components/common/FeedInfoDisplay';
 import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { Collapsible, FileItem, Label, Section, useToast } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
 
 /* * */
 
@@ -14,6 +15,7 @@ export function ValidationsDetailSectionFeedInfo() {
 	// A. Setup variables
 
 	const validationsDetailContext = useValidationsDetailContext();
+	const { t } = useTranslation();
 
 	//
 	// B. Handle actions
@@ -23,9 +25,10 @@ export function ValidationsDetailSectionFeedInfo() {
 			// Open file.url in a new window
 			window.open(API_ROUTES.operation.GTFS_VALIDATIONS_DETAIL_FILE_DOWNLOAD(validationsDetailContext.data.validation?._id), '_blank');
 		} catch (error) {
+			const errorTitle = t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.download_error');
 			useToast.error({
-				message: error instanceof Error ? error.message : 'Erro ao transferir ficheiro',
-				title: 'Erro ao transferir ficheiro',
+				message: error instanceof Error ? error.message : errorTitle,
+				title: errorTitle,
 			});
 		}
 	};
@@ -35,8 +38,8 @@ export function ValidationsDetailSectionFeedInfo() {
 
 	return (
 		<Collapsible
-			description="Resumo dos dados do arquivo extraídos do ficheiro feed_info.txt"
-			title="Dados do Arquivo"
+			description={t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.description')}
+			title={t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.title')}
 		>
 
 			<Section gap="sm">
@@ -51,7 +54,7 @@ export function ValidationsDetailSectionFeedInfo() {
 						onDownload={handleDownload}
 					/>
 				) : (
-					<Label>Nenhum ficheiro selecionado</Label>
+					<Label>{t('gtfs_validations:detail.ValidationsDetailSectionFeedInfo.no_file')}</Label>
 				)}
 			</Section>
 

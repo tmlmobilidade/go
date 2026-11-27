@@ -1,0 +1,47 @@
+{
+	"detail": {
+		"AgenciesDetailValidationRuleDependencies": {
+			"label": "Dependencias",
+			"placeholder": "Seleccionar dependencias..."
+		},
+		"AgenciesDetailValidationRuleModifier": {
+			"choose": "Seleccionar modificador",
+			"compare": "Comparaciones",
+			"expected_value": "Valor esperado",
+			"label": "Modificador",
+			"legacy_modifiers": "Esta regla tiene opciones y comparaciones. Solo puede usar una de ellas.",
+			"none": "Sin modificador",
+			"options": "Opciones",
+			"options_placeholder": "Escriba y separe por comas o espacios.",
+			"pending": "Introduzca valores para sustituir el modificador guardado."
+		},
+		"AgenciesDetailValidationRuleSeverity": {
+			"label": "Severidad",
+			"levels": {
+				"error": "Error",
+				"forbidden": "Prohibido",
+				"ignore": "Ignorar",
+				"info": "Info",
+				"unconfigured": "Sin configurar",
+				"warning": "Aviso"
+			}
+		},
+		"AgenciesDetailValidationRulesFilters": {
+			"search": "Buscar regla...",
+			"severity": "Severidad"
+		},
+		"AgenciesDetailValidationRulesGraph": {
+			"cycle": "Las dependencias actuales contienen un ciclo.",
+			"direction": "Las flechas apuntan del requisito previo a la regla que depende de él.",
+			"no_connections": "Esta regla no tiene dependencias directas ni reglas que dependan directamente de ella.",
+			"select_rule": "Selecciona una regla para ver sus dependencias.",
+			"title": "Gráfico de dependencias entre reglas"
+		},
+		"AgenciesDetailValidationRulesTable": {
+			"dependencies": "Dependencias",
+			"empty": "No se encontraron reglas.",
+			"rule": "Regla",
+			"severity": "Severidad"
+		}
+	}
+}

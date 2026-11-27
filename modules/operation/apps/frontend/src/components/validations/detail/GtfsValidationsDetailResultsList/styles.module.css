@@ -1,0 +1,21 @@
+/* * */
+/* DESCRIPTION */
+
+.descriptionWrapper {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-spacing-xs);
+	font-size: var(--font-size-sm);
+}
+
+.ruleId {
+	line-height: 1;
+	font-family: var(--font-family-monospace);
+	font-size: var(--font-size-xs);
+	color: var(--color-system-text-200);
+	font-weight: var(--font-weight-medium);
+}
+
+.description {
+	text-wrap: pretty;
+}

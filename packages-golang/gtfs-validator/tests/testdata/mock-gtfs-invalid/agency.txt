@@ -1,0 +1,3 @@
+agency_id,agency_name,agency_url,agency_timezone
+mock,,https://example.com,Europe/Lisbon
+mock_2,   ,https://example.com,Europe/Lisbon

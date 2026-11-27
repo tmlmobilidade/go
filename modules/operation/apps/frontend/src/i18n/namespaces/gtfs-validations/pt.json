@@ -1,0 +1,404 @@
+{
+	"detail": {
+		"GtfsValidationsDetailResultsList": {
+			"columns": {
+				"description": "Descrição",
+				"severity": "Severidade"
+			},
+			"rule_descriptions": {
+				"agency_email_valid": {
+					"default": "O campo agency_email contém um endereço de correio eletrónico inválido."
+				},
+				"agency_fare_url_valid": {
+					"default": "O campo agency_fare_url contém um URL HTTP ou HTTPS inválido."
+				},
+				"agency_id_matched_with_agency_name": {
+					"default": "A combinação de identificador e nome do operador não consta dos pares configurados."
+				},
+				"agency_lang_valid": {
+					"default": "O campo agency_lang contém uma etiqueta de idioma BCP 47 inválida."
+				},
+				"agency_phone_valid": {
+					"default": "O campo agency_phone contém um número de telefone inválido."
+				},
+				"agency_timezone_valid": {
+					"default": "Os fusos horários dos operadores têm de ser válidos e iguais em todo o feed."
+				},
+				"agency_url_valid": {
+					"default": "O campo agency_url contém um URL HTTP ou HTTPS inválido."
+				},
+				"calendar_dates_date_unique_per_service_id": {
+					"default": "A data tem de ser única para cada service_id."
+				},
+				"calendar_dates_date_valid": {
+					"default": "O campo date tem de conter uma data válida no formato YYYYMMDD."
+				},
+				"calendar_end_date_valid": {
+					"default": "O campo end_date tem de conter uma data válida no formato YYYYMMDD."
+				},
+				"calendar_start_date_before_end_date": {
+					"default": "A start_date tem de ser igual ou anterior à end_date."
+				},
+				"calendar_start_date_valid": {
+					"default": "O campo start_date tem de conter uma data válida no formato YYYYMMDD."
+				},
+				"fare_attributes_currency_type_valid": {
+					"default": "O campo currency_type tem de conter um código de moeda ISO 4217."
+				},
+				"fare_attributes_price_valid": {
+					"default": "O campo price tem de conter um preço finito e não negativo."
+				},
+				"fare_attributes_transfer_duration_valid": {
+					"default": "O campo transfer_duration tem de conter um número inteiro não negativo em base 10."
+				},
+				"feed_info_default_lang_valid": {
+					"default": "O campo default_lang tem de conter uma etiqueta de idioma BCP 47 válida."
+				},
+				"feed_info_feed_contact_email_valid": {
+					"default": "O campo feed_contact_email tem de conter um endereço de correio eletrónico válido."
+				},
+				"feed_info_feed_contact_url_valid": {
+					"default": "O campo feed_contact_url tem de conter um URL HTTP ou HTTPS completo."
+				},
+				"feed_info_feed_end_date_valid": {
+					"default": "O campo feed_end_date tem de conter uma data válida no formato YYYYMMDD."
+				},
+				"feed_info_feed_lang_valid": {
+					"default": "O campo feed_lang tem de conter uma etiqueta de idioma BCP 47 válida."
+				},
+				"feed_info_feed_publisher_url_valid": {
+					"default": "O campo feed_publisher_url tem de conter um URL HTTP ou HTTPS completo."
+				},
+				"feed_info_feed_start_date_valid": {
+					"default": "O campo feed_start_date tem de conter uma data válida no formato YYYYMMDD."
+				},
+				"feed_info_start_date_before_end_date": {
+					"default": "A feed_start_date tem de ser igual ou anterior à feed_end_date."
+				},
+				"pattern_same_shape_id": {
+					"default": "As viagens com o mesmo route_id e direction_id têm de partilhar o mesmo shape_id."
+				},
+				"pattern_same_stop_dist_traveled": {
+					"default": "As viagens com o mesmo route_id e direction_id têm de ter a mesma lista de valores de shape_dist_traveled."
+				},
+				"pattern_same_stop_sequence": {
+					"default": "As viagens com o mesmo route_id e direction_id têm de ter a mesma sequência de paragens."
+				},
+				"pattern_same_trip_headsign": {
+					"default": "As viagens com o mesmo route_id e direction_id têm de partilhar o mesmo trip_headsign."
+				},
+				"routes_route_color_route_text_color_contrast": {
+					"default": "As cores do texto e do fundo da linha têm de ter um contraste mínimo de 4,5:1."
+				},
+				"routes_route_color_valid": {
+					"default": "O campo route_color tem de conter uma cor hexadecimal de seis dígitos, sem o prefixo #."
+				},
+				"routes_route_desc_different_from_route_long_name": {
+					"default": "A descrição da linha tem de ser diferente do nome longo."
+				},
+				"routes_route_desc_different_from_route_short_name": {
+					"default": "A descrição da linha tem de ser diferente do nome curto."
+				},
+				"routes_route_sort_order_valid": {
+					"default": "O campo route_sort_order tem de conter um número inteiro não negativo em base 10."
+				},
+				"routes_route_text_color_valid": {
+					"default": "O campo route_text_color tem de conter uma cor hexadecimal de seis dígitos, sem o prefixo #."
+				},
+				"routes_route_url_different_from_agency_url": {
+					"default": "O URL da linha tem de ser diferente do URL do operador."
+				},
+				"routes_route_url_valid": {
+					"default": "O campo route_url tem de conter um URL HTTP ou HTTPS completo."
+				},
+				"shapes_shape_dist_traveled_equals_geo_length": {
+					"default": "O valor máximo de shape_dist_traveled pode diferir, no máximo, 10 m do comprimento geográfico do traçado."
+				},
+				"shapes_shape_dist_traveled_segment_max_geo_length": {
+					"default": "A distância entre pontos consecutivos do traçado excede o limite configurado."
+				},
+				"shapes_shape_dist_traveled_strictly_increasing": {
+					"default": "O valor de shape_dist_traveled tem de ser estritamente crescente em cada traçado."
+				},
+				"shapes_shape_dist_traveled_valid": {
+					"default": "O campo shape_dist_traveled tem de conter um número decimal finito e não negativo."
+				},
+				"shapes_shape_pt_lat_valid": {
+					"default": "O campo shape_pt_lat tem de conter uma latitude entre -90 e 90 graus."
+				},
+				"shapes_shape_pt_lon_valid": {
+					"default": "O campo shape_pt_lon tem de conter uma longitude entre -180 e 180 graus."
+				},
+				"shapes_shape_pt_sequence_strictly_increasing": {
+					"default": "O valor de shape_pt_sequence tem de ser estritamente crescente em cada traçado."
+				},
+				"shapes_shape_pt_sequence_valid": {
+					"default": "O campo shape_pt_sequence tem de conter um número inteiro não negativo em base 10."
+				},
+				"stop_times_arrival_time_before_departure_time": {
+					"default": "A arrival_time tem de ser igual ou anterior à departure_time."
+				},
+				"stop_times_arrival_time_valid": {
+					"default": "O campo arrival_time tem de conter uma hora do dia de serviço no formato H:MM:SS ou HH:MM:SS, incluindo horas após a meia-noite."
+				},
+				"stop_times_departure_time_valid": {
+					"default": "O campo departure_time tem de conter uma hora do dia de serviço no formato H:MM:SS ou HH:MM:SS, incluindo horas após a meia-noite."
+				},
+				"stop_times_end_pickup_drop_off_window_valid": {
+					"default": "O campo end_pickup_drop_off_window tem de conter uma hora do dia de serviço no formato H:MM:SS ou HH:MM:SS, incluindo horas após a meia-noite."
+				},
+				"stop_times_increasing_arrival_time": {
+					"default": "A arrival_time não pode diminuir ao longo da viagem."
+				},
+				"stop_times_increasing_departure_time": {
+					"default": "A departure_time não pode diminuir ao longo da viagem."
+				},
+				"stop_times_increasing_shape_dist_traveled": {
+					"default": "O valor de shape_dist_traveled tem de ser estritamente crescente em cada viagem."
+				},
+				"stop_times_increasing_stop_sequence": {
+					"default": "O valor de stop_sequence tem de ser estritamente crescente em cada viagem."
+				},
+				"stop_times_location_group_id_forbidden": {
+					"default": "O campo location_group_id não é permitido quando stop_id ou location_id está preenchido."
+				},
+				"stop_times_location_id_forbidden": {
+					"default": "O campo location_id não é permitido quando stop_id ou location_group_id está preenchido."
+				},
+				"stop_times_shape_dist_traveled_valid": {
+					"default": "O campo shape_dist_traveled tem de conter um número decimal finito e não negativo."
+				},
+				"stop_times_start_pickup_drop_off_window_valid": {
+					"default": "O campo start_pickup_drop_off_window tem de conter uma hora do dia de serviço no formato H:MM:SS ou HH:MM:SS, incluindo horas após a meia-noite."
+				},
+				"stop_too_far_from_shape": {
+					"default": "As paragens têm de estar a, no máximo, {limit} m dos traçados das viagens que as servem."
+				},
+				"stops_parent_station_forbidden": {
+					"default": "Numa estação, o campo parent_station tem de estar vazio."
+				},
+				"stops_parent_station_required": {
+					"default": "O campo parent_station é obrigatório para os tipos de local 2, 3 e 4."
+				},
+				"stops_platform_code_forbidden": {
+					"default": "O campo platform_code só é permitido para location_type 0."
+				},
+				"stops_stop_code_equals_stop_id": {
+					"default": "O stop_code tem de coincidir com o stop_id."
+				},
+				"stops_stop_lat_valid": {
+					"default": "O campo stop_lat tem de conter uma latitude entre -90 e 90 graus."
+				},
+				"stops_stop_lon_valid": {
+					"default": "O campo stop_lon tem de conter uma longitude entre -180 e 180 graus."
+				},
+				"stops_stop_timezone_valid": {
+					"default": "O campo stop_timezone tem de conter um fuso horário IANA válido."
+				},
+				"stops_stop_url_valid": {
+					"default": "O campo stop_url tem de conter um URL HTTP ou HTTPS completo."
+				},
+				"system_error_generic": {
+					"default": "Ocorreu um erro inesperado durante a validação. Tenta novamente ou entra em contacto connosco."
+				},
+				"system_error_max_attempts_reached": {
+					"default": "Foi atingido o número máximo de tentativas de validação. Verifica o ficheiro e tenta novamente."
+				},
+				"trip_headsign_max_two_per_route": {
+					"default": "Uma linha pode ter, no máximo, dois valores distintos de {field}."
+				},
+				"trip_id_max_length": {
+					"default": "O trip_id pode ter, no máximo, 36 bytes."
+				},
+				"trip_shape_id_exists": {
+					"default": "O campo shape_id é obrigatório em viagens com embarque ou desembarque contínuo."
+				},
+				"trip_shape_id_max_two_per_route": {
+					"default": "Uma linha pode ter, no máximo, dois valores distintos de {field}."
+				},
+				"trip_shape_id_uses_direction_id": {
+					"default": "O sufixo de shape_id tem de corresponder ao direction_id."
+				},
+				"trips_shape_no_reuse_per_route_direction": {
+					"default": "Um traçado só pode ser usado para um par de linha e sentido."
+				},
+				"vehicles_vehicle_bicycle_capacity_valid": {
+					"default": "O campo bicycles_capacity tem de conter um número inteiro não negativo em base 10."
+				},
+				"vehicles_vehicle_car_capacity_valid": {
+					"default": "O campo car_capacity tem de conter um número inteiro não negativo em base 10."
+				},
+				"vehicles_vehicle_registration_date_valid": {
+					"default": "O campo registration_date tem de conter uma data válida no formato YYYYMMDD."
+				},
+				"vehicles_vehicle_seating_capacity_valid": {
+					"default": "O campo seating_capacity tem de conter um número inteiro não negativo em base 10."
+				},
+				"vehicles_vehicle_standing_capacity_valid": {
+					"default": "O campo standing_capacity tem de conter um número inteiro não negativo em base 10."
+				}
+			},
+			"shared_descriptions": {
+				"duplicate_field": "O campo {field} contém valores duplicados.",
+				"field_enum": "O campo {field} tem de conter um dos valores {allowed} e respeitar as opções configuradas.",
+				"field_forbidden": "O campo {field} tem de estar vazio.",
+				"field_options": "O campo {field} contém um valor que não está entre as opções configuradas.",
+				"forbidden_file": "O ficheiro {file} está presente, mas é proibido.",
+				"foreign_key": "O campo {field} faz referência a um valor inexistente em {target_table}.{target_field}.",
+				"missing_column": "Falta a coluna obrigatória {field}.",
+				"missing_file": "Falta o ficheiro obrigatório {file}.",
+				"missing_reference_value": "O campo {field} faz referência a um valor inexistente de {target_field}.",
+				"required_field": "Falta o campo obrigatório {field}.",
+				"unimplemented_rule": "A regra configurada ainda não foi implementada."
+			}
+		},
+		"GtfsValidationsDetailResultsListHeader": {
+			"error": "{count, plural, =1 {# Erro} other {# Erros}}",
+			"info": "{count, plural, =1 {# Informação} other {# Informações}}",
+			"search_placeholder": "Pesquisar por identificador da regra ou descrição…",
+			"warning": "{count, plural, =1 {# Aviso} other {# Avisos}}"
+		},
+		"GtfsValidationsDetailSectionResult": {
+			"description": "Informações, avisos e erros encontrados no ficheiro GTFS",
+			"title": "Resultado da validação"
+		},
+		"GtfsValidationsDetailSelectedRule": {
+			"columns": {
+				"message": "Mensagem",
+				"rows": "Linhas"
+			},
+			"no_rule_selected": "Seleciona uma regra para ver detalhes",
+			"open_documentation": "Consultar documentação desta regra",
+			"rule_messages": {
+				"agency_email_valid": {
+					"default": "O endereço de correio eletrónico “{value}” é inválido."
+				},
+				"agency_id_matched_with_agency_name": {
+					"default": "O identificador de operador “{id}” está associado ao nome inesperado “{name}”."
+				},
+				"agency_timezone_valid": {
+					"inconsistent_timezones": "Todos os operadores do feed têm de usar o mesmo fuso horário.",
+					"invalid_timezone": "O fuso horário IANA “{value}” é inválido."
+				},
+				"calendar_dates_date_unique_per_service_id": {
+					"default": "A data “{date}” aparece várias vezes para o service_id “{service_id}”."
+				},
+				"calendar_start_date_before_end_date": {
+					"default": "A start_date “{start}” é posterior à end_date “{end}”."
+				},
+				"feed_info_start_date_before_end_date": {
+					"default": "A feed_start_date “{start}” é posterior à feed_end_date “{end}”."
+				},
+				"pattern_same_shape_id": {
+					"default": "A linha “{route_id}” com direction_id “{direction_id}” tem identificadores de traçado diferentes: {values}."
+				},
+				"pattern_same_stop_dist_traveled": {
+					"different_count": "Na linha “{route_id}” com direction_id “{direction_id}”, as viagens “{reference}” e “{candidate}” têm {first} e {second} valores de distância, respetivamente.",
+					"different_value": "Na linha “{route_id}” com direction_id “{direction_id}”, as viagens “{reference}” e “{candidate}” têm valores de shape_dist_traveled {first} e {second} na posição {position}."
+				},
+				"pattern_same_stop_sequence": {
+					"different_count": "Na linha “{route_id}” com direction_id “{direction_id}”, as viagens “{reference}” e “{candidate}” têm {first} e {second} horários de paragem, respetivamente.",
+					"different_value": "Na linha “{route_id}” com direction_id “{direction_id}”, as viagens “{reference}” e “{candidate}” têm valores de stop_sequence {first} e {second} na posição ordenada {position}."
+				},
+				"pattern_same_trip_headsign": {
+					"default": "A linha “{route_id}” com direction_id “{direction_id}” tem valores diferentes de trip_headsign: {values}."
+				},
+				"routes_route_color_route_text_color_contrast": {
+					"default": "O contraste entre route_text_color “{text}” e route_color “{background}” é de {contrast}:1."
+				},
+				"routes_route_desc_different_from_route_long_name": {
+					"default": "O valor “{value}” de route_desc é igual ao route_long_name."
+				},
+				"routes_route_desc_different_from_route_short_name": {
+					"default": "O valor “{value}” de route_desc é igual ao route_short_name."
+				},
+				"routes_route_url_different_from_agency_url": {
+					"default": "O valor “{value}” de route_url é igual ao agency_url do operador."
+				},
+				"shapes_shape_dist_traveled_equals_geo_length": {
+					"default": "O traçado “{shape_id}” declara {declared} m, mede {measured} m e tem uma diferença de {difference} m."
+				},
+				"shapes_shape_dist_traveled_segment_max_geo_length": {
+					"default": "O traçado “{shape_id}” tem um segmento de {distance} m entre as posições {previous} e {current}. O máximo é {limit} m."
+				},
+				"shapes_shape_dist_traveled_strictly_increasing": {
+					"default": "No traçado “{shape_id}”, a distância na posição {current_sequence} é {current_distance}, depois de {previous_distance} na posição {previous_sequence}."
+				},
+				"shapes_shape_pt_sequence_strictly_increasing": {
+					"default": "O traçado “{shape_id}” usa o valor {sequence} de shape_pt_sequence mais de uma vez."
+				},
+				"stop_times_arrival_time_before_departure_time": {
+					"default": "A arrival_time “{arrival}” é posterior à departure_time “{departure}”."
+				},
+				"stop_times_increasing_arrival_time": {
+					"default": "Na viagem “{trip_id}”, a arrival_time é “{current}” na posição {current_sequence} de stop_sequence, depois de “{previous}” na posição {previous_sequence}."
+				},
+				"stop_times_increasing_departure_time": {
+					"default": "Na viagem “{trip_id}”, a departure_time é “{current}” na posição {current_sequence} de stop_sequence, depois de “{previous}” na posição {previous_sequence}."
+				},
+				"stop_times_increasing_shape_dist_traveled": {
+					"default": "Na viagem “{trip_id}”, a distância na posição {current_sequence} é {current_distance}, depois de {previous_distance} na posição {previous_sequence}."
+				},
+				"stop_times_increasing_stop_sequence": {
+					"default": "A viagem “{trip_id}” usa o valor {sequence} de stop_sequence mais de uma vez."
+				},
+				"stop_times_location_group_id_forbidden": {
+					"default": "O location_group_id “{group_id}” entra em conflito com stop_id “{stop_id}” ou location_id “{location_id}”."
+				},
+				"stop_times_location_id_forbidden": {
+					"default": "O location_id “{location_id}” entra em conflito com stop_id “{stop_id}” ou location_group_id “{group_id}”."
+				},
+				"stop_too_far_from_shape": {
+					"default": "A paragem “{stop_id}” está a {distance} m do traçado “{shape_id}” na linha “{route_id}” com direction_id {direction_id}."
+				},
+				"stops_parent_station_forbidden": {
+					"default": "O parent_station “{value}” não é permitido para location_type {location_type}."
+				},
+				"stops_parent_station_required": {
+					"default": "Falta o campo parent_station para location_type {location_type}."
+				},
+				"stops_platform_code_forbidden": {
+					"default": "O platform_code “{value}” não é permitido para location_type {location_type}."
+				},
+				"stops_stop_code_equals_stop_id": {
+					"default": "O stop_code “{code}” é diferente do stop_id “{id}”."
+				},
+				"trip_headsign_max_two_per_route": {
+					"default": "A linha “{route_id}” tem {count} valores distintos de {field}."
+				},
+				"trip_shape_id_exists": {
+					"default": "Falta o campo shape_id numa viagem com serviço contínuo."
+				},
+				"trip_shape_id_max_two_per_route": {
+					"default": "A linha “{route_id}” tem {count} valores distintos de {field}."
+				},
+				"trip_shape_id_uses_direction_id": {
+					"default": "O identificador de traçado “{shape_id}” tem de terminar em “{suffix}” para direction_id {direction_id}."
+				},
+				"trips_shape_no_reuse_per_route_direction": {
+					"default": "O traçado “{shape_id}” é usado por {count} pares de linha e sentido."
+				}
+			},
+			"shared_messages": {
+				"blank_value": "O valor obrigatório de {field} está vazio.",
+				"duplicate_value": "O valor “{value}” de {field} é usado em várias linhas.",
+				"forbidden_file": "O ficheiro {file} está presente, mas é proibido.",
+				"invalid_field_value": "O valor “{value}” do campo {field} é inválido.",
+				"missing_column": "Falta a coluna obrigatória {field}.",
+				"missing_file": "Falta o ficheiro obrigatório {file}.",
+				"missing_reference_value": "O valor “{value}” de {target_field} é desconhecido.",
+				"unimplemented_rule": "A regra “{rule_id}” ainda não foi implementada e não pôde ser executada.",
+				"unknown_reference": "O valor “{value}” de {target_field} não existe em {file}."
+			}
+		},
+		"ValidationsDetailResultRows": {
+			"empty": "N/A"
+		},
+		"ValidationsDetailSectionFeedInfo": {
+			"description": "Resumo dos dados extraídos de feed_info.txt",
+			"download_error": "Erro ao transferir ficheiro",
+			"no_file": "Nenhum ficheiro selecionado",
+			"title": "Dados do ficheiro"
+		}
+	}
+}

@@ -1,0 +1,67 @@
+'use client';
+
+import { DataTable, type DataTableColumn, Pane, SeverityTag } from '@tmlmobilidade/ui';
+import { useTranslation } from 'react-i18next';
+
+import styles from './styles.module.css';
+
+import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
+import { GtfsValidationsDetailResultsListHeader } from '../GtfsValidationsDetailResultsListHeader';
+import { type ValidationsDetailResultItem } from '../use-validations-detail-results';
+
+/* * */
+
+export function GtfsValidationsDetailResultsList() {
+	//
+
+	//
+	// A. Setup variables
+
+	const { t } = useTranslation();
+	const { actions, data } = useGtfsValidationsDetailResultsContext();
+
+	const columns: DataTableColumn<ValidationsDetailResultItem>[] = [
+		{
+			accessor: 'severity',
+			render: item => <SeverityTag severity={item.result.severity} />,
+			title: t('gtfs_validations:detail.GtfsValidationsDetailResultsList.columns.severity'),
+			width: 110,
+		},
+		{
+			accessor: 'description',
+			render: item => (
+				<span className={styles.descriptionWrapper}>
+					<code className={styles.ruleId}>{item.id}</code>
+					<span className={styles.description}>{item.result.description}</span>
+				</span>
+			),
+			title: t('gtfs_validations:detail.GtfsValidationsDetailResultsList.columns.description'),
+			width: 700,
+		},
+	];
+
+	//
+	// B. Handle actions
+
+	const handleRowClick = (item: ValidationsDetailResultItem) => {
+		actions.select(item.id);
+	};
+
+	//
+	// C. Render components
+
+	return (
+		<Pane header={[
+			<GtfsValidationsDetailResultsListHeader key="filters" />,
+		]}
+		>
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={data.results}
+				rowIdAccessor="id"
+				selectedId={data.selected?.id}
+			/>
+		</Pane>
+	);
+}

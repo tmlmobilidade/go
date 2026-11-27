@@ -1,0 +1,25 @@
+/* Header and rows share the same columns: key = value [remove]. */
+.row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) 28px;
+	gap: var(--size-spacing-xs);
+	align-items: center;
+	width: 100%;
+}
+
+.row[data-read-only='true'] {
+	grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.row .field {
+	min-width: 0;
+}
+
+.separator {
+	color: var(--color-system-text-300);
+}
+
+/* Keep the header labels lined up with the inputs, but hide the "=" there. */
+.header .separator {
+	visibility: hidden;
+}

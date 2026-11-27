@@ -21,6 +21,23 @@ Go errors do not automatically carry stacks. Errors implementing `StackTrace() s
 
 `NewTimer()` starts a timer. `Get()`, `GetMs()`, and `GetSeconds()` accept an optional reset boolean. `Reset()` restarts it. Timers are intended for one goroutine at a time.
 
+Each logger also provides `SetLogLevel("info")`, `ProgressBar(processed, total)`,
+and `StartPerformanceTracker(operation)`. The default minimum level is `debug`;
+filtering uses the severity numbers above, so `info` retains progress, success,
+warnings and errors. Invalid levels return an error without changing the filter.
+Filtering is local to the logger and safe to update concurrently.
+
+```go
+operation := telemetry.Logger.StartPerformanceTracker("Preparing SQLite")
+// Complete once after the operation returns. Passing an error emits failure.
+operation.End(err)
+```
+
+Trackers emit a start event followed by one success or error event, with
+`operation`, `status`, and `duration_ms` attributes on completion. Repeated or
+concurrent calls to `End` emit only one completion. Trackers use the same renderer
+and minimum level as their logger.
+
 Go requires separate packages for subdirectories. `src/logger/levels/index.go` shares severity definitions between the logger and renderers without an import cycle.
 
 Run `go test ./...` and `go vet ./...` from this directory.
