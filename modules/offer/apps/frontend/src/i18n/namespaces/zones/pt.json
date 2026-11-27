@@ -6,7 +6,7 @@
 			"select_all": "Selecionar todas",
 			"select_label": "Selecione as zonas",
 			"submit": "Exportar",
-			"title": "Exportar zonas em GeoPackage",
+			"title": "Exportar GeoPackage",
 			"zones": "Zonas",
 			"zones_description": "Selecione uma ou mais zonas para incluir no ficheiro GeoPackage."
 		},
