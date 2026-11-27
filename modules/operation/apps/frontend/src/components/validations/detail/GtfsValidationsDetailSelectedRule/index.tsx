@@ -1,11 +1,12 @@
 'use client';
 
-import { NoDataLabel, Pane, Section, Text } from '@tmlmobilidade/ui';
+import { GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-validator';
+import { Button, DataTable, DataTableColumn, Divider, NoDataLabel, Pane, Section, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
 import { GtfsValidationsDetailSelectedRuleHeader } from '../GtfsValidationsDetailSelectedRuleHeader';
-import { GtfsValidationsDetailSelectedRuleMessages } from '../GtfsValidationsDetailSelectedRuleMessages';
+import { translateValidationResult } from '../translate-validation-result';
 
 /* * */
 
@@ -15,9 +16,22 @@ export function GtfsValidationsDetailSelectedRule() {
 	//
 	// A. Setup variables
 
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const { data } = useGtfsValidationsDetailResultsContext();
-	// const documentationUrl = getGtfsScheduleDocUrl(selected?.ruleId);
+
+	const columns: DataTableColumn<GtfsValidationOutputMessage>[] = [
+		{
+			accessor: 'message',
+			render: item => <Text>{translateValidationResult(i18n, 'message', data.selected?.ruleId, item.translation, item.message)}</Text>,
+			title: t('gtfs_validations:detail.GtfsValidationsDetailResultMessages.message'),
+			width: 400,
+		},
+		{
+			accessor: 'rows',
+			title: t('gtfs_validations:detail.GtfsValidationsDetailResultsList.columns.description'),
+			width: 700,
+		},
+	];
 
 	//
 	// B. Render components
@@ -33,16 +47,22 @@ export function GtfsValidationsDetailSelectedRule() {
 	return (
 		<Pane header={[
 			<GtfsValidationsDetailSelectedRuleHeader key="header" />,
+			// <Section key="header" gap="sm">
+			// 	<code>{data.selected.ruleId}</code>
+			// 	<Text>{data.selected.description}</Text>
+			// 	<Button label="Documentation" onClick={() => null} />
+			// </Section>,
 		]}
 		>
-			<Section gap="sm">
-				<Text>{data.selected.description}</Text>
-				<GtfsValidationsDetailSelectedRuleMessages
-					description={data.selected.description}
-					messages={data.selected.result.messages}
-					ruleId={data.selected.ruleId}
-				/>
-			</Section>
+
+			<Divider />
+
+			<DataTable
+				columns={columns}
+				records={data.selected?.result.messages}
+				rowIdAccessor="message"
+			/>
+
 		</Pane>
 	);
 }

@@ -265,7 +265,7 @@
 				"unimplemented_rule": "A regra configurada ainda não foi implementada."
 			}
 		},
-		"ValidationsDetailResultMessages": {
+		"GtfsValidationsDetailResultMessages": {
 			"description": "Mensagens desta regra e exemplos das linhas do ficheiro onde ocorrem.",
 			"empty": "Não há mensagens para esta regra.",
 			"message": "Mensagem",

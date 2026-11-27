@@ -265,7 +265,7 @@
 				"unimplemented_rule": "The configured rule has no implementation."
 			}
 		},
-		"ValidationsDetailResultMessages": {
+		"GtfsValidationsDetailResultMessages": {
 			"description": "Messages for this rule and examples of the rows where they occur.",
 			"empty": "There are no messages for this rule.",
 			"message": "Message",

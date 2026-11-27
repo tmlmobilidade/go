@@ -9,8 +9,8 @@ const TRANSLATION_KEYS = {
 		shared: 'detail.ValidationsDetailResultListItem.shared_descriptions',
 	},
 	message: {
-		rule: 'detail.ValidationsDetailResultMessages.rule_messages',
-		shared: 'detail.ValidationsDetailResultMessages.shared_messages',
+		rule: 'detail.GtfsValidationsDetailResultMessages.rule_messages',
+		shared: 'detail.GtfsValidationsDetailResultMessages.shared_messages',
 	},
 } as const;
 

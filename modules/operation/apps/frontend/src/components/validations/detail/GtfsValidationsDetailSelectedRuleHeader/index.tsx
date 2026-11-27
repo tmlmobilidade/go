@@ -1,6 +1,6 @@
 'use client';
 
-import { IdTag, SeverityTag, Toolbar } from '@tmlmobilidade/ui';
+import { Button, SeverityTag, Toolbar } from '@tmlmobilidade/ui';
 
 import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
 
@@ -13,6 +13,7 @@ export function GtfsValidationsDetailSelectedRuleHeader() {
 	// A. Setup variables
 
 	const { data } = useGtfsValidationsDetailResultsContext();
+	// const documentationUrl = getGtfsScheduleDocUrl(selected?.ruleId);
 
 	//
 	// B. Render components
@@ -20,7 +21,11 @@ export function GtfsValidationsDetailSelectedRuleHeader() {
 	return (
 		<Toolbar>
 			<SeverityTag severity={data.selected?.result.severity} />
-			<IdTag id={data.selected?.ruleId} copyOnClick />
+			<Button label="Documentation" onClick={() => null} />
+			{/* <Button href={documentationUrl} target="_blank">
+				<Icon name="book" />
+				{t('gtfs_validations:detail.GtfsValidationsDetailSelectedRuleHeader.documentation')}
+			</Button> */}
 		</Toolbar>
 	);
 }
