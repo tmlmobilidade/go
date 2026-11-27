@@ -1,0 +1,15 @@
+{
+	"list": {
+		"ZonesListExport": {
+			"no_matches": "No se encontraron zonas",
+			"placeholder": "Seleccionar zonas",
+			"select_all": "Seleccionar todas las zonas de la lista",
+			"submit": "Exportar",
+			"title": "Exportar zonas como GeoPackage",
+			"zones": "Zonas"
+		},
+		"ZonesListHeader": {
+			"export": "Exportar GeoPackage"
+		}
+	}
+}

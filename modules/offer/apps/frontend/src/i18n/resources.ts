@@ -24,6 +24,9 @@ import namespaceOfferSharedPt from './namespaces/shared/pt.json' with { type: 'j
 import namespaceYearPeriodsEn from './namespaces/year-periods/en.json' with { type: 'json' };
 import namespaceYearPeriodsEs from './namespaces/year-periods/es.json' with { type: 'json' };
 import namespaceYearPeriodsPt from './namespaces/year-periods/pt.json' with { type: 'json' };
+import namespaceZonesEn from './namespaces/zones/en.json' with { type: 'json' };
+import namespaceZonesEs from './namespaces/zones/es.json' with { type: 'json' };
+import namespaceZonesPt from './namespaces/zones/pt.json' with { type: 'json' };
 
 /* * */
 
@@ -37,6 +40,7 @@ export const i18nResourceKeysPt = {
 	'routes': namespaceRoutesPt,
 	'shared': { ...i18nResourceKeysPtShared.shared, ...namespaceOfferSharedPt },
 	'year-periods': namespaceYearPeriodsPt,
+	'zones': namespaceZonesPt,
 } as const;
 /* * */
 
@@ -50,6 +54,7 @@ export const i18nResourceKeysEs = {
 	'routes': namespaceRoutesEs,
 	'shared': { ...i18nResourceKeysEsShared.shared, ...namespaceOfferSharedEs },
 	'year-periods': namespaceYearPeriodsEs,
+	'zones': namespaceZonesEs,
 } as const;
 /* * */
 
@@ -63,4 +68,5 @@ export const i18nResourceKeysEn = {
 	'routes': namespaceRoutesEn,
 	'shared': { ...i18nResourceKeysEnShared.shared, ...namespaceOfferSharedEn },
 	'year-periods': namespaceYearPeriodsEn,
+	'zones': namespaceZonesEn,
 } as const;
