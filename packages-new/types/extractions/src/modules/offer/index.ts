@@ -1,2 +1,2 @@
 export * from './gtfs/index.js';
-export * from './zones/index.js';
+export * from './zones-geopackage/index.js';

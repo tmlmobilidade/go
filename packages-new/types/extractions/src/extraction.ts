@@ -6,7 +6,7 @@ import { DatesAnnotationsV1ExtractionSchema } from './modules/dates/annotations/
 import { InfrastructureNodesV1ExtractionSchema } from './modules/infrastructure/nodes/v1/extraction.js';
 import { InfrastructureStopsV1ExtractionSchema } from './modules/infrastructure/stops/v1/extraction.js';
 import { OfferGtfsV29ExtractionSchema } from './modules/offer/gtfs/v29/extraction.js';
-import { OfferZonesV1ExtractionSchema } from './modules/offer/zones/v1/extraction.js';
+import { OfferZonesGeopackageV1ExtractionSchema } from './modules/offer/zones-geopackage/v1/extraction.js';
 import { OperationAlertsV1ExtractionSchema } from './modules/operation/alerts/v1/extraction.js';
 import { OperationPostersV1ExtractionSchema } from './modules/operation/posters/v1/extraction.js';
 import { OperationRidesV1ExtractionSchema } from './modules/operation/rides/v1/extraction.js';
@@ -20,7 +20,7 @@ export const ExtractionSchema = z.discriminatedUnion('version', [
 	InfrastructureNodesV1ExtractionSchema,
 	InfrastructureStopsV1ExtractionSchema,
 	OfferGtfsV29ExtractionSchema,
-	OfferZonesV1ExtractionSchema,
+	OfferZonesGeopackageV1ExtractionSchema,
 	OperationPostersV1ExtractionSchema,
 	OperationAlertsV1ExtractionSchema,
 	OperationRidesV1ExtractionSchema,
