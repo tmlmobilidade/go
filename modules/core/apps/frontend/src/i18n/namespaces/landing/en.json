@@ -114,6 +114,18 @@
 		"vehicle_events": "Vehicle events in the last 24h",
 		"vehicles_live": "Vehicles live now"
 	},
+	"overview": {
+		"LandingOverviewTheme": {
+			"colours": {
+				"ocean": "Blue",
+				"park": "Green",
+				"path": "Stone",
+				"pool": "Turquoise",
+				"royal": "Purple",
+				"street": "Lime"
+			}
+		}
+	},
 	"shared": {
 		"LandingFooter": {
 			"login": "Login to GO"
@@ -130,23 +142,11 @@
 			"appearance": "Appearance",
 			"close": "Close preferences",
 			"modes": {
-				"light": "Light",
 				"dark": "Dark",
+				"light": "Light",
 				"system": "System"
 			},
 			"title": "Preferences"
-		}
-	},
-	"overview": {
-		"LandingOverviewTheme": {
-			"colours": {
-				"ocean": "Blue",
-				"park": "Green",
-				"path": "Stone",
-				"pool": "Turquoise",
-				"royal": "Purple",
-				"street": "Lime"
-			}
 		}
 	},
 	"stats": {

@@ -114,6 +114,18 @@
 		"vehicle_events": "Eventos de veículos nas últimas 24h",
 		"vehicles_live": "Veículos em circulação"
 	},
+	"overview": {
+		"LandingOverviewTheme": {
+			"colours": {
+				"ocean": "Azul",
+				"park": "Verde",
+				"path": "Pedra",
+				"pool": "Turquesa",
+				"royal": "Roxo",
+				"street": "Lima"
+			}
+		}
+	},
 	"shared": {
 		"LandingFooter": {
 			"login": "Entrar no GO"
@@ -130,23 +142,11 @@
 			"appearance": "Aparência",
 			"close": "Fechar preferências",
 			"modes": {
-				"light": "Claro",
 				"dark": "Escuro",
+				"light": "Claro",
 				"system": "Sistema"
 			},
 			"title": "Preferências"
-		}
-	},
-	"overview": {
-		"LandingOverviewTheme": {
-			"colours": {
-				"ocean": "Azul",
-				"park": "Verde",
-				"path": "Pedra",
-				"pool": "Turquesa",
-				"royal": "Roxo",
-				"street": "Lima"
-			}
 		}
 	},
 	"stats": {
