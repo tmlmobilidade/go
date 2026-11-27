@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type CreateHolidayDto, CreateHolidaySchema, type Holiday } from '@tmlmobilidade/go-types-dates';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
@@ -32,7 +32,7 @@ export function HolidaysCreateFormContextProvider({ children }: PropsWithChildre
 
 	const router = useRouter();
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 
 	const { mutate: listMutate } = useHolidaysData();
 
@@ -72,7 +72,7 @@ export function HolidaysCreateFormContextProvider({ children }: PropsWithChildre
 
 	const permissions = getHolidaysPermissions({
 		selectedAgencyIds: values.agency_ids ?? [],
-		userPermissions: me?.permissions,
+		userPermissions: mePermissions,
 	});
 
 	//
@@ -80,8 +80,8 @@ export function HolidaysCreateFormContextProvider({ children }: PropsWithChildre
 
 	const { createEnabled, editEnabled: formEditEnabled } = useStandardFormCapabilities({
 		create: {
-			hasPermission: permissions.create && !meError,
-			isCreating: isCreating || meLoading,
+			hasPermission: permissions.create && !mePermissionsError,
+			isCreating: isCreating || mePermissionsLoading,
 		},
 		form: {
 			isDirty,
@@ -89,7 +89,7 @@ export function HolidaysCreateFormContextProvider({ children }: PropsWithChildre
 		},
 	});
 
-	const editEnabled = formEditEnabled && permissions.create && !meLoading && !meError;
+	const editEnabled = formEditEnabled && permissions.create && !mePermissionsLoading && !mePermissionsError;
 
 	const handleCreate = useCallback(async () => {
 		if (!createEnabled) return;

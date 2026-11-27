@@ -55,7 +55,7 @@
 .attributionWrapper {
 	position: absolute;
 	right: 0;
-	bottom: 0;
+	bottom: var(--app-bottom-inset);
 	display: flex;
 	gap: var(--size-spacing-5);
 	padding: var(--size-spacing-5) var(--size-spacing-10);

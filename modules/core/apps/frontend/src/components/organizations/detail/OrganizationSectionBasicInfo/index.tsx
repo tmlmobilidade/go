@@ -1,7 +1,7 @@
 'use client';
 
-import { CreateOrganizationSchema } from '@tmlmobilidade/go-types-core';
-import { Collapsible, Grid, MultiSelect, Section, StandardFormController, TextInput, UploadImage } from '@tmlmobilidade/ui';
+import { CreateOrganizationSchema, OrganizationTypeSchema } from '@tmlmobilidade/go-types-core';
+import { Collapsible, Grid, MultiSelect, Section, Select, StandardFormController, TextInput, UploadImage } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useOrganizationsAgenciesData } from '../../shared/use-organizations-agencies-data';
@@ -70,6 +70,36 @@ export function OrganizationsDetailBasicInfo() {
 								value={field.value ?? ''}
 								data-autofocus
 								withAsterisk
+							/>
+						)}
+					/>
+				</Grid>
+
+				<Grid columns="a" gap="lg">
+					<StandardFormController
+						control={form.control}
+						name="organization_type"
+						render={({ field, fieldState }) => (
+							<Select
+								data={OrganizationTypeSchema.options.map(value => ({ label: t(`organizations:shared.types.${value}`), value }))}
+								error={fieldState.error?.message}
+								label={t('organizations:detail.OrganizationsDetailBasicInfo.organization_type')}
+								onChange={field.onChange}
+								readOnly={!capabilities.editEnabled}
+								value={field.value ?? 'other'}
+							/>
+						)}
+					/>
+					<StandardFormController
+						control={form.control}
+						name="website_url"
+						render={({ field, fieldState }) => (
+							<TextInput
+								error={fieldState.error?.message}
+								label={t('organizations:detail.OrganizationsDetailBasicInfo.website_url')}
+								onChange={event => field.onChange(event.currentTarget.value || null)}
+								readOnly={!capabilities.editEnabled}
+								value={field.value ?? ''}
 							/>
 						)}
 					/>

@@ -47,7 +47,7 @@ export function useRidesDetailCurrentView(): UseRidesDetailCurrentViewReturnType
 		return RidesDetailCurrentViewValues.filter((item) => {
 			return meContext.actions.hasPermission(PermissionCatalog.all.rides.scope, currentViewPermissionsMap[item]);
 		});
-	}, [meContext.data.user.permissions]);
+	}, [meContext.data.permissions]);
 
 	//
 	// B. Return data

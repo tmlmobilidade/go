@@ -2,7 +2,6 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { AUTH_SESSION_COOKIE_NAME } from '@tmlmobilidade/go-providers-auth';
 import { type Extraction, type ExtractionCreate, ExtractionCreateSchema } from '@tmlmobilidade/go-types-extractions';
 import { getCurrentEnvironment } from '@tmlmobilidade/go-types-shared';
 
@@ -17,29 +16,22 @@ export async function createExtractionHandler(request: FastifyRequest<{ Body: Ex
 	//
 
 	//
-	// Extract the session token from authentication cookie
-
-	const sessionToken = request.cookies[AUTH_SESSION_COOKIE_NAME];
-
-	if (!sessionToken) {
-		return sendErrorApiResponse(reply, {
-			error: 'Session token not found',
-			status_code: '401',
-		});
-	}
-
-	//
 	// Validate the request body
 
 	const validatedRequestBodyResult = ExtractionCreateSchema.safeParse(request.body);
-	if (!validatedRequestBodyResult.success) return sendErrorApiResponse(reply, { error: validatedRequestBodyResult.error, status_code: '400' });
-	const validatedRequestBody = validatedRequestBodyResult.data;
+
+	if (!validatedRequestBodyResult.success) {
+		return sendErrorApiResponse(reply, {
+			error: validatedRequestBodyResult.error,
+			status_code: '400',
+		});
+	}
 
 	//
 	// Insert a new extraction into the database
 
 	await goDb.core.extractions.insertOne({
-		...validatedRequestBody,
+		...validatedRequestBodyResult.data,
 		attachment_id: null,
 		created_by: request.me._id,
 		downloaded_at: null,

@@ -3,6 +3,7 @@
 import { AuthenticationForm } from '@/components/auth/AuthenticationForm';
 import { getSafeRedirectToUrl } from '@/utils/get-safe-redirect-to-url';
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
+import { AuthLoginRequest } from '@tmlmobilidade/go-core-pckg-types';
 import { type Session } from '@tmlmobilidade/go-types-core';
 import { fetchApiData, PasswordInput, TextInput, useHandleAction, useQueryState, useToast } from '@tmlmobilidade/ui';
 import { useState } from 'react';
@@ -27,7 +28,11 @@ export function LoginForm() {
 	// B. Handle actions
 
 	const { action: handleLogin, isLoading: isLoggingIn } = useHandleAction({
-		fetchFn: async () => await fetchApiData<Session>({ body: { email: emailValue, password: passwordValue }, method: 'POST', url: API_ROUTES.core.AUTH_LOGIN }),
+		fetchFn: async () => await fetchApiData<Session, AuthLoginRequest>({
+			body: { email: emailValue, password: passwordValue },
+			method: 'POST',
+			url: API_ROUTES.core.AUTH_LOGIN,
+		}),
 		onError: (error) => {
 			useToast.error({
 				message: error.message ?? t('unauthenticated:LoginForm.error.description'),

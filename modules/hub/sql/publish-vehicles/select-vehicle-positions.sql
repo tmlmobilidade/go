@@ -17,6 +17,7 @@ WITH latest_events AS (
 			WHERE
 				agency_id = $agency_id
 				AND created_at > toUnixTimestamp64Milli(now64(3) - INTERVAL 90 SECOND)
+				AND NOT (latitude = 0 AND longitude = 0)
 			ORDER BY created_at DESC
 			LIMIT 2 BY agency_id, vehicle_id
 		),

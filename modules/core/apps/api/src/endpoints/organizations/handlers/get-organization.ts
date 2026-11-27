@@ -2,7 +2,7 @@
 
 import { type FastifyReply, type FastifyRequest, sendErrorApiResponse, sendSuccessApiResponse } from '@tmlmobilidade/go-clients-fastify';
 import { goDb } from '@tmlmobilidade/go-interfaces-godb';
-import { type Organization } from '@tmlmobilidade/go-types-core';
+import { type Organization, OrganizationSchema } from '@tmlmobilidade/go-types-core';
 
 /**
  * Returns an Organization by ID.
@@ -14,5 +14,5 @@ export async function getOrganizationHandler(request: FastifyRequest<{ Params: {
 	if (!organizationData) {
 		return sendErrorApiResponse(reply, { error: 'Organization not found', status_code: '404' });
 	}
-	return sendSuccessApiResponse(reply, organizationData);
+	return sendSuccessApiResponse(reply, OrganizationSchema.parse(organizationData));
 }

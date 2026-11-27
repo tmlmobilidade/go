@@ -1,9 +1,9 @@
 'use client';
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
-import { type UpdateUserDto, UpdateUserSchema, type User } from '@tmlmobilidade/go-types-core';
+import { type UsersUpdateItemRequest, UsersUpdateItemRequestSchema, type UsersUpdateItemResponse } from '@tmlmobilidade/go-core-pckg-types';
 import { hasPermission } from '@tmlmobilidade/go-types-permissions';
-import { type StandardFormContextValue, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { type StandardFormContextValue, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { fetchApiData, keepUrlParams, useHandleAction } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
@@ -14,7 +14,7 @@ import { useUsersDetailUserId } from './use-users-detail-user-id';
 
 /* * */
 
-const UsersDetailFormContext = createContext<StandardFormContextValue<UpdateUserDto> | undefined>(undefined);
+const UsersDetailFormContext = createContext<StandardFormContextValue<UsersUpdateItemRequest> | undefined>(undefined);
 
 export function useUsersDetailFormContext() {
 	const context = useContext(UsersDetailFormContext);
@@ -34,7 +34,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 
 	const { userId } = useUsersDetailUserId();
 
-	const { data: meData } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 
 	const { mutate: usersListMutate } = useUsersListData();
 
@@ -43,16 +43,16 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// B. Setup form
 
-	const { form, isDirty, isValid, unblock } = useStandardForm<UpdateUserDto, typeof UpdateUserSchema>({
+	const { form, isDirty, isValid, unblock } = useStandardForm<UsersUpdateItemRequest, typeof UsersUpdateItemRequestSchema>({
 		apiData: userData,
-		schema: UpdateUserSchema,
+		schema: UsersUpdateItemRequestSchema,
 	});
 
 	//
 	// D. Handle actions
 
 	const { action: handleUpdate, isLoading: isUpdating } = useHandleAction({
-		fetchFn: async () => await fetchApiData<User>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.USERS_UPDATE(userId) }),
+		fetchFn: async () => await fetchApiData<UsersUpdateItemResponse>({ body: form.getValues(), method: 'PUT', url: API_ROUTES.core.USERS_UPDATE(userId) }),
 		onSuccess: (response) => {
 			form.reset(response.data);
 			usersDetailMutate(response);
@@ -61,7 +61,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	const { action: handleDelete, isLoading: isDeleting } = useHandleAction({
-		fetchFn: async () => await fetchApiData<User>({ method: 'DELETE', url: API_ROUTES.core.USERS_DELETE(userId) }),
+		fetchFn: async () => await fetchApiData<undefined>({ method: 'DELETE', url: API_ROUTES.core.USERS_DELETE(userId) }),
 		onSuccess: () => {
 			usersListMutate();
 			router.push(keepUrlParams(PAGE_ROUTES.core.USERS_LIST));
@@ -69,10 +69,8 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	const { action: handleLock, isLoading: isLocking } = useHandleAction({
-		fetchFn: async () => await fetchApiData<User>({ method: 'PUT', url: API_ROUTES.core.USERS_DETAIL(userId) }),
-		onSuccess: (response) => {
-			form.reset(response.data);
-			usersDetailMutate(response);
+		fetchFn: async () => await fetchApiData<undefined>({ method: 'PUT', url: API_ROUTES.core.USERS_LOCK(userId) }),
+		onSuccess: () => {
 			usersListMutate();
 		},
 	});
@@ -81,18 +79,18 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	// C. Setup flags
 
 	const hasDeletePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'delete',
 			scope: 'users',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const hasUpdatePermission = useMemo(() => {
-		return hasPermission(meData?.permissions, {
+		return hasPermission(mePermissions, {
 			action: 'update',
 			scope: 'users',
 		});
-	}, [meData?.permissions]);
+	}, [mePermissions]);
 
 	const { deleteEnabled, editEnabled, lockEnabled, updateEnabled } = useStandardFormCapabilities({
 		delete: {
@@ -120,7 +118,7 @@ export function UsersDetailFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// E. Return state
 
-	const stateValue: StandardFormContextValue<UpdateUserDto> = useMemo(() => ({
+	const stateValue: StandardFormContextValue<UsersUpdateItemRequest> = useMemo(() => ({
 		actions: {
 			delete: handleDelete,
 			lock: handleLock,

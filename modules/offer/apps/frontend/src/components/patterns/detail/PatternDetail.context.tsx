@@ -14,7 +14,7 @@ import { type Stop } from '@tmlmobilidade/go-types-infrastructure';
 import { EventReplacementRule, EventRestrictionRule, ManualRule, Path, Pattern, ScheduleRule, StopsParameter, UpdatePatternSchema } from '@tmlmobilidade/go-types-offer';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ApiResponse } from '@tmlmobilidade/go-types-shared';
-import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type MapOverlayPatternShapeLineData, type MapOverlayPatternShapeStopsDataProps, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { type FeatureCollection, type Point } from 'geojson';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
@@ -83,7 +83,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 
 	const router = useRouter();
 	const { lineId, patternId } = usePatternsDetailPatternId();
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 	// Dialogs and asynchronous callbacks must check the latest access, not the opening render.
 	const accessRef = useRef({ deleteEnabled: false, editEnabled: false, lockEnabled: false, patternId, updateEnabled: false });
 	const periodsContext = usePeriodsContext();
@@ -214,7 +214,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 
 	const permissions = PermissionCatalog.getScopePermissions({
 		actions: PermissionCatalog.all.lines.actions,
-		permissions: me?.permissions,
+		permissions: mePermissions,
 		resource: {
 			key: 'agency_ids',
 			requireAll: true,
@@ -222,9 +222,9 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 		},
 		scope: PermissionCatalog.all.lines.scope,
 	});
-	const hasError = !!meError || !!patternError || !!lineError || !!routeError;
+	const hasError = !!mePermissionsError || !!patternError || !!lineError || !!routeError;
 	const hasParents = Boolean(pattern && line && route && pattern.line_id === line._id && route.line_id === line._id);
-	const isLoading = meLoading || patternLoading || lineLoading || routeLoading || !hasParents;
+	const isLoading = mePermissionsLoading || patternLoading || lineLoading || routeLoading || !hasParents;
 	const isOperating = isSaving || isDeleting || isLocking;
 	const standardCapabilities = useStandardFormCapabilities({
 		delete: { hasPermission: permissions.delete, isDeleting },
@@ -312,7 +312,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 			stopsParameterRules: parametersForUI,
 			typologyData,
 		},
-		error: hasError ? new Error(patternError ?? lineError ?? routeError ?? meError ?? '') : null,
+		error: hasError ? new Error(patternError ?? lineError ?? routeError ?? mePermissionsError ?? '') : null,
 		form,
 		geojson: {
 			pattern_line: patternLineFC,
@@ -329,7 +329,7 @@ export const PatternDetailContextProvider = ({ children }: PropsWithChildren) =>
 			isUpdating: isSaving,
 		},
 		unblock,
-	}), [editableShape, editablePath, isDirty, isValid, unblock, hasError, meError, lineError, routeError, applyChanges, isLoading, addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, form, patternId, lineId, rulesForUI, pattern, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC, inheritedLock, line]);
+	}), [editableShape, editablePath, isDirty, isValid, unblock, hasError, mePermissionsError, lineError, routeError, applyChanges, isLoading, addComment, handleAddRule, handleDelete, handleDeleteRule, handleEditRule, handleDuplicateRule, handleLock, patternMutate, handleOpenRuleModal, handleOpenRulesCalendarPreviewModal, handleOpenStopsParameterModal, handleSave, enrichPath, form, patternId, lineId, rulesForUI, pattern, parametersForUI, typologyData, canDelete, canLock, canSave, patternError, isDeleting, isLocking, isReadOnly, isSaving, patternLineFC, patternStopsFC, inheritedLock, line]);
 
 	//
 	// J. Render components

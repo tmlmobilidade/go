@@ -8,7 +8,7 @@ import { type OperationalDateInt } from '@tmlmobilidade/go-types-shared';
 import { calendarKey, Dates } from '@tmlmobilidade/go-utils-dates';
 
 import { computeActiveRules } from '../calculation/index.js';
-import { getActivePeriodId } from '../utils/date.js';
+import { getActivePeriodIds } from '../utils/date.js';
 import { shouldEmitReplacementOnForcedRetarget } from './canonical-registry.js';
 import { collectReplacementManualIncludesByRule } from './collectors.js';
 import { compareGeneralManualOwnershipPriority } from './manual-ownership.js';
@@ -44,9 +44,11 @@ export function collectReplacementDayContributions(
 	const forcedRetarget = isForcedRetargetDay(date, effectiveReplacement, holidays);
 
 	const key = calendarKey(Dates.fromOperationalDateInt(date, 'Europe/Lisbon'));
+	const yearPeriodIds = getActivePeriodIds(date, periods);
 	const calendarCtx: DayContext = {
 		weekday: calendarWeekday(key, holidays),
-		yearPeriodId: getActivePeriodId(date, periods),
+		yearPeriodId: yearPeriodIds[0] ?? '',
+		yearPeriodIds,
 	};
 	const calendarContributions = collectNormalDayContributions(monthFilteredManualRules, calendarCtx);
 	const calendarOperatingByTimepoint = new Map<HHMM, ScheduleRule>();
@@ -100,17 +102,24 @@ export function collectReplacementDayContributions(
 		// intersects the replacement — e.g. ALL_DU + ALL_DU-SAB both match but only ALL_DU owns 21:00.
 		for (const timepoint of operatingTimepoints) {
 			let ownerRule = calendarOperatingByTimepoint.get(timepoint);
+			let effectivePeriodIds: string[] | undefined;
 
 			if (!ownerRule) {
 				const candidates = collectReplacementManualIncludesByRule(effectiveReplacement, monthFilteredManualRules)
 					.filter(({ timepoints }) => timepoints.some(tp => hhmm(tp) === timepoint))
 					.sort((a, b) => compareGeneralManualOwnershipPriority(a.rule, b.rule));
 
-				ownerRule = candidates[0]?.rule;
+				const replacementOwner = candidates[0]?.rule;
+				ownerRule = replacementOwner;
+				if (replacementOwner && effectiveReplacement.year_period_ids.length) {
+					effectivePeriodIds = effectiveReplacement.year_period_ids.filter(id =>
+						!replacementOwner.year_period_ids.length || replacementOwner.year_period_ids.includes(id),
+					);
+				}
 			}
 
 			if (ownerRule) {
-				contributions.push({ kind: 'operating', rule: ownerRule, timepoint });
+				contributions.push({ ...(effectivePeriodIds?.length ? { effectivePeriodIds } : {}), kind: 'operating', rule: ownerRule, timepoint });
 			}
 		}
 	}

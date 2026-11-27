@@ -217,7 +217,8 @@ export const API_ROUTES = Object.freeze({
 		HOME_QUICK_LINKS: `${getModuleConfig('core', 'api_url')}/home/quick-links`,
 
 		// ME
-		ME_LIST: `${getModuleConfig('core', 'api_url')}/platform/me/list`,
+		ME_LIST_ME_PERMISSIONS: `${getModuleConfig('core', 'api_url')}/platform/me/list-me-permissions`,
+		ME_LIST_ME_USER: `${getModuleConfig('core', 'api_url')}/platform/me/list-me-user`,
 		ME_UPDATE_PREFERENCES: `${getModuleConfig('core', 'api_url')}/platform/me/update-preferences`,
 
 		// NOTIFICATIONS
@@ -312,6 +313,7 @@ export const API_ROUTES = Object.freeze({
 
 		// METRICS
 		METRICS_DEMAND_BY_AGENCY_BY_OPERATIONAL_DATE: `${getModuleConfig('hub', 'api_url')}/v1/metrics/demand-by-agency-by-operational-date`,
+		METRICS_VEHICLE_EVENTS_LAST_24H: `${getModuleConfig('hub', 'api_url')}/v1/metrics/vehicle-events/last-24h`,
 
 		// MOTIS
 		MOTIS_GEOCODE: `${getModuleConfig('hub', 'api_url')}/v1/motis/geocode`,
@@ -389,6 +391,9 @@ export const API_ROUTES = Object.freeze({
 		LINES_DETAIL: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}`,
 		LINES_DETAIL_LOCK: (id: string) => `${getModuleConfig('offer', 'api_url')}/lines/${encodeURIComponent(id)}/lock`,
 		LINES_LIST: `${getModuleConfig('offer', 'api_url')}/lines`,
+
+		// ORGANIZATIONS
+		ORGANIZATIONS_LIST: `${getModuleConfig('offer', 'api_url')}/organizations`,
 
 		// PATTERNS
 		PATTERNS_CREATE: `${getModuleConfig('offer', 'api_url')}/patterns/create`,

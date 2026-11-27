@@ -3,7 +3,7 @@
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Banner, type CreateBannerDto, CreateBannerSchema } from '@tmlmobilidade/go-types-core';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useContext, useMemo } from 'react';
 
@@ -34,10 +34,10 @@ export function BannersCreateFormContextProvider({ children }: PropsWithChildren
 	// A. Setup variables
 
 	const router = useRouter();
-	const { data: me } = useMeData();
+	const { data: mePermissions } = useMePermissions();
 	const { mutate } = useBannersListData();
 	const catalog = PermissionCatalog.all.banners;
-	const canCreate = PermissionCatalog.hasPermission(me?.permissions ?? [], catalog.scope, catalog.actions.update);
+	const canCreate = PermissionCatalog.hasPermission(mePermissions ?? [], catalog.scope, catalog.actions.update);
 
 	//
 	// B. Set up the draft form

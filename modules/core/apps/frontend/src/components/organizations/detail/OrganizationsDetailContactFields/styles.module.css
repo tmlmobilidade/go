@@ -1,0 +1,13 @@
+.root {
+	border: 1px solid var(--color-system-border-100);
+	border-radius: var(--size-spacing-xs);
+}
+
+.remove {
+	align-self: flex-start;
+	text-decoration: underline;
+}
+
+.root .remove[data-variant='transparent'] {
+	color: var(--color-status-danger-primary);
+}

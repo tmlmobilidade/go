@@ -6,6 +6,9 @@ import namespaceDefaultPt from '@/i18n/namespaces/default/pt.json' with { type: 
 import namespaceLandingEn from '@/i18n/namespaces/landing/en.json' with { type: 'json' };
 import namespaceLandingEs from '@/i18n/namespaces/landing/es.json' with { type: 'json' };
 import namespaceLandingPt from '@/i18n/namespaces/landing/pt.json' with { type: 'json' };
+import namespaceOrganizationsEn from '@/i18n/namespaces/organizations/en.json' with { type: 'json' };
+import namespaceOrganizationsEs from '@/i18n/namespaces/organizations/es.json' with { type: 'json' };
+import namespaceOrganizationsPt from '@/i18n/namespaces/organizations/pt.json' with { type: 'json' };
 import namespaceUnauthenticatedEn from '@/i18n/namespaces/unauthenticated/en.json' with { type: 'json' };
 import namespaceUnauthenticatedEs from '@/i18n/namespaces/unauthenticated/es.json' with { type: 'json' };
 import namespaceUnauthenticatedPt from '@/i18n/namespaces/unauthenticated/pt.json' with { type: 'json' };
@@ -22,6 +25,7 @@ export const i18nResourceKeysPt = {
 	...i18nResourceKeysPtShared,
 	default: namespaceDefaultPt,
 	landing: namespaceLandingPt,
+	organizations: namespaceOrganizationsPt,
 	unauthenticated: namespaceUnauthenticatedPt,
 } as const;
 
@@ -32,6 +36,7 @@ export const i18nResourceKeysEs = {
 	...i18nResourceKeysEsShared,
 	default: namespaceDefaultEs,
 	landing: namespaceLandingEs,
+	organizations: namespaceOrganizationsEs,
 	unauthenticated: namespaceUnauthenticatedEs,
 } as const;
 
@@ -42,5 +47,6 @@ export const i18nResourceKeysEn = {
 	...i18nResourceKeysEnShared,
 	default: namespaceDefaultEn,
 	landing: namespaceLandingEn,
+	organizations: namespaceOrganizationsEn,
 	unauthenticated: namespaceUnauthenticatedEn,
 } as const;

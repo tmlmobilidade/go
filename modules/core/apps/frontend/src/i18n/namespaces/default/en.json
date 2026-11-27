@@ -197,7 +197,8 @@
 					"code": "Code",
 					"id": "#ID",
 					"name": "Name",
-					"pta_name": "Authority Name"
+					"pta_name": "Authority Name",
+					"short_name": "Short Name"
 				}
 			}
 		}

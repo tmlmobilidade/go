@@ -2,7 +2,7 @@
 
 import { API_ROUTES, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type Typology, type UpdateTypologyDto, UpdateTypologySchema } from '@tmlmobilidade/go-types-offer';
-import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMeData, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
+import { fetchApiData, keepUrlParams, type StandardFormContextValue, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities, useStandardFormWatch } from '@tmlmobilidade/ui';
 import { useRouter } from 'next/navigation';
 import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
 
@@ -33,7 +33,7 @@ export function TypologiesDetailFormContextProvider({ children }: PropsWithChild
 
 	const router = useRouter();
 
-	const { data: me, error: meError, isLoading: meLoading } = useMeData();
+	const { data: mePermissions, error: mePermissionsError, isLoading: mePermissionsLoading } = useMePermissions();
 
 	const { mutate: listMutate } = useTypologiesData();
 	const { typologyId } = useTypologiesDetailTypologyId();
@@ -85,14 +85,14 @@ export function TypologiesDetailFormContextProvider({ children }: PropsWithChild
 	const permissions = getTypologiesPermissions({
 		currentAgencyIds: typology?.agency_ids ?? [],
 		selectedAgencyIds: values.agency_ids ?? [],
-		userPermissions: me?.permissions,
+		userPermissions: mePermissions,
 	});
 
 	//
 	// E. Setup capabilities and handlers
 
 	const busy = isUpdating || isLocking || isDeleting;
-	const loading = isLoading || meLoading || !typology || !!error || !!meError;
+	const loading = isLoading || mePermissionsLoading || !typology || !!error || !!mePermissionsError;
 
 	const standardCapabilities = useStandardFormCapabilities({
 		delete: {
