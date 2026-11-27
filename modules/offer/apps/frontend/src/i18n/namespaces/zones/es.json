@@ -8,8 +8,8 @@
 			"title": "Exportar zonas como GeoPackage",
 			"zones": "Zonas"
 		},
-		"ZonesListHeader": {
-			"export": "Exportar GeoPackage"
+		"ZonesListHeaderMenu": {
+			"export_geopackage": "Exportar GeoPackage"
 		}
 	}
 }
