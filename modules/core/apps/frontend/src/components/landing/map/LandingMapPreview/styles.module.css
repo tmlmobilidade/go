@@ -1,0 +1,144 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	position: relative;
+	width: 100%;
+	height: min(620px, 48vw);
+	min-height: 440px;
+	border-radius: 15px;
+	overflow: hidden;
+	box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* * */
+/* MAP */
+
+.map {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+/* * */
+/* OVERLAY */
+
+.overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+	padding: 30px;
+	border: none;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.35) 25%, transparent 50%);
+	cursor: pointer;
+}
+
+/* * */
+/* HOVER LAYER */
+
+.hoverLayer {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.3);
+	backdrop-filter: blur(2px);
+	opacity: 0;
+	transition: opacity 200ms ease;
+}
+
+.hoverIcon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 84px;
+	height: 84px;
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border-radius: 999px;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+	transform: scale(0.85);
+	transition: transform 200ms ease;
+}
+
+.overlay:hover .hoverLayer,
+.overlay:focus-visible .hoverLayer {
+	opacity: 1;
+}
+
+.overlay:hover .hoverIcon,
+.overlay:focus-visible .hoverIcon {
+	transform: scale(1);
+}
+
+/* * */
+/* STATS */
+
+.stats {
+	position: absolute;
+	bottom: 30px;
+	left: 30px;
+	z-index: 2;
+	pointer-events: none;
+}
+
+/* * */
+/* ACTION */
+
+.action {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 18px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--color-system-text-100);
+	background-color: var(--color-system-background-100);
+	border-radius: 999px;
+	box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+	transition: transform 150ms ease;
+}
+
+.overlay:hover .action,
+.overlay:focus-visible .action {
+	transform: scale(1.05);
+}
+
+/* * */
+/* RESPONSIVE */
+
+@media (max-width: 1240px) {
+	.container {
+		width: calc(100% - 40px);
+		margin: 0 20px;
+	}
+}
+
+@media (max-width: 800px) {
+	.container {
+		width: 100%;
+		height: auto;
+		min-height: 0;
+		margin: 0;
+	}
+
+	.map {
+		height: clamp(260px, 70vw, 320px);
+	}
+
+	.overlay {
+		align-items: flex-start;
+		padding: 20px;
+		background: transparent;
+	}
+
+	.stats {
+		position: static;
+		pointer-events: auto;
+	}
+}

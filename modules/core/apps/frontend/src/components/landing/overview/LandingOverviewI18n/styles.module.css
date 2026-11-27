@@ -1,0 +1,24 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 20px;
+	font-size: 13px;
+}
+
+/* * */
+/* LOCALE */
+
+.locale {
+	text-transform: uppercase;
+	cursor: pointer;
+	color: var(--color-system-text-200);
+}
+
+.locale[data-active="true"] {
+	color: var(--color-system-text-100);
+	font-weight: 600;
+}

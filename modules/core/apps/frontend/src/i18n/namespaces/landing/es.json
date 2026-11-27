@@ -1,0 +1,159 @@
+{
+	"LandingFooter": {
+		"links": {
+			"documentation": "Documentación",
+			"github": "GitHub",
+			"infrastructure": "Infraestructura",
+			"roadmap": "Roadmap",
+			"status": "Estado"
+		}
+	},
+	"LandingHeader": {
+		"login": "Iniciar sesión",
+		"toggle_mode": "Cambiar modo oscuro"
+	},
+	"LandingMap": {
+		"close": "Cerrar mapa",
+		"explore": "Explorar mapa en tiempo real",
+		"popup": {
+			"last_position": "Última posición a las {value, time, medium}",
+			"speed": "{value} km/h",
+			"status": {
+				"INCOMING_AT": "Llegando a la parada",
+				"IN_TRANSIT_TO": "En circulación",
+				"STOPPED_AT": "En la parada"
+			}
+		}
+	},
+	"LandingModules": {
+		"infrastructure": {
+			"stops": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Las paradas son la espina dorsal de la red de transportes."
+			},
+			"title": "Infraestructura"
+		},
+		"intro": {
+			"description": "GO es una plataforma que responde a las necesidades de las autoridades y los operadores de transporte de forma ágil e intuitiva.",
+			"title": "Desarrollado de forma modular — usa solo lo que necesitas."
+		},
+		"meetings": {
+			"actions": {
+				"schedule_meeting": "Marcar reunión",
+				"send_email": "Enviar email"
+			},
+			"description": "Presencial o por Teams, estamos disponibles para conversar sobre lo que necesitas.",
+			"title": "Marcamos una reunión?"
+		},
+		"offer": {
+			"offer": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Las paradas son la espina dorsal de la red de transportes."
+			},
+			"title": "Oferta"
+		},
+		"operation": {
+			"alerts": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Alertas"
+			},
+			"plans": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Planos"
+			},
+			"rides": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Circulaciones / Monitorización"
+			},
+			"title": "Operación"
+		},
+		"performance": {
+			"performance": {
+				"description": "Con un módulo dedicado a la gestión de la infraestructura, GO simplifica la mantenimiento de la base de paradas organizada y siempre actualizada.",
+				"subtitle": "Las paradas son la espina dorsal de la red de transportes."
+			},
+			"title": "Performance"
+		}
+	},
+	"LandingOverview": {
+		"description": "GO es una plataforma que responde a las necesidades de las autoridades y los operadores de transporte de forma ágil e intuitiva.",
+		"title": "Una nueva forma de trabajar el transporte público en Portugal."
+	},
+	"LandingOverviewLinks": {
+		"developers": {
+			"label": "Para desarrolladores",
+			"links": {
+				"open_data": {
+					"description": "Posiciones de vehículos en tiempo real, datos de la red y previsiones de llegada para usar en tus apps.",
+					"title": "API Datos Abiertos"
+				},
+				"open_services": {
+					"description": "Planificación de viajes, alertas y tiempos de llegada listos para integrar en tus productos.",
+					"title": "Servicios Abiertos"
+				}
+			},
+			"title": "Construye con los datos abiertos de GO"
+		},
+		"operators": {
+			"label": "Para operadores y autoridades",
+			"links": {
+				"apex": {
+					"description": "Los datos de venta de billetes y validaciones registrados a bordo, listos para analizar.",
+					"title": "Sistema APEX"
+				},
+				"gtfs": {
+					"description": "El formato abierto de horarios y red que leen apps como Google Maps.",
+					"title": "Standard GTFS"
+				}
+			},
+			"title": "Gestiona tu red con GO"
+		}
+	},
+	"LandingStats": {
+		"operators": "Operadores",
+		"vehicle_events": "Eventos de vehículos en las últimas 24h",
+		"vehicles_live": "Vehículos en circulación"
+	},
+	"overview": {
+		"LandingOverviewTheme": {
+			"colours": {
+				"ocean": "Azul",
+				"park": "Verde",
+				"path": "Piedra",
+				"pool": "Turquesa",
+				"royal": "Morado",
+				"street": "Lima"
+			}
+		}
+	},
+	"shared": {
+		"LandingFooter": {
+			"login": "Acceder a GO"
+		},
+		"LandingHeaderLanguage": {
+			"close": "Cerrar selección de idioma",
+			"title": "Idioma"
+		},
+		"LandingHeaderMobile": {
+			"language": "Idioma"
+		},
+		"LandingHeaderPreferences": {
+			"accent_colour": "Color de acento",
+			"appearance": "Apariencia",
+			"close": "Cerrar preferencias",
+			"modes": {
+				"dark": "Oscuro",
+				"light": "Claro",
+				"system": "Sistema"
+			},
+			"title": "Preferencias"
+		}
+	},
+	"stats": {
+		"LandingStatsPanel": {
+			"events": "Eventos · últimas 24h",
+			"operators": "Operadores",
+			"vehicles_live": "Vehículos en circulación"
+		}
+	}
+}

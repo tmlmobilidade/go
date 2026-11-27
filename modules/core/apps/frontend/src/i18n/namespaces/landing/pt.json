@@ -1,0 +1,159 @@
+{
+	"LandingFooter": {
+		"links": {
+			"documentation": "Documentação",
+			"github": "GitHub",
+			"infrastructure": "Infraestrutura",
+			"roadmap": "Roadmap",
+			"status": "Estado"
+		}
+	},
+	"LandingHeader": {
+		"login": "Login",
+		"toggle_mode": "Alternar modo escuro"
+	},
+	"LandingMap": {
+		"close": "Fechar mapa",
+		"explore": "Explorar mapa em tempo real",
+		"popup": {
+			"last_position": "Última posição às {value, time, medium}",
+			"speed": "{value} km/h",
+			"status": {
+				"INCOMING_AT": "A chegar à paragem",
+				"IN_TRANSIT_TO": "Em circulação",
+				"STOPPED_AT": "Na paragem"
+			}
+		}
+	},
+	"LandingModules": {
+		"infrastructure": {
+			"stops": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "As paragens são a espinha dorsal da rede de transportes."
+			},
+			"title": "Infraestrutura"
+		},
+		"intro": {
+			"description": "O GO está organizado em 4 módulos essenciais que completam o ciclo de responsabilidades de uma autoridade de transportes.",
+			"title": "Desenvolvido de forma modular — usa só o que precisas."
+		},
+		"meetings": {
+			"actions": {
+				"schedule_meeting": "Marcar reunião",
+				"send_email": "Enviar email"
+			},
+			"description": "Presencial ou por Teams, estamos disponíveis para conversar sobre o que precisas.",
+			"title": "Marcamos uma reunião?"
+		},
+		"offer": {
+			"offer": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "As paragens são a espinha dorsal da rede de transportes."
+			},
+			"title": "Oferta"
+		},
+		"operation": {
+			"alerts": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "Alertas"
+			},
+			"plans": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "Planos"
+			},
+			"rides": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "Circulações / Monitorização"
+			},
+			"title": "Operação"
+		},
+		"performance": {
+			"performance": {
+				"description": "Com um módulo dedicado à gestão das paragens, o GO torna simples manter a base de paragens organizada e sempre atualizada.",
+				"subtitle": "As paragens são a espinha dorsal da rede de transportes."
+			},
+			"title": "Performance"
+		}
+	},
+	"LandingOverview": {
+		"description": "O GO é uma plataforma que responde às necessidades das autoridades e dos operadores de transporte, de forma ágil e intuitiva.",
+		"title": "Uma nova forma de trabalhar transportes públicos em Portugal."
+	},
+	"LandingOverviewLinks": {
+		"developers": {
+			"label": "Para programadores",
+			"links": {
+				"open_data": {
+					"description": "Posições dos veículos em tempo real, dados da rede e previsões de chegada, para usar nas tuas apps.",
+					"title": "API Dados Abertos"
+				},
+				"open_services": {
+					"description": "Planeamento de viagens, alertas e tempos de chegada prontos a integrar nos teus produtos.",
+					"title": "Serviços Abertos"
+				}
+			},
+			"title": "Constrói com os dados abertos do GO"
+		},
+		"operators": {
+			"label": "Para operadores e autoridades",
+			"links": {
+				"apex": {
+					"description": "Os dados de bilhética e validações registados nos veículos, prontos a analisar.",
+					"title": "Sistema APEX"
+				},
+				"gtfs": {
+					"description": "O formato aberto de horários e rede que apps como o Google Maps leem.",
+					"title": "Standard GTFS"
+				}
+			},
+			"title": "Gere a tua rede com o GO"
+		}
+	},
+	"LandingStats": {
+		"operators": "Operadores",
+		"vehicle_events": "Eventos de veículos nas últimas 24h",
+		"vehicles_live": "Veículos em circulação"
+	},
+	"overview": {
+		"LandingOverviewTheme": {
+			"colours": {
+				"ocean": "Azul",
+				"park": "Verde",
+				"path": "Pedra",
+				"pool": "Turquesa",
+				"royal": "Roxo",
+				"street": "Lima"
+			}
+		}
+	},
+	"shared": {
+		"LandingFooter": {
+			"login": "Entrar no GO"
+		},
+		"LandingHeaderLanguage": {
+			"close": "Fechar seleção de idioma",
+			"title": "Idioma"
+		},
+		"LandingHeaderMobile": {
+			"language": "Idioma"
+		},
+		"LandingHeaderPreferences": {
+			"accent_colour": "Cor de destaque",
+			"appearance": "Aparência",
+			"close": "Fechar preferências",
+			"modes": {
+				"dark": "Escuro",
+				"light": "Claro",
+				"system": "Sistema"
+			},
+			"title": "Preferências"
+		}
+	},
+	"stats": {
+		"LandingStatsPanel": {
+			"events": "Eventos · últimas 24h",
+			"operators": "Operadores",
+			"vehicles_live": "Veículos em circulação"
+		}
+	}
+}

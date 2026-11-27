@@ -1,0 +1,159 @@
+{
+	"LandingFooter": {
+		"links": {
+			"documentation": "Documentation",
+			"github": "GitHub",
+			"infrastructure": "Infrastructure",
+			"roadmap": "Roadmap",
+			"status": "Status"
+		}
+	},
+	"LandingHeader": {
+		"login": "Login",
+		"toggle_mode": "Toggle dark mode"
+	},
+	"LandingMap": {
+		"close": "Close map",
+		"explore": "Explore live map",
+		"popup": {
+			"last_position": "Last position at {value, time, medium}",
+			"speed": "{value} km/h",
+			"status": {
+				"INCOMING_AT": "Arriving at stop",
+				"IN_TRANSIT_TO": "In transit",
+				"STOPPED_AT": "At stop"
+			}
+		}
+	},
+	"LandingModules": {
+		"infrastructure": {
+			"stops": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Stops are the backbone of the transport network."
+			},
+			"title": "Infrastructure"
+		},
+		"intro": {
+			"description": "GO is organized into 4 essential modules that complete the cycle of responsibilities of a transport authority.",
+			"title": "Developed in a modular way — use only what you need."
+		},
+		"meetings": {
+			"actions": {
+				"schedule_meeting": "Schedule meeting",
+				"send_email": "Send email"
+			},
+			"description": "In person or by Teams, we are available to talk about what you need.",
+			"title": "Let's schedule a meeting?"
+		},
+		"offer": {
+			"offer": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Stops are the backbone of the transport network."
+			},
+			"title": "Offer"
+		},
+		"operation": {
+			"alerts": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Alerts"
+			},
+			"plans": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Plans"
+			},
+			"rides": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Rides"
+			},
+			"title": "Operation"
+		},
+		"performance": {
+			"performance": {
+				"description": "With a dedicated module for infrastructure management, the GO makes it simple to keep stop information organized and always up to date.",
+				"subtitle": "Performance"
+			},
+			"title": "Performance"
+		}
+	},
+	"LandingOverview": {
+		"description": "GO is a platform that responds to the needs of transport authorities and operators in an agile and intuitive way.",
+		"title": "A new way to work with public transport in Portugal."
+	},
+	"LandingOverviewLinks": {
+		"developers": {
+			"label": "For developers",
+			"links": {
+				"open_data": {
+					"description": "Real-time vehicle positions, network data and arrival predictions to use in your apps.",
+					"title": "Open Data API"
+				},
+				"open_services": {
+					"description": "Trip planning, alerts and arrival times ready to plug into your products.",
+					"title": "Open Services"
+				}
+			},
+			"title": "Build with GO's open data"
+		},
+		"operators": {
+			"label": "For operators and authorities",
+			"links": {
+				"apex": {
+					"description": "Ticketing and validation data recorded on board, ready to analyse.",
+					"title": "APEX System"
+				},
+				"gtfs": {
+					"description": "The open schedule and network format that apps like Google Maps read.",
+					"title": "GTFS Standard"
+				}
+			},
+			"title": "Run your network on GO"
+		}
+	},
+	"LandingStats": {
+		"operators": "Operators",
+		"vehicle_events": "Vehicle events in the last 24h",
+		"vehicles_live": "Vehicles live now"
+	},
+	"overview": {
+		"LandingOverviewTheme": {
+			"colours": {
+				"ocean": "Blue",
+				"park": "Green",
+				"path": "Stone",
+				"pool": "Turquoise",
+				"royal": "Purple",
+				"street": "Lime"
+			}
+		}
+	},
+	"shared": {
+		"LandingFooter": {
+			"login": "Login to GO"
+		},
+		"LandingHeaderLanguage": {
+			"close": "Close language selector",
+			"title": "Language"
+		},
+		"LandingHeaderMobile": {
+			"language": "Language"
+		},
+		"LandingHeaderPreferences": {
+			"accent_colour": "Accent colour",
+			"appearance": "Appearance",
+			"close": "Close preferences",
+			"modes": {
+				"dark": "Dark",
+				"light": "Light",
+				"system": "System"
+			},
+			"title": "Preferences"
+		}
+	},
+	"stats": {
+		"LandingStatsPanel": {
+			"events": "Events · last 24h",
+			"operators": "Operators",
+			"vehicles_live": "Vehicles live"
+		}
+	}
+}

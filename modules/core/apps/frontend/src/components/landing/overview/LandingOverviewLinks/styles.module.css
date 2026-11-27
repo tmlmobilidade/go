@@ -1,0 +1,142 @@
+/* * */
+/* CONTAINER */
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 25px;
+	padding: 30px;
+	background: var(--color-system-background-100);
+	border-radius: 20px;
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* * */
+/* HEADER */
+
+.header {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+}
+
+.heading {
+	margin: 0;
+	color: var(--color-system-text-100);
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: -0.03em;
+}
+
+/* * */
+/* LINKS */
+
+.links {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 0 -12px;
+}
+
+.link {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 12px;
+	color: var(--color-system-text-100);
+	text-decoration: none;
+	border-radius: 14px;
+	transition: background-color 150ms ease;
+}
+
+.link:hover {
+	background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+/* * */
+/* ICON CHIP */
+
+.iconChip {
+	display: flex;
+	flex-shrink: 0;
+	align-self: flex-start;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	color: var(--color-contrast);
+	background: var(--color-primary);
+	border-radius: 12px;
+}
+
+/* * */
+/* TEXT */
+
+.text {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.title {
+	font-size: 21px;
+	font-weight: 700;
+	line-height: 1.15;
+}
+
+.description {
+	color: var(--color-system-text-200);
+	font-size: 16px;
+	line-height: 1.4;
+}
+
+/* * */
+/* ARROW */
+
+.arrow {
+	flex-shrink: 0;
+	color: var(--color-system-text-300);
+}
+
+.link:hover .arrow {
+	color: var(--color-primary);
+}
+
+@media (max-width: 800px) {
+	.container {
+		min-width: 0;
+		gap: 20px;
+		padding: 20px;
+		border-radius: 20px;
+	}
+
+	.heading {
+		font-size: 24px;
+	}
+
+	.header > [data-variant] {
+		max-width: 100%;
+	}
+
+	.header > [data-variant] > span {
+		line-height: 1.3;
+		white-space: normal;
+	}
+
+	.link {
+		gap: 10px;
+	}
+
+	.title {
+		font-size: 18px;
+	}
+
+	.iconChip {
+		width: 40px;
+		height: 40px;
+	}
+}

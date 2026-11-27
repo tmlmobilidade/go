@@ -1,0 +1,86 @@
+/* * */
+/* INTRO */
+
+.intro {
+	margin-bottom: 100px;
+}
+
+.intro .introVideo {
+	width: 260px;
+	height: 155px;
+	border-radius: 15px;
+}
+
+/* * */
+/* TIMELINE */
+
+.timeline {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+/* Centered under the index circle (10px header offset + 30px radius); runs into the next circle, which overlaps it. */
+.connector {
+	width: 3px;
+	height: 110px;
+	margin-left: 39px;
+	background: var(--color-background);
+}
+
+/* * */
+/* MEETINGS BLOCK */
+
+.meetingsBlock {
+	padding: 30px;
+	margin-top: 60px;
+}
+
+@media (max-width: 800px) {
+	.intro {
+		width: 100%;
+		margin-bottom: 56px;
+	}
+
+	.introSection[data-padding] {
+		padding: 0;
+	}
+
+	.intro .introVideo {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+	}
+
+	.connector {
+		height: 56px;
+		margin-left: 33px;
+	}
+
+	.meetingsBlock {
+		width: 100%;
+		padding: 0;
+		margin-top: 32px;
+	}
+
+	.meetingActions[data-flex-direction] {
+		flex-direction: row;
+		align-items: stretch;
+		gap: 12px;
+	}
+
+	.meetingActions > button {
+		flex: 1;
+		min-width: 0;
+		min-height: 44px;
+		height: auto;
+		padding: 8px;
+	}
+
+	.meetingActionLabel {
+		font-size: 14px;
+		line-height: 1.25;
+		white-space: normal;
+		text-align: center;
+	}
+}

@@ -1,0 +1,14 @@
+/* * */
+/* GRID */
+
+.grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px 0;
+}
+
+@media (max-width: 800px) {
+	.grid {
+		display: none;
+	}
+}

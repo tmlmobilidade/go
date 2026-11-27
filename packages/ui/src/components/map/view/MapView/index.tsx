@@ -1,6 +1,7 @@
 'use client';
 
-import { type MapLayerMouseEvent, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
+import { type ThemeMode } from '@tmlmobilidade/go-types-shared';
+import { type MapLayerMouseEvent, type MapProps, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren, useState } from 'react';
 
 import styles from './styles.module.css';
@@ -17,6 +18,8 @@ interface MapViewProps {
 	defaultScrollZoom?: boolean
 	height?: number
 	id: string
+	/** Camera applied before the map first renders. */
+	initialViewState?: MapProps['initialViewState']
 	interactiveLayerIds?: string[]
 	layers?: MapViewBasemapLayers
 	onClick?: (e: MapLayerMouseEvent) => void
@@ -31,12 +34,14 @@ interface MapViewProps {
 	onMouseOver?: (e: MapLayerMouseEvent) => void
 	/** When false, hides the search coordinate pin layer. */
 	showSearchPin?: boolean
+	/** Overrides the saved theme mode preference for this map's basemap style. */
+	themeMode?: ThemeMode
 	toolbar?: boolean
 }
 
 /* * */
 
-export function MapView({ children, cursor, defaultScrollZoom, height, id, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, showSearchPin = true, toolbar = true }: PropsWithChildren<MapViewProps>) {
+export function MapView({ children, cursor, defaultScrollZoom, height, id, initialViewState, interactiveLayerIds = [], layers, onClick, onDrag, onDragEnd, onDragStart, onMouseDrag, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, showSearchPin = true, themeMode, toolbar = true }: PropsWithChildren<MapViewProps>) {
 	const [scrollZoom, setScrollZoom] = useState(defaultScrollZoom);
 
 	return (
@@ -48,6 +53,7 @@ export function MapView({ children, cursor, defaultScrollZoom, height, id, inter
 				<MapViewBasemap
 					cursor={cursor}
 					id={id}
+					initialViewState={initialViewState}
 					interactiveLayerIds={interactiveLayerIds}
 					layers={layers}
 					onClick={onClick}
@@ -62,6 +68,7 @@ export function MapView({ children, cursor, defaultScrollZoom, height, id, inter
 					onMouseOver={onMouseOver}
 					scrollZoom={scrollZoom}
 					showSearchPin={showSearchPin}
+					themeMode={themeMode}
 				>
 					{children}
 				</MapViewBasemap>

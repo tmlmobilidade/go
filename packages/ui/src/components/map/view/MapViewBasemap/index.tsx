@@ -1,6 +1,7 @@
 'use client';
 
-import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
+import { type ThemeMode } from '@tmlmobilidade/go-types-shared';
+import { FullscreenControl, GeolocateControl, Map, type MapLayerMouseEvent, type MapProps, type MapWheelEvent, NavigationControl, ScaleControl, type ViewStateChangeEvent } from '@vis.gl/react-maplibre';
 import { type CSSProperties, type PropsWithChildren, useCallback, useMemo } from 'react';
 
 import styles from './styles.module.css';
@@ -31,6 +32,8 @@ export const DEFAULT_LAYERS: MapViewBasemapLayers = {
 export interface MapViewBasemapProps {
 	cursor?: CSSProperties['cursor'] | null
 	id: string
+	/** Camera applied before the map first renders. */
+	initialViewState?: MapProps['initialViewState']
 	interactiveLayerIds?: string[]
 	layers: MapViewBasemapLayers
 	onClick?: (e: MapLayerMouseEvent) => void
@@ -54,11 +57,13 @@ export interface MapViewBasemapProps {
 	searchPinFocusOnChange?: boolean
 	/** When false, hides the coordinate search pin from global map context (e.g. focused single-stop maps). */
 	showSearchPin?: boolean
+	/** Overrides the saved theme mode preference for this map's basemap style. */
+	themeMode?: ThemeMode
 }
 
 /* * */
 
-export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onWheel, scrollZoom, searchPinFocusOnChange = true, showSearchPin = true }: PropsWithChildren<MapViewBasemapProps>) {
+export function MapViewBasemap({ children, cursor, id, initialViewState, interactiveLayerIds = [], layers = DEFAULT_LAYERS, onClick, onContextMenu, onDragEnd, onDragStart, onMouseEnter, onMouseLeave, onMouseMove, onMouseOut, onMouseOver, onWheel, scrollZoom, searchPinFocusOnChange = true, showSearchPin = true, themeMode }: PropsWithChildren<MapViewBasemapProps>) {
 	//
 
 	//
@@ -68,7 +73,8 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 	const mapViewContext = useMapViewContext();
 	const isScrollZoomEnabled = scrollZoom ?? mapContext.flags.scroll_zoom;
 
-	const currentThemeMode = useCurrentThemeMode();
+	const userThemeMode = useCurrentThemeMode();
+	const currentThemeMode = themeMode ?? userThemeMode;
 
 	//
 	// B. Transform data
@@ -128,7 +134,7 @@ export function MapViewBasemap({ children, cursor, id, interactiveLayerIds = [],
 			attributionControl={false}
 			cursor={mapViewContext.flags.cursor}
 			id={id}
-			initialViewState={MAP_VIEWPORT}
+			initialViewState={initialViewState ?? MAP_VIEWPORT}
 			interactive={true}
 			interactiveLayerIds={interactiveLayerIds}
 			mapStyle={currentMapStyleConfigValue}
