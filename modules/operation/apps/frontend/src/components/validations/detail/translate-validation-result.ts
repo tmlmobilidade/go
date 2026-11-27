@@ -5,12 +5,12 @@ import { type i18n } from 'i18next';
 
 const TRANSLATION_KEYS = {
 	description: {
-		rule: 'detail.ValidationsDetailResultListItem.rule_descriptions',
-		shared: 'detail.ValidationsDetailResultListItem.shared_descriptions',
+		rule: 'detail.GtfsValidationsDetailResultsList.rule_descriptions',
+		shared: 'detail.GtfsValidationsDetailResultsList.shared_descriptions',
 	},
 	message: {
-		rule: 'detail.GtfsValidationsDetailResultMessages.rule_messages',
-		shared: 'detail.GtfsValidationsDetailResultMessages.shared_messages',
+		rule: 'detail.GtfsValidationsDetailSelectedRule.rule_messages',
+		shared: 'detail.GtfsValidationsDetailSelectedRule.shared_messages',
 	},
 } as const;
 
@@ -30,10 +30,10 @@ export function translateValidationResult(
 	const { rule, shared } = TRANSLATION_KEYS[kind];
 	const keys = [`${rule}.${ruleId}.${variant}`, `${shared}.${variant}`];
 	for (const key of keys) {
-		const template: unknown = i18n.getResource(locale, 'validations', key);
+		const template: unknown = i18n.getResource(locale, 'gtfs_validations', key);
 		if (typeof template !== 'string' || !template) continue;
 
-		const text = i18n.t(`validations:${key}`, '', { lng: locale, replace: values });
+		const text = i18n.t(`gtfs_validations:${key}`, '', { lng: locale, replace: values });
 		// ICU returns the raw template when interpolation fails.
 		if (text === template && /\{\w+\}/.test(template)) return fallback;
 		return text || fallback;

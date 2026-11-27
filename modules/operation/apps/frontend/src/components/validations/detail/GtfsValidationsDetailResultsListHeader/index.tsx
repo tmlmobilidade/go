@@ -18,15 +18,15 @@ export function GtfsValidationsDetailResultsListHeader() {
 
 	const { t } = useTranslation();
 	const { actions, data: { totals }, filters } = useGtfsValidationsDetailResultsContext();
-	const searchLabel = t('gtfs_validations:detail.ValidationsDetailResultsListHeader.search_placeholder');
+	const searchLabel = t('gtfs_validations:detail.GtfsValidationsDetailResultsListHeader.search_placeholder');
 
 	//
 	// B. Transform data
 
 	const severityOptions: { label: string, severity: ValidationsDetailResultSeverity }[] = [
-		{ label: t('gtfs_validations:detail.ValidationsDetailResultsListHeader.error', '', { count: totals.errors }), severity: 'error' },
-		{ label: t('gtfs_validations:detail.ValidationsDetailResultsListHeader.warning', '', { count: totals.warnings }), severity: 'warning' },
-		{ label: t('gtfs_validations:detail.ValidationsDetailResultsListHeader.info', '', { count: totals.infos }), severity: 'info' },
+		{ label: t('gtfs_validations:detail.GtfsValidationsDetailResultsListHeader.error', '', { count: totals.errors }), severity: 'error' },
+		{ label: t('gtfs_validations:detail.GtfsValidationsDetailResultsListHeader.warning', '', { count: totals.warnings }), severity: 'warning' },
+		{ label: t('gtfs_validations:detail.GtfsValidationsDetailResultsListHeader.info', '', { count: totals.infos }), severity: 'info' },
 	];
 
 	//

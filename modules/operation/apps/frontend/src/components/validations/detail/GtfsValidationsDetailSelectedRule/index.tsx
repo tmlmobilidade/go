@@ -22,12 +22,12 @@ export function GtfsValidationsDetailSelectedRule() {
 		{
 			accessor: 'message',
 			render: item => <Text>{translateValidationResult(i18n, 'message', data.selected?.ruleId, item.translation, item.message)}</Text>,
-			title: t('gtfs_validations:detail.GtfsValidationsDetailResultMessages.message'),
+			title: t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.columns.message'),
 			width: 400,
 		},
 		{
 			accessor: 'rows',
-			title: t('gtfs_validations:detail.GtfsValidationsDetailResultsList.columns.description'),
+			title: t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.columns.rows'),
 			width: 700,
 		},
 	];

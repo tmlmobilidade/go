@@ -69,6 +69,7 @@ export const i18nResourceKeysEn = {
 	causes: namespaceCausesEn,
 	default: namespaceDefaultEn,
 	effects: namespaceEffectsEn,
+	gtfs_validations: namespaceGtfsValidationsEn,
 	reference_types: namespaceReferenceTypesEn,
 	ride_analysis: namespaceAnalysisEn,
 	ride_status: namespaceStatusEn,
