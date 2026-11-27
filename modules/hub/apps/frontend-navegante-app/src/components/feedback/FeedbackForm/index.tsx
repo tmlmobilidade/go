@@ -13,7 +13,7 @@ import { useFeedbackCooldown } from '@/components/feedback/use-feedback-cooldown
 import { useBottomSheet } from '@/hooks/bottom-sheet/useBottomSheet';
 import { type FeedbackSheetView, getFeedbackBackTarget, getFeedbackReasonSelectionTarget, hasFeedbackTarget, shouldShowFeedbackTrigger } from '@/utils/feedback/navigation';
 import { API_ROUTES } from '@tmlmobilidade/consts';
-import { type PublicFeedbackReason, type PublicFeedbackSubmission } from '@tmlmobilidade/go-types-hub';
+import { type PublicFeedbackV2Reason, type PublicFeedbackV2Submission } from '@tmlmobilidade/go-types-hub';
 import { AlertMessage, fetchApiData } from '@tmlmobilidade/ui';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -44,11 +44,12 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 
 	const [activeCategory, setActiveCategory] = useState<FeedbackReasonCategory | null>(null);
 	const [activeView, setActiveView] = useState<FeedbackSheetView>('mood');
+	const [comment, setComment] = useState('');
 	const [isFeedbackSheetOpen, setIsFeedbackSheetOpen] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [hasSubmissionError, setHasSubmissionError] = useState(false);
-	const [selectedReasonValues, setSelectedReasonValues] = useState<PublicFeedbackReason[]>([]);
-	const [selectedMood, setSelectedMood] = useState<null | PublicFeedbackSubmission['mood']>(null);
+	const [selectedReasonValues, setSelectedReasonValues] = useState<PublicFeedbackV2Reason[]>([]);
+	const [selectedMood, setSelectedMood] = useState<null | PublicFeedbackV2Submission['mood']>(null);
 	const [triggerPortalRoot, setTriggerPortalRoot] = useState<HTMLElement | null>(null);
 
 	const reasonCategories: readonly FeedbackReasonCategory[] = getFeedbackReasonCategories(entityType);
@@ -66,7 +67,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 			? activeReasonGroup?.heading ?? t('default:feedback.form.title')
 			: t('default:feedback.form.title');
 	const canNavigateBack = activeView === 'categories' || activeView === 'reasons';
-	const canSubmitReasons = selectedReasonValues.length > 0 && !isSubmitting;
+	const canSubmitReasons = (selectedReasonValues.length > 0 || comment.trim().length > 0) && !isSubmitting;
 
 	//
 	// B. Handle actions
@@ -79,6 +80,7 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		setIsSubmitting(false);
 		setSelectedMood(null);
 		setSelectedReasonValues([]);
+		setComment('');
 	};
 
 	const openReasonSelection = () => {
@@ -104,11 +106,13 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		setActiveCategory(null);
 		setActiveView(nextView);
 		setSelectedReasonValues([]);
+		setComment('');
 	};
 
 	const handleSelectCategory = (category: FeedbackReasonCategory) => {
 		setActiveCategory(category);
 		setSelectedReasonValues([]);
+		setComment('');
 		setActiveView('reasons');
 	};
 
@@ -117,25 +121,26 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 		openReasonSelection();
 	};
 
-	const submitFeedback = async (feedbackMood: null | PublicFeedbackSubmission['mood'], feedbackReasonValues: PublicFeedbackReason[]) => {
+	const submitFeedback = async (feedbackMood: null | PublicFeedbackV2Submission['mood'], feedbackReasonValues: PublicFeedbackV2Reason[]) => {
 		if (!entityId || !feedbackMood || isSubmitting) return;
 		if (entityType === 'line' && !agencyId) return;
 
 		const commonPayload = {
+			comment: comment.trim() || undefined,
 			entity_id: entityId,
 			mood: feedbackMood,
 			reasons: feedbackReasonValues,
-			schema_version: 'v1',
+			schema_version: 'v2',
 		} as const;
 
-		const payload: PublicFeedbackSubmission = entityType === 'line'
+		const payload: PublicFeedbackV2Submission = entityType === 'line'
 			? { ...commonPayload, agency_id: agencyId, entity_type: 'line' }
 			: { ...commonPayload, entity_type: 'stop' };
 
 		setHasSubmissionError(false);
 		setIsSubmitting(true);
 
-		const response = await fetchApiData<null, PublicFeedbackSubmission>({
+		const response = await fetchApiData<null, PublicFeedbackV2Submission>({
 			body: payload,
 			credentials: 'omit',
 			method: 'POST',
@@ -213,8 +218,10 @@ export function FeedbackForm({ agencyId, entityId, entityType = 'line' }: Feedba
 				{activeView === 'reasons' && activeCategory && (
 					<FeedbackReasonOptions
 						category={activeCategory}
+						comment={comment}
 						entityType={entityType}
 						onChange={setSelectedReasonValues}
+						onCommentChange={setComment}
 						selectedValues={selectedReasonValues}
 					/>
 				)}

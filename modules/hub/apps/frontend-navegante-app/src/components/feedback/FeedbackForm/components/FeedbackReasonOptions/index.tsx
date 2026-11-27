@@ -2,7 +2,7 @@
 
 import { type FeedbackEntityType, type FeedbackReasonCategory, getFeedbackReasonGroups } from '@/components/feedback/feedback-config';
 import { toggleFeedbackReason } from '@/utils/feedback/selection';
-import { type PublicFeedbackReason } from '@tmlmobilidade/go-types-hub';
+import { PUBLIC_FEEDBACK_V2_COMMENT_MAX_LENGTH, type PublicFeedbackV2Reason } from '@tmlmobilidade/go-types-hub';
 import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,14 +12,16 @@ import styles from './styles.module.css';
 
 interface FeedbackReasonOptionsProps {
 	category: FeedbackReasonCategory
+	comment: string
 	entityType: FeedbackEntityType
-	onChange: (values: PublicFeedbackReason[]) => void
-	selectedValues: PublicFeedbackReason[]
+	onChange: (values: PublicFeedbackV2Reason[]) => void
+	onCommentChange: (value: string) => void
+	selectedValues: PublicFeedbackV2Reason[]
 }
 
 /* * */
 
-export function FeedbackReasonOptions({ category, entityType, onChange, selectedValues }: FeedbackReasonOptionsProps) {
+export function FeedbackReasonOptions({ category, comment, entityType, onChange, onCommentChange, selectedValues }: FeedbackReasonOptionsProps) {
 	//
 
 	//
@@ -36,7 +38,7 @@ export function FeedbackReasonOptions({ category, entityType, onChange, selected
 	//
 	// B. Handle actions
 
-	const handleToggleReason = (reasonValue: PublicFeedbackReason) => {
+	const handleToggleReason = (reasonValue: PublicFeedbackV2Reason) => {
 		onChange(toggleFeedbackReason(selectedValues, reasonValue));
 	};
 
@@ -67,6 +69,21 @@ export function FeedbackReasonOptions({ category, entityType, onChange, selected
 						</label>
 					);
 				})}
+				<label className={styles.comment} htmlFor={`${reasonOptionsId}-comment`}>
+					<span className={styles.commentLabel}>
+						{t('default:feedback.form.FeedbackReasonOptions.comment_label')}
+					</span>
+					<input
+						className={styles.commentInput}
+						data-selected={comment.trim().length > 0}
+						id={`${reasonOptionsId}-comment`}
+						maxLength={PUBLIC_FEEDBACK_V2_COMMENT_MAX_LENGTH}
+						onChange={event => onCommentChange(event.target.value)}
+						placeholder={t('default:feedback.form.FeedbackReasonOptions.comment_placeholder', { count: PUBLIC_FEEDBACK_V2_COMMENT_MAX_LENGTH })}
+						type="text"
+						value={comment}
+					/>
+				</label>
 			</div>
 		</div>
 	);
