@@ -6,12 +6,12 @@ import { runGdalConversion } from './run-gdal-conversion.js';
 /* * */
 
 /**
- * Converts a GeoJSON file to a GeoPackage file using GDAL.
- * GDAL must be run in its own process so each export gets its own output directory.
- *
- * @param inputPath - The path to the input GeoJSON file.
+ * Runs this module in a child Node process and waits for conversion to finish.
+ * Each child gets its own GDAL output directory while the parent can keep the worker heartbeat running.
+ * @param inputPath Absolute path to the temporary zones.geojson, also used to locate the output directory.
  */
 export async function convertGeoPackage(inputPath: string): Promise<void> {
+	// GDAL resolves its bundled WebAssembly and projection data relative to the working directory.
 	const gdalAssetsDirectory = new URL('.', import.meta.resolve('gdal3.js'));
 	await promisify(execFile)(process.execPath, [import.meta.filename, inputPath], {
 		cwd: gdalAssetsDirectory,
@@ -20,6 +20,7 @@ export async function convertGeoPackage(inputPath: string): Promise<void> {
 
 /* * */
 
+// This branch runs in the child when Node launches this file directly.
 if (import.meta.main) {
 	const inputPath = process.argv[2];
 	await runGdalConversion(inputPath);

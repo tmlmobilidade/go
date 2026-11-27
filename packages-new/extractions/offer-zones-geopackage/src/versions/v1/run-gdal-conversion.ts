@@ -12,11 +12,15 @@ interface ZoneValidationResult {
 
 /* * */
 
+/**
+ * Validates the staged polygon features and writes the zones layer to zones.gpkg beside the input.
+ * @throws If GDAL cannot open the input or finds an invalid polygon. The geometry error includes the zone ID.
+ */
 export async function runGdalConversion(inputPath: string): Promise<void> {
 	//
 
 	//
-	// A. Setup GDAL
+	// A. Open the GeoJSON and preserve date-like attribute strings as text
 
 	const gdal = await initGdalJs({ dest: path.dirname(inputPath), path: '.' });
 	const { datasets: [zones], errors } = await gdal.open(inputPath, ['DATE_AS_STRING=YES']);
@@ -24,7 +28,7 @@ export async function runGdalConversion(inputPath: string): Promise<void> {
 
 	try {
 		//
-		// B. Validate the stored zone geometries
+		// B. Report the first invalid boundary before writing. Null geometries represent zones without polygons.
 
 		const validation = await gdal.ogrinfo(zones, [
 			'-dialect', 'SQLite',
@@ -36,7 +40,8 @@ export async function runGdalConversion(inputPath: string): Promise<void> {
 		if (invalidZone) throw new Error(`Zone ${invalidZone.properties.zone_id} has invalid polygon geometry.`);
 
 		//
-		// C. Write the zone geometries to the GeoPackage
+		// C. Store polygons and multipart polygons in one MultiPolygon layer.
+		// The GeoJSON coordinates are already WGS 84, so GDAL assigns EPSG:4326 without transforming them.
 
 		const output = await gdal.ogr2ogr(zones, [
 			'-f', 'GPKG',
