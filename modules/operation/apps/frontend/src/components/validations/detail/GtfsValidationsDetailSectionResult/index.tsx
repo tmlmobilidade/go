@@ -1,12 +1,12 @@
 'use client';
 
-import { GtfsValidationsDetailResultsList } from '@/components/validations/detail/GtfsValidationsDetailResultsList';
-import { GtfsValidationsDetailSelectedRule } from '@/components/validations/detail/GtfsValidationsDetailSelectedRule';
-import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { Collapsible, PanesManager, Section } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { GtfsValidationsDetailResultsContextProvider } from '../GtfsValidationsDetailResults.context';
+import { GtfsValidationsDetailResultsList } from '../GtfsValidationsDetailResultsList';
+import { GtfsValidationsDetailSelectedRule } from '../GtfsValidationsDetailSelectedRule';
+import { useValidationsDetailContext } from '../ValidationsDetailForm.context';
 
 /* * */
 

@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { useValidationsDetailContext } from '@/components/validations/detail/ValidationsDetailForm.context';
 import { PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { PermissionCatalog } from '@tmlmobilidade/go-types-permissions';
 import { type ProcessingStatus } from '@tmlmobilidade/go-types-shared';
@@ -13,6 +12,7 @@ import { useMemo } from 'react';
 import { openGtfsValidationsApproveModal } from '../../approve/GtfsValidationsApprove.modal';
 import { openGtfsValidationsRequestApprovalModal } from '../../request-approval/GtfsValidationsRequestApproval.modal';
 import { useGtfsValidationsAgenciesData } from '../../shared/use-gtfs-validations-agencies-data';
+import { useValidationsDetailContext } from '../ValidationsDetailForm.context';
 
 /* * */
 
