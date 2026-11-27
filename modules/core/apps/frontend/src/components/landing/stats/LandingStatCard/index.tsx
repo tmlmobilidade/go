@@ -19,8 +19,8 @@ export function LandingStatCard({ isLive, label, thousandSeparator, value }: Lan
 	return (
 		<div className={styles.card}>
 			<p className={styles.label}>
-				{isLive && <LiveIcon />}
 				{label}
+				{isLive && <LiveIcon color="white" />}
 			</p>
 			<RollingNumber className={styles.value} thousandSeparator={thousandSeparator} value={value} />
 		</div>

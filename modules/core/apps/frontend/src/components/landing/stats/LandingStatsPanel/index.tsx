@@ -31,11 +31,11 @@ export function LandingStatsPanel({ eventsCount, operatorsCount, vehiclesCount }
 	return (
 		<dl className={styles.panel}>
 			<div className={styles.metric}>
-				<dt className={styles.label}><LiveIcon />{t('landing:stats.LandingStatsPanel.events')}</dt>
+				<dt className={styles.label}>{t('landing:stats.LandingStatsPanel.events')}<LiveIcon /></dt>
 				<dd className={styles.value}><RollingNumber thousandSeparator={thousandSeparator} value={eventsCount} /></dd>
 			</div>
 			<div className={styles.metric}>
-				<dt className={styles.label}><LiveIcon />{t('landing:stats.LandingStatsPanel.vehicles_live')}</dt>
+				<dt className={styles.label}>{t('landing:stats.LandingStatsPanel.vehicles_live')}<LiveIcon /></dt>
 				<dd className={styles.value}><RollingNumber thousandSeparator={thousandSeparator} value={vehiclesCount} /></dd>
 			</div>
 			<div className={styles.secondary}>
