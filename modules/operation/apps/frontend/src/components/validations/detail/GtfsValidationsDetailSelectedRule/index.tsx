@@ -1,11 +1,10 @@
 'use client';
 
 import { GtfsValidationOutputMessage } from '@tmlmobilidade/go-types-gtfs-validator';
-import { Button, DataTable, DataTableColumn, Divider, NoDataLabel, Pane, Section, Text } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, IdTag, Inline, Label, NoDataLabel, Pane, Section, SeverityTag, Text, Toolbar } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
-import { GtfsValidationsDetailSelectedRuleHeader } from '../GtfsValidationsDetailSelectedRuleHeader';
 import { translateValidationResult } from '../translate-validation-result';
 
 /* * */
@@ -34,6 +33,15 @@ export function GtfsValidationsDetailSelectedRule() {
 	];
 
 	//
+	// B. Handle actions
+
+	const handleOpenDocumentation = () => {
+		const baseUrl = 'https://go.tmlmobilidade.pt/reference/gtfs/validation-rules';
+		const ruleDocumentationUrl = `${baseUrl}/${data.selected?.ruleId}`;
+		window.open(ruleDocumentationUrl, '_blank');
+	};
+
+	//
 	// B. Render components
 
 	if (!data.selected) {
@@ -46,23 +54,23 @@ export function GtfsValidationsDetailSelectedRule() {
 
 	return (
 		<Pane header={[
-			<GtfsValidationsDetailSelectedRuleHeader key="header" />,
-			// <Section key="header" gap="sm">
-			// 	<code>{data.selected.ruleId}</code>
-			// 	<Text>{data.selected.description}</Text>
-			// 	<Button label="Documentation" onClick={() => null} />
-			// </Section>,
+			<Toolbar key="header">
+				<SeverityTag severity={data.selected?.result.severity} />
+				<IdTag id={data.selected.ruleId} copyOnClick />
+			</Toolbar>,
+			<Section key="description" gap="sm">
+				<Text>{data.selected.description}</Text>
+				<Label size="sm" variant="primary" caps>
+					<Inline onClick={handleOpenDocumentation} dotted>Consultar documentação</Inline>
+				</Label>
+			</Section>,
 		]}
 		>
-
-			<Divider />
-
 			<DataTable
 				columns={columns}
 				records={data.selected?.result.messages}
 				rowIdAccessor="message"
 			/>
-
 		</Pane>
 	);
 }
