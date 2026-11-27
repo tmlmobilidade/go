@@ -8,7 +8,7 @@ import { type HandleSyncRawVehicleEventIntoSimplifiedVehicleEventParams, handleS
 import { type SimplifiedVehicleEvent } from '@tmlmobilidade/go-types-vehicle-events';
 import { Dates } from '@tmlmobilidade/go-utils-dates';
 import { BatchWriter, performInTimeChunks, runOnInterval } from '@tmlmobilidade/go-utils-exec';
-import { Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
+import { listenPrometheusMetrics, Logger, Timer } from '@tmlmobilidade/go-utils-telemetry';
 
 /* * */
 
@@ -26,6 +26,10 @@ const writer = new BatchWriter<SimplifiedVehicleEvent>({
 	},
 	title: await labDb.operation.simplifiedVehicleEvents.getTableName(),
 });
+
+/* * */
+
+await listenPrometheusMetrics({ name: 'pt_tml_cm_alsa_rawdb_sync' });
 
 /* * */
 
