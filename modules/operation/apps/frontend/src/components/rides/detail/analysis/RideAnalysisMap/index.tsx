@@ -103,25 +103,30 @@ export function RideAnalysisMap() {
 			validationsByStopId[validation.stop_id].push(validation);
 		});
 		// Prepare the feature collection with hashed trip data
-		featureCollection.features = hashedTripData
+		const countedStopIds = new Set<string>();
+		featureCollection.features = [...hashedTripData]
 			.sort((a, b) => a.stop_sequence - b.stop_sequence)
-			.map(waypoint => ({
-				geometry: {
-					coordinates: [waypoint.stop_lon, waypoint.stop_lat],
-					type: 'Point',
-				},
-				properties: {
-					arrival_time: Dates
-						.fromUnixMilliseconds(fromOperationalDateTimeToUnixMilliseconds({ operational_date: rideData?.operational_date, operational_time: waypoint.arrival_time, timezone: rideData?.timezone }))
-						.setZone('local', 'offset_only')
-						.toFormat('dd/MM/yyyy HH:mm:ss'),
-					id: waypoint.stop_id,
-					name: waypoint.stop_name,
-					passengers_observed: validationsByStopId[waypoint.stop_id]?.length || 0,
-					sequence: waypoint.stop_sequence,
-				},
-				type: 'Feature',
-			}));
+			.map((waypoint) => {
+				const alreadyCounted = countedStopIds.has(waypoint.stop_id);
+				countedStopIds.add(waypoint.stop_id);
+				return {
+					geometry: {
+						coordinates: [waypoint.stop_lon, waypoint.stop_lat],
+						type: 'Point',
+					},
+					properties: {
+						arrival_time: Dates
+							.fromUnixMilliseconds(fromOperationalDateTimeToUnixMilliseconds({ operational_date: rideData?.operational_date, operational_time: waypoint.arrival_time, timezone: rideData?.timezone }))
+							.setZone('local', 'offset_only')
+							.toFormat('dd/MM/yyyy HH:mm:ss'),
+						id: waypoint.stop_id,
+						name: waypoint.stop_name,
+						passengers_observed: alreadyCounted ? 0 : validationsByStopId[waypoint.stop_id]?.length || 0,
+						sequence: waypoint.stop_sequence,
+					},
+					type: 'Feature',
+				};
+			});
 		return featureCollection;
 	}, [hashedTripData, apexValidationsData, rideData?.operational_date, rideData?.timezone]);
 
