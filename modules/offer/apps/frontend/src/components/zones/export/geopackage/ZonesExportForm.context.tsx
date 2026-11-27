@@ -3,9 +3,10 @@
 import { useZonesListData } from '@/components/zones/list/use-zones-list-data';
 import { API_ROUTES } from '@tmlmobilidade/consts';
 import { type Extraction, type OfferZonesGeopackageV1ExtractionCreate, type OfferZonesGeopackageV1ExtractionProperties, OfferZonesGeopackageV1ExtractionPropertiesSchema, OfferZonesGeopackageV1ExtractionVersionValue } from '@tmlmobilidade/go-types-extractions';
-import { fetchApiData, openExtractionsListModal, type SelectDataItem, type StandardFormContextValue, useExtractionsListData, useHandleAction, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
-import { createContext, type PropsWithChildren, useCallback, useContext, useMemo } from 'react';
+import { fetchApiData, openExtractionsListModal, type SelectDataItem, type StandardFormContextValue, useExtractionsListData, useHandleAction, useMePermissions, useStandardForm, useStandardFormCapabilities } from '@tmlmobilidade/ui';
+import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
 
+import { getZonesExportOptions } from './get-zones-export-options';
 import { closeZonesExportGeopackageModal } from './ZonesExport.modal';
 
 /* * */
@@ -34,9 +35,12 @@ export function ZonesExportFormContextProvider({ children }: PropsWithChildren) 
 	//
 	// A. Setup variables
 
-	const { data: zones, error, isLoading } = useZonesListData();
+	const { data: zones, error: zonesError, isLoading: zonesLoading } = useZonesListData();
+	const { data: permissions, error: permissionsError, isLoading: permissionsLoading } = useMePermissions();
 	const { mutate } = useExtractionsListData();
-	const options = useMemo(() => zones.map(zone => ({ label: zone.name, value: zone._id })), [zones]);
+	const error = zonesError || permissionsError;
+	const isLoading = zonesLoading || permissionsLoading;
+	const options = useMemo(() => getZonesExportOptions(zones, permissions), [permissions, zones]);
 
 	//
 	// B. Setup form
@@ -46,6 +50,14 @@ export function ZonesExportFormContextProvider({ children }: PropsWithChildren) 
 		schema: OfferZonesGeopackageV1ExtractionPropertiesSchema,
 	});
 	const { isValid } = form.formState;
+
+	useEffect(() => {
+		if (isLoading || error) return;
+		const availableIds = new Set(options.map(option => option.value));
+		const selected = form.getValues('zone_ids');
+		const eligible = selected.filter(id => availableIds.has(id));
+		if (eligible.length !== selected.length) form.setValue('zone_ids', eligible, { shouldDirty: true, shouldValidate: true });
+	}, [error, form, isLoading, options]);
 
 	//
 	// C. Handle actions
@@ -65,7 +77,7 @@ export function ZonesExportFormContextProvider({ children }: PropsWithChildren) 
 	});
 
 	const capabilities = useStandardFormCapabilities({
-		create: { hasPermission: !error, isCreating },
+		create: { hasPermission: !error && options.length > 0, isCreating },
 		form: { isDirty, isValid },
 		loading: { isLoading },
 	});
