@@ -3,6 +3,7 @@
 import { API_ROUTES, HttpException, PAGE_ROUTES } from '@tmlmobilidade/consts';
 import { type MeUser, type UserPreferenceValue } from '@tmlmobilidade/go-types-core';
 import { type ActionsOf, type GetScopePermissionsArgs, type HasPermissionResourceArgs, type Permission, PermissionCatalog, type ScopePermissions } from '@tmlmobilidade/go-types-permissions';
+import { AnalyticsContextProvider } from '@tmlmobilidade/go-ui-analytics';
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 import { useMePermissions, useMeUser } from '../auth';
@@ -165,7 +166,9 @@ export const MeContextProvider = ({ children }: PropsWithChildren) => {
 
 	return (
 		<MeContext.Provider value={contextValue}>
-			{children}
+			<AnalyticsContextProvider analytics={meUser.analytics}>
+				{children}
+			</AnalyticsContextProvider>
 		</MeContext.Provider>
 	);
 

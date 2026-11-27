@@ -8,6 +8,7 @@ import { z } from 'zod';
 export const MeUserSchema = UserSchema
 	.pick({
 		_id: true,
+		analytics: true,
 		created_at: true,
 		dismissed_banners: true,
 		email: true,

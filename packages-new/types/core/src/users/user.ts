@@ -4,6 +4,7 @@ import { PermissionSchema } from '@tmlmobilidade/go-types-permissions';
 import { BaseDocumentSchema, UnixMillisecondsSchema } from '@tmlmobilidade/go-types-shared';
 import { z } from 'zod';
 
+import { UserAnalyticsSchema } from './analytics.js';
 import { UserBannerDismissalSchema } from './banner-dismissal.js';
 import { UserChangelogSeenSchema } from './changelog-seen.js';
 
@@ -22,6 +23,7 @@ export type UserPreferenceValue = z.infer<typeof UserPreferenceValueSchema>;
 /* * */
 
 export const UserSchema = BaseDocumentSchema.extend({
+	analytics: UserAnalyticsSchema.nullish(),
 	dismissed_banners: z.array(UserBannerDismissalSchema).default([]),
 	email: z.email(),
 	email_verified: UnixMillisecondsSchema.nullable().default(null),
