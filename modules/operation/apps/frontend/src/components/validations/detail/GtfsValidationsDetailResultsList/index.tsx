@@ -1,6 +1,6 @@
 'use client';
 
-import { DataTable, type DataTableColumn, DataTableScroller, Pane, SeverityTag } from '@tmlmobilidade/ui';
+import { DataTable, type DataTableColumn, Pane, SeverityTag } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import styles from './styles.module.css';
@@ -55,15 +55,13 @@ export function GtfsValidationsDetailResultsList() {
 			<GtfsValidationsDetailResultsListHeader key="filters" />,
 		]}
 		>
-			<DataTableScroller>
-				<DataTable
-					columns={columns}
-					onRowClick={handleRowClick}
-					records={data.results}
-					rowIdAccessor="id"
-					selectedId={data.selected?.id}
-				/>
-			</DataTableScroller>
+			<DataTable
+				columns={columns}
+				onRowClick={handleRowClick}
+				records={data.results}
+				rowIdAccessor="id"
+				selectedId={data.selected?.id}
+			/>
 		</Pane>
 	);
 }

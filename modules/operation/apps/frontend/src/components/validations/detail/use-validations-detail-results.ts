@@ -72,7 +72,7 @@ export function useValidationsDetailResults(): UseValidationsDetailResultsReturn
 		query: search.value.trim(),
 	});
 
-	const selected = filteredResults.find(({ id }) => id === selectedId);
+	const selected = filteredResults.find(({ id }) => id === selectedId) ?? filteredResults[0];
 
 	//
 	// C. Handle actions

@@ -32,7 +32,7 @@ export function GtfsValidationsDetailSectionResult() {
 			title={t('gtfs_validations:detail.GtfsValidationsDetailSectionResult.title')}
 		>
 			<GtfsValidationsDetailResultsContextProvider key={validationsDetailContext.data.validation._id}>
-				<Section gap="md">
+				<Section gap="md" maxHeight={600}>
 					<PanesManager
 						id="gtfs-validation-results"
 						stackBelow={640}

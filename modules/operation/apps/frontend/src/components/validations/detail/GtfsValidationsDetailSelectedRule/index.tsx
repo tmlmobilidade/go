@@ -1,6 +1,6 @@
 'use client';
 
-import { NoDataLabel, Pane, Section, ValueDisplay } from '@tmlmobilidade/ui';
+import { NoDataLabel, Pane, Section, Text } from '@tmlmobilidade/ui';
 import { useTranslation } from 'react-i18next';
 
 import { useGtfsValidationsDetailResultsContext } from '../GtfsValidationsDetailResults.context';
@@ -36,10 +36,7 @@ export function GtfsValidationsDetailSelectedRule() {
 		]}
 		>
 			<Section gap="sm">
-				<ValueDisplay
-					label={t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.rule_description')}
-					value={data.selected.description}
-				/>
+				<Text>{data.selected.description}</Text>
 				<GtfsValidationsDetailSelectedRuleMessages
 					description={data.selected.description}
 					messages={data.selected.result.messages}
