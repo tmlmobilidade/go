@@ -1,5 +1,134 @@
 {
 	"detail": {
+		"GtfsValidationsDetailResultMessages": {
+			"description": "Mensajes de esta regla y ejemplos de las filas en las que aparecen.",
+			"empty": "No hay mensajes para esta regla.",
+			"message": "Mensaje",
+			"rows": "Líneas",
+			"rule_messages": {
+				"agency_email_valid": {
+					"default": "La dirección de correo electrónico «{value}» no es válida."
+				},
+				"agency_id_matched_with_agency_name": {
+					"default": "El identificador de operador «{id}» está asociado al nombre inesperado «{name}»."
+				},
+				"agency_timezone_valid": {
+					"inconsistent_timezones": "Todos los operadores del feed deben usar la misma zona horaria.",
+					"invalid_timezone": "La zona horaria IANA «{value}» no es válida."
+				},
+				"calendar_dates_date_unique_per_service_id": {
+					"default": "La fecha «{date}» aparece varias veces para el service_id «{service_id}»."
+				},
+				"calendar_start_date_before_end_date": {
+					"default": "La start_date «{start}» es posterior a la end_date «{end}»."
+				},
+				"feed_info_start_date_before_end_date": {
+					"default": "La feed_start_date «{start}» es posterior a la feed_end_date «{end}»."
+				},
+				"pattern_same_shape_id": {
+					"default": "La línea «{route_id}» con direction_id «{direction_id}» tiene identificadores de trazado distintos: {values}."
+				},
+				"pattern_same_stop_dist_traveled": {
+					"different_count": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen {first} y {second} valores de distancia, respectivamente.",
+					"different_value": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen valores de shape_dist_traveled {first} y {second} en la posición {position}."
+				},
+				"pattern_same_stop_sequence": {
+					"different_count": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen {first} y {second} horarios de parada, respectivamente.",
+					"different_value": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen valores de stop_sequence {first} y {second} en la posición ordenada {position}."
+				},
+				"pattern_same_trip_headsign": {
+					"default": "La línea «{route_id}» con direction_id «{direction_id}» tiene valores distintos de trip_headsign: {values}."
+				},
+				"routes_route_color_route_text_color_contrast": {
+					"default": "El contraste entre route_text_color «{text}» y route_color «{background}» es de {contrast}:1."
+				},
+				"routes_route_desc_different_from_route_long_name": {
+					"default": "El valor «{value}» de route_desc es igual a route_long_name."
+				},
+				"routes_route_desc_different_from_route_short_name": {
+					"default": "El valor «{value}» de route_desc es igual a route_short_name."
+				},
+				"routes_route_url_different_from_agency_url": {
+					"default": "El valor «{value}» de route_url es igual al agency_url del operador."
+				},
+				"shapes_shape_dist_traveled_equals_geo_length": {
+					"default": "El trazado «{shape_id}» declara {declared} m, mide {measured} m y presenta una diferencia de {difference} m."
+				},
+				"shapes_shape_dist_traveled_segment_max_geo_length": {
+					"default": "El trazado «{shape_id}» tiene un tramo de {distance} m entre las posiciones {previous} y {current}. El máximo es {limit} m."
+				},
+				"shapes_shape_dist_traveled_strictly_increasing": {
+					"default": "En el trazado «{shape_id}», la distancia en la posición {current_sequence} es {current_distance}, después de {previous_distance} en la posición {previous_sequence}."
+				},
+				"shapes_shape_pt_sequence_strictly_increasing": {
+					"default": "El trazado «{shape_id}» usa el valor {sequence} de shape_pt_sequence más de una vez."
+				},
+				"stop_times_arrival_time_before_departure_time": {
+					"default": "La arrival_time «{arrival}» es posterior a la departure_time «{departure}»."
+				},
+				"stop_times_increasing_arrival_time": {
+					"default": "En el viaje «{trip_id}», la arrival_time es «{current}» en la posición {current_sequence} de stop_sequence, después de «{previous}» en la posición {previous_sequence}."
+				},
+				"stop_times_increasing_departure_time": {
+					"default": "En el viaje «{trip_id}», la departure_time es «{current}» en la posición {current_sequence} de stop_sequence, después de «{previous}» en la posición {previous_sequence}."
+				},
+				"stop_times_increasing_shape_dist_traveled": {
+					"default": "En el viaje «{trip_id}», la distancia en la posición {current_sequence} es {current_distance}, después de {previous_distance} en la posición {previous_sequence}."
+				},
+				"stop_times_increasing_stop_sequence": {
+					"default": "El viaje «{trip_id}» usa el valor {sequence} de stop_sequence más de una vez."
+				},
+				"stop_times_location_group_id_forbidden": {
+					"default": "El location_group_id «{group_id}» entra en conflicto con stop_id «{stop_id}» o location_id «{location_id}»."
+				},
+				"stop_times_location_id_forbidden": {
+					"default": "El location_id «{location_id}» entra en conflicto con stop_id «{stop_id}» o location_group_id «{group_id}»."
+				},
+				"stop_too_far_from_shape": {
+					"default": "La parada «{stop_id}» está a {distance} m del trazado «{shape_id}» en la línea «{route_id}» con direction_id {direction_id}."
+				},
+				"stops_parent_station_forbidden": {
+					"default": "El parent_station «{value}» no está permitido para location_type {location_type}."
+				},
+				"stops_parent_station_required": {
+					"default": "Falta el campo parent_station para location_type {location_type}."
+				},
+				"stops_platform_code_forbidden": {
+					"default": "El platform_code «{value}» no está permitido para location_type {location_type}."
+				},
+				"stops_stop_code_equals_stop_id": {
+					"default": "El stop_code «{code}» es distinto del stop_id «{id}»."
+				},
+				"trip_headsign_max_two_per_route": {
+					"default": "La línea «{route_id}» tiene {count} valores distintos de {field}."
+				},
+				"trip_shape_id_exists": {
+					"default": "Falta el campo shape_id en un viaje con servicio continuo."
+				},
+				"trip_shape_id_max_two_per_route": {
+					"default": "La línea «{route_id}» tiene {count} valores distintos de {field}."
+				},
+				"trip_shape_id_uses_direction_id": {
+					"default": "El identificador de trazado «{shape_id}» debe terminar en «{suffix}» para direction_id {direction_id}."
+				},
+				"trips_shape_no_reuse_per_route_direction": {
+					"default": "El trazado «{shape_id}» se usa en {count} pares de línea y sentido."
+				}
+			},
+			"shared_messages": {
+				"blank_value": "El valor obligatorio de {field} está vacío.",
+				"duplicate_value": "El valor «{value}» de {field} se usa en varias filas.",
+				"forbidden_file": "El archivo {file} está presente, pero está prohibido.",
+				"invalid_field_value": "El valor «{value}» del campo {field} no es válido.",
+				"missing_column": "Falta la columna obligatoria {field}.",
+				"missing_file": "Falta el archivo obligatorio {file}.",
+				"missing_reference_value": "El valor «{value}» de {target_field} es desconocido.",
+				"unimplemented_rule": "La regla «{rule_id}» todavía no se ha implementado y no se ha podido ejecutar.",
+				"unknown_reference": "El valor «{value}» de {target_field} no existe en {file}."
+			},
+			"show_all": "{count, plural, =1 {Mostrar 1 ocurrencia más} other {Mostrar # ocurrencias más}}",
+			"title": "Mensajes de validación"
+		},
 		"GtfsValidationsDetailResultsList": {
 			"columns": {
 				"description": "Descripción",
@@ -264,135 +393,6 @@
 				"required_field": "Falta el campo obligatorio {field}.",
 				"unimplemented_rule": "La regla configurada todavía no se ha implementado."
 			}
-		},
-		"GtfsValidationsDetailResultMessages": {
-			"description": "Mensajes de esta regla y ejemplos de las filas en las que aparecen.",
-			"empty": "No hay mensajes para esta regla.",
-			"message": "Mensaje",
-			"rows": "Líneas",
-			"rule_messages": {
-				"agency_email_valid": {
-					"default": "La dirección de correo electrónico «{value}» no es válida."
-				},
-				"agency_id_matched_with_agency_name": {
-					"default": "El identificador de operador «{id}» está asociado al nombre inesperado «{name}»."
-				},
-				"agency_timezone_valid": {
-					"inconsistent_timezones": "Todos los operadores del feed deben usar la misma zona horaria.",
-					"invalid_timezone": "La zona horaria IANA «{value}» no es válida."
-				},
-				"calendar_dates_date_unique_per_service_id": {
-					"default": "La fecha «{date}» aparece varias veces para el service_id «{service_id}»."
-				},
-				"calendar_start_date_before_end_date": {
-					"default": "La start_date «{start}» es posterior a la end_date «{end}»."
-				},
-				"feed_info_start_date_before_end_date": {
-					"default": "La feed_start_date «{start}» es posterior a la feed_end_date «{end}»."
-				},
-				"pattern_same_shape_id": {
-					"default": "La línea «{route_id}» con direction_id «{direction_id}» tiene identificadores de trazado distintos: {values}."
-				},
-				"pattern_same_stop_dist_traveled": {
-					"different_count": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen {first} y {second} valores de distancia, respectivamente.",
-					"different_value": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen valores de shape_dist_traveled {first} y {second} en la posición {position}."
-				},
-				"pattern_same_stop_sequence": {
-					"different_count": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen {first} y {second} horarios de parada, respectivamente.",
-					"different_value": "En la línea «{route_id}» con direction_id «{direction_id}», los viajes «{reference}» y «{candidate}» tienen valores de stop_sequence {first} y {second} en la posición ordenada {position}."
-				},
-				"pattern_same_trip_headsign": {
-					"default": "La línea «{route_id}» con direction_id «{direction_id}» tiene valores distintos de trip_headsign: {values}."
-				},
-				"routes_route_color_route_text_color_contrast": {
-					"default": "El contraste entre route_text_color «{text}» y route_color «{background}» es de {contrast}:1."
-				},
-				"routes_route_desc_different_from_route_long_name": {
-					"default": "El valor «{value}» de route_desc es igual a route_long_name."
-				},
-				"routes_route_desc_different_from_route_short_name": {
-					"default": "El valor «{value}» de route_desc es igual a route_short_name."
-				},
-				"routes_route_url_different_from_agency_url": {
-					"default": "El valor «{value}» de route_url es igual al agency_url del operador."
-				},
-				"shapes_shape_dist_traveled_equals_geo_length": {
-					"default": "El trazado «{shape_id}» declara {declared} m, mide {measured} m y presenta una diferencia de {difference} m."
-				},
-				"shapes_shape_dist_traveled_segment_max_geo_length": {
-					"default": "El trazado «{shape_id}» tiene un tramo de {distance} m entre las posiciones {previous} y {current}. El máximo es {limit} m."
-				},
-				"shapes_shape_dist_traveled_strictly_increasing": {
-					"default": "En el trazado «{shape_id}», la distancia en la posición {current_sequence} es {current_distance}, después de {previous_distance} en la posición {previous_sequence}."
-				},
-				"shapes_shape_pt_sequence_strictly_increasing": {
-					"default": "El trazado «{shape_id}» usa el valor {sequence} de shape_pt_sequence más de una vez."
-				},
-				"stop_times_arrival_time_before_departure_time": {
-					"default": "La arrival_time «{arrival}» es posterior a la departure_time «{departure}»."
-				},
-				"stop_times_increasing_arrival_time": {
-					"default": "En el viaje «{trip_id}», la arrival_time es «{current}» en la posición {current_sequence} de stop_sequence, después de «{previous}» en la posición {previous_sequence}."
-				},
-				"stop_times_increasing_departure_time": {
-					"default": "En el viaje «{trip_id}», la departure_time es «{current}» en la posición {current_sequence} de stop_sequence, después de «{previous}» en la posición {previous_sequence}."
-				},
-				"stop_times_increasing_shape_dist_traveled": {
-					"default": "En el viaje «{trip_id}», la distancia en la posición {current_sequence} es {current_distance}, después de {previous_distance} en la posición {previous_sequence}."
-				},
-				"stop_times_increasing_stop_sequence": {
-					"default": "El viaje «{trip_id}» usa el valor {sequence} de stop_sequence más de una vez."
-				},
-				"stop_times_location_group_id_forbidden": {
-					"default": "El location_group_id «{group_id}» entra en conflicto con stop_id «{stop_id}» o location_id «{location_id}»."
-				},
-				"stop_times_location_id_forbidden": {
-					"default": "El location_id «{location_id}» entra en conflicto con stop_id «{stop_id}» o location_group_id «{group_id}»."
-				},
-				"stop_too_far_from_shape": {
-					"default": "La parada «{stop_id}» está a {distance} m del trazado «{shape_id}» en la línea «{route_id}» con direction_id {direction_id}."
-				},
-				"stops_parent_station_forbidden": {
-					"default": "El parent_station «{value}» no está permitido para location_type {location_type}."
-				},
-				"stops_parent_station_required": {
-					"default": "Falta el campo parent_station para location_type {location_type}."
-				},
-				"stops_platform_code_forbidden": {
-					"default": "El platform_code «{value}» no está permitido para location_type {location_type}."
-				},
-				"stops_stop_code_equals_stop_id": {
-					"default": "El stop_code «{code}» es distinto del stop_id «{id}»."
-				},
-				"trip_headsign_max_two_per_route": {
-					"default": "La línea «{route_id}» tiene {count} valores distintos de {field}."
-				},
-				"trip_shape_id_exists": {
-					"default": "Falta el campo shape_id en un viaje con servicio continuo."
-				},
-				"trip_shape_id_max_two_per_route": {
-					"default": "La línea «{route_id}» tiene {count} valores distintos de {field}."
-				},
-				"trip_shape_id_uses_direction_id": {
-					"default": "El identificador de trazado «{shape_id}» debe terminar en «{suffix}» para direction_id {direction_id}."
-				},
-				"trips_shape_no_reuse_per_route_direction": {
-					"default": "El trazado «{shape_id}» se usa en {count} pares de línea y sentido."
-				}
-			},
-			"shared_messages": {
-				"blank_value": "El valor obligatorio de {field} está vacío.",
-				"duplicate_value": "El valor «{value}» de {field} se usa en varias filas.",
-				"forbidden_file": "El archivo {file} está presente, pero está prohibido.",
-				"invalid_field_value": "El valor «{value}» del campo {field} no es válido.",
-				"missing_column": "Falta la columna obligatoria {field}.",
-				"missing_file": "Falta el archivo obligatorio {file}.",
-				"missing_reference_value": "El valor «{value}» de {target_field} es desconocido.",
-				"unimplemented_rule": "La regla «{rule_id}» todavía no se ha implementado y no se ha podido ejecutar.",
-				"unknown_reference": "El valor «{value}» de {target_field} no existe en {file}."
-			},
-			"show_all": "{count, plural, =1 {Mostrar 1 ocurrencia más} other {Mostrar # ocurrencias más}}",
-			"title": "Mensajes de validación"
 		},
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"

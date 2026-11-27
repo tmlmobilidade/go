@@ -1,5 +1,134 @@
 {
 	"detail": {
+		"GtfsValidationsDetailResultMessages": {
+			"description": "Messages for this rule and examples of the rows where they occur.",
+			"empty": "There are no messages for this rule.",
+			"message": "Message",
+			"rows": "Row index(es)",
+			"rule_messages": {
+				"agency_email_valid": {
+					"default": "Invalid email address “{value}”."
+				},
+				"agency_id_matched_with_agency_name": {
+					"default": "Agency ID “{id}” has an unexpected name “{name}”."
+				},
+				"agency_timezone_valid": {
+					"inconsistent_timezones": "All agencies in the feed must use the same timezone.",
+					"invalid_timezone": "Invalid IANA timezone “{value}”."
+				},
+				"calendar_dates_date_unique_per_service_id": {
+					"default": "The date “{date}” occurs multiple times for service_id “{service_id}”."
+				},
+				"calendar_start_date_before_end_date": {
+					"default": "The start_date “{start}” is after the end_date “{end}”."
+				},
+				"feed_info_start_date_before_end_date": {
+					"default": "The feed_start_date “{start}” is after the feed_end_date “{end}”."
+				},
+				"pattern_same_shape_id": {
+					"default": "Route “{route_id}” with direction_id “{direction_id}” has conflicting shape IDs {values}."
+				},
+				"pattern_same_stop_dist_traveled": {
+					"different_count": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have {first} and {second} distances, respectively.",
+					"different_value": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have shape_dist_traveled values {first} and {second} at position {position}."
+				},
+				"pattern_same_stop_sequence": {
+					"different_count": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have {first} and {second} stop times, respectively.",
+					"different_value": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have stop_sequence values {first} and {second} at sorted position {position}."
+				},
+				"pattern_same_trip_headsign": {
+					"default": "Route “{route_id}” with direction_id “{direction_id}” has conflicting trip headsigns {values}."
+				},
+				"routes_route_color_route_text_color_contrast": {
+					"default": "The route_text_color “{text}” and route_color “{background}” have a contrast ratio of {contrast}:1."
+				},
+				"routes_route_desc_different_from_route_long_name": {
+					"default": "The route_desc value “{value}” duplicates route_long_name."
+				},
+				"routes_route_desc_different_from_route_short_name": {
+					"default": "The route_desc value “{value}” duplicates route_short_name."
+				},
+				"routes_route_url_different_from_agency_url": {
+					"default": "The route_url value “{value}” matches its agency_url."
+				},
+				"shapes_shape_dist_traveled_equals_geo_length": {
+					"default": "Shape “{shape_id}” declares {declared} m, measures {measured} m, and differs by {difference} m."
+				},
+				"shapes_shape_dist_traveled_segment_max_geo_length": {
+					"default": "Shape “{shape_id}” has a {distance} m segment from sequence {previous} to {current}. The maximum is {limit} m."
+				},
+				"shapes_shape_dist_traveled_strictly_increasing": {
+					"default": "Shape “{shape_id}” has distance {current_distance} at sequence {current_sequence} after distance {previous_distance} at sequence {previous_sequence}."
+				},
+				"shapes_shape_pt_sequence_strictly_increasing": {
+					"default": "Shape “{shape_id}” uses shape_pt_sequence {sequence} more than once."
+				},
+				"stop_times_arrival_time_before_departure_time": {
+					"default": "The arrival_time “{arrival}” is after the departure_time “{departure}”."
+				},
+				"stop_times_increasing_arrival_time": {
+					"default": "Trip “{trip_id}” has arrival_time “{current}” at stop_sequence {current_sequence} after “{previous}” at stop_sequence {previous_sequence}."
+				},
+				"stop_times_increasing_departure_time": {
+					"default": "Trip “{trip_id}” has departure_time “{current}” at stop_sequence {current_sequence} after “{previous}” at stop_sequence {previous_sequence}."
+				},
+				"stop_times_increasing_shape_dist_traveled": {
+					"default": "Trip “{trip_id}” has distance {current_distance} at sequence {current_sequence} after distance {previous_distance} at sequence {previous_sequence}."
+				},
+				"stop_times_increasing_stop_sequence": {
+					"default": "Trip “{trip_id}” uses stop_sequence {sequence} more than once."
+				},
+				"stop_times_location_group_id_forbidden": {
+					"default": "The location_group_id “{group_id}” conflicts with stop_id “{stop_id}” or location_id “{location_id}”."
+				},
+				"stop_times_location_id_forbidden": {
+					"default": "The location_id “{location_id}” conflicts with stop_id “{stop_id}” or location_group_id “{group_id}”."
+				},
+				"stop_too_far_from_shape": {
+					"default": "Stop “{stop_id}” is {distance} m from shape “{shape_id}” on route “{route_id}” with direction_id {direction_id}."
+				},
+				"stops_parent_station_forbidden": {
+					"default": "The parent_station “{value}” is forbidden for location_type {location_type}."
+				},
+				"stops_parent_station_required": {
+					"default": "The parent_station is missing for location_type {location_type}."
+				},
+				"stops_platform_code_forbidden": {
+					"default": "The platform_code “{value}” is forbidden for location_type {location_type}."
+				},
+				"stops_stop_code_equals_stop_id": {
+					"default": "The stop_code “{code}” differs from the stop_id “{id}”."
+				},
+				"trip_headsign_max_two_per_route": {
+					"default": "Route “{route_id}” has {count} distinct {field} values."
+				},
+				"trip_shape_id_exists": {
+					"default": "The shape_id is missing for a trip with continuous service."
+				},
+				"trip_shape_id_max_two_per_route": {
+					"default": "Route “{route_id}” has {count} distinct {field} values."
+				},
+				"trip_shape_id_uses_direction_id": {
+					"default": "Shape ID “{shape_id}” must end in “{suffix}” for direction_id {direction_id}."
+				},
+				"trips_shape_no_reuse_per_route_direction": {
+					"default": "Shape “{shape_id}” is used by {count} route and direction pairs."
+				}
+			},
+			"shared_messages": {
+				"blank_value": "The required {field} value is blank.",
+				"duplicate_value": "The {field} value “{value}” is used on multiple rows.",
+				"forbidden_file": "The forbidden {file} file is present.",
+				"invalid_field_value": "Invalid {field} value “{value}”.",
+				"missing_column": "The required {field} column is missing.",
+				"missing_file": "The required {file} file is missing.",
+				"missing_reference_value": "Unknown {target_field} “{value}”.",
+				"unimplemented_rule": "Rule “{rule_id}” has no implementation and could not be executed.",
+				"unknown_reference": "Unknown {target_field} “{value}” in {file}."
+			},
+			"show_all": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}",
+			"title": "Validation messages"
+		},
 		"GtfsValidationsDetailResultsList": {
 			"columns": {
 				"description": "Description",
@@ -264,135 +393,6 @@
 				"required_field": "The required {field} is missing.",
 				"unimplemented_rule": "The configured rule has no implementation."
 			}
-		},
-		"GtfsValidationsDetailResultMessages": {
-			"description": "Messages for this rule and examples of the rows where they occur.",
-			"empty": "There are no messages for this rule.",
-			"message": "Message",
-			"rows": "Row index(es)",
-			"rule_messages": {
-				"agency_email_valid": {
-					"default": "Invalid email address “{value}”."
-				},
-				"agency_id_matched_with_agency_name": {
-					"default": "Agency ID “{id}” has an unexpected name “{name}”."
-				},
-				"agency_timezone_valid": {
-					"inconsistent_timezones": "All agencies in the feed must use the same timezone.",
-					"invalid_timezone": "Invalid IANA timezone “{value}”."
-				},
-				"calendar_dates_date_unique_per_service_id": {
-					"default": "The date “{date}” occurs multiple times for service_id “{service_id}”."
-				},
-				"calendar_start_date_before_end_date": {
-					"default": "The start_date “{start}” is after the end_date “{end}”."
-				},
-				"feed_info_start_date_before_end_date": {
-					"default": "The feed_start_date “{start}” is after the feed_end_date “{end}”."
-				},
-				"pattern_same_shape_id": {
-					"default": "Route “{route_id}” with direction_id “{direction_id}” has conflicting shape IDs {values}."
-				},
-				"pattern_same_stop_dist_traveled": {
-					"different_count": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have {first} and {second} distances, respectively.",
-					"different_value": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have shape_dist_traveled values {first} and {second} at position {position}."
-				},
-				"pattern_same_stop_sequence": {
-					"different_count": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have {first} and {second} stop times, respectively.",
-					"different_value": "Route “{route_id}” with direction_id “{direction_id}”. Trips “{reference}” and “{candidate}” have stop_sequence values {first} and {second} at sorted position {position}."
-				},
-				"pattern_same_trip_headsign": {
-					"default": "Route “{route_id}” with direction_id “{direction_id}” has conflicting trip headsigns {values}."
-				},
-				"routes_route_color_route_text_color_contrast": {
-					"default": "The route_text_color “{text}” and route_color “{background}” have a contrast ratio of {contrast}:1."
-				},
-				"routes_route_desc_different_from_route_long_name": {
-					"default": "The route_desc value “{value}” duplicates route_long_name."
-				},
-				"routes_route_desc_different_from_route_short_name": {
-					"default": "The route_desc value “{value}” duplicates route_short_name."
-				},
-				"routes_route_url_different_from_agency_url": {
-					"default": "The route_url value “{value}” matches its agency_url."
-				},
-				"shapes_shape_dist_traveled_equals_geo_length": {
-					"default": "Shape “{shape_id}” declares {declared} m, measures {measured} m, and differs by {difference} m."
-				},
-				"shapes_shape_dist_traveled_segment_max_geo_length": {
-					"default": "Shape “{shape_id}” has a {distance} m segment from sequence {previous} to {current}. The maximum is {limit} m."
-				},
-				"shapes_shape_dist_traveled_strictly_increasing": {
-					"default": "Shape “{shape_id}” has distance {current_distance} at sequence {current_sequence} after distance {previous_distance} at sequence {previous_sequence}."
-				},
-				"shapes_shape_pt_sequence_strictly_increasing": {
-					"default": "Shape “{shape_id}” uses shape_pt_sequence {sequence} more than once."
-				},
-				"stop_times_arrival_time_before_departure_time": {
-					"default": "The arrival_time “{arrival}” is after the departure_time “{departure}”."
-				},
-				"stop_times_increasing_arrival_time": {
-					"default": "Trip “{trip_id}” has arrival_time “{current}” at stop_sequence {current_sequence} after “{previous}” at stop_sequence {previous_sequence}."
-				},
-				"stop_times_increasing_departure_time": {
-					"default": "Trip “{trip_id}” has departure_time “{current}” at stop_sequence {current_sequence} after “{previous}” at stop_sequence {previous_sequence}."
-				},
-				"stop_times_increasing_shape_dist_traveled": {
-					"default": "Trip “{trip_id}” has distance {current_distance} at sequence {current_sequence} after distance {previous_distance} at sequence {previous_sequence}."
-				},
-				"stop_times_increasing_stop_sequence": {
-					"default": "Trip “{trip_id}” uses stop_sequence {sequence} more than once."
-				},
-				"stop_times_location_group_id_forbidden": {
-					"default": "The location_group_id “{group_id}” conflicts with stop_id “{stop_id}” or location_id “{location_id}”."
-				},
-				"stop_times_location_id_forbidden": {
-					"default": "The location_id “{location_id}” conflicts with stop_id “{stop_id}” or location_group_id “{group_id}”."
-				},
-				"stop_too_far_from_shape": {
-					"default": "Stop “{stop_id}” is {distance} m from shape “{shape_id}” on route “{route_id}” with direction_id {direction_id}."
-				},
-				"stops_parent_station_forbidden": {
-					"default": "The parent_station “{value}” is forbidden for location_type {location_type}."
-				},
-				"stops_parent_station_required": {
-					"default": "The parent_station is missing for location_type {location_type}."
-				},
-				"stops_platform_code_forbidden": {
-					"default": "The platform_code “{value}” is forbidden for location_type {location_type}."
-				},
-				"stops_stop_code_equals_stop_id": {
-					"default": "The stop_code “{code}” differs from the stop_id “{id}”."
-				},
-				"trip_headsign_max_two_per_route": {
-					"default": "Route “{route_id}” has {count} distinct {field} values."
-				},
-				"trip_shape_id_exists": {
-					"default": "The shape_id is missing for a trip with continuous service."
-				},
-				"trip_shape_id_max_two_per_route": {
-					"default": "Route “{route_id}” has {count} distinct {field} values."
-				},
-				"trip_shape_id_uses_direction_id": {
-					"default": "Shape ID “{shape_id}” must end in “{suffix}” for direction_id {direction_id}."
-				},
-				"trips_shape_no_reuse_per_route_direction": {
-					"default": "Shape “{shape_id}” is used by {count} route and direction pairs."
-				}
-			},
-			"shared_messages": {
-				"blank_value": "The required {field} value is blank.",
-				"duplicate_value": "The {field} value “{value}” is used on multiple rows.",
-				"forbidden_file": "The forbidden {file} file is present.",
-				"invalid_field_value": "Invalid {field} value “{value}”.",
-				"missing_column": "The required {field} column is missing.",
-				"missing_file": "The required {file} file is missing.",
-				"missing_reference_value": "Unknown {target_field} “{value}”.",
-				"unimplemented_rule": "Rule “{rule_id}” has no implementation and could not be executed.",
-				"unknown_reference": "Unknown {target_field} “{value}” in {file}."
-			},
-			"show_all": "{count, plural, =1 {Show 1 more occurrence} other {Show # more occurrences}}",
-			"title": "Validation messages"
 		},
 		"ValidationsDetailResultRows": {
 			"empty": "N/A"

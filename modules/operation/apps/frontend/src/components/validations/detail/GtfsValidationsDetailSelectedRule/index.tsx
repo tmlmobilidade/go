@@ -61,7 +61,7 @@ export function GtfsValidationsDetailSelectedRule() {
 			<Section key="description" gap="sm">
 				<Text>{data.selected.description}</Text>
 				<Label size="sm" variant="primary" caps>
-					<Inline onClick={handleOpenDocumentation} dotted>Consultar documentação</Inline>
+					<Inline onClick={handleOpenDocumentation} dotted>{t('gtfs_validations:detail.GtfsValidationsDetailSelectedRule.open_documentation')}</Inline>
 				</Label>
 			</Section>,
 		]}
